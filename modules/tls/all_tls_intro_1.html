@@ -1,0 +1,92 @@
+<section data-markdown>
+  <textarea data-template>
+  # Intro to TLS
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>What is TLS</h2>
+  <q cite="https://davidwong.fr/tls13/">The primary goal of TLS is to provide a secure channel between two communicating peers; the only requirement from the underlying transport is a reliable, in-order data stream.</q><br />
+  - David Wong
+</section>
+<section data-transition="none">
+  <h2>What is TLS</h2>
+  <q cite="https://tools.ietf.org/html/rfc8446">TLS allows client/server applications to communicate over the Internet in a way that is designed to prevent eavesdropping, tampering, and message forgery.</q><br />
+  - RFC 8446
+</section>
+<section data-transition="none">
+  <h2>Typical Goals of using TLS</h2>
+  <ul>
+    <li>
+      Nobody else can see this
+    </li>
+    <li>
+      We are who we say we are
+    </li>
+    <li>
+      The data didn't change
+    </li>
+  </ul>
+  <aside class="notes">
+    <ul>
+      <li>
+        <a href="https://security.stackexchange.com/questions/20803/how-does-ssl-tls-work/20847">Refer to this</a> great post on TLS and related attacks/downsides.
+      </li>
+    </ul>
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>TLS components</h2>
+  <b>Public information</b>
+  <div class="fragment fade-in-then-semi-out" data-fragment-index="0">to give anybody</div>
+  <b>Private information</b>
+  <div class="fragment fade-in-then-semi-out" data-fragment-index="1">to prove who you are</div>
+  <b>A third party</b>
+  <div class="fragment fade-in-then-semi-out" data-fragment-index="2">who participants trust</div>
+  <b>Configurations</b>
+  <div class="fragment fade-in" data-fragment-index="3">to describe how to communicate</div>
+</section>
+<section data-transition="none">
+  <h2>Typical server setup</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out">
+      Create associated public (CSR, CRT, or Cert) and private (PEM or Key) information
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Get your public information endorsed by a trusted third party
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Publish that endorsement
+    </li>
+    <li class="fragment">
+      Configure the server to make communications with your clients private
+    </li>
+  </ol>
+  <aside class="notes">
+    <b>Certificates</b><br />
+    <ul>
+      <li>
+        Certificates are X509v3 files, and one of their elements is the public key, which is signed by a CA.  There are numerous other elements of a certificate to hold information like the Organization name, etc.  There are also x509v3 extensions to hold things like the subjectAltName (SAN)
+      </li>
+      <ul>
+        <li>
+          The public key is embedded in the X509 certificate <a href="https://tools.ietf.org/html/rfc2459#section-4.1.2.7">RFC2459 in section 4.1.2.7</a>
+        </li>
+      </ul>
+      <li>
+        The private key is associated with the public key using assymetric crypto
+      </li>
+      <li>
+        CAs are preloaded in client OSs and/or browsers as a 'trusted third party'
+      </li>
+        <ul>
+          <li>
+            X509v3 came out in 1999 https://tools.ietf.org/html/rfc2459
+          </li>
+          <li>
+            In TLS 1.3 using x509v3 certificates are still preferred, although it's possible to negotiate a raw key via <a href="https://tools.ietf.org/html/rfc7250">RFC7250</a>
+          </li>
+        </ul>
+      <li>Extensions have an OID and an ASN.1 structure https://tools.ietf.org/html/rfc2459#section-4.2</li>
+    </ul>
+  </aside>
+</section>

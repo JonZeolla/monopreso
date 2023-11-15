@@ -1,0 +1,28 @@
+<section data-transition="none">
+  <h1>Background</h1>
+  <span class="fragment semi-fade-out" data-fragment-index="1">Infrastructure as code (IaC) is the process of managing and provisioning computer data centers</span> through machine-readable definition files<span class="fragment semi-fade-out" data-fragment-index="1">, rather than physical hardware configuration or interactive configuration tools.</span>
+  <br /><br /><div class="footnote">https://en.wikipedia.org/wiki/Infrastructure_as_code</div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Example</h1>
+  <pre><code data-trim data-noescape class="language-terraform">
+  <span class="fragment semi-fade-out" data-fragment-index="1">resource "aws_instance" "server" {
+    </span>count         = <span class="fragment fade-out">1</span><span class="fragment fade-in">100</span><span class="fragment semi-fade-out" data-fragment-index="1">
+    ami           = "ami-a1b2c3d4"
+    instance_type = "t2.micro"
+  }</span>
+  </code></pre>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Example</h1>
+  <pre><code data-trim data-noescape class="language-terraform">
+  resource "aws_instance" "server" {
+    count         =  100
+    <span class="fragment highlight-red">ami           = "ami-a1b2c3d4"</span>
+    instance_type = "t2.micro"
+  }</span>
+  </code></pre>
+  <aside class="notes"></aside>
+</section>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>{{ title }}</title>
+
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    {%- if branded == "True" %}
+    <!-- TODO -->
+    {%- elif branded == "False" %}
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
+    {%- endif %}
+    <link rel="stylesheet" href="modules/shared/css/asciinema-player.css">
+    <link rel="stylesheet" href="modules/shared/css/footer.css">
+
+    <!-- For the Chalkboard plugin -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+{{ content }}
+      </div>
+    </div>
+
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script src="plugin/math/math.js"></script>
+    <script src="modules/shared/plugin/chalkboard/plugin.js"></script>
+    <script src="modules/shared/js/asciinema-player.js"></script>
+
+    <script>
+{{ reveal_config }}
+    </script>
+    {%- if branded == "True" %}
+    <div class='branding'>
+    <img src="TODO.png" alt="TODO" /></div>
+    {%- elif branded == "False" %}
+    <!-- TODO: Picture here too? -->
+    {%- endif %}
+  </body>
+</html>

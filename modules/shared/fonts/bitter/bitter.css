@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Bitter';
+    src: url('bitter.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Bitter';
+    src: url('bitter-italic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+}

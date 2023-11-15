@@ -1,0 +1,124 @@
+<section data-markdown>
+  <textarea data-template>
+    # Notable configurations
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Notable configurations</h2>
+  <ol start="1">
+    <li>
+      Optionally limit the Certificate Authorities allowed to create certificates for your domains by using a <a href="https://tools.ietf.org/html/rfc6844">Certification Authority Authorization (CAA) record</a>.
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>CAA records</b>
+      <li>
+        CAA checking is <a href="https://cabforum.org/2017/03/08/ballot-187-make-caa-checking-mandatory/">manditory via the CA/Browser Forum</a>, although it is not required that a company publish one, just that CAs must look for and comply with them if they do exist.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## CAA Example
+```
+$ dig -t CAA +short seisollc.com
+0 iodef "mailto:security@SeisoLLC.com"
+0 issue "amazon.com"
+0 issue "amazonaws.com"
+0 issue "amazontrust.com"
+0 issue "awstrust.com"
+0 issue "godaddy.com"
+0 issue "letsencrypt.org"
+0 issuewild ";"
+```
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Notable configurations</h2>
+  <ol start="2">
+    <li>
+      Configure a website to require all future connectivity be over TLS using a <a href="https://tools.ietf.org/html/rfc6797">HTTP Strict Transport Security (HSTS)</a> header.
+      <ul>
+        <li>
+          See more details regarding the threats <a href="https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Strict_Transport_Security_Cheat_Sheet.html">here</a>.
+        </li>
+      </ul>
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>HSTS</b>
+      <li>
+        <a href="https://github.com/moxie0/sslstrip">SSL</a> <a href="https://moxie.org/software/sslstrip/">Strip</a> was released by Moxie Marlinspike in 2009 where a MITM could simply remove TLS instead of spoofing it, simplifying the attack.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## HSTS Example
+```
+$ curl https://www.google.com -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90' -sD - -o /dev/null | grep strict-transport-security
+strict-transport-security: max-age=31536000
+```
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Notable configurations</h2>
+  <ol start="3">
+    <li>
+      Many public Certificate Authorities, including DigiCert and Comodo, publish a log of the certificates they signed to a public log via <a href="https://www.certificate-transparency.org">Certificate Transparency (CT)</a>. In <a href="https://cabforum.org/pipermail/public/2014-February/002840.html">some cases</a>, CT must be in use to properly validate Extended Validation (EV) certificates.
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>Certificate Transparency</b>
+      <li>
+        There are three roles within CT - Monitor, Auditor, Log.
+      </li>
+      <li>
+        There are three ways to implement CT - either via a x509 extension (SCT attachment, requires CA support), adding CT in during the TLS handshake via a TLS extension, or via OCSP stapling.
+      </li>
+      <li>
+        The log is a merkle tree.  To grow it they make a new tree with updated certs roughly hourly (with a 24h maximum merge delay), then merge it with the main tree.
+      </li>
+      <li>
+        Certificate Transparency has been <a href="https://www.feistyduck.com/bulletproof-tls-newsletter/issue_40_certificate_transparency_logging_is_now_mandatory">>required for Chrome</a> to consider it valid since 2018.
+      </li>
+      <li>
+        Certificate transparency references: <a href="http://www.certificate-transparency.org/">the primary website</a>, <a href="https://www.imperialviolet.org/2012/11/06/certtrans.html">Adam Langley's post</a>, <a href="http://www.certificate-transparency.org/_/rsrc/1375725183557/how-ct-works/ct_system_1.png">a 'how it works' picture</a>, and <a href="https://media.ccc.de/v/33c3-8167-everything_you_always_wanted_to_know_about_certificate_transparency">this 33c3 presentation</a>.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## Certificate Transparency Example
+```
+$ ctclient --log_uri https://ct.googleapis.com/testtube -first 15887722 -last 15887722 getentries | grep -e "Issuer:" -A4
+        Issuer: CN=Fake LE Intermediate X1
+        Validity:
+            Not Before: 2018-03-27 23:31:02 +0000 UTC
+            Not After : 2018-06-25 23:31:02 +0000 UTC
+        Subject: CN=beta.aplussites.org
+```
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Notable configurations</h2>
+  <ol start="4">
+    <li class="fragment fade-in">
+      A TLS server may <a href="https://tools.ietf.org/html/rfc8446#section-4.3.2">request a certificate to authenticate the client</a>, often called <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#Client-authenticated_TLS_handshake">Mutual Authentication or Client Authentication</a>.
+    </li>
+    <ul>
+      <li class="fragment fade-in-then-semi-out">
+        On nginx use the <a href="https://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_verify_client">ssl_verify_client</a> directive.
+      </li>
+      <li class="fragment fade-in">
+        On Apache use the <a href="https://httpd.apache.org/docs/2.4/mod/mod_ssl.html#sslverifyclient">sslverifyclient</a> directive.
+      </li>
+    </ul>
+  </ol>
+</section>

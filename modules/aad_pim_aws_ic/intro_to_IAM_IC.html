@@ -1,0 +1,26 @@
+<section data-transition="none">
+  <h4>Intro to IAM Identity Center</h4>
+  <img src="modules/aad_pim_aws_ic/img/iam_ic.png" alt="AWS IAM Identity Center overview picture" width=80% />
+  <br><br>
+  <div class="footnote">https://docs.aws.amazon.com/singlesignon/latest/userguide/what-is.html</div>
+  <aside class="notes">
+    Setting up IAM IC requires an AWS Organization, and you need to login with the root usersin the root account.
+
+    You can then setup a Delegated administrator for non-root account management in the future.
+
+    https://docs.aws.amazon.com/singlesignon/latest/userguide/get-started-enable-identity-center.html
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>IAM Identity Center Permissions</h4>
+  <ul>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Groups</li>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Users</li>
+    <li>Permission Sets</li>
+  </ul>
+  <br><br>
+  <div class="footnote">https://docs.aws.amazon.com/singlesignon/latest/userguide/permissionsetsconcept.html</div>
+  <aside class="notes">
+    Setup AWS accounts and map them to Permission Sets which contain IAM Policies (Managed or Custom).
+  </aside>
+</section>

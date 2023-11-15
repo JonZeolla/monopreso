@@ -1,0 +1,33 @@
+<section data-markdown>
+  <textarea data-template>
+    # Developer Specific Gotchas
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Developer Gotchas</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out">
+      RSA is needlessly error-prone in implementation
+    </li>
+    <li class="fragment fade-in">
+      Many TLS libraries, OpenSSL included, are bloated and over-complicated
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>RSA is error-prone</b>
+      <li>
+        While RSA is not currently under realistic threat by quantum computing (Shor's algorithm), RSA implementations are frequently implemented improperly. Trail of bits did a <a href="https://www.youtube.com/watch?v=lElHzac8DDI">presentation</a> and <a href="https://blog.trailofbits.com/2019/07/08/fuck-rsa/">blog post</a> in 2019 covering the details.
+      </li>
+    </ol>
+    <ol>
+      <b>TLS libraries</b>
+      <li>
+        OpenSSL is the swiss army knife, was <a href="https://ostif.org/wp-content/uploads/2019/01/18-04-720-REP_v1.2.pdf">audited in January 2019</a>, and has a <a href="https://hackerone.com/directory?ibb=true">bug bounty program</a>.
+      </li>
+      <li>
+        Alternatives include <a href="https://boringssl.googlesource.com/boringssl/">BoringSSL from Google</a>, <a href="https://bearssl.org">BearSSL from Thomas Pornin</a>, and <a href="https://www.libressl.org/">LibreSSL which is an OpenSSL fork</a> intent on modernizing the codebase and improving security.
+      </li>
+    </ol>
+  </aside>
+</section>

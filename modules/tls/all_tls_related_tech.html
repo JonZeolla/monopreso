@@ -1,0 +1,31 @@
+<section data-markdown>
+  <textarea data-template>
+    # Related tech
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>HTTP/2</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out" data-fragment-index="0">
+      TLS is not required, but many browser vendors require it.
+    </li>
+    <li class="fragment fade-in" data-fragment-index="1">
+      When TLS is in use, HTTP/2 mandates <a href="https://tools.ietf.org/html/rfc7540#section-9.2">TLS 1.2 or newer</a>, <a href="https://tools.ietf.org/html/rfc7540#section-9.2">SNI</a>, as well as <a href="https://tools.ietf.org/html/rfc7540#section-9.2.1">disabling renegotiation and compression</a>.
+      <ul>
+        <li class="fragment fade-in" data-fragment-index="1">
+          It also strongly <a href="https://tools.ietf.org/html/rfc7540#section-9.2.2">recommends a list of more secure cipher suites</a>.
+        </li>
+      </ul>
+    </li>
+  </ol>
+  <aside class="notes">
+    <ul>
+      <li>
+        There are some <a href="https://tools.ietf.org/html/rfc7540#section-10">additional security considerations</a>, some of which apply to TLS and HTTP/2. For instance, HTTP/2 over TLS requires the use of ALPN which is a relatively new TLS extension, RFC 7301, which helps us negotiate the new HTTP version without losing valuable time or network packet round-trips. ALPN came from NPN (Next Protocol Negotiation). ALPN primarily differs from NPN in who decides what protocol to speak. With ALPN the client tells the server a list of protocols in its order of preference and the server picks the one it wants, while with NPN the client makes that final choice.
+      </li>
+      <li>
+        Some more HTTP/2 details are available <a href="https://packetpushers.net/podcast/network-break-28/">here</a>, <a href="https://daniel.haxx.se/http2/">here</a>, and <a href="https://tools.ietf.org/html/rfc7540">here</a>.
+      </li>
+    </ul>
+  </aside>
+</section>

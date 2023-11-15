@@ -1,0 +1,15 @@
+<section data-markdown>
+  <textarea data-template>
+    # A brief history
+  </textarea>
+</section>
+<section data-transition="none">
+  <img class="plain" src="modules/tls/img/tls_history_vulnerabilities.jpg" alt="History of TLS Vulnerabilities" />
+  <div class="footnote">https://blog.cloudflare.com/content/images/2016/03/image_1.png</div>
+  <aside class="notes">
+    <ul>
+      <li>In Feb 2015 <a href="https://tools.ietf.org/html/rfc7457">RFC7457</a> was released, titled Summarizing Known Attacks on Transport Layer Security (TLS) and Datagram TLS (DTLS)</li>
+      <li>In order to combat vulnerabilities like CRIME and BREACH, they made HPACK, Header Compression for HTTP/2, which is a compression format specially crafted for http2 headers and it is being specified in a separate internet draft. The new format, together with other countermeasures, such as asking intermediaries to not compress a specific header and optional padding of frames, should make it harder to exploit this compression. Roberto Peon (one of the creators of HPACK) said "HPACK was designed to make it difficult for a conforming implementation to leak information, to make encoding and decoding very fast/cheap, to provide for receiver control over compression context size, to allow for proxy re-indexing (i.e. shared state between frontend and backend within a proxy), and for quick comparisons of huffman-encoded strings"</li>
+    </ul>
+  </aside>
+</section>

@@ -1,0 +1,56 @@
+<section data-transition="none">
+  <h2>Automating the setup</h2>
+  <ol>
+    <li>
+      <a href="https://tools.ietf.org/html/rfc8555">Automated Certificate Management Environment</a> (similar to the never-officially-published <a href="https://tools.ietf.org/html/draft-nourse-scep-23">SCEP</a>) allows automated verification for certificate vetting.
+    </li>
+    <li>
+      Cloud providers have APIs and automation, such as <a href="https://aws.amazon.com/certificate-manager/">AWS Certificate Manager</a>.
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <li>
+        Some more information on the <a href="https://en.wikipedia.org/wiki/Automated_Certificate_Management_Environment">wiki page</a>
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none">
+  <img src="modules/tls/img/tls_big_picture.png" alt="" width="100%" height="100%" class="plain" />
+</section>
+<section data-transition="none">
+  <h2>Keep in mind</h2>
+  <ul>
+    <li class="fragment fade-in-then-semi-out">
+      It is critical to keep your private information secret
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Avoid storing it on unsecured or third-party systems and ensure it is encrypted
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Anyone with the private information can impersonate you on the Internet
+    </li>
+    <li class="fragment">
+        In some cases they can also monitor your user's activities
+    </li>
+  </ul>
+  <aside class="notes">
+    <ol>
+      <li>
+        Even publicly-trusted CAs aren't impervious to attack. See <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3425554">this study</a>.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>Keep in mind</h2>
+  <ul>
+    <li class="fragment fade-in-then-semi-out">
+      Private information should be unique to the instance of an application that's using it
+    </li>
+    <li class="fragment">
+      Avoid sharing private keys and thus avoiding wildcard certificates
+    </li>
+  </ul>
+</section>

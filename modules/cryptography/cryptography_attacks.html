@@ -1,0 +1,29 @@
+<section data-markdown>
+  <textarea data-template>
+    # Cryptography Attacks
+  </textarea>
+</section>
+<section data-transition="none">
+  <h3>Cryptographic Attacks</h3>
+  <ul>
+    <li class="fragment fade-in-then-semi-out"><b>Implementation Attack</b> This is a type of attack that exploits weaknesses in the implementation of a cryptography system.</li>
+    <li class="fragment fade-in-then-semi-out"><b>Statistical Attack</b> A statistical attack exploits statistical weaknesses in a cryptosystem, such as floating-point errors and inability to produce truly random numbers.</li>
+    <li class="fragment fade-in-then-semi-out"><b>Brute Force</b> Brute-force attacks are quite straightforward. Such an attack attempts every possible valid combination for a key or password.</li>
+  </ul>
+</section>
+<section data-transition="none">
+  <h4 style="margin-bottom:0;">Cryptographic Attacks</h4>
+  <ul>
+    <li class="fragment fade-in-then-semi-out"><b>Frequency Analysis and the Ciphertext Only Attack</b> In many cases, the only information you have at your disposal is the encrypted ciphertext message, a scenario known as the ciphertext only attack.</li>
+    <li class="fragment fade-in-then-semi-out"><b>Known Plaintext</b> In the known plaintext attack, the attacker has a copy of the encrypted message along with the plaintext message used to generate the ciphertext (the copy).</li>
+    <li class="fragment fade-in-then-semi-out"><b>Chosen Ciphertext</b> In a chosen ciphertext attack, the attacker has the ability to decrypt chosen portions of the ciphertext message and use the decrypted portion of the message to discover the key.</li>
+  </ul>
+</section>
+<section data-transition="none">
+  <h4>Cryptographic Attacks</h4>
+  <ul>
+    <li class="fragment fade-in-then-semi-out"><b>Chosen Plaintext</b> In a chosen plaintext attack, the attacker has the ability to encrypt plaintext messages of their choosing and can then analyze the ciphertext output of the encryption algorithm.</li>
+    <li class="fragment fade-in-then-semi-out"><b>Man in the Middle</b> In the man-in-the-middle attack, a malicious individual sits between two communicating parties and intercepts all communications (including the setup of the cryptographic session).</li>
+    <li class="fragment"><b>Replay</b> The replay attack is used against cryptographic algorithms that don’t incorporate temporal protections.</li>
+  </ul>
+</section>

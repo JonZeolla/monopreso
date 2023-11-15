@@ -1,0 +1,122 @@
+<!-- Disabled due to low quality picture
+<section>
+  <img src="modules/tls/img/tls_live_dangerously.jpg" alt="Living dangerously with TLS cipher suites" />
+  <div class="footnote">
+    https://memegenerator.net/img/instances/64389850.jpg
+  </div>
+</section>
+-->
+
+<section data-markdown>
+  <textarea data-template>
+    # General TLS gotchas
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>General TLS gotchas</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out">Modern web browsers completely ignore the certificate Common Name</li>
+    <li class="fragment fade-in-then-semi-out">Certificate revocation status is often unchecked by browsers</li>
+    <li class="fragment fade-in-then-semi-out">Middleboxes such as firewalls and proxies that decrypt TLS often make the connection <b>much</b> <a href="https://www.imperialviolet.org/2018/03/10/tls13.html">less</a> <a href="https://jhalderm.com/pub/papers/interception-ndss17.pdf">secure</a></li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>Common Names and SANs</b>
+      <li>
+        Many browsers look at SANs and ignore the CN because the SAN is a x509v3 extension and more flexible.  In fact, RFC 2818 <a href="https://tools.ietf.org/html/rfc2818#section-2.2.1">deprecated use of the CN field</a> in 2000!
+      </li>
+      <li>
+        The CA/Browser Forum has <a href="https://cabforum.org/baseline-requirements-documents/">required SANs</a> be set for certs vet by all publicly trusted CAs since 2012.  In <a href="https://developers.google.com/web/updates/2017/03/chrome-58-deprecations">Chrome 58 (March 2017) they began completely ignoring the CN</a>, even when the SAN isn't set.  <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1245280">Firefox has been forcing a SAN since mid-2016</a>.
+      </li>
+    </ol>
+    <ol>
+      <b>Certificate revocation</b>
+      <li>
+        OCSP endpoints and CRL distributions are meant to provide certificate validity/revocation checking. The method of validating these is in the X509 certificate itself (<a href="https://tools.ietf.org/html/rfc6960">OCSP</a>, <a href="https://tools.ietf.org/html/rfc5280">CRL</a>).
+      </li>
+      <li>
+        OCSP Must-Staple is an <a href="https://tools.ietf.org/html/rfc7633#section-6">X509v3</a> <a href="https://tools.ietf.org/html/rfc7299#section-3.4">extension</a> (i.e. it must be requested in the CSR and supported by the CA).  The OpenSSL config to set this is "1.3.6.1.5.5.7.1.24 = DER:30:03:02:01:05".
+      </li>
+      <li>
+        However, <b>the web is not ready for OCSP Must-Staple (as of 2019-01)</b>.  See <a href="https://blog.apnic.net/2019/01/11/overcoming-the-limitations-of-ocsp/">these</a> <a href="https://blog.apnic.net/2019/01/14/incorporating-ocsp-must-staple-into-certificates/">three</a> <a href="https://blog.apnic.net/2019/01/15/is-the-web-ready-for-ocsp-must-staple/">articles</a>. <a href="https://wiki.mozilla.org/CA/Revocation_Checking_in_Firefox#OCSP_Must-staple">Firefox has published a roadmap for CA revocation checking</a> <a href="https://blog.mozilla.org/security/2015/11/23/improving-revocation-ocsp-must-staple-and-short-lived-certificates/">and a 2015 blog outlines their 'perfect world'</a>.
+      </li>
+      <li>
+        Even when OCSP stapling, Chrome doesn't check the status.  There is an <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=572734">open issue to remedy this</a>.
+      </li>
+      <li>
+        <q cite="https://www.imperialviolet.org/2012/02/05/crlsets.html">So soft-fail revocation checks are like a seat-belt that snaps when you crash. Even though it works 99% of the time, it's worthless because it only works when you don't need it.</q><br />
+        - Adam Langley
+      </li>
+    </ol>
+    <ol>
+      <b>Middleboxes</b>
+      <li>
+        The summary of this section is that middleboxes should be avoided, and that it is now more critical than ever to get endpoint logs from the clients and/or servers when it makes sense (i.e. the clients within an org browsing the internet, and the servers in an organ providing a service)
+      </li>
+      <li>
+        The security impact of HTTPS interception is <a href="https://jhalderm.com/pub/papers/interception-ndss17.pdf">well</a> <a href="https://www.imperialviolet.org/2018/03/10/tls13.html">documented</a> <a href="https://tools.ietf.org/html/rfc8446#section-9.3">online</a>.
+      </li>
+      <li>
+        In addition, it <a href="https://blog.cloudflare.com/why-tls-1-3-isnt-in-browsers-yet/">slowed down the adoption of TLS 1.3</a> by breaking "Server Version", which caused TLS 1.2 and TLS 1.3 to have the same server version of "(3,3)" and pushed TLS 1.3 to move to a new <a href="https://tools.ietf.org/html/rfc8446#section-4.2.1">"Supported Versions"</a> TLS extension and identify <a href="https://tools.ietf.org/html/rfc8446#section-9.3">protocol invariants in the spec</a>, specific to middleboxes.
+      </li>
+      <li>
+        <a href="https://tools.ietf.org/html/draft-ietf-tls-grease-04">"GREASE"</a> was proposed to help improving the state of the Internet for new TLS versions/values.
+      </li>
+      <li>
+        A <a href="https://datatracker.ietf.org/doc/draft-camwinget-tls-use-cases">separate RFC was published to outline the impact of TLS 1.3's improved security on network-based security</a>.  Two main takeaways (among many in the RFC) are that (1) you can no longer select less secure RSA/DH cipher suites to allow decryption with a middlebox without MITM, and that (2) The server certificate is now transmit encrypted, which limits the awareness of the certificate in use (which may differ from what was sent via SNI) to a passive observer. Particularly, item two makes it <b>more difficult for a passively observing security team to identify self signed or invalid certs</b>, as they are encrypted.
+      </li>
+      <li>
+        <a href="https://media.ccc.de/v/33c3-8348-deploying_tls_1_3_the_great_the_good_and_the_bad">This</a> is a good talk covering TLS 1.3.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section>
+  <h2>General TLS gotchas</h2>
+  <ol start="4">
+    <li class="fragment fade-in-then-semi-out">Certificate validation is complicated but necessary</li>
+    <li class="fragment fade-in-then-semi-out">TLS does not always guarantee encryption, nor does it always guarantee authentication</li>
+    <li class="fragment fade-in">Materials on the Internet often misunderstand or misinterpret the TLS specs</li>
+  </ol>
+  <aside class="notes">
+    <ol start="4">
+      <b>RSA is error-prone</b>
+      <li>
+        While RSA is not currently under realistic threat by quantum computing (Shor's algorithm), RSA implementations are frequently implemented improperly. Trail of bits did a <a href="https://www.youtube.com/watch?v=lElHzac8DDI">presentation</a> and <a href="https://blog.trailofbits.com/2019/07/08/fuck-rsa/">blog post</a> in 2019 covering the details.
+      </li>
+    </ol>
+    <ol>
+      <b>Certificate validation</b>
+      <li>
+        <b>TLS 1.2</b> - the server MUST send a Certificate message including the `certificate_list` whenever the agreed-upon key exchange method uses certificates for authentication (all except DH_anon). This message will always immediately follow the ServerHello message. While the bundle isn't explicitly needed, <a href="https://security.stackexchange.com/a/24566/16399">it is recommended to at least include the intermediate</a>. The <a href="https://tools.ietf.org/html/rfc5246#section-7.4.2">`certificate_list`</a> is a sequence of certificates, where the sender's certificate MUST come first, and each following certificate MUST directly certify the one preceeding it. In implementation for TLS 1.2, this is not always the case and was changed to be optional with TLS 1.3.
+      </li>
+      <li>
+        <b>TLS 1.3</b> - the handshake SHOULD provide the server certificate and then <a href="https://tools.ietf.org/html/rfc8446#section-4.2.4">identify the CAs</a> via the <a href="https://tools.ietf.org/html/rfc8446#section-4.4.2">`certificate_list`</a> TLS field, which contains one ore more CertificateEntries.  However, it may just send the server certificate and assume the other system has all required signing certificates in a local store.
+        <ul>
+          <li>
+            A client identifies the cert that signed a cert via the Authority Key Identifier (AKI, or AuthorityKeyId). The client is able to map the AKI of a provided cert to the Subject key identifier (SKI) of a cert in their trust store. The AKI is optional for self-signed certs.  As of <a href="https://go.googlesource.com/go/+/b623b71509b2d24df915d5bc68602e1c6edf38ca">Go 1.7</a> (August 2016) self-signed certs generated using Go's `crypto/x509` will not have the AKI configured. Additional details regarding certificate validation are available in <a href="https://tools.ietf.org/html/rfc8446#section-4.4.2">RFC 8446 section 4.4.2</a>.
+          </li>
+        </ul>
+      </li>
+      <li>
+        <q cite="https://security.stackexchange.com/a/81979/16399">The complete X.509 path validation algorithm is a work of the Devil to confuse and corrupt good men's minds</q><br />
+        - Thomas Pornin
+      </li>
+    </ol>
+    <ol>
+      <b>TLS NULL, eNULL, aNULL</b>
+      <li>
+        In TLS 1.1 (and likely earlier) there is a <a href="https://tools.ietf.org/html/rfc4785">"NULL" cipher suite</a> (sometimes seen as "eNULL"), which does not profide confidentiality - only integrity and authentication.
+      </li>
+      <li>
+        The Anonymous Diffie Hellman and Anonymous Elliptic Curves Diffie Hellman Exchange, considered <a href="https://wiki.openssl.org/index.php/SSL_and_TLS_Protocols#No_Authentication_Aka_Anonymous">aNULL by OpenSSL</a>, which provides anonymous (NO) authentication.
+      </li>
+    </ol>
+    <ol>
+      <b>Materials on the Internet misunderstand or misinterpret the TLS specs</b>
+      <li>
+        I suggest looking at the TLS specs to answer your questions, or going to a small set of reputable sources, such as Thomas Pornin's security.stackexchange.com posts, or Adam Langley's blog, https://imperialviolet.org.
+      </li>
+    </ol>
+  </aside>
+</section>

@@ -1,0 +1,35 @@
+<section data-transition="none">
+  <h4>Creating an AAD App</h4>
+  <img src="modules/aad_pim_aws_ic/img/aad_app_aws_sso.png" alt="The AWS SSO AAD App" width=80% />
+</section>
+<section data-transition="none">
+  <h4>The Fatal Flaw</h4>
+  <img src="modules/aad_pim_aws_ic/img/aad_app_aws_sso_circled.png" alt="The AWS SSO AAD App" width=80% />
+</section>
+<section data-transition="none">
+  <h4>On demand syncing</h4>
+  <img src="modules/aad_pim_aws_ic/img/sync.png" alt="Using Lambda to sync on demand" width=70% />
+</section>
+<section data-transition="none">
+  <h4>On demand syncing</h4>
+  <img src="modules/aad_pim_aws_ic/img/sync_question.png" alt="Using Lambda to sync on demand" width=70% />
+  <aside class="notes">
+    But how do you do this?
+
+    PIM doesn't have events!
+
+    Option 1: Log Analytics Cron Job searching logs
+    Option 2: Abuse the cloud services by running the sync continuously
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>Success!</h4>
+</section>
+<section data-transition="none">
+  <h4>Troubleshooting</h4>
+  <ul>
+    <li>Azure Logs (Log Analytics)</li>
+    <li>AWS SSO Logs (CloudTrail)</li>
+    <li>Lambda Logs (CloudWatch)</li>
+  </ul>
+</section>

@@ -1,0 +1,66 @@
+<section>
+  <ul>
+    <li>
+      PEM files as they currently exist are an OpenSSL-specific construct, and a de facto file format for storing certificates.  It is partially described <a href="https://tools.ietf.org/html/rfc7468">here</a> and <a href="https://security.stackexchange.com/a/94804/16399">here</a>.
+    </li>
+    <li>
+      TLS 1.3 resumptions can be replayed.  There is a mitigation to this where TLS 1.3 sends in the client message the value which is how long ago in milliseconds they obtained the session ticket, which can be validated by the server (the obfuscated_ticket_age value).
+    </li>
+    <li>
+      It is possible to have <a href="https://blog.cloudflare.com/keyless-ssl-the-nitty-gritty-technical-details/">Keyless SSL</a>, if you institue a key server as a cryptographic oracle which multiple parties have access to, but do not allow the ability to export the key itself, just perform crypto operations on the encrypted HTTP data.
+    </li>
+  </ul>
+</section>
+<section>
+  <h2>HPKP</h2>
+  <aside class="notes">
+    <b>Issues with HPKP</b>
+    <ol>
+      <li>
+        RansomPKP - An attacker injects or modifies a HPKP header to put their own key, either (1) disallowing normal (not warned) access to the websites, or (2) allowing MITM by an attacker.
+      </li>
+      <li>
+        Many apps are enforce HPKP more strongly than browsers and won’t allow locally added chains to bypass PKP.  Specifically the Microsoft OWA and Dropbox apps were discussed.
+      </li>
+      <li>
+        <a href="https://scotthelme.co.uk/using-security-features-to-do-bad-things/">Here's a good blog post on HPKP abuse</a>
+      </li>
+    </ol>
+    <ul>
+      <li>
+        <a href="https://tools.ietf.org/html/rfc7469">All locally added certs avoid HPKP to support enterprise MITM via browsers</a>
+      </li>
+      <li>
+        <a href="https://tools.ietf.org/html/rfc7469">Google created the RFC in 2015</a>, but later <a href="https://developers.google.com/web/updates/2018/04/chrome-67-deps-rems#deprecate_http-based_public_key_pinning">removed it from Chrome 67 in 2018</a>. More details on the deprication <a href="https://groups.google.com/a/chromium.org/forum/#!msg/blink-dev/he9tr7p3rZ8/eNMwKPmUBAAJ">here</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning#Browser_compatibility">Supported in Firefox</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning#Browser_compatibility">Opera supports it even though the are chromium based</a>
+      </li>
+      <li>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Public_Key_Pinning#Browser_compatibility">Not supported in IE/Edge</a>
+      </li>
+    </ul>
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>SNI</h2>
+  <ul>
+    <li class="fragment fade-in-then-semi-out" data-fragment-index="0">
+      Required <a href="https://tools.ietf.org/html/rfc8446#section-4.4.2.2">to be implemented</a> in TLS 1.3, and undefined but allowed in TLS 1.2
+    </li>
+    <li class="fragment fade-in-then-semi-out" data-fragment-index="1">
+      <a href="https://blog.mozilla.org/security/2018/10/18/encrypted-sni-comes-to-firefox-nightly/">Supported in Firefox</a> as of late 2018
+    </li>
+    <li class="fragment fade-in" data-fragment-index="2">
+      <a href="https://datatracker.ietf.org/doc/draft-ietf-tls-esni/">Draft RFC</a> for encrypting SNI and supported by Cloudflare has been around since 2018.
+    </li>
+    <ul>
+      <li class="fragment fade-in" data-fragment-index="2">
+        A <a href="https://bugs.chromium.org/p/chromium/issues/detail?id=908132">Feature request for Chrome</a> is open for eSNI
+      </li>
+    </ul>
+  </ul>
+</section>

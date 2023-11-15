@@ -1,0 +1,54 @@
+<section data-transition="none">
+  <h4>Intro to SCIM</h4>
+  <img src="modules/aad_pim_aws_ic/img/scim_lifecycle.png" alt="SCIM Lifecycle" width=80% />
+  <br>
+  <div class="footnote">https://developer.okta.com/docs/concepts/scim/#what-is-scim-for</div>
+  <aside class="notes">
+    Sync the Users (and their metadata), and Groups
+
+    Group membership is the most important here!
+
+    Users will also auto deactivate on sync.
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>SAML Workflow</h4>
+  <img src="modules/aad_pim_aws_ic/img/wiki_cross_enterprise_federation_cc.png" alt="SAML walkthrough" width=70% />
+  <br><br>
+  <div class="footnote">https://commons.wikimedia.org/wiki/File:Cross-Enterprise_Federation_using_SAML_and_XACML.png</div>
+  <aside class="notes">
+    Initially meant for Azure Roles
+
+    Now they have "PIM for Groups" renamed in January 2023 from as PAGs (Privileged Access Groups).
+
+    NEED to set it as role-enabled on group creation (recreating groups).
+
+    You can set a group to make someone eligible to activate a PAG.
+    - Consider Identity Governance and Access Review to do this. Make a Catalog containing Access Packages, which contain Resources that Users get access to.
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>Azure Enterprise Apps<br>Key Configurations</h4>
+  <ul>
+    <li>Users and groups</li>
+    <li>Single sign-on</li>
+    <li>Provisioning</li>
+  </ul>
+  <br><br>
+  If you want to set this up with terraform, <a href="https://github.com/hashicorp/terraform-provider-azuread/issues/7">vote</a>!
+  <br><br>
+  <div class="footnote">https://learn.microsoft.com/en-us/azure/active-directory/saas-apps/aws-single-sign-on-tutorial</div>
+  <aside class="notes">
+    The Users and groups are who will be synced.
+
+    Single sign-on is how you setup the SAML login federation between Azure and AWS.
+
+    Provisioning is the actual SCIM provisioning. You setup attribute mappings, scoping filters, etc. here.
+
+    Once this is all setup, you now have SSO!
+    - Single place to manage accounts
+    - Can use Azure Conditional Access Policies for MFA
+    - One place for your identity logs
+    ...
+  </aside>
+</section>

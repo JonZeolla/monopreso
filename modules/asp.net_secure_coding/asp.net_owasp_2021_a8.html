@@ -1,0 +1,20 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A8:2021 - Software and Data Integrity Failures
+    A new category for 2021 focuses on making assumptions related to software updates, critical data, and CI/CD pipelines without verifying integrity.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### Prevention
+    - Ensure libraries and dependencies are consuming trusted repositories. If you have a higher risk profile, consider hosting an internal known-good repository that's vetted.
+    - Ensure that your CI/CD pipeline has proper segregation, configuration, and access control to ensure the integrity of the code flowing through the build and deploy processes.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### Prevention
+    - Use digital signatures or similar mechanisms to verify the software or data is from the expected source and has not been altered.
+    - Ensure that there is a review process for code and configuration changes to minimize the chance that malicious code or configuration could be introduced into your software pipeline.
+  </textarea>
+</section>

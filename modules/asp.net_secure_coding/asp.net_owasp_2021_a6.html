@@ -1,0 +1,23 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A6:2021 - Vulnerable and Outdated Components
+    Component-heavy development patterns can lead to development teams not being able to understand which components exist in an application or API.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    You are likely vulnerable if:
+    - You do not know the versions of your components (client and server-side), including those used via nested dependencies.
+    - Software in your stack is vulnerable, unsupported, or out of date.
+    - You do not scan for vulnerabilities regularly.
+    - You do not fix or upgrade the underlying platform, frameworks, and dependencies in a risk-based, timely fashion.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### Related Technology
+    - Software Bill of Materials (SBOM) (like [SPDX](https://spdx.dev/) or [CycloneDX](https://cyclonedx.org/)).
+    - Vulnerability Exploitability eXchange (VEX) (see [this](https://www.ntia.gov/files/ntia/publications/vex_one-page_summary.pdf) 2021 briefing for a quick introduction; this is [supported in CycloneDX](https://cyclonedx.org/capabilities/vex/) and drafted in detail [here](https://github.com/oasis-tcs/csaf/blob/191b113c53bd245e6b8b56bba345c28ec1383761/csaf_2.0/prose/csaf-v2-editor-draft.md)).
+    - Consider regularly opening "maintenance" PRs against your repo and leveraging your tests to identify issues.
+  </textarea>
+</section>

@@ -1,0 +1,64 @@
+<section data-transition="none">
+  <h1>All-In-One</h1>
+  <pre><code data-trim data-noescape class="r-stretch">
+  resource "aws_lightsail_instance" "my_server" {
+    name              = random_pet.instance_name.id
+    provider          = aws.deploy
+    availability_zone = var.availability_zone
+    blueprint_id      = "ubuntu_20_04"
+    bundle_id         = var.bundle_id
+    user_data         = file("${path.module}/init.sh")
+  }
+
+  resource "random_pet" "instance_name" {
+    length    = var.random_pet_length
+    prefix    = var.instance_name_prefix
+    separator = var.random_pet_separator
+  }
+  </code></pre>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Local Modules</h1>
+  <pre><code data-trim data-noescape class="language-terraform">
+  <span class="fragment semi-fade-out" data-fragment-index="1">module "network" {</span>
+    source = "./modules/aws-network"
+  <span class="fragment semi-fade-out" data-fragment-index="1">  base_cidr_block = "10.0.0.0/8"
+  }</span>
+  </code></pre>
+  <pre class="fragment fade-in" data-fragment-index="2"><code data-trim data-noescape class="language-terraform">
+  resource "aws_vpc" "example" {
+    cidr_block = "10.1.0.0/16"
+  }
+
+  resource "aws_subnet" "example" {
+    vpc_id = aws_vpc.example.id
+
+    availability_zone = "us-west-2b"
+    cidr_block        = cidrsubnet(aws_vpc.example.cidr_block, 4, 1)
+  }
+  </code></pre>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Remote Modules</h1>
+  <pre><code data-trim data-noescape class="language-terraform">
+  <span class="fragment semi-fade-out" data-fragment-index="0">module "network" {</span>
+    source = "git::ssh://git@example.com/company/aws-network?rev=<span class="fragment highlight-green" data-fragment-index="2">v1.0.3"</span>
+  <span class="fragment semi-fade-out" data-fragment-index="0">  base_cidr_block = "10.0.0.0/8"
+  }</span>
+  </code></pre>
+  <pre><code data-trim data-noescape class="language-terraform">
+  resource "aws_vpc" "example" {
+    cidr_block = "10.1.0.0/16"
+  }
+
+  resource "aws_subnet" "example" {
+    vpc_id = aws_vpc.example.id
+
+    availability_zone = "us-west-2b"
+    cidr_block        = cidrsubnet(aws_vpc.example.cidr_block, 4, 1)
+  }
+  </code></pre>
+  <aside class="notes"></aside>
+</section>

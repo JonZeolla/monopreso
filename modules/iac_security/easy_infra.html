@@ -1,0 +1,90 @@
+<section data-transition="none">
+  <img src="./modules/iac_security/img/easy_infra.png" width="50%" />
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Jenkins CI</h1>
+  <div class="container">
+    <p class="column" align="left">
+      <small><pre><code data-trim data-noescape class="language-jenkins">
+        <span class="fragment semi-fade-out" data-fragment-index="1">pipeline {</span>
+          agent { docker 'company/terraform:1.2.3' }
+          <span class="fragment semi-fade-out" data-fragment-index="1">stages {
+            stage('Test') {
+              steps {
+                script {
+                  sh "terraform init -backend=false"
+                  sh "terraform validate"
+                }
+              }
+            }
+            stage('Deploy') {
+              steps {
+                script {
+                  sh "terraform apply -auto-approve"
+                }
+              }
+            }
+          }
+        }</span>
+      </code></pre></small>
+    </p>
+    <p class="column" align="left">
+      <small><pre><code data-trim data-noescape class="language-jenkins">
+        <span class="fragment semi-fade-out" data-fragment-index="1">pipeline {</span>
+          agent { docker 'seiso/easy_infra:2022.10.05' }
+          <span class="fragment semi-fade-out" data-fragment-index="1">stages {
+            stage('Test') {
+              steps {
+                script {
+                  sh "terraform init -backend=false"
+                  sh "terraform validate"
+                }
+              }
+            }
+            stage('Deploy') {
+              steps {
+                script {
+                  sh "terraform apply -auto-approve"
+                }
+              }
+            }
+          }
+        }</span>
+      </code></pre></small>
+    </p>
+  </div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Features</h1>
+  <div class="container">
+    <p class="column">
+      <ul>
+        <li>Transparent security</li>
+        <li>Supports 38 unique log destinations</li>
+        <li>Lightweight</li>
+        <li>Hooking framework</li>
+        <li>End-to-end testing</li>
+        <li>Automatic IaC detection</li>
+        <li>Custom rules</li>
+      </ul>
+    </p>
+    <p class="column">
+      <ul>
+        <li>Learning mode</li>
+        <li>Centralized logging</li>
+        <li>Documentation</li>
+        <li>Signed Container Images</li>
+        <li>Automatically maintained</li>
+        <li>SBOMs</li>
+        <li>AWS and Azure support</li>
+      </ul>
+    </p>
+  </div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <img src="./modules/iac_security/img/easy_infra_dashboard.png" width="100%" />
+  <aside class="notes"></aside>
+</section>

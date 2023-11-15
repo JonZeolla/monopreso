@@ -1,0 +1,31 @@
+<section data-markdown>
+  <textarea data-template>
+    # Hashing
+  </textarea>
+</section>
+<section data-transition="none">
+  <h3>Hashing, illustrated</h3>
+  <img src="modules/cryptography/img/cryptography_hash_blender.png" style="background-color:white;" />
+</section>
+<section data-transition="none">
+  <h3>Hashing properties</h3>
+  <ol>
+    <li class="fragment fade-in-then-semi-out"><b>Preimage Resistance</b>: Given hash $h$, it's hard to find a message such that $h = hash(k,m)$</li>
+    <li class="fragment fade-in-then-semi-out"><b>Collision Resistance</b>: Given any two messages $m_1$ and $m_2$ (i.e. you can choose both), it’s hard to find a hash where $hash(k, m_1)$ and $hash(k, m_2)$ are the same.</li>
+    <li class="fragment"><b>Second Preimage Resistance</b>: Given $m_1$, it is hard to find $m_2$ such that $hash(k, m_1) = hash(k, m_2)$.</li>
+  </ol>
+</section>
+<section data-markdown>
+  <textarea data-template>
+    ### Hashing outputs
+    <img src="modules/cryptography/img/hash_lengths.png" width="80%" height="80%" style="background-color:white;" />
+  </textarea>
+</section>
+<section data-transition="none">
+  <h2>Scenario: Storing Passwords</h2>
+  <ul>
+    <li class="fragment fade-in-then-semi-out">Speed</li>
+    <li class="fragment fade-in-then-semi-out">Rainbow tables</li>
+    <li class="fragment">Uniqueness (salting)</li>
+  </ul>
+</section>

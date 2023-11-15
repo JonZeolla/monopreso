@@ -1,0 +1,72 @@
+<section data-transition="none">
+  <h1>Security Scanning</h1>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <pre><code data-trim data-noescape class="r-stretch">
+  <span class="fragment semi-fade-out" data-fragment-index="1">$ cd ~/src/example_live/environment1/
+  $ terraform init
+  $ kics scan --type Terraform --path .
+  ...</span>
+  <span class="fragment fade-in-then-semi-out" data-fragment-index="1">$ cd ~/src/example_live/environment2/
+  $ terraform init
+  $ kics scan --type Terraform --path .
+  ...</span>
+  <span class="fragment fade-in" data-fragment-index="2">$ cd ~/src/example_live/environment3/ && terraform init && \
+    kics scan --type Terraform --path .
+  ...</span>
+  </code></pre>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <pre><code data-trim data-noescape class="r-stretch">
+  $ cd ~/src/example_live/
+  $ for environment in $(find . -path "./.git" -prune -o -type d -print \
+    -maxdepth 1 -mindepth 1); do pushd “${environment}”; terraform init; \
+    kics scan --type Terraform --report-formats json --output-path \
+    ${KICS_JSON_REPORT_PATH} --output-name kics --path .; popd; done
+  </code></pre>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <div class="container">
+  <p class="column">
+    <span class="fragment fade-in"><img src="./modules/iac_security/img/surprised_blinking.gif" /></span>
+  </p>
+  <p class="column" align="left">
+    Results Summary:<br />
+    HIGH: 2585<br />
+    MEDIUM: 3510<br />
+    LOW: 1461<br />
+    INFO: 4668<br />
+    TOTAL: 12224<br />
+  </p>
+  </div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Examples of findings</h1>
+  <ul>
+    <li>Ensure Security Groups accept traffic only from ports 80 and 443 (HIGH)</li>
+    <li>Ensure active access keys are used every 90 days or less (HIGH)</li>
+    <li>Ensure EC2 instances have tags (Low)</li>
+    <li>Variable Without Description (Info)</li>
+    <li>Name Is Not Snake Case (Info)</li>
+    <li>...</li>
+  </ul>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <img src="./modules/iac_security/img/kics_terraform_modules.png" />
+  <div class="footnote"><a href="https://github.com/Checkmarx/kics/blob/cb3c71469a283a6a6e5b52c265d5054542a90bd0/docs/platforms.md#terraform-modules">https://github.com/Checkmarx/kics/blob/cb3c71469a283a6a6e5b52c265d5054542a90bd0/docs/platforms.md#terraform-modules</a></div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <img src="./modules/iac_security/img/made_a_mistake.jpg" />
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <img src="./modules/iac_security/img/iac_security_options.png" width="90%" />
+  <div class="footnote"><a href="https://github.com/iacsecurity/tool-compare">https://github.com/iacsecurity/tool-compare </a></div>
+  <aside class="notes"></aside>
+</section>

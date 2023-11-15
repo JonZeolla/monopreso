@@ -1,0 +1,57 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A1:2021 - Broken Access Control
+    Broken Access Control is when attackers can access, modify, delete or perform actions outside an application or systems' intended permissions.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Examples
+    - Bypassing access control checks by modifying the URL, internal application state, or the HTML page, or by modifying API requests.
+    - Permitting viewing or editing someone else's account, by providing its unique identifier.
+    - Accessing API with missing access controls for POST, PUT and DELETE.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Vulnerable Code
+    ```
+    string sql_query = "SELECT * FROM UserAccounts WHERE accountID = ?";
+    PreparedStatement str = connection.prepareStatement(sql_query , ? );
+    str.setString( 1, request.getParameter("actId"));
+    ResultSet response = str.executeQuery( );
+    ```
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Attack
+    ```
+    http://example.com/Account.aspx?actId=1
+    /* As the id provided as part of the GET request is not
+    validated a malicous user can provide an account id to
+    access any given account. */
+    ```
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Mitigations
+    - Except for public resources, deny by default.
+    - Model access controls should enforce record ownership rather than accepting that the user can create, read, update, or delete any record.
+
+     [More Details](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html)
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Example Fix
+    ```
+    string sql_query = "SELECT * FROM UserAccounts WHERE accountID = ?";
+    PreparedStatement str = connection.prepareStatement(sql_query , ? );
+    str.setString( 1, currentUser.getId());
+    ResultSet response = str.executeQuery( );
+    ```
+    Note: Instead of userID being supplied as part of URI, it is set from a current user object which can be derived from an existing session.
+  </textarea>
+</section>

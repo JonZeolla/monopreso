@@ -1,0 +1,81 @@
+<section>
+  <h1>Moving to TLS 1.3</h1>
+</section>
+<section data-transition="none">
+  <h2>Issues with prior TLS versions</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out">
+      Easy to monitor the activities of clients.
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Often able to downgrade clients security to use <a href="https://tools.ietf.org/html/rfc4346#appendix-A.5">breakable encryption, called export ciphers</a>.
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Supports features which have been the source of <a href="https://en.wikipedia.org/wiki/Transport_Layer_Security#Attacks_against_TLS/SSL">attacks on TLS</a>
+    </li>
+  </ol>
+  <aside class="notes">
+    <ol>
+      <b>MITM attacks on TLS 1.2</b>
+      <li>
+        Cipher suites are’t digitally signed, and could be downgraded by a MITM. There is an interim mitigation called SCSV (<a href="https://tools.ietf.org/html/rfc7507">RFC 7507</a>) which has gotten partial adoption. Because TLS 1.2 (and prior version) supports weak encryption and hashing, this could be a significant issue.
+      </li>
+    </ol>
+    <ol>
+      <b>SCSV</b>
+      <li>
+        For TLS 1.2, SCSV <a href="https://tools.ietf.org/html/rfc7507">adds a downgrade canary into the client hello message if it's retrying due to a network error</a> (potential MITM/injection).  For TLS 1.3 this is not needed, as <a href="https://tools.ietf.org/html/rfc8446#section-4.1.3">downgrade protection is built into the protocol</a>
+      </li>
+    </ol>
+    <ol>
+      <b>Features removed in TLS 1.3 due to security concerns</b>
+      <li>
+        Features, such as <a href="https://security.stackexchange.com/a/19914/16399">compression</a> have been the cause of issues in the past.
+      </li>
+    </ol>
+    <ol>
+      <b>The deprecation of TLS 1.0 and 1.1 is in progress</b>
+      <li>
+        <a href="https://tools.ietf.org/html/draft-ietf-tls-oldversions-deprecate-05">draft-ietf-tls-oldversions-deprecate-05</a>
+      </li>
+      <li>
+        <a href="https://groups.google.com/forum/#!msg/mozilla.dev.platform/8EFRYDR3N1c/gPh6v01ABAAJ">Firefox has published their intent to deprecate on 9/12/19</a>.
+      </li>
+    </ol>
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>Issues with prior TLS versions</h2>
+  <ol start="4">
+    <li>
+      Compromise of a secret key may result in the ability to decrypt prior communications
+    </li>
+  </ol>
+</section>
+<section data-transition="none">
+  <h2>Benefits of TLS 1.3</h2>
+  <ol>
+    <li class="fragment fade-in-then-semi-out">
+      <a href="https://tools.ietf.org/html/rfc8446#section-4.3.2">Client</a> <a href="https://tools.ietf.org/html/rfc8446#section-4.4.2">certificates</a> may be <a href="https://tools.ietf.org/html/rfc8446#section-4.3.1">encrypted</a> to prevent client tracking
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      The cipher suites offered by the server are now <a href="https://tools.ietf.org/html/rfc8446#section-4.1.3">digitally signed</a>
+    </li>
+    <li class="fragment fade-in-then-semi-out">
+      Numerous TLS 1.3 implementations have been <a href="https://www.ndss-symposium.org/ndss2016/tron-workshop-programme/">formally verified</a> to be secure
+    </li>
+    <li class="fragment fade-in">
+      TLS 1.3 has removed much backwards compatability in favor of removing insecure or error-prone features
+    </li>
+  </ol>
+  <aside class="notes">
+    <ul>
+      <li>
+        Client certificate tracking is a concern with large scale monitoring.
+      </li>
+      <li>
+        The TLS 1.3 formal verifications were done with <a href="http://tls13tamarin.github.io/TLS13Tamarin/">Tamarin</a>, <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/T4-ProScript.pdf">Proscript-TLS</a>, <a href="https://www.mitls.org">miTLS</a>, and <a href="https://www.ndss-symposium.org/wp-content/uploads/2017/09/T7-mehnert.pdf">nqsb-TLS</a>.  More details were presented <a href="https://www.ndss-symposium.org/ndss2016/tron-workshop-programme/">here</a>.
+      </li>
+    </ul>
+  </aside>
+</section>

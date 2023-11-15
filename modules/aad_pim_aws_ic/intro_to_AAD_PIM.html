@@ -1,0 +1,61 @@
+<section data-transition="none">
+  <h4>On Demand Groups</h4>
+  Windows 2016's "Just In Time Administration" and <br />
+  Microsoft Identity Manager Privileged Access Management (MIM PAM)
+  <br><br>
+  <div class="footnote">https://learn.microsoft.com/en-us/microsoft-identity-manager/pam/privileged-identity-management-for-active-directory-domain-services</div>
+  <aside class="notes">
+    A solution to the least privilege issue; JIT access!
+
+    MIM PAM is on-prem focused. Microsoft says "MIM PAM is distinct from Azure Active Directory Privileged Identity Management (PIM). MIM PAM is intended for isolated on-premises AD environments."
+
+    Time-based group membership
+
+    Set a TTL, and you will be removed from the group when it expires
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>Now, <s>AAD</s> Entra ID PIM</h4>
+  <img src="modules/aad_pim_aws_ic/img/pim_quickstart.png" alt="PIM Quickstart" width=70% />
+  <br>
+  <s>Azure AD</s> Entra ID Privileged Identity Management (PIM)
+  <br><br>
+  <div class="footnote">https://learn.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure</div>
+  <aside class="notes">
+    In Azure, the MIM PAM equivalent is AAD PIM
+  </aside>
+</section>
+<section data-transition="none">
+  <h4><s>PAGs</s> PIM for Groups</h4>
+  <img src="modules/aad_pim_aws_ic/img/pim_quickstart.png" alt="PIM Quickstart" width=70% />
+  <br><br>
+  <div class="footnote">https://learn.microsoft.com/en-us/azure/active-directory/privileged-identity-management/concept-pim-for-groups#what-is-pim-for-groups</div>
+  <aside class="notes">
+    Initially meant for Azure Roles
+
+    Now they have "PIM for Groups" renamed in January 2023 from as PAGs (Privileged Access Groups).
+
+    NEED to set it as role-enabled on group creation (recreating groups).
+
+    You can set a group to make someone eligible to activate a PAG.
+    - Consider Identity Governance and Access Review to do this. Make a Catalog containing Access Packages, which contain Resources that Users get access to.
+  </aside>
+</section>
+<section data-transition="none">
+  <h4>Standard Workflow</h4>
+  <ol>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Onboard new user</li>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Become Eligible</li>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Activate a role</li>
+    <li>Role Assigned</li>
+    <li class="fragment semi-fade-out" data-fragment-index="0">Assignment Expires</li>
+    <li class="fragment semi-fade-out" data-fragment-index="0">GOTO 2</li>
+  </ol>
+  <br><br>
+  <div class="footnote">https://learn.microsoft.com/en-us/azure/active-directory/privileged-identity-management/pim-configure#terminology</div>
+  <aside class="notes">
+    Activate: MFA, business justification, approval, etc.
+
+    Assigned it the only time the user has the access.
+  </aside>
+</section>

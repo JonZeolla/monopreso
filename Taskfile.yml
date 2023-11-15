@@ -1,0 +1,107 @@
+---
+# https://taskfile.dev
+
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+includes:
+  py:
+    taskfile: ./goat/Task/python/Taskfile.yml
+    internal: true
+    optional: true
+    vars:
+      PYTHON_VERSION: '{{.PYTHON_VERSION}}'
+
+  base:
+    taskfile: ./goat/Task/Taskfile.yml
+    internal: true
+    optional: true
+
+vars:
+  PYTHON_VERSION: 3.11
+
+silent: true
+
+tasks:
+  init-pipenv:
+    desc: Initializes the pipenv virtual environment if Pipfile.lock changes
+    internal: true
+    sources:
+      - Pipfile.lock
+    preconditions:
+      - which pipenv || python3 -m pip install --upgrade pipx gitpython pyyaml && python3 -m pipx ensurepath && pipx install pipenv
+    cmds:
+      - pipenv install --deploy --ignore-pipfile --dev
+
+  init-submodules:
+    desc: >
+      Initializes git submodules; paved road projects include the Seiso goat 🐐
+      for its shared configs, etc.
+    internal: true
+    status:
+      # Only update submodules if you are in a git repository; quote to avoid yaml intrepretering the ! as a node tag
+      # https://yaml.org/spec/1.2.2/#691-node-tags
+      - '! test -d .git'
+    cmds:
+      - git submodule update --init --recursive
+
+  init-pre-commit:
+    desc: Install the pre-commit hooks
+    internal: true
+    sources:
+      - .pre-commit-config.yaml
+    status:
+      # Only install the pre-commit hooks if you are in a git repository; quote to avoid yaml intrepretering the ! as a node tag
+      # https://yaml.org/spec/1.2.2/#691-node-tags
+      - '! test -d .git'
+    cmds:
+      # Don't run this in pipelines
+      - '{{if ne .GITHUB_ACTIONS "true"}}pipenv run pre-commit install{{else}}echo \"Detected a github actions pipeline; skipping the pre-commit install\"{{end}}'
+
+  init:
+    desc: Initialize the repo for local use; intended to be run after git clone
+    cmds:
+      - task: init-pipenv
+      - task: init-submodules
+      - task: init-pre-commit
+
+  lint:
+    desc: Run the linter(s); paved road projects use the Seiso goat 🐐
+    cmds:
+      - task: py:lint
+        vars:
+          INPUT_LOG_LEVEL: '{{.CLI_ARGS}}'
+          INPUT_EXCLUDE: '(\.css|\.scss|\.js|\.html|\.md|\.json)$|.*modules/iac_security/demo/.*|.*reveal.js/node_modules/.*|.*modules/shared/demo/demo-magic.sh$'
+
+  validate:
+    desc: Validate the pre-commit config and hooks files
+    cmds:
+      - task: py:validate
+
+  update:
+    desc: Update the project dev and runtime dependencies, and other misc components
+    cmds:
+      - task: py:update
+      - for repo in $(find ./modules/iac_security/demo -type d -mindepth 1 -maxdepth 1); do pushd "${repo}"; git pull origin main; popd; done
+
+  clean:
+    desc: Clean up build artifacts, cache files/directories, temp files, etc.
+    cmds:
+      - mv -f reveal.js/index.html.bkp reveal.js/index.html 2>/dev/null || true
+      - rm -f modules/current.html
+              reveal.js/modules 2>/dev/null || true
+      - rm -f reveal.js/dist/theme/fonts/bitter
+              reveal.js/dist/theme/fonts/rock-salt
+              reveal.js/modules
+              reveal.js/presentations 2>/dev/null || true
+      - rm -rf modules/policy_as_code/demo/TODO
+               modules/policy_as_code/demo/cosign*
+               modules/policy_as_code/demo/Dockerfile 2>/dev/null || true
+      - rm -rf presentations/2023-09-TechFest/demo/TODO
+               presentations/2023-09-TechFest/demo/cosign*
+               presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
+      - task: py:clean

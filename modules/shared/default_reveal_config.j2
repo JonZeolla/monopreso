@@ -1,0 +1,34 @@
+      Reveal.initialize({
+        history: true,
+        chart: {
+          defaults: {
+            global: {
+              title: { fontColor: "#FFF" },
+              legend: {
+                position: "bottom",
+                labels: { fontColor: "#FFF" },
+              },
+            },
+            scale: {
+              gridLines: { color: "#7F7F7F", zeroLineColor: "#7F7F7F" },
+              ticks: { fontColor: "#FFF" },
+            }
+          },
+          bar: { backgroundColor: [ "rgba(20,220,220,.8)" , "rgba(220,120,120,.8)", "rgba(20,120,220,.8)" ]},
+        },
+        chalkboard: {
+          grid: false,
+        },
+        dependencies: [
+          { src: 'modules/shared/plugin/chart/Chart.min.js' },
+          { src: 'modules/shared/plugin/chart/csv2chart.js' },
+          { src: 'modules/shared/plugin/typed/typed.js', async: false, callback: function() { callTypedJs(); }},
+          { src: 'modules/shared/plugin/external/external.js', condition: function() { return !!document.querySelector( '[data-external]' ); } }
+        ],
+        keyboard: {
+          67: function() { RevealChalkboard.toggleNotesCanvas() },  // toggle notes canvas when 'c' is pressed
+          66: function() { RevealChalkboard.toggleChalkboard() }, // toggle chalkboard when 'b' is pressed
+          8: function() { RevealChalkboard.clear() },  // clear chalkboard when 'delete' on macOS is pressed
+        },
+        plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealChalkboard, RevealMath ]
+      });

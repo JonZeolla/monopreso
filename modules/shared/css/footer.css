@@ -1,0 +1,11 @@
+/*********************************************
+* FOOTNOTES
+*********************************************/
+
+section > .footnote {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    font-size: 30%;
+    font-weight: normal;
+}

@@ -1,0 +1,71 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### A3:2021 - Injection
+    User-supplied data is not validated, filtered, or sanitized by the application which ultimately results in hostile data being sent to an interpreter.
+
+    ![Little Bobby Tables](modules/asp.net_secure_coding/img/bobby_tables.png "Little Bobby Tables")
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Vulnerable Code
+    ```
+    var catID = Request.QueryString["CategoryID"];
+
+    var sqlString = "SELECT * FROM Products WHERE CategoryID = " + catID;
+    var connString = WebConfigurationManager.ConnectionStrings
+    ["NorthwindConnectionString"].ConnectionString;
+    using (var conn = new SqlConnection(connString))
+    {
+      var command = new SqlCommand(sqlString, conn);
+      command.Connection.Open();
+      grdProducts.DataSource = command.ExecuteReader();
+      grdProducts.DataBind();
+    }
+    ```
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Attack
+    ```
+    http://example.com/Products.aspx?CategoryID=1 or 1=(select count(*) from customers)
+    /* Verify the existance of the Customers table */
+    http://example.com/Products.aspx?CategoryID=1;insert into products(productname) select companyname from customers
+    /* Populate the products table with the data from the Customers table */
+    http://example.com/Products.aspx?CategoryID=500 or categoryid is null
+    /* Retrieve the full Products table, which is now a copy of the Customers table */
+    ```
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Mitigations
+     - Use prepared statements with Parameterized Queries.
+     - Use stored procedures.
+     - Apply whitelisting and blacklisting to validate input.
+     - Output escape all user supplied input.
+
+     [More Details](https://cheatsheetseries.owasp.org/cheatsheets/Injection_Prevention_Cheat_Sheet.html)
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Example Fix
+    ```
+    const string sqlString = "SELECT * FROM Products WHERE CategoryID =
+    @CategoryID";
+    var connString = WebConfigurationManager.ConnectionStrings
+    ["NorthwindConnectionString"].ConnectionString;
+    using (var conn = new SqlConnection(connString))
+    {
+      var command = new SqlCommand(sqlString, conn);
+      command.Parameters.Add("@CategoryID", SqlDbType.Int).Value = catID;
+      command.Connection.Open();
+      grdProducts.DataSource = command.ExecuteReader();
+      grdProducts.DataBind();
+    }
+    ```
+    Note: The CategoryID appears as a named parameter of INT data type, and this executes via sp_executesql. This statement is only going to execute if the account has data reader permissions to the Products table.
+  </textarea>
+</section>

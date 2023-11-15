@@ -1,0 +1,78 @@
+<section data-markdown>
+  <textarea data-template>
+  # Topics
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Command-line management
+    - [Configuration files](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) are good for low number of accounts/roles.
+    - Environment variables are better for multiple accounts/roles, especially simultaneously ([example](https://github.com/JonZeolla/Configs/blob/a0a23b40233d440a1e4c754f74946c55b3bac0f8/apple/productivity/.zshrc#L198-L236))
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## AWS auditing
+    - [Prowler](https://github.com/toniblyx/prowler)
+    - [ScoutSuite](https://github.com/nccgroup/ScoutSuite)
+    - [AWS's Security Assessment Solution](https://github.com/awslabs/aws-security-assessment-solution)
+      - Uses prowler + ScoutSuite + AWS Custom checks
+    - [CloudMapper](https://github.com/duo-labs/cloudmapper) (no longer active)
+    - [AWS Perspective](https://github.com/awslabs/aws-perspective) is a great awareness tool from AWS, but not security focused
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Security Services
+    See [AWS's maintained index](https://docs.aws.amazon.com/security/) of security-related documentation across all of their services.
+    - Authentication and Authorization with AWS [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/security.html) & [SSO](https://aws.amazon.com/single-sign-on/)
+      - [IAM Access Analyzer](https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html)
+      - Secure IAM policy generator with [policy sentry](https://github.com/salesforce/policy_sentry)
+      - AAD PIM + AWS SSO is a strong combination.
+    - [AWS Organizations](https://aws.amazon.com/organizations/)
+      - [AWS Tag Policies](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_tag-policies.html)
+      - [AWS Service Control Policies (SCP)](https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_scps.html)
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Security Services
+    - [AWS Config](https://aws.amazon.com/config/)
+    - [AWS Security Hub](https://aws.amazon.com/security-hub/)
+    - [AWS Trusted Advisor](https://aws.amazon.com/premiumsupport/technology/trusted-advisor/), which is partially available to Basic and Developer support, and fully available for Business or Enterprise support environments.
+    - [AWS Firewall Manager](https://aws.amazon.com/firewall-manager/) centralizes the management of AWS WAF, AWS Shield Advanced, VPC Security Groups, and most recently, [VPC routes](https://aws.amazon.com/about-aws/whats-new/2021/07/aws-firewall-manager-supports-central-monitoring-of-vpc-routes-for-aws-network-firewall/).
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## AWS Architecture
+    - [Well-Architected](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) (particularly the [Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html))
+    - AWS's [Security Reference Architecture](https://docs.aws.amazon.com/prescriptive-guidance/latest/security-reference-architecture/welcome.html) ([examples](https://github.com/aws-samples/aws-security-reference-architecture-examples))
+    - landing zone (Architecture), [Landing Zone](https://aws.amazon.com/solutions/implementations/aws-landing-zone/) (CloudFormation scripts), Control Tower (Landing Zone as a Service)
+      - [Well-Architected Guidance Engine (WAGE)](https://aws.amazon.com/about-aws/whats-new/2020/12/aws-well-architected-guidance-engine-now-available-in-aws-control-tower/)
+    - Cross-Account data sharing methods [Google sheet](https://docs.google.com/spreadsheets/d/1bVDCrlxwG5iRioYZxJxsqjSXZIqcJGGN3DVGQgk8hmI/edit) and [GitHub csv](https://github.com/matthewdfuller/aws-guides/blob/main/aws-cross-account-access.csv)
+  </textarea>
+  <aside class="notes">
+    <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock-overview.html">S3 object locks</a> can be used to Write-Once-Read-Many (WORM, aka append-only) your logs.
+  </aside>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Infrastructure as Code
+    Seiso has a project to simplify the use of IaC security tools, called [easy_infra](https://github.com/seisollc/easy_infra) ([docs](https://easy-infra.readthedocs.io/en/latest/), [docker hub](https://hub.docker.com/r/seiso/easy_infra)).
+
+    - Terraform ([Checkov](https://www.checkov.io/), [KICS](https://kics.io/), [Terrascan](https://www.accurics.com/products/terrascan/), [tfsec](https://tfsec.dev/))
+      - The [asecurecloud library](https://asecure.cloud/) has a lot of good security controls available in various IaC forms.
+    - Ansible ([KICS](https://kics.io/), [ansible-lint](https://github.com/ansible-community/ansible-lint))
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Other
+    - Scott Piper's (aka "the flaws.cloud guy") [Lesser Known Techniques for Attacking AWS Environments](https://tldrsec.com/blog/lesser-known-aws-attacks/)
+    - [AWS's IR Playbooks](https://github.com/aws-samples/aws-incident-response-playbooks)
+    - Marco Lancini's [Cloud Security Roadmap](https://www.marcolancini.it/2021/blog-cloud-security-roadmap)
+    - Jassics' [awesome-aws-security](https://github.com/jassics/awesome-aws-security) list
+    - toniblyx's ["arsenal"](https://github.com/toniblyx/my-arsenal-of-aws-security-tools)
+  </textarea>
+</section>

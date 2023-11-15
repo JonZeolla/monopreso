@@ -1,0 +1,13 @@
+---
+version: '3.8'
+services:
+  grafana:
+    restart: always
+    image: grafana/grafana-oss:10.2.0-ubuntu
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana:/var/lib/grafana
+    shm_size: '256m'
+volumes:
+  grafana:

@@ -1,0 +1,15 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### A10:2021 - Server-Side Request Forgery (SSRF)
+    SSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL.
+  </textarea>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Prevention
+    - Sanitize and validate all client-supplied input data.
+    - Enforce the URL schema, port, and destination with a positive allow list.
+    - Do not send raw responses to clients.
+    - Disable HTTP redirections.
+  </textarea>
+</section>

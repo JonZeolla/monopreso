@@ -1,0 +1,758 @@
+<section data-markdown>
+  <textarea data-template>
+    # Troubleshooting TLS
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## Troubleshooting TLS
+```
+go get -u github.com/cloudflare/cfssl/cmd/...
+cfssl-scan seisollc.com
+```
+- Quickly validate a website's TLS configuration.
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## Troubleshooting TLS
+```
+openssl s_client -connect seisollc.com:443
+```
+- Directly interact with a web server over TLS.
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+    ## Troubleshooting TLS
+```
+$ nmap -sV --script ssl-enum-ciphers -p 443 seisollc.com
+Starting Nmap 7.80 ( https://nmap.org ) at 2019-09-29 23:02 EDT
+Nmap scan report for seisollc.com (99.84.181.29)
+Host is up (0.13s latency).
+Other addresses for seisollc.com (not scanned): 99.84.181.70 99.84.181.96 99.84.181.58
+rDNS record for 99.84.181.29: server-99-84-181-29.iad89.r.cloudfront.net
+
+PORT    STATE SERVICE  VERSION
+443/tcp open  ssl/http Amazon CloudFront httpd
+| http-server-header:
+|   AmazonS3
+|_  CloudFront
+| ssl-enum-ciphers:
+|   TLSv1.2:
+|     ciphers:
+|       TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384 (secp256r1) - A
+|       TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384 (secp256r1) - A
+|       TLS_RSA_WITH_AES_128_GCM_SHA256 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_256_GCM_SHA384 (rsa 2048) - A
+|       TLS_RSA_WITH_AES_128_CBC_SHA256 (rsa 2048) - A
+|     compressors:
+|       NULL
+|     cipher preference: server
+|_  least strength: A
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 15.40 seconds
+```
+- Enumerate the supported ciphers of a website.
+  </textarea>
+</section>
+<section data-transition="none" data-markdown>
+  <textarea data-template>
+## Troubleshooting TLS
+```
+$ docker run -t --rm mvance/testssl seisollc.com
+
+###########################################################
+    testssl.sh       2.8rc3 from https://testssl.sh/dev/
+    (1.562 2016/11/05 13:55:29)
+
+      This program is free software. Distribution and
+             modification under GPLv2 permitted.
+      USAGE w/o ANY WARRANTY. USE IT AT YOUR OWN RISK!
+
+       Please file bugs @ https://testssl.sh/bugs/
+
+###########################################################
+
+ Using "OpenSSL 1.0.2-chacha (1.0.2i-dev)" [~183 ciphers]
+ on fbcf8edf06d6:/usr/local/bin/testssl/bin/openssl.Linux.x86_64
+ (built: "Jun 22 19:32:29 2016", platform: "linux-x86_64")
+
+
+Testing all IPv4 addresses (port 443): 143.204.142.5 143.204.142.33 143.204.142.62 143.204.142.66
+-----------------------------------------------------
+ Start 2019-09-30 13:49:32    -->> 143.204.142.5:443 (seisollc.com) <<--
+
+ further IP addresses:   143.204.142.33 143.204.142.62 143.204.142.66
+ rDNS (143.204.142.5):   server-143-204-142-5.ewr52.r.cloudfront.net.
+ Service detected:       HTTP
+
+
+ Testing protocols (via sockets except TLS 1.2, SPDY+HTTP2)
+
+ SSLv2               not offered (OK)
+ SSLv3               not offered (OK)
+ TLS 1               not offered
+ TLS 1.1             not offered
+ TLS 1.2             offered (OK)
+ Version tolerance   downgraded to TLSv1.2 (OK)
+ SPDY/NPN            h2, http/1.1 (advertised)
+ HTTP2/ALPN          h2, http/1.1 (offered)
+
+ Testing ~standard cipher lists
+
+ Null Ciphers                 not offered (OK)
+ Anonymous NULL Ciphers       not offered (OK)
+ Anonymous DH Ciphers         not offered (OK)
+ 40 Bit encryption            not offered (OK)
+ 56 Bit encryption            not offered (OK)
+ Export Ciphers (general)     not offered (OK)
+ Low (<=64 Bit)               not offered (OK)
+ DES Ciphers                  not offered (OK)
+ "Medium" grade encryption    not offered (OK)
+ Triple DES Ciphers           not offered (OK)
+ High grade encryption        offered (OK)
+
+
+ Testing robust (perfect) forward secrecy, (P)FS -- omitting Null Authentication/Encryption, 3DES, RC4
+
+ PFS is offered (OK)          ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384
+ Elliptic curves offered:     prime256v1 secp384r1
+
+
+ Testing server preferences
+
+ Has server cipher order?     yes (OK)
+ Negotiated protocol          TLSv1.2
+ Negotiated cipher            ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH
+ Cipher order
+    TLSv1.2:   ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    h2:        ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    http/1.1:  ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+
+
+ Testing server defaults (Server Hello)
+
+ TLS extensions (standard)    "server name/#0" "renegotiation info/#65281" "EC point formats/#11" "session ticket/#35" "application layer protocol negotiation/#16" "next protocol/#13172"
+ Session Tickets RFC 5077     10800 seconds (PFS requires session ticket keys to be rotated <= daily)
+ SSL Session ID support       yes
+ TLS clock skew               random values, no fingerprinting possible
+ Signature Algorithm          SHA256 with RSA
+ Server key size              RSA 2048 bits
+ Fingerprint / Serial         SHA1 AD80853F091DC8AFF78043726D94748805CA9091 / 0E60C804A56F1EF77D564AA071F6764B
+                              SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7
+ Common Name (CN)             "seisollc.com" (request w/o SNI didn't succeed)
+ subjectAltName (SAN)         "seisollc.com" "www.seisollc.com" "cisollc.com" "www.cisollc.com" "seiso.co" "www.seiso.co" "seiso.org" "www.seiso.org"
+ Issuer                       "Amazon" ("Amazon" from "US")
+ Trust (hostname)             Ok via SAN and CN (SNI mandatory)
+ Chain of trust               Ok
+ EV cert (experimental)       no
+ Certificate Expiration       340 >= 60 days (2019-08-05 00:00 --> 2020-09-05 12:00 +0000)
+ # of certificates provided   4
+ Certificate Revocation List  http://crl.sca1b.amazontrust.com/sca1b.crl
+ OCSP URI                     http://ocsp.sca1b.amazontrust.com
+ OCSP stapling                --
+
+
+ Testing HTTP header response @ "/"
+
+ HTTP Status Code             200 OK
+ HTTP clock skew              -18 sec from localtime
+ Strict Transport Security    --
+ Public Key Pinning           --
+ Server banner                AmazonS3
+ Application banner           --
+ Cookie(s)                    (none issued at "/")
+ Security headers             --
+ Reverse Proxy banner         X-Cache: Hit from cloudfront
+                              Via: 1.1 e0ccda855486b62b937fb20ab6c7bdeb.cloudfront.net (CloudFront)
+
+
+ Testing vulnerabilities
+
+ Heartbleed (CVE-2014-0160)                not vulnerable (OK), no heartbeat extension
+ CCS (CVE-2014-0224)                       not vulnerable (OK)
+ Secure Renegotiation (CVE-2009-3555)      not vulnerable (OK)
+ Secure Client-Initiated Renegotiation     not vulnerable (OK)
+ CRIME, TLS (CVE-2012-4929)                not vulnerable (OK)
+ BREACH (CVE-2013-3587)                    potentially NOT ok, uses gzip HTTP compression. - only supplied "/" tested
+                                           Can be ignored for static pages or if no secrets in the page
+ POODLE, SSL (CVE-2014-3566)               not vulnerable (OK)
+ TLS_FALLBACK_SCSV (RFC 7507),             No fallback possible, TLS 1.2 is the only protocol (OK)
+ FREAK (CVE-2015-0204)                     not vulnerable (OK)
+ DROWN (2016-0800, CVE-2016-0703)          not vulnerable on this port (OK)
+                                           make sure you don't use this certificate elsewhere with SSLv2 enabled services
+                                           https://censys.io/ipv4?q=7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 could help you to find out
+ LOGJAM (CVE-2015-4000), experimental      not vulnerable (OK), common primes not checked. See below for any DH ciphers + bit size
+ BEAST (CVE-2011-3389)                     no SSL3 or TLS1 (OK)
+ RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK)
+
+
+ Testing all 183 locally available ciphers against the server, ordered by encryption strength
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.  Encryption Bits     Cipher Suite Name (RFC)
+---------------------------------------------------------------------------------------------------------------------------
+ xc030   ECDHE-RSA-AES256-GCM-SHA384       ECDH 256   AESGCM    256      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+ xc028   ECDHE-RSA-AES256-SHA384           ECDH 256   AES       256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+ x9d     AES256-GCM-SHA384                 RSA        AESGCM    256      TLS_RSA_WITH_AES_256_GCM_SHA384
+ xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM    128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+ xc027   ECDHE-RSA-AES128-SHA256           ECDH 256   AES       128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+ x9c     AES128-GCM-SHA256                 RSA        AESGCM    128      TLS_RSA_WITH_AES_128_GCM_SHA256
+ x3c     AES128-SHA256                     RSA        AES       128      TLS_RSA_WITH_AES_128_CBC_SHA256
+
+
+ Running browser simulations via sockets (experimental)
+
+ Android 2.3.7                 No connection
+ Android 4.0.4                 No connection
+ Android 4.1.1                 No connection
+ Android 4.2.2                 No connection
+ Android 4.3                   No connection
+ Android 4.4.2                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Android 5.0.0                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Baidu Jan 2015                No connection
+ BingPreview Jan 2015          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Chrome 47 / OSX               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 31.3.0ESR / Win7      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 42 OS X               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ GoogleBot Feb 2015            TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ IE 6 XP                       No connection
+ IE 7 Vista                    No connection
+ IE 8 XP                       No connection
+ IE 8-10 Win 7                 No connection
+ IE 11 Win 7                   TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 8.1                 TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 10 Win Phone 8.0           No connection
+ IE 11 Win Phone 8.1           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win Phone 8.1 Update    TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 10                  TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win 10                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win Phone 10          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Java 6u45                     No connection
+ Java 7u25                     No connection
+ Java 8u31                     TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 0.9.8y                No connection
+ OpenSSL 1.0.1l                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 1.0.2e                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 5.1.9 OS X 10.6.8      No connection
+ Safari 6 iOS 6.0.1            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 6.0.4 OS X 10.8.4      No connection
+ Safari 7 iOS 7.1              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 7 OS X 10.9            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 iOS 8.4              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 OS X 10.10           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 9 iOS 9                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 9 OS X 10.11           TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Apple ATS 9 iOS 9             No connection
+
+ Done 2019-09-30 13:50:15    -->> 143.204.142.5:443 (seisollc.com) <<--
+
+-----------------------------------------------------
+ Start 2019-09-30 13:50:15    -->> 143.204.142.33:443 (seisollc.com) <<--
+
+ further IP addresses:   143.204.142.5 143.204.142.62 143.204.142.66
+ rDNS (143.204.142.33):  server-143-204-142-33.ewr52.r.cloudfront.net.
+ Service detected:       HTTP
+
+
+ Testing protocols (via sockets except TLS 1.2, SPDY+HTTP2)
+
+ SSLv2               not offered (OK)
+ SSLv3               not offered (OK)
+ TLS 1               not offered
+ TLS 1.1             not offered
+ TLS 1.2             offered (OK)
+ Version tolerance   downgraded to TLSv1.2 (OK)
+ SPDY/NPN            h2, http/1.1 (advertised)
+ HTTP2/ALPN          h2, http/1.1 (offered)
+
+ Testing ~standard cipher lists
+
+ Null Ciphers                 not offered (OK)
+ Anonymous NULL Ciphers       not offered (OK)
+ Anonymous DH Ciphers         not offered (OK)
+ 40 Bit encryption            not offered (OK)
+ 56 Bit encryption            not offered (OK)
+ Export Ciphers (general)     not offered (OK)
+ Low (<=64 Bit)               not offered (OK)
+ DES Ciphers                  not offered (OK)
+ "Medium" grade encryption    not offered (OK)
+ Triple DES Ciphers           not offered (OK)
+ High grade encryption        offered (OK)
+
+
+ Testing robust (perfect) forward secrecy, (P)FS -- omitting Null Authentication/Encryption, 3DES, RC4
+
+ PFS is offered (OK)          ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384
+ Elliptic curves offered:     prime256v1 secp384r1
+
+
+ Testing server preferences
+
+ Has server cipher order?     yes (OK)
+ Negotiated protocol          TLSv1.2
+ Negotiated cipher            ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH
+ Cipher order
+    TLSv1.2:   ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    h2:        ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    http/1.1:  ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+
+
+ Testing server defaults (Server Hello)
+
+ TLS extensions (standard)    "server name/#0" "renegotiation info/#65281" "EC point formats/#11" "session ticket/#35" "application layer protocol negotiation/#16" "next protocol/#13172"
+ Session Tickets RFC 5077     10800 seconds (PFS requires session ticket keys to be rotated <= daily)
+ SSL Session ID support       yes
+ TLS clock skew               random values, no fingerprinting possible
+ Signature Algorithm          SHA256 with RSA
+ Server key size              RSA 2048 bits
+ Fingerprint / Serial         SHA1 AD80853F091DC8AFF78043726D94748805CA9091 / 0E60C804A56F1EF77D564AA071F6764B
+                              SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7
+ Common Name (CN)             "seisollc.com" (request w/o SNI didn't succeed)
+ subjectAltName (SAN)         "seisollc.com" "www.seisollc.com" "cisollc.com" "www.cisollc.com" "seiso.co" "www.seiso.co" "seiso.org" "www.seiso.org"
+ Issuer                       "Amazon" ("Amazon" from "US")
+ Trust (hostname)             Ok via SAN and CN (SNI mandatory)
+ Chain of trust               Ok
+ EV cert (experimental)       no
+ Certificate Expiration       340 >= 60 days (2019-08-05 00:00 --> 2020-09-05 12:00 +0000)
+ # of certificates provided   4
+ Certificate Revocation List  http://crl.sca1b.amazontrust.com/sca1b.crl
+ OCSP URI                     http://ocsp.sca1b.amazontrust.com
+ OCSP stapling                --
+
+
+ Testing HTTP header response @ "/"
+
+ HTTP Status Code             200 OK
+ HTTP clock skew              -60 sec from localtime
+ Strict Transport Security    --
+ Public Key Pinning           --
+ Server banner                AmazonS3
+ Application banner           --
+ Cookie(s)                    (none issued at "/")
+ Security headers             --
+ Reverse Proxy banner         X-Cache: Hit from cloudfront
+                              Via: 1.1 e0ccda855486b62b937fb20ab6c7bdeb.cloudfront.net (CloudFront)
+
+
+ Testing vulnerabilities
+
+ Heartbleed (CVE-2014-0160)                not vulnerable (OK), no heartbeat extension
+ CCS (CVE-2014-0224)                       not vulnerable (OK)
+ Secure Renegotiation (CVE-2009-3555)      not vulnerable (OK)
+ Secure Client-Initiated Renegotiation     not vulnerable (OK)
+ CRIME, TLS (CVE-2012-4929)                not vulnerable (OK)
+ BREACH (CVE-2013-3587)                    potentially NOT ok, uses gzip HTTP compression. - only supplied "/" tested
+                                           Can be ignored for static pages or if no secrets in the page
+ POODLE, SSL (CVE-2014-3566)               not vulnerable (OK)
+ TLS_FALLBACK_SCSV (RFC 7507),             No fallback possible, TLS 1.2 is the only protocol (OK)
+ FREAK (CVE-2015-0204)                     not vulnerable (OK)
+ DROWN (2016-0800, CVE-2016-0703)          not vulnerable on this port (OK)
+                                           make sure you don't use this certificate elsewhere with SSLv2 enabled services
+                                           https://censys.io/ipv4?q=7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 could help you to find out
+ LOGJAM (CVE-2015-4000), experimental      not vulnerable (OK), common primes not checked. See below for any DH ciphers + bit size
+ BEAST (CVE-2011-3389)                     no SSL3 or TLS1 (OK)
+ RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK)
+
+
+ Testing all 183 locally available ciphers against the server, ordered by encryption strength
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.  Encryption Bits     Cipher Suite Name (RFC)
+---------------------------------------------------------------------------------------------------------------------------
+ xc030   ECDHE-RSA-AES256-GCM-SHA384       ECDH 256   AESGCM    256      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+ xc028   ECDHE-RSA-AES256-SHA384           ECDH 256   AES       256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+ x9d     AES256-GCM-SHA384                 RSA        AESGCM    256      TLS_RSA_WITH_AES_256_GCM_SHA384
+ xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM    128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+ xc027   ECDHE-RSA-AES128-SHA256           ECDH 256   AES       128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+ x9c     AES128-GCM-SHA256                 RSA        AESGCM    128      TLS_RSA_WITH_AES_128_GCM_SHA256
+ x3c     AES128-SHA256                     RSA        AES       128      TLS_RSA_WITH_AES_128_CBC_SHA256
+
+
+ Running browser simulations via sockets (experimental)
+
+ Android 2.3.7                 No connection
+ Android 4.0.4                 No connection
+ Android 4.1.1                 No connection
+ Android 4.2.2                 No connection
+ Android 4.3                   No connection
+ Android 4.4.2                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Android 5.0.0                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Baidu Jan 2015                No connection
+ BingPreview Jan 2015          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Chrome 47 / OSX               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 31.3.0ESR / Win7      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 42 OS X               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ GoogleBot Feb 2015            TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ IE 6 XP                       No connection
+ IE 7 Vista                    No connection
+ IE 8 XP                       No connection
+ IE 8-10 Win 7                 No connection
+ IE 11 Win 7                   TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 8.1                 TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 10 Win Phone 8.0           No connection
+ IE 11 Win Phone 8.1           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win Phone 8.1 Update    TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 10                  TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win 10                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win Phone 10          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Java 6u45                     No connection
+ Java 7u25                     No connection
+ Java 8u31                     TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 0.9.8y                No connection
+ OpenSSL 1.0.1l                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 1.0.2e                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 5.1.9 OS X 10.6.8      No connection
+ Safari 6 iOS 6.0.1            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 6.0.4 OS X 10.8.4      No connection
+ Safari 7 iOS 7.1              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 7 OS X 10.9            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 iOS 8.4              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 OS X 10.10           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 9 iOS 9                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 9 OS X 10.11           TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Apple ATS 9 iOS 9             No connection
+
+ Done 2019-09-30 13:50:56    -->> 143.204.142.33:443 (seisollc.com) <<--
+
+-----------------------------------------------------
+ Start 2019-09-30 13:50:56    -->> 143.204.142.62:443 (seisollc.com) <<--
+
+ further IP addresses:   143.204.142.5 143.204.142.33 143.204.142.66
+ rDNS (143.204.142.62):  server-143-204-142-62.ewr52.r.cloudfront.net.
+ Service detected:       HTTP
+
+
+ Testing protocols (via sockets except TLS 1.2, SPDY+HTTP2)
+
+ SSLv2               not offered (OK)
+ SSLv3               not offered (OK)
+ TLS 1               not offered
+ TLS 1.1             not offered
+ TLS 1.2             offered (OK)
+ Version tolerance   downgraded to TLSv1.2 (OK)
+ SPDY/NPN            h2, http/1.1 (advertised)
+ HTTP2/ALPN          h2, http/1.1 (offered)
+
+ Testing ~standard cipher lists
+
+ Null Ciphers                 not offered (OK)
+ Anonymous NULL Ciphers       not offered (OK)
+ Anonymous DH Ciphers         not offered (OK)
+ 40 Bit encryption            not offered (OK)
+ 56 Bit encryption            not offered (OK)
+ Export Ciphers (general)     not offered (OK)
+ Low (<=64 Bit)               not offered (OK)
+ DES Ciphers                  not offered (OK)
+ "Medium" grade encryption    not offered (OK)
+ Triple DES Ciphers           not offered (OK)
+ High grade encryption        offered (OK)
+
+
+ Testing robust (perfect) forward secrecy, (P)FS -- omitting Null Authentication/Encryption, 3DES, RC4
+
+ PFS is offered (OK)          ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384
+ Elliptic curves offered:     prime256v1 secp384r1
+
+
+ Testing server preferences
+
+ Has server cipher order?     yes (OK)
+ Negotiated protocol          TLSv1.2
+ Negotiated cipher            ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH
+ Cipher order
+    TLSv1.2:   ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    h2:        ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    http/1.1:  ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+
+
+ Testing server defaults (Server Hello)
+
+ TLS extensions (standard)    "server name/#0" "renegotiation info/#65281" "EC point formats/#11" "session ticket/#35" "application layer protocol negotiation/#16" "next protocol/#13172"
+ Session Tickets RFC 5077     10800 seconds (PFS requires session ticket keys to be rotated <= daily)
+ SSL Session ID support       yes
+ TLS clock skew               random values, no fingerprinting possible
+ Signature Algorithm          SHA256 with RSA
+ Server key size              RSA 2048 bits
+ Fingerprint / Serial         SHA1 AD80853F091DC8AFF78043726D94748805CA9091 / 0E60C804A56F1EF77D564AA071F6764B
+                              SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7
+ Common Name (CN)             "seisollc.com" (request w/o SNI didn't succeed)
+ subjectAltName (SAN)         "seisollc.com" "www.seisollc.com" "cisollc.com" "www.cisollc.com" "seiso.co" "www.seiso.co" "seiso.org" "www.seiso.org"
+ Issuer                       "Amazon" ("Amazon" from "US")
+ Trust (hostname)             Ok via SAN and CN (SNI mandatory)
+ Chain of trust               Ok
+ EV cert (experimental)       no
+ Certificate Expiration       340 >= 60 days (2019-08-05 00:00 --> 2020-09-05 12:00 +0000)
+ # of certificates provided   4
+ Certificate Revocation List  http://crl.sca1b.amazontrust.com/sca1b.crl
+ OCSP URI                     http://ocsp.sca1b.amazontrust.com
+ OCSP stapling                --
+
+
+ Testing HTTP header response @ "/"
+
+ HTTP Status Code             200 OK
+ HTTP clock skew              -102 sec from localtime
+ Strict Transport Security    --
+ Public Key Pinning           --
+ Server banner                AmazonS3
+ Application banner           --
+ Cookie(s)                    (none issued at "/")
+ Security headers             --
+ Reverse Proxy banner         X-Cache: Hit from cloudfront
+                              Via: 1.1 7b6b24479d403ba8e499b225c726a688.cloudfront.net (CloudFront)
+
+
+ Testing vulnerabilities
+
+ Heartbleed (CVE-2014-0160)                not vulnerable (OK), no heartbeat extension
+ CCS (CVE-2014-0224)                       not vulnerable (OK)
+ Secure Renegotiation (CVE-2009-3555)      not vulnerable (OK)
+ Secure Client-Initiated Renegotiation     not vulnerable (OK)
+ CRIME, TLS (CVE-2012-4929)                not vulnerable (OK)
+ BREACH (CVE-2013-3587)                    potentially NOT ok, uses gzip HTTP compression. - only supplied "/" tested
+                                           Can be ignored for static pages or if no secrets in the page
+ POODLE, SSL (CVE-2014-3566)               not vulnerable (OK)
+ TLS_FALLBACK_SCSV (RFC 7507),             No fallback possible, TLS 1.2 is the only protocol (OK)
+ FREAK (CVE-2015-0204)                     not vulnerable (OK)
+ DROWN (2016-0800, CVE-2016-0703)          not vulnerable on this port (OK)
+                                           make sure you don't use this certificate elsewhere with SSLv2 enabled services
+                                           https://censys.io/ipv4?q=7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 could help you to find out
+ LOGJAM (CVE-2015-4000), experimental      not vulnerable (OK), common primes not checked. See below for any DH ciphers + bit size
+ BEAST (CVE-2011-3389)                     no SSL3 or TLS1 (OK)
+ RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK)
+
+
+ Testing all 183 locally available ciphers against the server, ordered by encryption strength
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.  Encryption Bits     Cipher Suite Name (RFC)
+---------------------------------------------------------------------------------------------------------------------------
+ xc030   ECDHE-RSA-AES256-GCM-SHA384       ECDH 256   AESGCM    256      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+ xc028   ECDHE-RSA-AES256-SHA384           ECDH 256   AES       256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+ x9d     AES256-GCM-SHA384                 RSA        AESGCM    256      TLS_RSA_WITH_AES_256_GCM_SHA384
+ xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM    128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+ xc027   ECDHE-RSA-AES128-SHA256           ECDH 256   AES       128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+ x9c     AES128-GCM-SHA256                 RSA        AESGCM    128      TLS_RSA_WITH_AES_128_GCM_SHA256
+ x3c     AES128-SHA256                     RSA        AES       128      TLS_RSA_WITH_AES_128_CBC_SHA256
+
+
+ Running browser simulations via sockets (experimental)
+
+ Android 2.3.7                 No connection
+ Android 4.0.4                 No connection
+ Android 4.1.1                 No connection
+ Android 4.2.2                 No connection
+ Android 4.3                   No connection
+ Android 4.4.2                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Android 5.0.0                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Baidu Jan 2015                No connection
+ BingPreview Jan 2015          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Chrome 47 / OSX               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 31.3.0ESR / Win7      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 42 OS X               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ GoogleBot Feb 2015            TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ IE 6 XP                       No connection
+ IE 7 Vista                    No connection
+ IE 8 XP                       No connection
+ IE 8-10 Win 7                 No connection
+ IE 11 Win 7                   TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 8.1                 TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 10 Win Phone 8.0           No connection
+ IE 11 Win Phone 8.1           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win Phone 8.1 Update    TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 10                  TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win 10                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win Phone 10          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Java 6u45                     No connection
+ Java 7u25                     No connection
+ Java 8u31                     TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 0.9.8y                No connection
+ OpenSSL 1.0.1l                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 1.0.2e                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 5.1.9 OS X 10.6.8      No connection
+ Safari 6 iOS 6.0.1            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 6.0.4 OS X 10.8.4      No connection
+ Safari 7 iOS 7.1              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 7 OS X 10.9            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 iOS 8.4              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 OS X 10.10           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 9 iOS 9                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 9 OS X 10.11           TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Apple ATS 9 iOS 9             No connection
+
+ Done 2019-09-30 13:51:42    -->> 143.204.142.62:443 (seisollc.com) <<--
+
+-----------------------------------------------------
+ Start 2019-09-30 13:51:42    -->> 143.204.142.66:443 (seisollc.com) <<--
+
+ further IP addresses:   143.204.142.5 143.204.142.33 143.204.142.62
+ rDNS (143.204.142.66):  server-143-204-142-66.ewr52.r.cloudfront.net.
+ Service detected:       HTTP
+
+
+ Testing protocols (via sockets except TLS 1.2, SPDY+HTTP2)
+
+ SSLv2               not offered (OK)
+ SSLv3               not offered (OK)
+ TLS 1               not offered
+ TLS 1.1             not offered
+ TLS 1.2             offered (OK)
+ Version tolerance   downgraded to TLSv1.2 (OK)
+ SPDY/NPN            h2, http/1.1 (advertised)
+ HTTP2/ALPN          h2, http/1.1 (offered)
+
+ Testing ~standard cipher lists
+
+ Null Ciphers                 not offered (OK)
+ Anonymous NULL Ciphers       not offered (OK)
+ Anonymous DH Ciphers         not offered (OK)
+ 40 Bit encryption            not offered (OK)
+ 56 Bit encryption            not offered (OK)
+ Export Ciphers (general)     not offered (OK)
+ Low (<=64 Bit)               not offered (OK)
+ DES Ciphers                  not offered (OK)
+ "Medium" grade encryption    not offered (OK)
+ Triple DES Ciphers           not offered (OK)
+ High grade encryption        offered (OK)
+
+
+ Testing robust (perfect) forward secrecy, (P)FS -- omitting Null Authentication/Encryption, 3DES, RC4
+
+ PFS is offered (OK)          ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384
+ Elliptic curves offered:     prime256v1 secp384r1
+
+
+ Testing server preferences
+
+ Has server cipher order?     yes (OK)
+ Negotiated protocol          TLSv1.2
+ Negotiated cipher            ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH
+ Cipher order
+    TLSv1.2:   ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    h2:        ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+    http/1.1:  ECDHE-RSA-AES128-GCM-SHA256 ECDHE-RSA-AES128-SHA256 ECDHE-RSA-AES256-GCM-SHA384 ECDHE-RSA-AES256-SHA384 AES128-GCM-SHA256 AES256-GCM-SHA384 AES128-SHA256
+
+
+ Testing server defaults (Server Hello)
+
+ TLS extensions (standard)    "server name/#0" "renegotiation info/#65281" "EC point formats/#11" "session ticket/#35" "application layer protocol negotiation/#16" "next protocol/#13172"
+ Session Tickets RFC 5077     10800 seconds (PFS requires session ticket keys to be rotated <= daily)
+ SSL Session ID support       yes
+ TLS clock skew               random values, no fingerprinting possible
+ Signature Algorithm          SHA256 with RSA
+ Server key size              RSA 2048 bits
+ Fingerprint / Serial         SHA1 AD80853F091DC8AFF78043726D94748805CA9091 / 0E60C804A56F1EF77D564AA071F6764B
+                              SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7
+ Common Name (CN)             "seisollc.com" (request w/o SNI didn't succeed)
+ subjectAltName (SAN)         "seisollc.com" "www.seisollc.com" "cisollc.com" "www.cisollc.com" "seiso.co" "www.seiso.co" "seiso.org" "www.seiso.org"
+ Issuer                       "Amazon" ("Amazon" from "US")
+ Trust (hostname)             Ok via SAN and CN (SNI mandatory)
+ Chain of trust               Ok
+ EV cert (experimental)       no
+ Certificate Expiration       340 >= 60 days (2019-08-05 00:00 --> 2020-09-05 12:00 +0000)
+ # of certificates provided   4
+ Certificate Revocation List  http://crl.sca1b.amazontrust.com/sca1b.crl
+ OCSP URI                     http://ocsp.sca1b.amazontrust.com
+ OCSP stapling                --
+
+
+ Testing HTTP header response @ "/"
+
+ HTTP Status Code             200 OK
+ HTTP clock skew              -148 sec from localtime
+ Strict Transport Security    --
+ Public Key Pinning           --
+ Server banner                AmazonS3
+ Application banner           --
+ Cookie(s)                    (none issued at "/")
+ Security headers             --
+ Reverse Proxy banner         X-Cache: Hit from cloudfront
+                              Via: 1.1 b4396731a9663e6ea5f94926a9a70198.cloudfront.net (CloudFront)
+
+
+ Testing vulnerabilities
+
+ Heartbleed (CVE-2014-0160)                not vulnerable (OK), no heartbeat extension
+ CCS (CVE-2014-0224)                       not vulnerable (OK)
+ Secure Renegotiation (CVE-2009-3555)      not vulnerable (OK)
+ Secure Client-Initiated Renegotiation     not vulnerable (OK)
+ CRIME, TLS (CVE-2012-4929)                not vulnerable (OK)
+ BREACH (CVE-2013-3587)                    potentially NOT ok, uses gzip HTTP compression. - only supplied "/" tested
+                                           Can be ignored for static pages or if no secrets in the page
+ POODLE, SSL (CVE-2014-3566)               not vulnerable (OK)
+ TLS_FALLBACK_SCSV (RFC 7507),             No fallback possible, TLS 1.2 is the only protocol (OK)
+ FREAK (CVE-2015-0204)                     not vulnerable (OK)
+ DROWN (2016-0800, CVE-2016-0703)          not vulnerable on this port (OK)
+                                           make sure you don't use this certificate elsewhere with SSLv2 enabled services
+                                           https://censys.io/ipv4?q=7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 SHA256 7A35C2B1A0ABDE66077ABD829F54DCF435B950DE10AF9775A4D0E271AEADEED7 could help you to find out
+ LOGJAM (CVE-2015-4000), experimental      not vulnerable (OK), common primes not checked. See below for any DH ciphers + bit size
+ BEAST (CVE-2011-3389)                     no SSL3 or TLS1 (OK)
+ RC4 (CVE-2013-2566, CVE-2015-2808)        no RC4 ciphers detected (OK)
+
+
+ Testing all 183 locally available ciphers against the server, ordered by encryption strength
+
+Hexcode  Cipher Suite Name (OpenSSL)       KeyExch.  Encryption Bits     Cipher Suite Name (RFC)
+---------------------------------------------------------------------------------------------------------------------------
+ xc030   ECDHE-RSA-AES256-GCM-SHA384       ECDH 256   AESGCM    256      TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+ xc028   ECDHE-RSA-AES256-SHA384           ECDH 256   AES       256      TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+ x9d     AES256-GCM-SHA384                 RSA        AESGCM    256      TLS_RSA_WITH_AES_256_GCM_SHA384
+ xc02f   ECDHE-RSA-AES128-GCM-SHA256       ECDH 256   AESGCM    128      TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+ xc027   ECDHE-RSA-AES128-SHA256           ECDH 256   AES       128      TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+ x9c     AES128-GCM-SHA256                 RSA        AESGCM    128      TLS_RSA_WITH_AES_128_GCM_SHA256
+ x3c     AES128-SHA256                     RSA        AES       128      TLS_RSA_WITH_AES_128_CBC_SHA256
+
+
+ Running browser simulations via sockets (experimental)
+
+ Android 2.3.7                 No connection
+ Android 4.0.4                 No connection
+ Android 4.1.1                 No connection
+ Android 4.2.2                 No connection
+ Android 4.3                   No connection
+ Android 4.4.2                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Android 5.0.0                 TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Baidu Jan 2015                No connection
+ BingPreview Jan 2015          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Chrome 47 / OSX               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 31.3.0ESR / Win7      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Firefox 42 OS X               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ GoogleBot Feb 2015            TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ IE 6 XP                       No connection
+ IE 7 Vista                    No connection
+ IE 8 XP                       No connection
+ IE 8-10 Win 7                 No connection
+ IE 11 Win 7                   TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 8.1                 TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 10 Win Phone 8.0           No connection
+ IE 11 Win Phone 8.1           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win Phone 8.1 Update    TLSv1.2 ECDHE-RSA-AES128-SHA256
+ IE 11 Win 10                  TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win 10                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Edge 13 Win Phone 10          TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Java 6u45                     No connection
+ Java 7u25                     No connection
+ Java 8u31                     TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 0.9.8y                No connection
+ OpenSSL 1.0.1l                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ OpenSSL 1.0.2e                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 5.1.9 OS X 10.6.8      No connection
+ Safari 6 iOS 6.0.1            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 6.0.4 OS X 10.8.4      No connection
+ Safari 7 iOS 7.1              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 7 OS X 10.9            TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 iOS 8.4              TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 8 OS X 10.10           TLSv1.2 ECDHE-RSA-AES128-SHA256
+ Safari 9 iOS 9                TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Safari 9 OS X 10.11           TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256
+ Apple ATS 9 iOS 9             No connection
+
+ Done 2019-09-30 13:52:25    -->> 143.204.142.66:443 (seisollc.com) <<--
+
+-----------------------------------------------------
+Done testing now all IP addresses (on port 443): 143.204.142.5 143.204.142.33 143.204.142.62 143.204.142.66
+```
+  </textarea>
+</section>
