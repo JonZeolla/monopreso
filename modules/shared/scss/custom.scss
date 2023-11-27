@@ -1,0 +1,30 @@
+/* This is a generated from custom.scss */
+
+// medium class
+.medium {
+  font-size: 0.8em;
+  line-height: 1.1em;
+  vertical-align: top;
+}
+
+// Special padding for medium class lists
+ul.medium > li, ol.medium > li {
+  padding: .3em 0px;
+}
+
+// Footnote
+section {
+    > .footnote {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        font-size: 30%;
+        font-weight: normal;
+    }
+}
+
+// Columns
+.container{
+  display: grid;
+  grid-auto-flow: column;
+}

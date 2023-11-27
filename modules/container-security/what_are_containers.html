@@ -1,0 +1,65 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    # What are Containers?
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section  data-transition="none">
+  Containers are processes <div class="fragment fade-in" data-fragment-index="0">(which have been constrained)</div>
+
+  <div class="fragment fade-in-then-semi-out" data-fragment-index="1">
+  <ul>
+    <li>Cgroups</li>
+    <li>Capabilities</li>
+    <li>Namespaces</li>
+    <li>Chroot jails (or more specifically, <code>pivot_root</code>) to restrict file access</li>
+    <li>Seccomp profiles</li>
+    <li>LSMs (Linux Security Modules) - SELinux, AppArmor, etc.</li>
+  </ul>
+  </div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h3>Containers vs Virtual Machines</h1>
+  <img src="modules/shared/img/containers_vs_vms.png" />
+  <div class="footnote">https://www.docker.com/resources/what-container</div>
+
+  <aside class="notes"></aside>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ## Containers (a little deeper)
+
+    ```bash
+    $ mkdir alpine
+    $ curl -o alpine/alpine.tar.gz \
+    https://dl-cdn.alpinelinux.org/alpine/v3.17/releases/x86_64/alpine-minirootfs-3.17.3-x86_64.tar.gz
+    $ pushd alpine
+    $ tar xvf alpine.tar.gz
+    ./
+    ./root/
+    ./var/
+    ...
+    $ popd
+    $ sudo unshare --pid --fork chroot alpine /bin/ash
+    --------------------------------------------------------------------------------------------------
+    / # mount -t proc proc proc
+    / # This is a (very simple) container! 🎉
+    ```
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <code>
+  UID     PID   PPID      TIME CMD<br />
+  root   4081   4080  00:00:00 /bin/ash
+  </code><br /><br /><br />
+
+  <div class="fragment fade-in">That's a container!</div>
+  <aside class="notes">
+  UID          PID    PPID  C    SZ   RSS PSR STIME TTY          TIME CMD
+  root        4079    4046  0  2792  4608   0 16:32 pts/0    00:00:00 sudo unshare --pid --fork chroot alpine /bin/ash
+  root        4080    4079  0  1810   580   0 16:32 pts/0    00:00:00 unshare --pid --fork chroot alpine /bin/ash
+  root        4081    4080  0   430  1060   0 16:32 pts/0    00:00:00 /bin/ash
+  </aside>
+</section>

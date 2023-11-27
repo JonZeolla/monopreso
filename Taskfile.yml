@@ -96,6 +96,8 @@ tasks:
               reveal.js/modules 2>/dev/null || true
       - rm -f reveal.js/dist/theme/fonts/bitter
               reveal.js/dist/theme/fonts/rock-salt
+              reveal.js/dist/theme/custom.css
+              reveal.js/css/theme/source/custom.scss
               reveal.js/modules
               reveal.js/presentations 2>/dev/null || true
       - rm -rf modules/policy_as_code/demo/TODO
