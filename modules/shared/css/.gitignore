@@ -1,2 +1,6 @@
-# custom.css is generated from custom.scss
-custom.css
+# Ignore everything
+**
+
+# Except the following files
+!asciinema-player.css
+!footer.css

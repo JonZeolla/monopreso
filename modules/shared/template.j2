@@ -8,9 +8,9 @@
 
     <link rel="stylesheet" href="dist/reset.css">
     <link rel="stylesheet" href="dist/reveal.css">
-    {%- if branded == "True" %}
-    <!-- TODO -->
-    {%- elif branded == "False" %}
+    {%- if branding | lower == "seiso" %}
+    <link rel="stylesheet" href="dist/theme/seiso.css" id="theme">
+    {%- else %}
     <link rel="stylesheet" href="dist/theme/black.css" id="theme">
     {%- endif %}
     <link rel="stylesheet" href="modules/shared/css/asciinema-player.css">
@@ -37,10 +37,11 @@
     <script>
 {{ reveal_config }}
     </script>
-    {%- if branded == "True" %}
+    {%- if branding | lower == "seiso" %}
     <div class='branding'>
-    <img src="TODO.png" alt="TODO" /></div>
-    {%- elif branded == "False" %}
+    <img src="/modules/shared/img/seiso-transparent.png" alt="Seiso Logo" />
+    </div>
+    {%- else %}
     <!-- TODO: Picture here too? -->
     {%- endif %}
   </body>

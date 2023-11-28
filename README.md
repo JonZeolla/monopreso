@@ -24,6 +24,12 @@ task -v init
 ./start --preso=iac_security
 ```
 
+You can also specify custom branding from supported brandings, for instance:
+
+```bash
+./start --preso=iac_security --branding=seiso
+```
+
 If you'd like to create a new module or presentation, run `./create.sh -h` and go from there.
 
 ## Updates
