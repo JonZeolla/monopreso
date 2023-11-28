@@ -192,8 +192,9 @@ echo -n "."
 ln -sf "../${RENDERED_PRESENTATION}" reveal.js/index.html
 ln -sFh ../modules reveal.js/modules
 ln -sFh ../presentations reveal.js/presentations
-ln -sFh ../../../../modules/shared/fonts/bitter reveal.js/dist/theme/fonts/
-ln -sFh ../../../../modules/shared/fonts/rock-salt reveal.js/dist/theme/fonts/
+ln -sf ../../../../modules/shared/scss/custom.scss reveal.js/css/theme/source/
+docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css/theme/source/custom.scss > modules/shared/css/custom.css
+ln -sf ../../../modules/shared/css/custom.css reveal.js/dist/theme/custom.css
 
 # Render and link branded css
 if [[ "${BRANDED}" == "True" ]]; then

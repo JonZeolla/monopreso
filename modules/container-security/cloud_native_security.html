@@ -1,0 +1,68 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    # Cloud Native Security
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <div class="container">
+    <p class="column" align="left">
+      <img src="modules/shared/img/CIA_triad.png" width="80%" />
+    </p>
+    <p class="column fragment fade-in" align="left">
+      <img src="modules/shared/img/DIE_venn_diagram.png" />
+    </p>
+  </div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <img src="modules/shared/img/DIE_venn_diagram.png" />
+  <div class="footnote">https://cyberdefensematrix.com/</div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Distributed</h1>
+  <img src="modules/shared/img/k8s_overview.png" width="90%" />
+  <div class="footnote">https://kubernetes.io/docs/concepts/overview/components/</div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Ephemeral</h1>
+  <img src="modules/shared/img/ephemeral_lifecycle.png" />
+  <div class="footnote">https://cloud.google.com/blog/topics/developers-practitioners/lifecycle-container-cloud-run</div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Immutable</h1>
+  <img src="modules/shared/img/immutable_updates.jpg" width="70%" />
+  <div class="footnote">https://blog.isweluiz.com.br/2022/10/mutable-vs-immutable-infrastructure.html</div>
+  <aside class="notes"></aside>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    # DIE and CIA
+
+    - **Distributed** systems are resilient
+      - High **Availability**
+    - **Ephemeral** workloads are fast-moving
+      - Breach of **Confidentiality** is less likely
+    - **Immutable** environments cannot be changed
+      - Strong **Integrity**
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    # Modern Defenses
+
+    - **Supply Chain Security**
+      - What is in your containers and software (SBOM)
+      - How was it created (Provenance)
+      - Who or What created it (Signatures)
+    - **Policy as Code**
+      - Codified Least Privilege
+      - Vulnerability Management
+      - Runtime Security, enforced in pipelines
+  </textarea>
+  <aside class="notes"></aside>
+</section>
