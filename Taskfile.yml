@@ -98,6 +98,8 @@ tasks:
               reveal.js/dist/theme/fonts/rock-salt
               reveal.js/dist/theme/custom.css
               reveal.js/css/theme/source/custom.scss
+              reveal.js/dist/theme/seiso.css
+              reveal.js/css/theme/source/seiso.scss
               reveal.js/modules
               reveal.js/presentations 2>/dev/null || true
       - rm -rf modules/policy_as_code/demo/TODO
@@ -106,4 +108,5 @@ tasks:
       - rm -rf presentations/2023-09-TechFest/demo/TODO
                presentations/2023-09-TechFest/demo/cosign*
                presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
+      - cd reveal.js && git restore package-lock.json
       - task: py:clean
