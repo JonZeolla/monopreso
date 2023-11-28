@@ -1,0 +1,209 @@
+/**
+ * Seiso Custom theme
+ */
+
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+
+// Include theme-specific fonts
+@import url(./fonts/rock-salt/rock-salt.css);
+@import url(./fonts/bitter/bitter.css);
+
+
+$blue: #005985;
+$dark-blue: $blue;
+$green: #0D8265;
+$red: #842E1A;
+$white: #ffffff;
+$bitter: "Bitter", Sans-serif;
+$rocksalt: "Rock Salt", Sans-serif;
+$roboto: Roboto,Arial,Helvetica,Verdana,sans-serif;
+
+// Override theme settings (see ../template/settings.scss)
+$backgroundColor: #191919;
+
+$mainColor: $blue;
+$headingColor: $blue;
+
+$mainFontSize: 36px;
+$mainFont: $roboto;
+$headingFont: $rocksalt;
+$headingTextShadow: none;
+$headingLetterSpacing: 0.25em;;
+$headingTextTransform: unset;
+$headingFontWeight: 600;
+$linkColor: $blue;
+$linkColorHover: lighten( $linkColor, 15% );
+$selectionBackgroundColor: lighten( $linkColor, 25% );
+
+
+
+$heading1Size: 1.75em;
+$heading2Size: 1.50em;
+$heading3Size: 1.25em;
+$heading4Size: 1.0em;
+
+
+// Change text colors against light slide backgrounds
+@include light-bg-text-color($backgroundColor);
+
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+
+// Seiso-specific overrides -------------------------------------
+
+body.reveal-viewport{
+    background-color:$dark-blue !important;
+    background: url('/modules/shared/img/lightpaperfibers_darkblue.png') repeat !important;
+
+
+    div.slides{
+
+        > section:not(.no-bg){
+
+            background: url("/modules/shared/img/section-backgrounds/paper.png") repeat;
+
+            &:before{
+                height: 75px;
+                background-image: linear-gradient(to top,rgba(255,255,255,0), rgba(255,255,255,1)), url("/modules/shared/img/section-backgrounds/paper.png");
+                top:0;
+            }
+            &:after{
+                height:80px;
+                bottom:0;
+                background:url("/modules/shared/img/section-backgrounds/paper_edge_bottom_desktop.png") no-repeat ;
+                background-size:cover;
+                background-position: top center;
+                margin-bottom:-1px;//gets rid of funky white/black line;
+            }
+
+            &:before, &:after{
+                position:absolute;
+                display:block;
+                width:100%;
+                content: ' ';
+            }
+
+            //pad content inside of sections
+            > section{
+                padding:0 1rem;
+                overflow:hidden;
+                //margin-top:-70px; //this causes issues with sub-slides.
+            }
+        }
+
+        .footnote{
+            font-family: $bitter;
+        }
+    }
+}
+
+section.present > section{
+    max-width:930px;
+}
+
+.reveal{
+
+    a{
+        //text-decoration: underline;
+    }
+    li {
+        margin-bottom: 10px;
+    }
+    li p{
+        margin: 10px 0;
+    }
+
+    .controls{
+        color: $white;
+    }
+
+    h1, h2, h3, h4, h5, h6{
+        line-height: 1.5em;
+        margin-bottom: 40px;
+
+    }
+
+    h5{
+        font-size: 0.875em;
+    }
+
+    h6{
+        font-size:0.75em;
+    }
+
+    .green{
+        color: $green !important;
+        h1, h2, h3, h4, h5, h6{
+            color: $green !important;
+        }
+    }
+    .red{
+        color: $red !important;
+        h1, h2, h3, h4, h5, h6{
+            color: $red !important;
+        }
+    }
+    .blue{
+        color: $blue !important;
+        h1, h2, h3, h4, h5, h6{
+            color: $blue !important;
+        }
+    }
+    ul ,ol{
+        padding-right:15px;
+    }
+    q{
+        display:block;
+        max-width:85%;
+        margin:0 auto;
+    }
+    pre code {
+        max-height: 320px;
+    }
+}
+
+.branding{
+    position:absolute;
+    ///for upper left
+    top:25px;
+    left:50px;
+    ///for lower left
+    //bottom:10px;
+    //left:10px;
+    width:133px;
+    height:43px;
+    opacity:75%;
+    z-index:999;
+}
+
+//hide seiso logo if desired
+body.no-branding .branding{
+    display:none;
+}
+
+
+@media print {
+    div.slides{
+        > section{
+            background:none !important;
+            background-color: #FFFFFF;
+
+            &:before, &:after{
+                display:none !important;
+            }
+        }
+    }
+}
+
+.container{
+  display: grid;
+  grid-auto-flow: column;
+}

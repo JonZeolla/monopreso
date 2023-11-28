@@ -19,8 +19,9 @@ function help() {
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
 		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list]
+		--branding     Use the specified branding i.e. --branding=seiso
 		--list         List the available presentations
-		--preso        The presentation name
+		--preso        The presentation name i.e. --preso=dev_tls
 		-h|--help      Usage details
 	HEREDOC
 
@@ -64,7 +65,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION="current.html"
-BRANDED="False"
+BRANDING="False"
 
 while getopts "${OPTSPEC}" optchar; do
   case "${optchar}" in
@@ -72,6 +73,12 @@ while getopts "${OPTSPEC}" optchar; do
       case "${OPTARG}" in
         help)
           help ;;
+
+        branding)
+          BRANDING="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
+
+        branding=*)
+          BRANDING=${OPTARG#*=} ;;
 
         list)
           LIST_PRESENTATIONS="True" ;;
@@ -127,6 +134,14 @@ else
   fi
 fi
 
+# Branding is optional, but must be in the allowlist if specified
+echo -n "."
+if [[ "${BRANDING}" != "False" ]]; then
+  if [[ "${BRANDING,,}" != "seiso" ]]; then
+    feedback ERROR "${BRANDING} is not a valid branding option"
+  fi
+fi
+
 ## Environment setup
 # Update submodules if needed
 while read -r submodule_status; do
@@ -177,11 +192,11 @@ from jinja2 import Environment, FileSystemLoader
 title = '''${title}'''
 content = '''${content}'''
 reveal_config = '''${reveal_config}'''
-branded = '''${BRANDED}'''
+branding = '''${BRANDING}'''
 
 
 template = Environment(loader=FileSystemLoader('${SHARED_DIR}')).get_template('${JINJA2_TEMPLATE}')
-out = template.render(title=title, content=content, reveal_config=reveal_config, branded=branded)
+out = template.render(title=title, content=content, reveal_config=reveal_config, branding=branding)
 
 with open(\"${RENDERED_PRESENTATION}\", \"w\") as f:
   f.write(out)
@@ -197,11 +212,11 @@ docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css
 ln -sf ../../../modules/shared/css/custom.css reveal.js/dist/theme/custom.css
 
 # Render and link branded css
-if [[ "${BRANDED}" == "True" ]]; then
-  ln -sf ../../../../modules/shared/scss/example.scss reveal.js/css/theme/source/
+if [[ "${BRANDING,,}" == "seiso" ]]; then
+  ln -sf ../../../../modules/shared/scss/seiso.scss reveal.js/css/theme/source/
   echo -n "."
-  docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css/theme/source/example.scss > modules/shared/css/example.css
-  ln -sf ../../../modules/shared/css/example.css reveal.js/dist/theme/example.css
+  docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css/theme/source/seiso.scss > modules/shared/css/seiso.css
+  ln -sf ../../../modules/shared/css/seiso.css reveal.js/dist/theme/seiso.css
 fi
 
 ## Start the presentation
