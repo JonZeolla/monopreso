@@ -18,10 +18,12 @@ function help() {
   exitCode="${1:-0}"
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
-		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list]
+		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--branding=BRANDING] [--no-open] [--no-cleanup]
 		--branding     Use the specified branding i.e. --branding=seiso
 		--list         List the available presentations
 		--preso        The presentation name i.e. --preso=dev_tls
+		--no-open      Don't open the presentation in Chrome automatically
+		--no-cleanup   Disable the cleanup prompt at the end
 		-h|--help      Usage details
 	HEREDOC
 
@@ -50,7 +52,7 @@ function feedback() {
 
 function cleanup() {
   feedback INFO "Cleaning up..."
-  task clean
+  task stop clean
   feedback INFO "Cleanup complete"
 }
 
@@ -66,6 +68,8 @@ SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION="current.html"
 BRANDING="False"
+NO_CLEANUP="False"
+NO_OPEN="False"
 
 while getopts "${OPTSPEC}" optchar; do
   case "${optchar}" in
@@ -82,6 +86,12 @@ while getopts "${OPTSPEC}" optchar; do
 
         list)
           LIST_PRESENTATIONS="True" ;;
+
+        no-cleanup)
+          NO_CLEANUP="True" ;;
+
+        no-open)
+          NO_OPEN="True" ;;
 
         preso)
           PRESENTATION="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
@@ -232,16 +242,22 @@ until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
   sleep .4
 done
 url="http://localhost:8000/"
-open /Applications/Google\ Chrome.app "${url}"
 echo -e "\n\nYour presentation is now running at ${url}"
-answer="N"
-until [[ "${answer}" =~ ^[Yy]$ ]]; do
-  read -rp "Enter y when you are done presenting to cleanup (y/N): " -n1 answer
-  if [[ ! "${answer}" =~ ^[Yy]$ ]]; then
-    echo -e "\nOk, not done yet..."
-  else
-    echo -e "\nGreat! Cleaning up...\n"
-    docker kill "${container_id}"
-    cleanup
-  fi
-done
+if [[ "${NO_OPEN}" == "False" ]]; then
+  open /Applications/Google\ Chrome.app "${url}"
+fi
+if [[ "${NO_CLEANUP}" == "True" ]]; then
+  echo "${container_id}" > .container_id
+  echo -e "\n\nWhen you are done presenting, run task stop clean to stop the presentation and cleanup"
+else
+  answer="N"
+  until [[ "${answer}" =~ ^[Yy]$ ]]; do
+    read -rp "Enter y when you are done presenting to cleanup (y/N): " -n1 answer
+    if [[ ! "${answer}" =~ ^[Yy]$ ]]; then
+      echo -e "\nOk, not done yet..."
+    else
+      echo -e "\nGreat! Cleaning up...\n"
+      cleanup
+    fi
+  done
+fi

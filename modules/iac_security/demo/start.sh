@@ -32,7 +32,7 @@ function confirm_with_user() {
   done
 }
 
-easy_infra_version="2023.08.09-terraform"
+easy_infra_version="2023.11.06-terraform"
 
 set -x
 for directory in "general/secure" "tool/checkov"; do
