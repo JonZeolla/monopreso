@@ -243,11 +243,11 @@ until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
 done
 url="http://localhost:8000/"
 echo -e "\n\nYour presentation is now running at ${url}"
+echo "${container_id}" > .container_id
 if [[ "${NO_OPEN}" == "False" ]]; then
   open /Applications/Google\ Chrome.app "${url}"
 fi
 if [[ "${NO_CLEANUP}" == "True" ]]; then
-  echo "${container_id}" > .container_id
   echo -e "\n\nWhen you are done presenting, run task stop clean to stop the presentation and cleanup"
 else
   answer="N"

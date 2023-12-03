@@ -9,3 +9,6 @@ This is just the tip of the iceberg. Come to this talk and hear stories of the p
 gap between reducing toil via automation and enforcing your company values?
 
 And don't worry, in this talk we will cover FREE open source tools and procedures that can help.
+
+Learning Objectives: Learn about the problems we have with our Governance and how to start addressing them. There is no silver bullet, and no product that
+solves this. But there are some approaches to make it better.
