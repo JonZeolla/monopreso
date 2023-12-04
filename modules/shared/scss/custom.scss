@@ -28,3 +28,39 @@ section {
   display: grid;
   grid-auto-flow: column;
 }
+
+// Add semi-faded-out outside of fragments
+.reveal .semi-faded-out {
+  opacity: 0.5;
+  visibility: inherit;
+}
+
+// Add highlight-orange
+.reveal .fragment.highlight-orange {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-orange.visible {
+  color: #CC5500
+}
+
+// Add highlight-yellow
+.reveal .fragment.highlight-yellow {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-yellow.visible {
+  color: #FDDA0D
+}
+
+// Add blinking
+blink, .blink {
+    -webkit-animation: blink 1s step-end infinite;
+    -moz-animation: blink 1s step-end infinite;
+    -o-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite;
+}
+@-webkit-keyframes blink { 67% { opacity: 0 }}
+@-moz-keyframes blink {  67% { opacity: 0 }}
+@-o-keyframes blink {  67% { opacity: 0 }}
+@keyframes blink {  67% { opacity: 0 }}

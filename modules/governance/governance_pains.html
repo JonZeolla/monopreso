@@ -1,93 +1,102 @@
-<section data-markdown>
-  <textarea data-template>
-    # Day 2 problems
-  </textarea>
-  <aside class="notes"></aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
-    > "A foolish consistency is the hobgoblin of little minds"
+<section>
+  <h1>Day 2 problems</h1>
+  <blockquote class="fragment">"A foolish consistency is the hobgoblin of little minds"
+    <footer>- Ralph Waldo Emerson</footer>
+  </blockquote>
+  <aside class="notes">
+    Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things
 
-    <small>\- Ralph Waldo Emerson</small>
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+    Let's look at 10 common problems with policies
+  </aside>
 </section>
 <section data-markdown>
   <textarea data-template>
-    Too specific - Policies needing revision for algorithm updates or software versions
+    # Spaghetti Governance
   </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  <aside class="notes">
+    Needing to reference 4 different documents to get your answer
+  </aside>
 </section>
+<section data-markdown>
+  <textarea data-template>
+    # Exceptions
+  </textarea>
+  <aside class="notes">
+    Too painful vs too easy.
 
-<section data-markdown>
-  <textarea data-template>
-    Saying that employees must have at least WPA2 encryption on their home wifi
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
-    Having specific departmental responsibilities.  Instead, compose it together based on team names and a mapping outside of the policy
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
-    Not specific enough - never referring to approved tools or where to find them
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
-    Having specific events / times in a policy.  LIke, we are gathering this and will have an update by DATE.
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
-    Grey areas and uncertain terms due to not being measured.
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
+    Who can approve exceptions?
+
     How approvals/exceptions are submit, tracked, managed.  “Unless approved by senior management” - is claiming that it was verbally approved OK?
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+    </aside>
 </section>
 <section data-markdown>
   <textarea data-template>
-    Unsure where a statement came from, and why it’s there
+    # Mandating the impossible
   </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  <aside class="notes">
+    Saying that employees must have at least WPA2 encryption on their home wifi
+  </aside>
 </section>
-<section data-markdown>
-  <textarea data-template>
+<section data-auto-animate>
+  <div class="fragment strike">This extensive and somewhat overwhelming array of words, phrases, and various linguistic elements, when amalgamated in a manner such as this, ultimately leads, or more accurately meanders, toward a destination, or to be more precise, an endpoint that, paradoxically, seems to be characterized by a notable lack of substantive content or meaningful substance, which is, in itself, a concept worthy of some contemplation or, at the very least, a brief moment of reflection.</div>
+  <aside class="notes">
     Length - way too long and extra information not needed.
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  </aside>
+</section>
+<section data-auto-animate>
+  <h1>Saying so much that it says nothing</h1>
 </section>
 <section data-markdown>
   <textarea data-template>
-    Should/May vs Must.  SLO vs SLA.  “All” statements vs compliance percentages.
+    # Nobody knows why
   </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  <aside class="notes">
+    Why is it worded that way?
+
+    Does it need to be that specific word?
+
+    Can we change that word?
+
+    When can we remove that word?
+  </aside>
 </section>
 <section data-markdown>
   <textarea data-template>
-    Arbitrary timeframes like 90 days, 30 days, continuously, etc.
+    # Broken references
   </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
-</section>
-<section data-markdown>
-  <textarea data-template>
+  <aside class="notes">
     Having internal references to files that get renamed over time, causing auditability to be confusing. Renaming “rules” to “questionnaire” but not updating the reference to it in a Policy, etc.
-  </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  </aside>
 </section>
 <section data-markdown>
   <textarea data-template>
-    Flow chart which is supported by words, connected together. Tight connection auto generated.
+    # Too specific
   </textarea>
-  <aside class="notes">Emerson was a philosopher. Standardization isn't always the answer, and we need to be open to rethinking things</aside>
+  <aside class="notes">
+    Policies needing revision for algorithm updates or software versions
+  </aside>
+</section>
+<section data-markdown>
+  <textarea data-template>
+    # Not detailed enough
+  </textarea>
+  <aside class="notes">
+    Actually being usable - what does it take to be compliant with a policy? How do I make <i>this</i> work compliant?
+  </aside>
+</section>
+<section data-markdown>
+  <textarea data-template>
+    # Overly ambitious
+  </textarea>
+  <aside class="notes">
+    Should/May vs Must.  SLO vs SLA.  “All” statements vs compliance percentages.
+  </aside>
+</section>
+<section data-markdown>
+  <textarea data-template>
+    # Arbitrary timeframes
+  </textarea>
+  <aside class="notes">
+    90 days, 30 days, continuously, etc.
+  </aside>
 </section>
