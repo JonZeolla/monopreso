@@ -21,13 +21,26 @@ task -v init
 ./start.sh --list
 
 # Pick a presentation, and run it
-./start --preso=iac_security
+./start.sh --preso=iac_security
 ```
 
-You can also specify custom branding from supported brandings, for instance:
+There are some other features you may want to look at, by passing `-h` or `--help`:
 
 ```bash
-./start --preso=iac_security --branding=seiso
+$ ./start.sh -h
+Preferred Usage: ./start.sh --preso=PRESENTATION [--list] [--branding=BRANDING] [--no-open] [--no-cleanup]
+--branding     Use the specified branding i.e. --branding=seiso
+--list         List the available presentations
+--preso        The presentation name i.e. --preso=dev_tls
+--no-open      Don't open the presentation in Chrome automatically
+--no-cleanup   Disable the cleanup prompt at the end
+-h|--help      Usage details
+```
+
+You can combine these features, like:
+
+```bash
+./start.sh --preso=iac_security --no-open --no-cleanup --branding=seiso
 ```
 
 If you'd like to create a new module or presentation, run `./create.sh -h` and go from there.
