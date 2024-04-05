@@ -24,6 +24,8 @@ task -v init
 ./start.sh --preso=iac_security
 ```
 
+If you're actively working on a presentation or module, you can also use `task start` and it will start the presentation of the directory that you're in.
+
 There are some other features you may want to look at, by passing `-h` or `--help`:
 
 ```bash
