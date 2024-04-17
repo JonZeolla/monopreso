@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="dist/reset.css">
     <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="plugin/highlight/monokai.css">
     {%- if branding | lower == "seiso" %}
     <link rel="stylesheet" href="dist/theme/seiso.css" id="theme">
     {%- else %}
@@ -15,9 +16,11 @@
     {%- endif %}
     <link rel="stylesheet" href="modules/shared/css/asciinema-player.css">
     <link rel="stylesheet" href="modules/shared/css/custom.css">
+    <link rel="stylesheet" href="modules/shared/plugin/chalkboard/style.css">
+    <link rel="stylesheet" href="modules/shared/plugin/customcontrols/style.css">
 
-    <!-- For the Chalkboard plugin -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- For several plugins including Chalkboard and Custom controls -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   </head>
   <body>
     <div class="reveal">
@@ -32,6 +35,14 @@
     <script src="plugin/highlight/highlight.js"></script>
     <script src="plugin/math/math.js"></script>
     <script src="modules/shared/plugin/chalkboard/plugin.js"></script>
+    <script src="modules/shared/plugin/customcontrols/plugin.js"></script>
+
+    <!-- For several plugins including Chalkboard and Custom -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <!-- The related chart CSS is loaded above -->
+    <script src="modules/shared/plugin/chart/plugin.js"></script>
+
     <script src="modules/shared/js/asciinema-player.js"></script>
 
     <script>

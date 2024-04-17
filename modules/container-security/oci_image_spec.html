@@ -1,0 +1,95 @@
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    ### The Open Container Initiative
+
+    <ul>
+      <li><a href="https://github.com/opencontainers/image-spec">Image spec</a></li>
+      <li><div class="fragment semi-fade-out" data-fragment-index="0"><a href="https://github.com/opencontainers/distribution-spec">Distribution spec</a></div></li>
+      <li><div class="fragment semi-fade-out" data-fragment-index="0"><a href="https://github.com/opencontainers/runtime-spec">Runtime spec</a></div></li>
+    </ul>
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+  $ mdigest=$(docker inspect --format='{{index .RepoDigests 0}}' example-secure | cut -f2 -d@)
+  $ echo $mdigest
+  sha256:63e226a559065a971cfd911a91fefe7f1c96693186467ad182ca9dd9b64d078c
+  $ curl -k https://localhost:443/v2/example-secure/tags/list
+  {"name":"example-secure","tags":["sha256-63e226a559065a971cfd911a91fefe7f1c96693186467ad182ca9dd9b64d078c.sig","latest"]}
+  $ curl -s -k https://localhost:443/v2/example-secure/manifests/$mdigest | sha256sum
+  63e226a559065a971cfd911a91fefe7f1c96693186467ad182ca9dd9b64d078c  -
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+  $ curl -s -k https://localhost:443/v2/example-secure/manifests/$mdigest | head -14
+  {
+     "schemaVersion": 2,
+     "mediaType": "application/vnd.docker.distribution.manifest.v2+json",
+     "config": {
+        "mediaType": "application/vnd.docker.container.image.v1+json",
+        "size": 7705,
+        "digest": "sha256:6b7f86a3d64be8fb0ece35d5b54b15b6bd117c7fdcf2f778350de9012186fd14"
+     },
+     "layers": [
+        {
+           "mediaType": "application/vnd.docker.image.rootfs.diff.tar.gzip",
+           "size": 31418228,
+           "digest": "sha256:26c5c85e47da3022f1bdb9a112103646c5c29517d757e95426f16e4bd9533405"
+        },
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+    $ ldigest=$(curl -s -k https://localhost:443/v2/example-secure/manifests/$mdigest | jq -r '.layers[0].digest')
+    $ echo $ldigest
+    sha256:26c5c85e47da3022f1bdb9a112103646c5c29517d757e95426f16e4bd9533405
+    $ curl -s -k https://localhost:443/v2/example-secure/blobs/$ldigest | sha256sum
+    26c5c85e47da3022f1bdb9a112103646c5c29517d757e95426f16e4bd9533405  -
+    $ curl -s -k https://localhost:443/v2/example-secure/blobs/$ldigest | tar -tvzf - > image_filesystem
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+    $ head image_filesystem
+    lrwxrwxrwx 0/0               0 2023-11-20 00:00 bin -> usr/bin
+    drwxr-xr-x 0/0               0 2023-09-29 20:04 boot/
+    drwxr-xr-x 0/0               0 2023-11-20 00:00 dev/
+    drwxr-xr-x 0/0               0 2023-11-20 00:00 etc/
+    -rw------- 0/0               0 2023-11-20 00:00 etc/.pwd.lock
+    -rw-r--r-- 0/0            3040 2023-05-25 15:54 etc/adduser.conf
+    drwxr-xr-x 0/0               0 2023-11-20 00:00 etc/alternatives/
+    -rw-r--r-- 0/0             100 2023-05-11 02:04 etc/alternatives/README
+    lrwxrwxrwx 0/0               0 2022-06-17 15:35 etc/alternatives/awk -> /usr/bin/mawk
+    lrwxrwxrwx 0/0               0 2022-06-17 15:35 etc/alternatives/awk.1.gz -> /usr/share/man/man1/mawk.1.gz
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+    $ cdigest=$(curl -s -k https://localhost:443/v2/example-secure/manifests/$mdigest | jq -r '.config.digest')
+    $ echo $cdigest
+    sha256:6b7f86a3d64be8fb0ece35d5b54b15b6bd117c7fdcf2f778350de9012186fd14
+    $ curl -s -k https://localhost:443/v2/example-secure/blobs/$cdigest | sha256sum
+    6b7f86a3d64be8fb0ece35d5b54b15b6bd117c7fdcf2f778350de9012186fd14  -
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+    $ curl -s -k https://localhost:443/v2/example-secure/blobs/$cdigest | jq -r '.config.Env[]'
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    NGINX_VERSION=1.23.4
+    NJS_VERSION=0.7.11
+    PKG_RELEASE=1~bullseye
+  </code></small></pre>
+</section>
+<section data-transition="none">
+  <pre><small><code data-trim data-noescape>
+    $ curl -s -k https://localhost:443/v2/example-secure/blobs/$cdigest | jq -r '.history[16]'
+    {
+      "created": "2023-04-26T00:50:44.615696269Z",
+      "created_by": "RUN /bin/sh -c groupadd --gid 53150 -r notroot && useradd -r -g notroot -s \"/bin/bash\" --create-home --uid 53150 notroot # buildkit",
+      "comment": "buildkit.dockerfile.v0"
+    }
+  </code></small></pre>
+</section>
