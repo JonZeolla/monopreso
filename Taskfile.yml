@@ -8,34 +8,26 @@ set:
   - errexit
   - pipefail
 
-includes:
-  py:
-    taskfile: ./goat/Task/python/Taskfile.yml
-    internal: true
-    optional: true
-    vars:
-      PYTHON_VERSION: '{{.PYTHON_VERSION}}'
-
-  base:
-    taskfile: ./goat/Task/Taskfile.yml
-    internal: true
-    optional: true
-
-vars:
-  PYTHON_VERSION: 3.11
-
 silent: true
 
 tasks:
-  init-pipenv:
-    desc: Initializes the pipenv virtual environment if Pipfile.lock changes
+  lock:
+    desc: Update uv.lock if pyproject.toml has changed
     internal: true
     sources:
-      - Pipfile.lock
-    preconditions:
-      - which pipenv || python3 -m pip install --upgrade pipx gitpython pyyaml && python3 -m pipx ensurepath && pipx install pipenv
+      - pyproject.toml
+    generates:
+      - uv.lock
     cmds:
-      - pipenv install --deploy --ignore-pipfile --dev
+      - uv lock
+
+  init-uv:
+    desc: Initializes uv if uv.lock changes
+    internal: true
+    sources:
+      - uv.lock
+    cmds:
+      - uv sync
 
   init-submodules:
     desc: >
@@ -60,32 +52,32 @@ tasks:
       - '! test -d .git'
     cmds:
       # Don't run this in pipelines
-      - '{{if ne .GITHUB_ACTIONS "true"}}pipenv run pre-commit install{{else}}echo \"Detected a github actions pipeline; skipping the pre-commit install\"{{end}}'
+      - '{{if ne .GITHUB_ACTIONS "true"}}uv run pre-commit install{{else}}echo \"Detected a github actions pipeline; skipping the pre-commit install\"{{end}}'
 
   init:
     desc: Initialize the repo for local use; intended to be run after git clone
+    deps: [lock]
     cmds:
-      - task: init-pipenv
+      - task: init-uv
       - task: init-submodules
       - task: init-pre-commit
 
   lint:
-    desc: Run the linter(s); paved road projects use the Seiso goat 🐐
+    desc: Run the linter(s)
     cmds:
-      - task: py:lint
-        vars:
-          INPUT_LOG_LEVEL: '{{.CLI_ARGS}}'
-          INPUT_EXCLUDE: '(\.css|\.scss|\.js|\.html|\.md|\.json)$|.*modules/iac_security/demo/.*|.*reveal.js/node_modules/.*|.*modules/shared/demo/demo-magic.sh$'
+      - uv run pre-commit run --all-files
 
   validate:
     desc: Validate the pre-commit config and hooks files
     cmds:
-      - task: py:validate
+      - uv run pre-commit validate-config .pre-commit-config.yaml
 
   update:
-    desc: Update the project dev and runtime dependencies, and other misc components
+    desc: Update the project dependencies, and other misc components
     cmds:
-      - task: py:update
+      - rye self update
+      - uv lock
+      - pre-commit autoupdate --bleeding-edge --freeze --jobs 4
       - for repo in $(find ./modules/iac_security/demo -type d -mindepth 1 -maxdepth 1); do pushd "${repo}"; git pull origin main; popd; done
 
   start:
@@ -136,4 +128,20 @@ tasks:
                presentations/2023-09-TechFest/demo/cosign*
                presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
       - cd reveal.js && git restore package-lock.json
-      - task: py:clean
+      - find {{.ROOT_DIR}} -type d -name '*.egg-info' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type f -name '.coverage' -delete
+      - find {{.ROOT_DIR}} -type d -name 'htmlcov' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name 'dist' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name 'build' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name '__pycache__' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name '.mypy_cache' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type d -name '.pytest_cache' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type f -name '*.pyc' -delete
+      - find {{.ROOT_DIR}} -type f -name '*.whl' -delete
+      - find {{.ROOT_DIR}} -type d -name '.ruff_cache' -exec rm -rf {} +
+      - find {{.ROOT_DIR}} -type f -name '.DS_Store' -delete
+      - find {{.ROOT_DIR}} -type f -name '.Thumbs.db' -delete
+      - find {{.ROOT_DIR}} -type d -name '.task' -exec rm -rf {} +
+      - '{{if eq .CLI_ARGS "all"}}echo "WARNING: Running a clean all in {{.TASKFILE}}"{{end}}'
+      - '{{if eq .CLI_ARGS "all"}}find {{.ROOT_DIR}} -type d -name ".venv" -exec rm -rf {} +{{end}}'
