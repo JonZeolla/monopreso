@@ -26,7 +26,7 @@ jobs:
       - name: Install Task
         uses: arduino/setup-task@v2
       - name: Run the linters
-        uses: task lint
+        run: task lint
       - name: Run the goat
         uses: seisollc/goat@main
         with:
