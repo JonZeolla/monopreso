@@ -4,4 +4,4 @@ version = "0"
 description = "Jon Zeolla's monorepo of presentations"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["pre-commit"]
+dependencies = ["jinja2", "pre-commit"]

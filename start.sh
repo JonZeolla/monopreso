@@ -153,6 +153,8 @@ if [[ "${BRANDING}" != "False" ]]; then
 fi
 
 ## Environment setup
+# Start with a clean slate
+task clean
 # Update submodules if needed
 while read -r submodule_status; do
   echo -n "."
@@ -160,11 +162,11 @@ while read -r submodule_status; do
     SUBMODULES_NEED_UPDATE="True"
     break
   fi
-done < <(docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest -c "git config --global --add safe.directory /git && git submodule status")
+done < <(docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule status")
 
 if [[ "${SUBMODULES_NEED_UPDATE}" == "True" ]]; then
   echo -n "."
-  docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest -c "git config --global --add safe.directory /git && git submodule update --init --recursive >/dev/null"
+  docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule update --init --recursive >/dev/null"
 fi
 
 # Only backup if index.html is a normal file and bkp doesn't exist
@@ -194,9 +196,8 @@ done
 echo -n "."
 # 2>&1 is to remove noisy known warnings
 # shellcheck disable=SC2154
-docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.11 /bin/bash -c "python -m pip install --upgrade pip pipenv >/dev/null 2>&1 \
-                                                                           && pipenv install --deploy --ignore-pipfile --dev >/dev/null 2>&1 \
-                                                                           && pipenv run python3 << EOF
+docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
+                                                                              && uv run python3 << EOF
 from jinja2 import Environment, FileSystemLoader
 
 title = '''${title}'''
@@ -230,13 +231,10 @@ if [[ "${BRANDING,,}" == "seiso" ]]; then
 fi
 
 ## Start the presentation
-if [[ "$(uname -m)" == "arm64" ]]; then
-  command="apt-get update >/dev/null && apt-get install -y chromium >/dev/null && PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm install >/dev/null && npm start -- --host 0.0.0.0"
-else
-  command="npm install >/dev/null && npm start -- --host 0.0.0.0"
-fi
 echo -n "."
-container_id=$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app -w /usr/src/app/reveal.js node:20 /bin/bash -c "${command}")
+docker buildx build --quiet --load -t monopreso:latest . || true # Continue regardless; assume it failed due to no internet but we have an old version available
+echo -n "."
+container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
 until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
   echo -n "."
   sleep .4

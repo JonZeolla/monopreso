@@ -41,26 +41,12 @@ tasks:
     cmds:
       - git submodule update --init --recursive
 
-  init-pre-commit:
-    desc: Install the pre-commit hooks
-    internal: true
-    sources:
-      - .pre-commit-config.yaml
-    status:
-      # Only install the pre-commit hooks if you are in a git repository; quote to avoid yaml intrepretering the ! as a node tag
-      # https://yaml.org/spec/1.2.2/#691-node-tags
-      - '! test -d .git'
-    cmds:
-      # Don't run this in pipelines
-      - '{{if ne .GITHUB_ACTIONS "true"}}uv run pre-commit install{{else}}echo \"Detected a github actions pipeline; skipping the pre-commit install\"{{end}}'
-
   init:
     desc: Initialize the repo for local use; intended to be run after git clone
     deps: [lock]
     cmds:
       - task: init-uv
       - task: init-submodules
-      - task: init-pre-commit
 
   lint:
     desc: Run the linter(s)
@@ -132,7 +118,6 @@ tasks:
       - find {{.ROOT_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
       - find {{.ROOT_DIR}} -type f -name '.coverage' -delete
       - find {{.ROOT_DIR}} -type d -name 'htmlcov' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name 'dist' -exec rm -rf {} +
       - find {{.ROOT_DIR}} -type d -name 'build' -exec rm -rf {} +
       - find {{.ROOT_DIR}} -type d -name '__pycache__' -exec rm -rf {} +
       - find {{.ROOT_DIR}} -type d -name '.mypy_cache' -exec rm -rf {} +
