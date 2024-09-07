@@ -10,8 +10,8 @@ on:
       - main
 
 jobs:
-  test:
-    name: Test
+  lint:
+    name: Lint
     runs-on: Ubuntu-22.04
     steps:
       - name: Checkout the repository
@@ -20,3 +20,16 @@ jobs:
         uses: seisollc/goat@main
         with:
           exclude: '(\.css|\.scss|\.js|\.html|\.md|\.json)$|.*modules/iac_security/demo/.*|.*reveal.js/node_modules/.*|.*modules/shared/demo/demo-magic.sh$'
+  test:
+    name: Test
+    runs-on: Ubuntu-22.04
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: monorepo:latest
