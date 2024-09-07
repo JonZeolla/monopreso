@@ -3,9 +3,12 @@ FROM node:22-slim
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 ARG TARGETARCH
+# hadolint:ignore=DL3008
 RUN if [ "${TARGETARCH}" = "arm64" ]; then \
-      apt-get update && \
-      apt-get install -y --no-install-recommends chromium; \
+      apt-get update \
+   && apt-get install -y --no-install-recommends chromium \
+   && apt-get clean \
+   && rm -rf /var/lib/apt/lists/*; \
     fi
 
 # Install node_modules globally
