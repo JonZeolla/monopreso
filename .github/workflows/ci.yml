@@ -42,5 +42,7 @@ jobs:
       - name: Build
         uses: docker/build-push-action@v6
         with:
+          # Required because we have git submodules
+          context: .
           push: false
           tags: monorepo:latest
