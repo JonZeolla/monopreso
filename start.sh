@@ -232,7 +232,7 @@ fi
 
 ## Start the presentation
 echo -n "."
-docker buildx build --quiet --load -t monopreso:latest . || true # Continue regardless; assume it failed due to no internet but we have an old version available
+docker buildx build --quiet --load -t monopreso:latest . >/dev/null || true # Continue regardless; assume it failed due to no internet but we have an old version available
 echo -n "."
 container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
 until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
