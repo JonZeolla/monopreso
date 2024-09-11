@@ -3,7 +3,4 @@
 	url = https://github.com/hakimel/reveal.js
 [submodule "modules/iac_security/demo/easy_infra"]
 	path = modules/iac_security/demo/easy_infra
-	url = git@github.com:SeisoLLC/easy_infra.git
-[submodule "goat"]
-	path = goat
-	url = https://github.com/seisollc/goat
+	url = https://github.com/SeisoLLC/easy_infra

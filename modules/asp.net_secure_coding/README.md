@@ -7,12 +7,12 @@ Secrets management (https://nvisium.com/blog/2019/05/02/Dev-Secrets-and-the-ASP-
    public class DonutShopController : Controller
   {
     public IConfiguration Configuration { get; }
-  
+
     public DonutShopController(IConfiguration configuration)
     {
       Configuration = configuration;
     }
-  
+
     public IActionResult Index()
     {
       if (env.IsDevelopment())
@@ -40,26 +40,26 @@ C# Validation
       public class NameAttribute : ValidationAttribute
       {
           private const string _ERROR_MESSAGE = "{0} contains invalid characters.";
-  
+
           public NameAttribute() : base(_ERROR_MESSAGE)
           {
           }
-  
+
           protected override ValidationResult IsValid(object value, ValidationContext validationContext)
           {
               if (value != null)
               {
                   bool isValid = false;
-  
+
                   isValid = Validator.IsValidNameBlackList(value.ToString());
-  
+
                   if (!isValid)
                       return new ValidationResult(FormatErrorMessage(validationContext.DisplayName));
               }
-  
+
               return ValidationResult.Success;
           }
-  
+
           public override string FormatErrorMessage(string name)
           {
               return string.Format(_ERROR_MESSAGE, name);
@@ -76,7 +76,7 @@ C# Validation
           {
               return !input.Contains("<script>");
           }
-  
+
           public static bool IsValidNameWhiteList(string input)
           {
               throw new NotImplementedException();

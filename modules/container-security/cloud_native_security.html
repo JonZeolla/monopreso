@@ -5,6 +5,10 @@
   <aside class="notes"></aside>
 </section>
 <section data-transition="none">
+  <img src="modules/shared/img/CIA_triad.png" width="65%" />
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
   <div class="container">
     <p class="column" align="left">
       <img src="modules/shared/img/CIA_triad.png" width="85%" />
@@ -27,27 +31,39 @@
   <aside class="notes"></aside>
 </section>
 <section data-transition="none">
-  <h1>Ephemeral</h1>
-  <img src="modules/shared/img/ephemeral_lifecycle.png" />
-  <div class="footnote">https://cloud.google.com/blog/topics/developers-practitioners/lifecycle-container-cloud-run</div>
-  <aside class="notes"></aside>
-</section>
-<section data-transition="none">
   <h1>Immutable</h1>
   <img src="modules/shared/img/immutable_updates.jpg" width="60%" />
   <div class="footnote">https://blog.isweluiz.com.br/2022/10/mutable-vs-immutable-infrastructure.html</div>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h1>Ephemeral</h1>
+  <img src="modules/shared/img/ephemeral_lifecycle.png" />
+  <div class="footnote">https://cloud.google.com/blog/topics/developers-practitioners/lifecycle-container-cloud-run</div>
   <aside class="notes"></aside>
 </section>
 <section data-markdown data-transition="none">
   <textarea data-template>
     # DIE and CIA
 
-    - **Distributed** systems are resilient
-      - High **Availability**
-    - **Ephemeral** workloads are fast-moving
-      - Breach of **Confidentiality** is less likely
-    - **Immutable** environments cannot be changed
-      - Strong **Integrity**
+    <ul>
+      <li class="fragment fade-in" data-fragment-index="0"><b>Distributed</b> systems are resilient</li>
+        <ul>
+          <li class="fragment fade-in-then-out" data-fragment-index="0">High <b>Availability</b></li>
+        </ul>
+      </li>
+      <li class="fragment fade-in" data-fragment-index="1"><b>Ephemeral</b> workloads are fast-moving
+        <ul>
+          <li class="fragment fade-in-then-out" data-fragment-index="1">Breach of <b>Confidentiality</b> is less likely</li>
+        </ul>
+      </li>
+      <li class="fragment fade-in" data-fragment-index="2"><b>Immutable</b> environments cannot be changed
+        <ul>
+          <li class="fragment fade-in-then-out" data-fragment-index="2">Strong <b>Integrity</b></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="fragment" data-fragment-index="3"></div>
   </textarea>
   <aside class="notes"></aside>
 </section>
@@ -63,6 +79,14 @@
       - Codified Least Privilege
       - Vulnerability Management
       - Runtime Security, enforced in pipelines
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-markdown data-transition="none">
+  <textarea data-template>
+    #### Effective Cloud Security<br />
+    <i>requires</i><br />
+    # Automation
   </textarea>
   <aside class="notes"></aside>
 </section>

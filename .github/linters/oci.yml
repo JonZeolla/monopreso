@@ -1,0 +1,38 @@
+---
+profile:
+  name: "Require OCI Annotations"
+  description: "Require minimum OCI annotations"
+line_rules:
+  LABEL:
+    paramSyntaxRegex: /org\.opencontainers\.image\..+/
+    defined_namevals:
+      org.opencontainers.image.title:
+        message: "Label 'org.opencontainers.image.title' is missing or has an invalid format"
+        level: "error"
+        required: true
+        inverse_rule: true
+        reference_url:
+          - "https://github.com/opencontainers/image-spec/blob/bd4f8fcb0979a663d8b97a1d4d9b030b3d2ca1fa/annotations.md"
+      org.opencontainers.image.description:
+        message: "Label 'org.opencontainers.image.description' is missing or has an invalid format"
+        level: "error"
+        required: true
+        inverse_rule: true
+        reference_url:
+          - "https://github.com/opencontainers/image-spec/blob/bd4f8fcb0979a663d8b97a1d4d9b030b3d2ca1fa/annotations.md"
+      org.opencontainers.image.url:
+        valueRegex: /https:\/\/jonzeolla.com.*/
+        message: "Label 'org.opencontainers.image.url' is missing or has an invalid format"
+        level: "error"
+        required: true
+        inverse_rule: true
+        reference_url:
+          - "https://github.com/opencontainers/image-spec/blob/bd4f8fcb0979a663d8b97a1d4d9b030b3d2ca1fa/annotations.md"
+      org.opencontainers.image.source:
+        valueRegex: /https:\/\/github.com\/jonzeolla\/monopreso/
+        message: "Label 'org.opencontainers.image.source' is missing or has an invalid format"
+        level: "error"
+        required: true
+        inverse_rule: true
+        reference_url:
+          - "https://github.com/opencontainers/image-spec/blob/bd4f8fcb0979a663d8b97a1d4d9b030b3d2ca1fa/annotations.md"
