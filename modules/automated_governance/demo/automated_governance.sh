@@ -6,10 +6,10 @@ export ZENABLE_LOGLEVEL="WARNING"
 export PROJECT=csa_birmingham
 export monorepo=/Users/jonzeolla/src/zenable/next-gen-governance/
 
-cd ${monorepo}/services/document_ingestion
+cd ${monorepo}/services/document_ingestion || exit
 task init
 task build
-cd ${monorepo}/services/analysis
+cd ${monorepo}/services/analysis || exit
 task init
 INIT_AT_BUILD=True task build #-f
 
@@ -17,13 +17,13 @@ INIT_AT_BUILD=True task build #-f
 # Demo
 docker volume rm -f ${PROJECT}_postgres_data || true
 
-cd ${monorepo}/services/document_ingestion
+cd ${monorepo}/services/document_ingestion || exit
 task start
 task run
 task stop
 
 sleep 5
 
-cd ${monorepo}/services/analysis
+cd ${monorepo}/services/analysis || exit
 task start
 task run
