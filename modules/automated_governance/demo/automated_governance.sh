@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
 # Prep
 export ZENABLE_LLM="BEDROCK"
 export ZENABLE_BEDROCK__MODEL_ID="anthropic.claude-3-sonnet-20240229-v1:0"
