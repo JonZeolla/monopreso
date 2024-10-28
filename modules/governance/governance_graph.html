@@ -1,0 +1,110 @@
+<section data-markdown>
+  <textarea data-template>
+    ### Why do we use documents?
+  </textarea>
+  <aside class="notes"></aside>
+</section>
+<section data-transition="none">
+  <h2>Example InfoSec Policy</h2>
+  <blockquote style="font-size:1.5vw">
+    The scope of this policy extends to all employees, contractors, and third-party associates of FinTech Innovations, Inc. who access, process, or store company data. It applies to all forms of data, including electronic and physical formats, and encompasses all systems, networks, applications, and devices managed by the company.<br /><br />
+    This policy is integral to our overall risk management strategy and is mandatory for all personnel to adhere to, ensuring that every individual understands their role in safeguarding the company's information assets.<br /><br />
+    <footer>- ChatGPT</footer>
+    </blockquote>
+  <aside class="notes"></aside>
+</section>
+<section>
+  <h3>Graph it!</h3>
+  <img src="modules/governance/img/unusable_policy_graph.png" width=80% /><br /><br />
+  <p class="footnote">...or use another specialized database</p>
+  <aside class="notes">
+      // Edges
+    // Create Policy node
+    CREATE (policy:Policy {name: 'Company Data Policy'});
+
+    // Create Company node
+    CREATE (company:Company {name: 'FinTech Innovations, Inc.'});
+
+    // Create Role nodes
+    CREATE (employee:Role {name: 'Employee'});
+    CREATE (contractor:Role {name: 'Contractor'});
+    CREATE (thirdPartyAssociate:Role {name: 'Third-Party Associate'});
+
+    // Create Data node
+    CREATE (companyData:Data {name: 'Company Data'});
+
+    // Create DataFormat nodes
+    CREATE (electronicFormat:DataFormat {name: 'Electronic Format'});
+    CREATE (physicalFormat:DataFormat {name: 'Physical Format'});
+
+    // Create Asset nodes
+    CREATE (system:Asset {name: 'System'});
+    CREATE (network:Asset {name: 'Network'});
+    CREATE (application:Asset {name: 'Application'});
+    CREATE (device:Asset {name: 'Device'});
+
+    // Create Strategy node
+    CREATE (riskManagement:Strategy {name: 'Risk Management Strategy'});
+
+    // Create Group node
+    CREATE (personnel:Group {name: 'Personnel'});
+
+    // Create Person node
+    CREATE (individual:Person {name: 'Individual'});
+
+    // Create Responsibility node
+    CREATE (role:Responsibility {name: 'Role'});
+
+    // Create DataAsset node
+    CREATE (informationAssets:DataAsset {name: "Company's Information Assets"});
+
+      // RELATIONSHIPS
+
+    // Policy extends to Roles
+    CREATE (policy)-[:EXTENDS_TO]->(employee);
+    CREATE (policy)-[:EXTENDS_TO]->(contractor);
+    CREATE (policy)-[:EXTENDS_TO]->(thirdPartyAssociate);
+
+    // Roles work for Company
+    CREATE (employee)-[:WORKS_FOR]->(company);
+    CREATE (contractor)-[:WORKS_FOR]->(company);
+    CREATE (thirdPartyAssociate)-[:WORKS_FOR]->(company);
+
+    // Policy applies to Company Data
+    CREATE (policy)-[:APPLIES_TO]->(companyData);
+
+    // Company Data includes Data Formats
+    CREATE (companyData)-[:INCLUDES]->(electronicFormat);
+    CREATE (companyData)-[:INCLUDES]->(physicalFormat);
+
+    // Company Data encompasses Assets
+    CREATE (companyData)-[:ENCOMPASSES]->(system);
+    CREATE (companyData)-[:ENCOMPASSES]->(network);
+    CREATE (companyData)-[:ENCOMPASSES]->(application);
+    CREATE (companyData)-[:ENCOMPASSES]->(device);
+
+    // Assets managed by Company
+    CREATE (system)-[:MANAGED_BY]->(company);
+    CREATE (network)-[:MANAGED_BY]->(company);
+    CREATE (application)-[:MANAGED_BY]->(company);
+    CREATE (device)-[:MANAGED_BY]->(company);
+
+    // Policy is integral to Risk Management Strategy
+    CREATE (policy)-[:INTEGRAL_TO]->(riskManagement);
+
+    // Policy is mandatory for Personnel
+    CREATE (policy)-[:MANDATORY_FOR]->(personnel);
+
+    // Personnel adhere to Policy
+    CREATE (personnel)-[:ADHERES_TO]->(policy);
+
+    // Individual has Role
+    CREATE (individual)-[:HAS_ROLE]->(role);
+
+    // Individual safeguards Company's Information Assets
+    CREATE (individual)-[:SAFEGUARDS]->(informationAssets);
+
+    // Company's Information Assets is a type of Company Data
+    CREATE (informationAssets)-[:IS_TYPE_OF]->(companyData);
+  </aside>
+</section>

@@ -9,7 +9,7 @@ To print your presentation, start it and browse to http://localhost:8000/?showNo
 
 ## Getting Started
 
-Ensure you have `docker`, `pipenv`, and `python3` installed locally, and the docker daemon is running.
+Ensure you have `docker`, `uv`, and `python3` installed locally, and the docker daemon is running.
 
 Then, you can open a presentation via:
 
@@ -23,6 +23,8 @@ task -v init
 # Pick a presentation, and run it
 ./start.sh --preso=iac_security
 ```
+
+There are also some demos which may require `pipenv`.
 
 If you're actively working on a presentation or module, you can also use `task start` and it will start the presentation of the directory that you're in.
 
