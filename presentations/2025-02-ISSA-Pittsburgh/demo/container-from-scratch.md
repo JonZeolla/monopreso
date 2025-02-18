@@ -21,7 +21,7 @@ man 7 capabilities
 # File capabilities
 getcap $(which ping)
 cp $(which ping) ./
-getcap ping
+getcap -v ping
 # Process capabilities
 getpcaps 0
 getpcaps $$
@@ -53,21 +53,22 @@ diff ~/before ~/after
 
 ```bash
 awk -F\: '{print $NF}' < /proc/$$/cgroup
-cat /sys/fs/cgroup/user.slice/user-1000.slice/session-1.scope/memory.max # This is the cgroup max memory limit for the current UID 1000 session
+cat /sys/fs/cgroup/user.slice/user-1000.slice/session-*.scope/memory.max # This is the cgroup max memory limit for the current UID 1000 session
 lscgroup | grep docker
 cat /sys/fs/cgroup/system.slice/docker.service/memory.max
 ```
 
 ## Namespaces
 
+### UTS: Unix Timesharing System
+
 ```bash
 man 1 unshare
 # Listing namespaces
-lsns
+lsns # Run this as non-root
 sudo bash
 lsns
 # Hostname
-# UTS:  Unix Timesharing System
 unshare --uts bash
 echo $SHLVL
 hostname
@@ -75,7 +76,11 @@ hostname new
 hostname
 exit
 hostname
-# PIDs
+```
+
+### PID namespaces
+
+```bash
 # Cannot run any commands; commands run after this try to spawn a process in the original namespace
 unshare --pid bash # exit after
 # Can run exactly one command
@@ -87,11 +92,10 @@ ps # Wait, what?
 exit
 ```
 
-## More namespaces
+## Container from scratch
 
 ```bash
 # Root FS
-mkdir new
 chroot empty
 chroot empty ls
 echo $SHLVL
@@ -114,6 +118,9 @@ ps # Success!
 # Mount
 unshare --mount chroot alpine ash
 mount -t proc proc proc
+hostname
+hostname new
+hostname
 mount
 exit
 findmnt # Same info as mount, different format
