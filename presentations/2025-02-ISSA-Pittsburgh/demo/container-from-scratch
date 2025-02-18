@@ -1,7 +1,6 @@
 ## Getting Started
 
 ```bash
-./start.sh
 echo $SHLVL
 bash
 echo $SHLVL
@@ -27,10 +26,10 @@ getcap ping
 getpcaps 0
 getpcaps $$
 sudo bash
-getpcaps $$
+getpcaps $$ # full Effective (e) and Permitted (p) capabilities
 ```
 
-## cgroups
+## cgroups v1
 
 ```bash
 cat /proc/$$/cgroup
@@ -48,6 +47,15 @@ ls /sys/fs/cgroup/*/docker | grep docker
 lscgroup > ~/after
 # Compare before/after
 diff ~/before ~/after
+```
+
+## cgroups v2
+
+```bash
+awk -F\: '{print $NF}' < /proc/$$/cgroup
+cat /sys/fs/cgroup/user.slice/user-1000.slice/session-1.scope/memory.max # This is the cgroup max memory limit for the current UID 1000 session
+lscgroup | grep docker
+cat /sys/fs/cgroup/system.slice/docker.service/memory.max
 ```
 
 ## Namespaces
@@ -68,14 +76,20 @@ hostname
 exit
 hostname
 # PIDs
-# Cannot run any commands
-unshare --pid bash
+# Cannot run any commands; commands run after this try to spawn a process in the original namespace
+unshare --pid bash # exit after
 # Can run exactly one command
-unshare --pid sh
+unshare --pid sh # exit after
 # Run a new PID namespace that works as expected.  Forks the specified program as a child process of unshare rather than running it directly.
 unshare --pid --fork sh
 echo $$ # PID 1!
 ps # Wait, what?
+exit
+```
+
+## More namespaces
+
+```bash
 # Root FS
 mkdir new
 chroot empty
@@ -88,10 +102,10 @@ tar xvf alpine.tar.gz
 rm alpine.tar.gz
 popd
 ls /bin/ash # Nothing up my sleeve
-chroot alpine /bin/ash
-chroot alpine ls
+chroot alpine /bin/ash # exit after
+chroot alpine ls /
 # Multiple Namespaces
-unshare --pid --fork chroot alpine /bin/ash
+unshare --uts --pid --fork chroot alpine /bin/ash
 echo $$
 ps
 ls /proc/ # We might need that
