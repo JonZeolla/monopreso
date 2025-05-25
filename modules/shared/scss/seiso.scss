@@ -207,3 +207,28 @@ body.no-branding .branding{
   display: grid;
   grid-auto-flow: column;
 }
+
+// Add blinking
+blink, .blink {
+    -webkit-animation: blink 1s step-end infinite;
+    -moz-animation: blink 1s step-end infinite;
+    -o-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite;
+}
+@-webkit-keyframes blink { 67% { opacity: 0 }}
+@-moz-keyframes blink {  67% { opacity: 0 }}
+@-o-keyframes blink {  67% { opacity: 0 }}
+@keyframes blink {  67% { opacity: 0 }}
+
+// Add custom classes to allow overlaying images
+// https://ashonit.blogspot.com/2016/09/image-stacking-in-revealjs.html
+.image-float {
+   float: left;
+   position: relative;
+   top: 0;
+   left: 0;
+}
+
+.reveal .content-aside {
+   margin-top: 1em;
+}
