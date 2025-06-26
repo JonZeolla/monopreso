@@ -19,7 +19,7 @@ function help() {
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
 		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--branding=BRANDING] [--no-open] [--no-cleanup]
-		--branding     Use the specified branding i.e. --branding=seiso
+		--branding     Use the specified branding i.e. --branding=seiso or --branding=zenable
 		--list         List the available presentations
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
@@ -147,7 +147,7 @@ fi
 # Branding is optional, but must be in the allowlist if specified
 echo -n "."
 if [[ "${BRANDING}" != "False" ]]; then
-  if [[ "${BRANDING,,}" != "seiso" ]]; then
+  if [[ "${BRANDING,,}" != "seiso" ]] && [[ "${BRANDING,,}" != "zenable" ]]; then
     feedback ERROR "${BRANDING} is not a valid branding option"
   fi
 fi
@@ -219,15 +219,20 @@ ln -sf "../${RENDERED_PRESENTATION}" reveal.js/index.html
 ln -sFh ../modules reveal.js/modules
 ln -sFh ../presentations reveal.js/presentations
 ln -sf ../../../../modules/shared/scss/custom.scss reveal.js/css/theme/source/
-docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css/theme/source/custom.scss > modules/shared/css/custom.css
+docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/custom.scss modules/shared/css/custom.css
 ln -sf ../../../modules/shared/css/custom.css reveal.js/dist/theme/custom.css
 
 # Render and link branded css
 if [[ "${BRANDING,,}" == "seiso" ]]; then
   ln -sf ../../../../modules/shared/scss/seiso.scss reveal.js/css/theme/source/
   echo -n "."
-  docker run --platform linux/amd64 --rm -v .:/data codycraven/sassc reveal.js/css/theme/source/seiso.scss > modules/shared/css/seiso.css
+  docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/seiso.scss modules/shared/css/seiso.css
   ln -sf ../../../modules/shared/css/seiso.css reveal.js/dist/theme/seiso.css
+elif [[ "${BRANDING,,}" == "zenable" ]]; then
+  ln -sf ../../../../modules/shared/scss/zenable.scss reveal.js/css/theme/source/
+  echo -n "."
+  docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/zenable.scss modules/shared/css/zenable.css
+  ln -sf ../../../modules/shared/css/zenable.css reveal.js/dist/theme/zenable.css
 fi
 
 ## Start the presentation

@@ -71,7 +71,7 @@ tasks:
       PRESENTATION:
         sh: basename {{.USER_WORKING_DIR}}
     cmds:
-      - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}}'
+      - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
 
   generate-pdfs:
     desc: Generate all of the PDFs
