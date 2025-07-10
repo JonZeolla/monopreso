@@ -4,8 +4,9 @@
 source ../../../modules/shared/demo/demo-magic.sh
 
 export ALLOW_FORCE_PUSH=true
-rm -rf bsidespgh 2>/dev/null || true
-pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git"
+rm -rf bsidespgh25 2>/dev/null || true
+pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git project_name=bsidespgh25"
+# pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git prjoect_name=bsidespgh25 --checkout TODO --keep-project-on-failure"
 wait
 
 # We want this to be single quoted and not expanded
@@ -20,7 +21,8 @@ pe "task lint"
 wait
 
 task clean
-pe "tree -I .git -I .venv -I .task -I .ruff_cache -a"
+export IGNORES="-I .git -I .venv -I .task -I .ruff_cache"
+pe "tree $IGNORES -a"
 wait
 
 pe "head -5 .github/workflows/*.yml .github/actions/*/*.yml"
