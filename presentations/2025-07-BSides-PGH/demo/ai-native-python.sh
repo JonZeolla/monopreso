@@ -10,8 +10,7 @@ open "${docker_hub}"
 export ALLOW_FORCE_PUSH=true
 rm -rf bsidespgh25 2>/dev/null || true
 pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git project_name=bsidespgh25"
-# pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git prjoect_name=bsidespgh25 --checkout TODO --keep-project-on-failure"
-#
+
 github=https://github.com/JonZeolla/bsidespgh25
 echo "# Let's take a quick look at ${github}"
 open "${github}"
@@ -39,3 +38,10 @@ pe "task unit-test"
 
 pe "task sbom vulnscan license-check"
 pe "ls sbom* vulns* license*"
+
+release="https://github.com/JonZeolla/bsidespgh25/actions/workflows/release.yml"
+echo "# Let's take a quick look at ${release}"
+open "${release}"
+wait
+
+pe "docker run jonzeolla/bsidespgh25:0.1.0 --help"

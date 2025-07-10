@@ -66,10 +66,14 @@ tasks:
       - for repo in $(find ./modules/iac_security/demo -type d -mindepth 1 -maxdepth 1); do pushd "${repo}"; git pull origin main; popd; done
 
   start:
-    desc: Start the presentation of the directory the user is currently in
+    desc: Start the presentation based on the directory the user is currently in
     vars:
       PRESENTATION:
-        sh: basename {{.USER_WORKING_DIR}}
+        sh: |
+          rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+          rel="${rel#/}"        # drop any leading slash
+          rel="${rel#*/}"       # drop "presentations/" or "modules/"
+          printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
     cmds:
       - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
 
