@@ -16,7 +16,6 @@ echo "# Let's take a quick look at ${github}"
 open "${github}"
 wait
 
-
 # We want this to be single quoted and not expanded
 # shellcheck disable=SC2016
 pe 'cd $(ls -td * | head -1)'
@@ -32,16 +31,11 @@ pe "tree $IGNORES -a"
 
 pe "head -5 .github/workflows/*.yml .github/actions/*/*.yml"
 
-pe "PLATFORM=all task build"
-
 pe "task unit-test"
-
-pe "task sbom vulnscan license-check"
-pe "ls sbom* vulns* license*"
 
 release="https://github.com/JonZeolla/bsidespgh25/actions/workflows/release.yml"
 echo "# Let's take a quick look at ${release}"
 open "${release}"
 wait
 
-pe "docker run jonzeolla/bsidespgh25:0.1.0 --help"
+pe "docker run --pull always jonzeolla/bsidespgh25:0.1.0 --help"
