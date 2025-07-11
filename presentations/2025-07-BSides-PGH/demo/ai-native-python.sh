@@ -9,7 +9,8 @@ open "${docker_hub}"
 
 export ALLOW_FORCE_PUSH=true
 rm -rf bsidespgh25 2>/dev/null || true
-pe "uvx --with gitpython cookiecutter git+ssh://git@github.com/zenable-io/ai-native-python.git project_name=bsidespgh25"
+pe "uvx --with gitpython cookiecutter gh:zenable-io/ai-native-python project_name=bsidespgh25"
+
 
 github=https://github.com/JonZeolla/bsidespgh25
 echo "# Let's take a quick look at ${github}"
