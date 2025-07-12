@@ -1,0 +1,598 @@
+/* Zenable.io inspired theme - Modern, techy, fun */
+
+// Default mixins and settings -----------------
+@use "sass:color";
+
+// Suppress import warnings - reveal.js still uses @import
+// sass:disable-warnings
+@import "../template/mixins";
+@import "../template/settings";
+// sass:enable-warnings
+// ---------------------------------------------
+
+// Zenable.io dark mode color palette
+$zenable-primary: #00D9D9;  // Bright teal/cyan for dark mode
+$zenable-primary-dim: #007F7F;  // Original teal
+$zenable-dark-bg: #0A0A0A;  // Near black background
+$zenable-dark-surface: #1A1A1A;  // Slightly lighter for cards/panels
+$zenable-dark-surface-2: #252525;  // Even lighter for hover states
+$zenable-border: #2A2A2A;  // Subtle borders
+$zenable-text-primary: #E0E0E0;  // Primary text
+$zenable-text-secondary: #A0A0A0;  // Secondary text
+$zenable-deep-blue: #05385B;
+$zenable-gradient-start: #00A5A5;
+$zenable-gradient-end: #005F5F;
+
+// Override reveal.js theme variables for dark mode
+$backgroundColor: $zenable-dark-bg;
+$mainColor: $zenable-text-primary;
+$headingColor: #FFFFFF;
+$mainFontSize: 42px;
+$mainFont: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+$headingFont: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+$headingTextShadow: none;
+$headingLetterSpacing: normal;
+$headingTextTransform: none;
+$headingFontWeight: 700;
+$linkColor: $zenable-primary;
+$linkColorHover: color.adjust($zenable-primary, $lightness: 15%);
+$selectionBackgroundColor: rgba($zenable-primary, 0.3);
+
+// Base reveal styles
+.reveal {
+  font-family: $mainFont;
+  font-size: $mainFontSize;
+  font-weight: normal;
+  color: $mainColor;
+
+  // Animated gradient background with subtle pattern
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(ellipse at top left, rgba($zenable-primary, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba($zenable-primary-dim, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  // Tech grid pattern overlay
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image:
+      linear-gradient(rgba($zenable-primary, 0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba($zenable-primary, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+    animation: grid-slide 20s linear infinite;
+  }
+}
+
+@keyframes grid-slide {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(50px, 50px); }
+}
+
+// Modern heading styles
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4,
+.reveal h5,
+.reveal h6 {
+  margin: 0 0 20px 0;
+  color: $headingColor;
+  font-family: $headingFont;
+  font-weight: $headingFontWeight;
+  line-height: 1.2;
+  letter-spacing: $headingLetterSpacing;
+  text-transform: $headingTextTransform;
+  text-shadow: $headingTextShadow;
+  word-wrap: break-word;
+
+  // Gradient text effect for h1
+  &.gradient-text {
+    background: linear-gradient(135deg, $zenable-primary 0%, $zenable-deep-blue 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+// Title slide special styling
+.reveal .slides section.title-slide {
+  h1 {
+    font-size: 3.5em;
+    background: linear-gradient(135deg, $zenable-primary 0%, $zenable-deep-blue 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5em;
+    animation: pulse-glow 2s ease-in-out infinite;
+    text-shadow: 0 0 20px rgba($zenable-primary, 0.5);
+  }
+
+  h2, h3 {
+    color: $zenable-text-secondary;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 20px rgba($zenable-primary, 0.5);
+  }
+  50% {
+    opacity: 0.9;
+    text-shadow: 0 0 30px rgba($zenable-primary, 0.8);
+  }
+}
+
+// Modern link styles
+.reveal a {
+  color: $linkColor;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    color: $linkColorHover;
+    text-shadow: 0 0 12px rgba($zenable-primary, 0.8);
+  }
+
+  // Underline animation
+  &:not(.image)::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: $zenable-primary;
+    transition: width 0.3s ease;
+  }
+
+  &:not(.image):hover::after {
+    width: 100%;
+  }
+}
+
+// Modern button styles
+.reveal .button,
+.reveal button {
+  background: linear-gradient(135deg, $zenable-primary 0%, color.adjust($zenable-primary, $lightness: -10%) 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba($zenable-primary, 0.3);
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba($zenable-primary, 0.4);
+    background: linear-gradient(135deg, color.adjust($zenable-primary, $lightness: 5%) 0%, $zenable-primary 100%);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba($zenable-primary, 0.3);
+  }
+}
+
+// Code blocks with modern styling
+.reveal pre {
+  display: block;
+  position: relative;
+  margin: 20px auto;
+  text-align: left;
+  font-size: 0.55em;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  line-height: 1.2em;
+  word-wrap: break-word;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  background: $zenable-dark-surface;
+  border: 1px solid $zenable-border;
+  overflow: hidden;
+
+  code {
+    display: block;
+    padding: 20px;
+    overflow: auto;
+    max-height: 400px;
+    word-wrap: normal;
+    background: transparent;
+  }
+
+  // Terminal-like header
+  &.terminal::before {
+    content: "● ● ●";
+    display: block;
+    background: $zenable-dark-surface-2;
+    color: $zenable-text-secondary;
+    padding: 8px 20px;
+    font-size: 14px;
+    letter-spacing: 8px;
+    margin: -1px -1px 0 -1px;
+  }
+
+  &.terminal code {
+    background: #0A0A0A;
+    color: $zenable-primary;
+    text-shadow: 0 0 3px rgba($zenable-primary, 0.5);
+  }
+}
+
+// Inline code
+.reveal code {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  background: $zenable-dark-surface;
+  color: $zenable-primary;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid $zenable-border;
+}
+
+// Lists with modern bullets
+.reveal ul {
+  display: block;
+  margin-left: 1em;
+
+  li {
+    position: relative;
+    padding-left: 1.5em;
+
+    &::before {
+      content: "▸";
+      position: absolute;
+      left: 0;
+      color: $zenable-primary;
+      font-weight: bold;
+      animation: bullet-pulse 2s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes bullet-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+
+// Modern blockquotes
+.reveal blockquote {
+  position: relative;
+  margin: 20px auto;
+  padding: 20px 30px;
+  background: $zenable-dark-surface;
+  border-left: 5px solid $zenable-primary;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  font-style: italic;
+
+  &::before {
+    content: "\201C";
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    font-size: 4em;
+    color: $zenable-primary;
+    opacity: 0.3;
+  }
+}
+
+// Progress bar styling
+.reveal .progress {
+  background: rgba($zenable-border, 0.5);
+  color: $zenable-primary;
+  height: 5px;
+
+  span {
+    background: linear-gradient(90deg, $zenable-primary 0%, $zenable-deep-blue 100%);
+    transition: width 800ms cubic-bezier(0.26, 0.86, 0.44, 0.985);
+    border-radius: 0 5px 5px 0;
+  }
+}
+
+// Slide numbers with modern style
+.reveal .slide-number {
+  background: rgba($zenable-dark-surface, 0.8);
+  color: $zenable-text-secondary;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-size: 0.8em;
+  backdrop-filter: blur(10px);
+  border: 1px solid $zenable-border;
+}
+
+// Controls styling
+.reveal .controls {
+  color: $zenable-primary;
+
+  button {
+    opacity: 0.7;
+    transition: all 0.3s ease;
+
+    &:hover {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+}
+
+// Image effects
+.reveal section img {
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+  }
+
+  &.no-shadow {
+    box-shadow: none;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+}
+
+// Tables with modern style
+.reveal table {
+  margin: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba($zenable-deep-blue, 0.1);
+
+  th {
+    background: linear-gradient(135deg, $zenable-primary-dim 0%, color.adjust($zenable-primary-dim, $lightness: -10%) 100%);
+    color: white;
+    font-weight: bold;
+    padding: 15px;
+    text-align: left;
+  }
+
+  td {
+    background: $zenable-dark-surface;
+    padding: 15px;
+    border-bottom: 1px solid $zenable-border;
+
+    &:hover {
+      background: $zenable-dark-surface-2;
+    }
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// Special effects for fragments
+.reveal .fragment {
+  &.highlight-current-zenable {
+    opacity: 0.5;
+
+    &.current-fragment {
+      opacity: 1;
+      color: $zenable-primary;
+      font-weight: bold;
+    }
+  }
+
+  &.glow {
+    &.visible {
+      animation: text-glow 1s ease-in-out;
+    }
+  }
+}
+
+@keyframes text-glow {
+  0%, 100% { text-shadow: none; }
+  50% { text-shadow: 0 0 20px rgba($zenable-primary, 0.8); }
+}
+
+// Zenable-specific highlight colors
+.reveal .fragment.highlight-zenable {
+  opacity: 1;
+  visibility: inherit;
+
+  &.visible {
+    color: $zenable-primary;
+    font-weight: bold;
+  }
+}
+
+// Modern box/card styling
+.reveal .box,
+.reveal .card {
+  background: $zenable-dark-surface;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid $zenable-border;
+  margin: 20px 0;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, $zenable-primary 0%, color.adjust($zenable-primary, $lightness: -10%) 100%);
+    color: white;
+    border: none;
+
+    h1, h2, h3, h4, h5, h6 {
+      color: white;
+    }
+  }
+}
+
+// Animated elements
+.reveal .animate-in {
+  animation: slide-in 0.8s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Tech-themed decorative elements
+.reveal .tech-decoration {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 2px solid $zenable-primary;
+  border-radius: 50%;
+  opacity: 0.05;
+  animation: float 6s ease-in-out infinite;
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    border: 2px solid $zenable-primary;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+// Emoji support with fun animations
+.reveal .emoji {
+  display: inline-block;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: scale(1.3) rotate(10deg);
+  }
+}
+
+// Loading animation
+@keyframes loading-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.reveal .loading {
+  &::after {
+    content: "...";
+    animation: loading-pulse 1.5s ease-in-out infinite;
+  }
+}
+
+// Theme template -----------------
+@import "../template/theme";
+// --------------------------------
+
+// Import custom styles from custom.scss
+// medium class
+.medium {
+  font-size: 0.8em;
+  line-height: 1.1em;
+  vertical-align: top;
+}
+
+// Special padding for medium class lists
+ul.medium > li, ol.medium > li {
+  padding: .3em 0px;
+}
+
+// Footnote
+section {
+    > .footnote {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        font-size: 30%;
+        font-weight: normal;
+    }
+}
+
+// Columns
+.container{
+  display: grid;
+  grid-auto-flow: column;
+}
+
+// Add semi-faded-out outside of fragments
+.reveal .semi-faded-out {
+  opacity: 0.5;
+  visibility: inherit;
+}
+
+// Add highlight-orange
+.reveal .fragment.highlight-orange {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-orange.visible {
+  color: #CC5500
+}
+
+// Add highlight-yellow
+.reveal .fragment.highlight-yellow {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-yellow.visible {
+  color: #FDDA0D
+}
+
+// Add blinking
+blink, .blink {
+    -webkit-animation: blink 1s step-end infinite;
+    -moz-animation: blink 1s step-end infinite;
+    -o-animation: blink 1s step-end infinite;
+    animation: blink 1s step-end infinite;
+}
+@-webkit-keyframes blink { 67% { opacity: 0 }}
+@-moz-keyframes blink {  67% { opacity: 0 }}
+@-o-keyframes blink {  67% { opacity: 0 }}
+@keyframes blink {  67% { opacity: 0 }}
+
+// Add custom classes to allow overlaying images
+// https://ashonit.blogspot.com/2016/09/image-stacking-in-revealjs.html
+.image-float {
+   /* float: left; */
+   position: relative;
+   top: 0;
+   left: 0;
+}
+
+.reveal .content-aside {
+   margin-top: 1em;
+}
