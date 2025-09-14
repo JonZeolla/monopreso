@@ -75,9 +75,13 @@ tasks:
 
   start:
     desc: Start the presentation based on the directory the user is currently in
-    requires:
-      vars:
-        - PRESENTATION
+    vars:
+      PRESENTATION:
+        sh: |
+          rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+          rel="${rel#/}"        # drop any leading slash
+          rel="${rel#*/}"       # drop "presentations/" or "modules/"
+          printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
     cmds:
       - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
 
