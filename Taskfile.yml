@@ -10,6 +10,14 @@ set:
 
 silent: true
 
+vars:
+  PRESENTATION:
+    sh: |
+      rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+      rel="${rel#/}"        # drop any leading slash
+      rel="${rel#*/}"       # drop "presentations/" or "modules/"
+      printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
+
 tasks:
   lock:
     desc: Update uv.lock if pyproject.toml has changed
@@ -84,7 +92,24 @@ tasks:
         sh: ./start.sh --list
     cmds:
       - for: { var: PRESENTATIONS }
-        cmd: ./start.sh --preso={{.ITEM}} --no-open --no-cleanup && /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --print-to-pdf="{{.ITEM}}.pdf" 'http://localhost:8000/?print-pdf' && task stop clean
+        cmd: task:generate-pdf
+        vars:
+          PRESENTATION: '{{.ITEM}}'
+
+  generate-pdf:
+    desc: Generate one PDF
+    requires:
+      vars:
+        - PRESENTATION
+    vars:
+      OUTPUT_PDF: '{{.USER_WORKING_DIR}}/{{.PRESENTATION}}.pdf'
+    cmds:
+      - defer: { task: stop }
+      - task: start
+        vars:
+          PRESENTATION: '{{.PRESENTATION}}'
+          CLI_ARGS: --no-open --no-cleanup
+      - /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --print-to-pdf="{{.OUTPUT_PDF}}" 'http://localhost:8000/?print-pdf'
 
   cleanup-pdfs:
     desc: Cleanup the generated PDFs
@@ -116,6 +141,7 @@ tasks:
       - rm -rf presentations/2023-09-TechFest/demo/TODO
                presentations/2023-09-TechFest/demo/cosign*
                presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
+      - rm -rf presentations/2025-07-BSides-PGH/demo/bsidespgh25 2>/dev/null || true
       - cd reveal.js && git restore package-lock.json
       - find {{.ROOT_DIR}} -type d -name '*.egg-info' -exec rm -rf {} +
       - find {{.ROOT_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
