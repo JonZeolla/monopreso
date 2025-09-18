@@ -10,6 +10,7 @@
   </aside>
 </section>
 <section data-transition="none">
+  <h2>Gherkin</h2>
   <pre><code data-trim data-noescape class="r-stretch language-gherkin">
   Feature: Create item
 
@@ -34,5 +35,33 @@
   </code></pre>
   <aside class="notes">
     It could be like this (gherkin)
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>EARS</h2>
+  Easy Approach to Requirements Syntax
+  <ol>
+    <li>Ubiquitous requirements</li>
+    <li>State driven requirements</li>
+    <li>Event driven requirements</li>
+    <li>Optional feature requirements</li>
+    <li>Unwanted behaviour requirements</li>
+    <li>Complex requirements</li>
+  </ol>
+  <aside class="notes">
+    Easy Approach to Requirements Syntax
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>EARS</h2>
+  <pre><code data-trim data-noescape class="language-text wrap-text">
+    When an authenticated client submits a valid JSON payload {name:string, price:decimal} to POST /api/v1/items, the Items API shall create the item and respond 201 Created with body {id: UUID, created_at: ISO-8601, name, price}.
+
+    When the JSON payload is missing required fields or violates constraints (e.g., empty name, negative price, wrong type, or max length exceeded), the Items API shall respond 400 Bad Request with a field-level error list (Problem Details JSON).
+
+    When the request lacks a valid Authorization: Bearer <JWT> (missing, expired, malformed, or invalid signature), the Items API shall respond 401 Unauthorized and include WWW-Authenticate: Bearer.
+  </code></pre>
+  <aside class="notes">
+    For example... here's an event driven EARS
   </aside>
 </section>

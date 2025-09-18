@@ -77,3 +77,9 @@ blink, .blink {
 .reveal .content-aside {
    margin-top: 1em;
 }
+
+// Word wrap for code blocks
+.reveal pre code.wrap-text {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
