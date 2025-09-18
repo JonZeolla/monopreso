@@ -1,0 +1,38 @@
+<section data-transition="none">
+  Enter
+  <h1>Spec Driven Development</h1>
+  <aside class="notes">
+  </aside>
+</section>
+<section data-transition="none">
+  <h1>What is a spec?</h1>
+  <aside class="notes">
+  </aside>
+</section>
+<section data-transition="none">
+  <pre><code data-trim data-noescape class="r-stretch language-gherkin">
+  Feature: Create item
+
+  Scenario: Happy path
+    Given I have a valid JWT
+    And a payload { "name":"Widget","price":9.99 }
+    When I POST to /api/v1/items
+    Then the response code is 201
+    And the body has fields id (uuid), created_at (ISO 8601)
+    And name = "Widget" and price = 9.99
+
+  Scenario: Validation failure
+    Given a payload { "name":"", "price": -1 }
+    When I POST to /api/v1/items
+    Then the response code is 400
+    And the body explains missing/invalid fields
+
+  Scenario: Unauthorized
+    Given no Authorization header
+    When I POST to /api/v1/items
+    Then the response code is 401
+  </code></pre>
+  <aside class="notes">
+    It could be like this (gherkin)
+  </aside>
+</section>
