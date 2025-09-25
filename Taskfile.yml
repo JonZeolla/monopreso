@@ -78,10 +78,14 @@ tasks:
     vars:
       PRESENTATION:
         sh: |
-          rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
-          rel="${rel#/}"        # drop any leading slash
-          rel="${rel#*/}"       # drop "presentations/" or "modules/"
-          printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
+          if [ -n "{{.PRESENTATION}}" ] && [ "{{.PRESENTATION}}" != "<no value>" ]; then
+            echo "{{.PRESENTATION}}"
+          else
+            rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+            rel="${rel#/}"        # drop any leading slash
+            rel="${rel#*/}"       # drop "presentations/" or "modules/"
+            printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
+          fi
     cmds:
       - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
 
@@ -92,7 +96,7 @@ tasks:
         sh: ./start.sh --list
     cmds:
       - for: { var: PRESENTATIONS }
-        cmd: task:generate-pdf
+        task: generate-pdf
         vars:
           PRESENTATION: '{{.ITEM}}'
 
