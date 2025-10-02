@@ -39,4 +39,4 @@ echo "# Let's take a quick look at ${release}"
 open "${release}"
 wait
 
-pe "docker run --pull always jonzeolla/cloudsecnext25:0.1.0 --help"
+pe "docker run --pull always jonzeolla/cloudsecnext25:0.1.0 --version"
