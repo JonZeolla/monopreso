@@ -22,8 +22,6 @@ wait
 pe 'cd $(ls -td * | head -1)'
 task clean
 
-pe "grep -r NotImplementedError *"
-
 pe "task lint"
 
 task clean
