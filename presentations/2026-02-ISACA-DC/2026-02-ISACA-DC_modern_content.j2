@@ -1,4 +1,4 @@
-{%- from "modern_macros.j2" import section_label, pill, card, card_grid, flow_steps, icon_list, circles_reveal, level_card, guideline_grid, resource_grid, timeline, section_header, split_personas, fs_explorer, org_chart, roadmap, stat_grid -%}
+{%- from "modern_macros.j2" import section_label, pill, card, card_grid, flow_steps, icon_list, circles_reveal, level_card, guideline_grid, resource_grid, timeline, section_header, split_personas, fs_explorer, org_chart, roadmap, stat_grid, quote_embed, quote_conversation -%}
 
 {# ============================================================
    ISACA-DC: Guardrails for AI Coding — Modern engine content
@@ -27,143 +27,339 @@
     {{ section_label("About") }}
     <h3 class="text-4xl font-bold text-white mb-10">Jon Zeolla</h3>
     <div class="grid grid-cols-2 gap-6">
-      {{ card("Zenable", "Co-founder &mdash; Enterprise Coding Agent Guardrails", "teal") }}
-      {{ card("SANS Instructor", "Cloud security and DevSecOps classes", "blue") }}
-      {{ card("CNCF Ambassador", "Open source contributor", "teal") }}
-      {{ card("BSides Pittsburgh", "Conference organizer", "blue") }}
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <div class="flex items-center gap-4 mb-2">
+          <img src="presentations/2026-02-ISACA-DC/img/zenable.svg" alt="Zenable" class="h-6 w-auto">
+          <h4 class="text-lg font-semibold text-white">Zenable</h4>
+        </div>
+        <p class="text-sm text-slate-400">Co-founder &mdash; Enterprise Coding Agent Guardrails</p>
+      </div>
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <div class="flex items-center gap-4 mb-2">
+          <img src="presentations/2026-02-ISACA-DC/img/sans.svg" alt="SANS" class="h-6 w-auto">
+          <h4 class="text-lg font-semibold text-white">SANS Instructor</h4>
+        </div>
+        <p class="text-sm text-slate-400">Cloud security and DevSecOps classes</p>
+      </div>
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <div class="flex items-center gap-4 mb-2">
+          <img src="presentations/2026-02-ISACA-DC/img/cncf.svg" alt="CNCF" class="h-6 w-auto">
+          <h4 class="text-lg font-semibold text-white">CNCF Ambassador</h4>
+        </div>
+        <p class="text-sm text-slate-400">Open source contributor</p>
+      </div>
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <div class="flex items-center gap-4 mb-2">
+          <img src="presentations/2026-02-ISACA-DC/img/bsidespgh.png" alt="BSides Pittsburgh" class="h-6 w-auto">
+          <h4 class="text-lg font-semibold text-white">BSides Pittsburgh</h4>
+        </div>
+        <p class="text-sm text-slate-400">Conference organizer</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- Slide 2: Motivation -->
-<section class="slide flex items-center justify-center p-12" data-label="Motivation">
-  <div class="max-w-4xl mx-auto w-full text-center fade-in">
-    {{ section_label("Motivation") }}
-    <h3 class="text-4xl font-bold text-white mb-6">I'm on a mission to make AI</h3>
-    {{ circles_reveal(["Correct", "Observable", "Conformant"]) }}
+<!-- Slide 2: Say No to Slop -->
+<section class="slide flex items-center justify-center p-12" data-label="Say No to Slop">
+  <div class="max-w-3xl mx-auto w-full fade-in">
+    {{ quote_embed(
+      "Say no to slop. <strong>Managing AI generated code at scale is an emerging problem</strong>, and will require new processes and conventions to keep code quality high.",
+      "Greg Brockman",
+      "President &amp; Co-Founder, OpenAI",
+      "x.com",
+      "https://x.com/gdb/status/2019566641491963946",
+      "twitter"
+    ) }}
   </div>
 </section>
 
-<!-- Slide 3: The Problem -->
-<section class="slide flex items-center justify-center p-12" data-label="The Problem">
+<!-- Slide 4: Quotes -->
+<section class="slide flex items-center justify-center p-12" data-label="Quotes">
   <div class="max-w-4xl mx-auto w-full fade-in">
-    {{ section_label("The Challenge") }}
-    <h3 class="text-4xl font-bold text-white mb-8">AI Is Changing How We Code</h3>
-    <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-8">
-      <p class="text-lg text-slate-300 leading-relaxed">Generative AI is quickly becoming a default part of the software development lifecycle. Faster delivery can also increase <span class="text-amber-400 font-semibold">security risk</span>, <span class="text-amber-400 font-semibold">operational fragility</span>, and decisions that are <span class="text-amber-400 font-semibold">difficult to review or audit</span>.</p>
-    </div>
-    <div class="mt-8 text-sm text-slate-400 text-center">
-      How do we adopt coding assistants with confidence while maintaining strong security, governance, and assurance?
+    <div class="space-y-6">
+      {{ quote_conversation(
+        [
+          {"quote": "It's another thing to deploy that in a way that many people can use it, at a higher level with safeguards.", "author": "Joe Heitzeberg", "title": "Founder, AI Tinkerers"},
+          {"quote": "<strong>That's the fundamental problem that the industry faces.</strong>", "author": "Steve Yegge", "title": "Creator of Gastown &amp; Beads"},
+        ],
+        "AI Tinkerers &mdash; youtube.com",
+        "https://www.youtube.com/watch?v=s96O9oWI_tI&t=2402s",
+        "youtube"
+      ) }}
+      {{ quote_embed(
+        "...compound engineering creates a learning loop for your agents and members of your team, so that each bug, failed test, or a-ha problem-solving insight gets documented and used by future agents. <strong>The complexity of your codebase still grows, but now so does the AI's knowledge of it, which makes future development work faster.</strong>",
+        "Dan Shipper &amp; Kieran Klaassen",
+        "Every",
+        "Compound Engineering &mdash; every.to",
+        "https://every.to/source-code/compound-engineering-how-every-codes-with-agents-af3a1bae-cf9b-458e-8048-c6b4ba860e62",
+        "blog"
+      ) }}
     </div>
   </div>
 </section>
 
-<!-- Slide 4: Three Levels Overview -->
-{{ section_header("Framework", "Three Maturity Levels", "Progressive controls for agentic coding") }}
+<!-- Slide 4: Dev Evolution -->
+<section class="slide flex items-center justify-center p-12 image-slide" data-label="Dev Evolution">
+  <div class="max-w-5xl mx-auto w-full text-center fade-in">
+    {{ section_label("The Landscape") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Where Are We Headed?</h3>
+    <img src="presentations/2026-02-ISACA-DC/img/dev_evolution_8_stages.png" alt="The 8 Stages of Dev Evolution To AI">
+    <p class="citation">&ldquo;Figure 2: The 8 Stages of Dev Evolution To AI&rdquo; &mdash; Steve Yegge, <a href="https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04" class="hover:text-zenable-teal transition-colors">Welcome to Gas Town</a>, January 1, 2026</p>
+  </div>
+</section>
 
-<!-- Slide 5: Levels Overview Flow -->
+<!-- Slide 6: Guardrails Landscape -->
+<section class="slide flex items-center justify-center p-12" data-label="Guardrails Landscape">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Guardrails Landscape") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Types of AI Guardrails</h3>
+    {{ card_grid([
+      {"title": "Input / Output Moderation", "desc": "Filter and validate what goes in and comes out", "accent": "teal"},
+      {"title": "Data Classification &amp; Privacy", "desc": "Protect sensitive data throughout the pipeline", "accent": "blue"},
+      {"title": "Hallucinations &amp; Misinformation", "desc": "Detect and prevent fabricated content", "accent": "teal"},
+      {"title": "Policy &amp; Compliance", "desc": "Enforce organizational and regulatory requirements", "accent": "blue"},
+      {"title": "Ethics &amp; Bias", "desc": "Ensure fair and responsible outputs", "accent": "teal"},
+      {"title": "Context", "desc": "Scope and constrain the agent's operating boundaries", "accent": "blue"},
+    ], 3) }}
+  </div>
+</section>
+
+<!-- Slide 7: Simple Solutions -->
+<section class="slide flex items-center justify-center p-12" data-label="Simple Solutions">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Starting Point") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Simple Solutions</h3>
+    {{ card_grid([
+      {"title": "Human in the Loop", "desc": "Manual review of every AI-generated change before merge &mdash; the most fundamental guardrail", "accent": "teal"},
+      {"title": "Procedures &amp; Policies", "desc": "Written guidelines for when and how to use AI coding tools, acceptable use policies", "accent": "blue"},
+      {"title": "Training &amp; Awareness", "desc": "Educate developers on AI tool limitations, prompt engineering, and review best practices", "accent": "teal"},
+      {"title": "Pair Programming", "desc": "Developer + AI as a pair &mdash; human stays engaged and reviews in real time", "accent": "blue"},
+    ]) }}
+    <p class="text-sm text-slate-500 mt-8 text-center">These work, but they don't scale. What happens when you have 500 developers?</p>
+  </div>
+</section>
+
+<!-- Slide 8: Three Levels Section Header -->
+{{ section_header("Framework", "Four Maturity Levels", "Progressive controls for agentic coding") }}
+
+<!-- Levels Overview Flow -->
 <section class="slide flex items-center justify-center p-12" data-label="Overview">
   <div class="max-w-5xl mx-auto w-full fade-in">
     {{ section_label("Overview") }}
     <h3 class="text-4xl font-bold text-white mb-8">Progressive Guardrails</h3>
-    {{ flow_steps(["Level 1: Steer", "Level 2: Inject", "Level 3: Enforce"]) }}
+    {{ flow_steps(["1: Crawl", "2: Walk", "3: Run", "4: Fly"]) }}
     <p class="text-sm text-slate-500 mt-8 text-center">Each level builds on the last &mdash; start where you are, grow as you mature</p>
   </div>
 </section>
 
-<!-- Slide 6: Level 1 Header -->
-{{ section_header("Level 1", "Built-in Steering", "Consistent expectations from the start") }}
-
-<!-- Slide 7: Level 1 Details -->
+<!-- Level 1 Section Header — with Boris Cherny quote -->
 <section class="slide flex items-center justify-center p-12" data-label="Level 1">
+  <div class="text-center fade-in">
+    <h2 class="text-[10px] font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-3">Level 1 &mdash; Crawl</h2>
+    <h3 class="text-5xl font-bold gradient-text">Basic Steering</h3>
+    <p class="text-xl text-slate-400 mt-4">Set expectations through context files</p>
+    <div class="max-w-2xl mx-auto mt-8">
+      {{ quote_embed(
+        "Ruthlessly edit Claude MD.",
+        "Boris Cherny",
+        "Engineering",
+        "x.com",
+        "https://x.com/bcherny/status/2017742747067945390",
+        "twitter"
+      ) }}
+    </div>
+  </div>
+</section>
+
+<!-- Level 1 — What It Is -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 1 Details">
   <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 1 &mdash; Built-in Steering") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Project Context &amp; Rules</h3>
+    {{ section_label("Level 1: Crawl &mdash; Basic Steering") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Context Files &amp; Rules</h3>
     {{ card_grid([
-      {"title": "Context Files", "desc": "CLAUDE.md, .cursorrules, copilot-instructions &mdash; baseline expectations in every repo", "accent": "teal"},
-      {"title": "Instruction Layers", "desc": "Architecture, security patterns, data handling, and logging standards baked into the agent's context", "accent": "teal"},
-      {"title": "Reduce Variability", "desc": "Define 'how we do things here' so AI-generated code aligns with team conventions", "accent": "blue"},
-      {"title": "Improve Repeatability", "desc": "Consistent outputs across developers, projects, and coding agents", "accent": "blue"},
+      {"title": "CLAUDE.md", "desc": "Anthropic's convention for project context &mdash; architecture decisions, patterns, and constraints", "accent": "teal"},
+      {"title": ".cursorrules", "desc": "Cursor IDE context file &mdash; coding standards, library preferences, and project conventions", "accent": "blue"},
+      {"title": "copilot-instructions", "desc": "GitHub Copilot's instruction mechanism &mdash; team-wide or per-repo guidance", "accent": "teal"},
+      {"title": "Low Barrier to Entry", "desc": "Just a markdown file in your repo &mdash; version controlled, reviewable, easy to start", "accent": "blue"},
     ]) }}
   </div>
 </section>
 
-<!-- Slide 8: Level 2 Header -->
-{{ section_header("Level 2", "Context-Injection Agents", "Right guidance at the right time") }}
-
-<!-- Slide 9: Level 2 Details -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 2">
+<!-- Level 1 — Benefits vs Shortcomings -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 1 Tradeoffs">
   <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 2 &mdash; Context-Injection Agents") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Dynamic, Targeted Guidance</h3>
+    {{ section_label("Level 1: Crawl &mdash; Tradeoffs") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Shortcomings</h3>
+    <div class="grid grid-cols-2 gap-8">
+      <div>
+        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
+        {{ icon_list([
+          "Zero cost &mdash; just a markdown file in your repo",
+          "Version controlled and reviewable",
+          "Reduces variability across developers and agents",
+          "Easy to start &mdash; lowest barrier to entry",
+        ]) }}
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-amber-400 mb-4">Shortcomings</h4>
+        {{ icon_list([
+          "Context rot &mdash; files go stale as projects evolve",
+          "Quality dropoff at scale &mdash; long context gets ignored",
+          "No enforcement &mdash; AI can disregard instructions",
+          "No audit trail &mdash; no evidence of compliance",
+        ]) }}
+      </div>
+    </div>
+    <div class="mt-6 flex items-center gap-6">
+      <div class="flex-1 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-4 text-xs text-slate-400 italic">
+        &ldquo;Performance drops dramatically when long code length &gt; 32K&rdquo; &mdash; Li et al., <a href="https://aclanthology.org/2025.acl-long.1324/" class="text-zenable-teal hover:text-zenable-teal/80">&ldquo;Benchmarking Long-Context LLMs on Long Code Understanding&rdquo;</a>, ACL 2025
+      </div>
+      <div class="flex-1">
+        <img src="presentations/2026-02-ISACA-DC/img/context_length_degradation.png" alt="Semantic Relation Extraction scores by context length" class="rounded-lg max-h-[25vh] mx-auto">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Level 2 Section Header -->
+{{ section_header("Level 2 &mdash; Walk", "Agent Reviewing Agents", "Multi-perspective automated review") }}
+
+<!-- Level 2 — What It Is -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 2 Details">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Level 2: Walk &mdash; Agent Reviewing Agents") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Layered AI Review</h3>
     {{ card_grid([
-      {"title": "What's Changing", "desc": "Deliver relevant requirements and constraints based on the files and components being modified", "accent": "teal"},
-      {"title": "Type of Work", "desc": "Different guidance for new features, bug fixes, refactors, and security-sensitive changes", "accent": "teal"},
-      {"title": "Approved Patterns", "desc": "Surface approved libraries, design patterns, and architectural decisions when they're needed", "accent": "blue"},
-      {"title": "Workflow-Aware", "desc": "Guidance adapts based on where the developer is in the workflow &mdash; design, implementation, or review", "accent": "blue"},
+      {"title": "QA Agent", "desc": "Reviews code for correctness, test coverage, and functional requirements", "accent": "teal"},
+      {"title": "Security Agent", "desc": "Checks for vulnerabilities, secrets, insecure patterns, and dependency risks", "accent": "blue"},
+      {"title": "Best Practices Agent", "desc": "Enforces coding standards, architectural patterns, and team conventions", "accent": "teal"},
+      {"title": "How It Works", "desc": "Review agents inspect the coding agent's output, then instruct fixes &mdash; local or at PR time", "accent": "blue"},
     ]) }}
   </div>
 </section>
 
-<!-- Slide 10: Level 3 Header -->
-{{ section_header("Level 3", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
-
-<!-- Slide 11: Level 3 Details -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 3">
+<!-- Level 2 — Benefits vs Drawbacks -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 2 Tradeoffs">
   <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 3 &mdash; Policy-as-Code") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Enforce in PRs &amp; CI/CD</h3>
+    {{ section_label("Level 2: Walk &mdash; Tradeoffs") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Drawbacks</h3>
+    <div class="grid grid-cols-2 gap-8">
+      <div>
+        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
+        {{ icon_list([
+          "Catches more issues than a single agent",
+          "Multi-perspective review (security, quality, style)",
+          "Can run locally during development or at PR time",
+          "Adapts to different types of changes",
+        ]) }}
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-amber-400 mb-4">Drawbacks</h4>
+        {{ icon_list([
+          "All LLMs &mdash; expensive, slow, and imperfect",
+          "Not reproducible &mdash; essentially automated code review",
+          "Non-deterministic &mdash; same input can produce different results",
+          "Can hallucinate issues or miss real ones",
+        ]) }}
+      </div>
+    </div>
+    <p class="text-sm text-slate-500 mt-8 text-center">* Still requires human review &mdash; these agents augment, not replace, human judgment</p>
+  </div>
+</section>
+
+<!-- Level 3 Section Header -->
+{{ section_header("Level 3 &mdash; Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
+
+<!-- Level 3 — What It Is -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 3 Details">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Level 3: Run &mdash; Policy-as-Code") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Deterministic Guardrails</h3>
     {{ card_grid([
-      {"title": "Deterministic Checks", "desc": "Policy-as-code guardrails that run in pull requests and CI/CD pipelines", "accent": "teal"},
-      {"title": "Security &amp; Compliance", "desc": "Enforce security, quality, and compliance requirements with measurable outcomes", "accent": "teal"},
-      {"title": "Audit-Ready Evidence", "desc": "Every check produces traceable, reviewable evidence for governance and audit", "accent": "blue"},
-      {"title": "Continuous Learning", "desc": "Guardrails learn from code changes and review outcomes to improve Levels 1 and 2", "accent": "blue"},
+      {"title": "Deterministic Checks", "desc": "Same input always produces the same result &mdash; no LLM variability", "accent": "teal"},
+      {"title": "Reproducible", "desc": "Every developer, every CI run, every time &mdash; consistent enforcement", "accent": "blue"},
+      {"title": "Audit-Ready Evidence", "desc": "Every check produces traceable, reviewable artifacts for governance and compliance", "accent": "teal"},
+      {"title": "Fast &amp; Efficient", "desc": "Low compute cost, runs in seconds, scales to thousands of repos and developers", "accent": "blue"},
     ]) }}
   </div>
 </section>
 
-<!-- Slide 12: The Feedback Loop -->
-<section class="slide flex items-center justify-center p-12" data-label="Feedback Loop">
-  <div class="max-w-4xl mx-auto w-full text-center fade-in">
-    {{ section_label("Key Insight") }}
-    <h3 class="text-4xl font-bold text-white mb-8">The Feedback Loop</h3>
-    {{ flow_steps(["Level 3 Enforces", "Learns from Outcomes", "Improves Levels 1 &amp; 2"]) }}
-    <p class="text-sm text-slate-500 mt-8">Controls strengthen over time &mdash; each review cycle makes the next one better</p>
-  </div>
-</section>
-
-<!-- Slide 13: Getting Started -->
-<section class="slide flex items-center justify-center p-12" data-label="Getting Started">
+<!-- Level 3 — How It Works: MCP Servers & Skills -->
+<section class="slide flex items-center justify-center p-12" data-label="MCP Servers">
   <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Roadmap") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Getting Started</h3>
-    {{ guideline_grid([
-      {"title": "Start with Level 1", "desc": "Add context files to every repo &mdash; CLAUDE.md, .cursorrules, or equivalent"},
-      {"title": "Define Your Standards", "desc": "Codify architecture, security patterns, and coding conventions"},
-      {"title": "Automate Guidance", "desc": "Build context-injection agents that deliver the right rules at the right time"},
-      {"title": "Enforce in CI/CD", "desc": "Add deterministic policy checks to PRs and pipelines"},
-      {"title": "Measure Outcomes", "desc": "Track compliance, defect rates, and review quality over time"},
-      {"title": "Close the Loop", "desc": "Feed enforcement results back into context files and agent guidance"},
-    ]) }}
+    {{ section_label("Level 3: Run &mdash; How It Works") }}
+    <h3 class="text-4xl font-bold text-white mb-6">MCP Servers &amp; Skills</h3>
+    <div class="grid grid-cols-2 gap-6">
+      {{ card("MCP Servers", "Agentic IDEs connect to external tools via the Model Context Protocol &mdash; linters, policy engines, and custom checks become agent-accessible", "teal") }}
+      {{ card("Skills / Slash Commands", "Package guardrail workflows as reusable skills &mdash; agents invoke them like /review, /security-check, /compliance", "blue") }}
+    </div>
+    {{ flow_steps(["Agent writes code", "Invokes MCP tool", "Policy engine evaluates", "Result fed back"]) }}
   </div>
 </section>
 
-<!-- Slide 14: Resources -->
-<section class="slide flex items-center justify-center p-12" data-label="Resources">
+<!-- Level 3 — How It Works: Hooks -->
+<section class="slide flex items-center justify-center p-12" data-label="Hooks">
   <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Resources") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Want more?</h3>
-    {{ resource_grid([
-      {"title": "Training", "desc": "SEC545: GenAI and LLM Application Security &mdash; sans.org/sec545"},
-      {"title": "Learn the Fundamentals", "desc": "3Blue1Brown and The Latent Space podcast"},
-      {"title": "OWASP", "desc": "AI Testing Guide and Top 10 for LLM Applications"},
-      {"title": "Community", "desc": "DEFCON's AI Village &mdash; aivillage.org"},
-    ]) }}
-    <p class="text-center text-slate-500 text-sm mt-8">Or, as always... just ask :)</p>
+    {{ section_label("Level 3: Run &mdash; How It Works") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Hooks: When X, Then Y</h3>
+    <div class="grid grid-cols-3 gap-6">
+      {{ card("Pre-Commit", "When code is committed &rarr; run policy checks before it lands", "teal") }}
+      {{ card("Post-Change", "When a file is modified &rarr; trigger relevant guardrail scans", "blue") }}
+      {{ card("PR Gate", "When a PR is opened &rarr; enforce compliance and block on failure", "teal") }}
+    </div>
+    <div class="mt-8 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-5">
+      <p class="text-sm text-slate-300 font-mono text-center">event: <span class="text-zenable-teal">file_changed</span> &rarr; action: <span class="text-amber-400">run_guardrails</span> &rarr; result: <span class="text-green-400">pass</span> | <span class="text-red-400">fail + fix</span></p>
+    </div>
   </div>
 </section>
 
-<!-- Slide 15: Questions -->
+<!-- Level 3 — Benefits vs Challenges -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 3 Tradeoffs">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Level 3: Run &mdash; Tradeoffs") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Challenges</h3>
+    <div class="grid grid-cols-2 gap-8">
+      <div>
+        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
+        {{ icon_list([
+          "Deterministic &mdash; same input, same result, every time",
+          "Reproducible across all developers and CI runs",
+          "Audit-ready evidence for governance and compliance",
+          "Fast and cheap &mdash; scales to thousands of repos",
+        ]) }}
+      </div>
+      <div>
+        <h4 class="text-lg font-semibold text-amber-400 mb-4">Challenges</h4>
+        {{ icon_list([
+          "Difficult to write &mdash; niche languages (Rego, Semgrep, etc.)",
+          "AI is bad at them &mdash; limited training data",
+          "Decisions evolve &mdash; guardrails must keep pace",
+          "Distribution problem &mdash; getting guardrails to every developer",
+        ]) }}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Slide 21: Continuous Improvement Section Header -->
+{{ section_header("Level 4 &mdash; Fly", "The Feedback Loop", "Every level gets better over time") }}
+
+<!-- Level 4 — Compounding Benefits -->
+<section class="slide flex items-center justify-center p-12" data-label="Level 4">
+  <div class="max-w-5xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly &mdash; Continuous Improvement") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Compounding Benefits</h3>
+    <div class="grid grid-cols-3 gap-6">
+      {{ card("Level 1 Compounds", "Every PR teaches you what context files are missing. Enforcement outcomes refine steering &mdash; automatically.", "teal") }}
+      {{ card("Level 2 Compounds", "Review agents learn from Level 3 failures. Each cycle sharpens prompts and reduces false positives.", "blue") }}
+      {{ card("Level 3 Compounds", "New guardrails are born from real violations. Coverage grows organically from actual risk.", "teal") }}
+    </div>
+    {{ flow_steps(["Enforce", "Learn", "Steer Better", "Enforce Again"]) }}
+    <p class="text-sm text-slate-500 mt-8 text-center">Each level feeds the others &mdash; the system gets smarter with every cycle</p>
+  </div>
+</section>
+
+<!-- Slide 23: Questions -->
 <section class="slide flex items-center justify-center p-12" data-label="Questions">
   <div class="text-center fade-in">
     <h3 class="text-5xl font-bold text-white mb-6">Questions?</h3>

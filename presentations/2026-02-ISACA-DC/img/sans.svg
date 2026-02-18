@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+         <meta charset="UTF-8">
+        <link REL="SHORTCUT ICON" HREF="/wiki/data_local/images/favicon/favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="HandWiki encyclopedia">
+        <meta name="keywords" content="404,  handwiki,  article, wiki, encyclopedia">
+        <meta name="robots" content="noindex">
+	<meta name="author" content="handwiki.org" >
+        <title>Create HandWiki Article</title>
+        <link rel="stylesheet" type="text/css" href="create/css/style.css"/>
+        <link rel="stylesheet" type="text/css" href="/wiki/skins/Timeless/handwiki_top.css"/>
+        <script src='/wiki/skins/Timeless/adshw.js'></script>
+</head>
+
+<body>
+
+
+<div class="handtopnav">
+
+  <div style="position: absolute;  left: 1px;">
+  <a href="/wiki/"><b><font color="black">Hand</font><font color="#ffb84d">W</font><font color="black">iki</font></b></a>
+  </div>
+
+
+<div class="deskContent">
+<i>Encyclopedia of Knowledge</i>
+</div>
+
+<div style="position: relative;  top: 0px; float:right; margin-right:80px;">
+<a href="/wiki/">Home</a>
+<a href="/wiki/Special:UserLogin">Login</a>
+</div>
+
+<div style="position: relative;  top: 22px; float:right; margin-right:-190px;">
+<label id="darkswitch" class="darkswitch">
+<input type="checkbox" onchange="toggleTheme()" id="darkslider">
+<span class="darkslider round"></span>
+</label>
+</div>
+
+
+</div>
+
+
+<center>
+ <h2>Sorry, this Hand<font color="#ffb84d">W</font>iki</b> page was not found </h2>
+
+Please go to the <a href="/wiki/">main page</a>.
+
+
+</body>
+</html>

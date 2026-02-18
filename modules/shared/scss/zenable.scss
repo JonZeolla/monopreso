@@ -732,6 +732,85 @@ $zenable-amber: #F59E0B;
   color: $zenable-amber !important;
 }
 
+// ========================================
+// Quote conversation (chat-bubble exchange)
+// ========================================
+
+.reveal .quote-conversation {
+  .quote-bubble-content {
+    max-width: 80%;
+    padding: 12px 16px;
+  }
+
+  .quote-bubble--left {
+    display: flex;
+    justify-content: flex-start;
+
+    .quote-bubble-content {
+      background: rgba($zenable-primary, 0.08);
+      border: 1px solid rgba($zenable-primary, 0.2);
+      border-radius: 12px 12px 12px 2px;
+    }
+  }
+
+  .quote-bubble--right {
+    display: flex;
+    justify-content: flex-end;
+    text-align: right;
+
+    .quote-bubble-content {
+      background: rgba($zenable-blue, 0.08);
+      border: 1px solid rgba($zenable-blue, 0.2);
+      border-radius: 12px 12px 2px 12px;
+    }
+  }
+}
+
+// ========================================
+// Quote embed styles
+// ========================================
+
+.quote-embed {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  // Source type accent — left border color
+  &--twitter {
+    border-left: 3px solid #9CA3AF; // slate-400 for X/Twitter
+  }
+
+  &--youtube {
+    border-left: 3px solid #EF4444; // red-500 for YouTube
+  }
+
+  &--blog {
+    border-left: 3px solid $zenable-primary; // teal for blog
+  }
+}
+
+// Image slide — constrains image within viewport
+.image-slide {
+  img {
+    max-height: 60vh;
+    width: auto;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+}
+
+// Citation text beneath images/quotes
+.citation {
+  font-size: 0.7em;
+  color: $zenable-text-secondary;
+  margin-top: 1em;
+  font-style: italic;
+}
+
 // Theme template -----------------
 @import "../template/theme";
 // --------------------------------
