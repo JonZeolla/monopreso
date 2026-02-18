@@ -130,6 +130,8 @@ tasks:
     cmds:
       - mv -f reveal.js/index.html.bkp reveal.js/index.html 2>/dev/null || true
       - rm -f modules/current.html
+              current.html
+              modules/shared/css/modern.css
               reveal.js/modules 2>/dev/null || true
       - rm -f reveal.js/dist/theme/fonts/bitter
               reveal.js/dist/theme/fonts/rock-salt

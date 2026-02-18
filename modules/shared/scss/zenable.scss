@@ -251,6 +251,7 @@ $selectionBackgroundColor: rgba($zenable-primary, 0.3);
 .reveal ul {
   display: block;
   margin-left: 1em;
+  list-style: none;
 
   li {
     position: relative;
@@ -320,15 +321,14 @@ $selectionBackgroundColor: rgba($zenable-primary, 0.3);
 
 // Controls styling
 .reveal .controls {
-  color: $zenable-primary;
+  color: rgba($zenable-primary, 0.5);
 
   button {
-    opacity: 0.7;
+    opacity: 0.4;
     transition: all 0.3s ease;
 
     &:hover {
-      opacity: 1;
-      transform: scale(1.2);
+      opacity: 0.7;
     }
   }
 }
@@ -512,6 +512,224 @@ $selectionBackgroundColor: rgba($zenable-primary, 0.3);
     content: "...";
     animation: loading-pulse 1.5s ease-in-out infinite;
   }
+}
+
+// ========================================
+// Layout utility classes for card-based slides
+// ========================================
+
+// Additional accent colors
+$zenable-blue: #0071DA;
+$zenable-amber: #F59E0B;
+
+// Section label — small uppercase tracking label above headings
+.reveal .modern-section-label {
+  display: inline-block;
+  font-size: 0.45em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: $zenable-primary;
+  margin-bottom: 0.5em;
+}
+
+// Gradient text (standalone class, in addition to .gradient-text on headings)
+.reveal .gradient-text {
+  background: linear-gradient(135deg, $zenable-primary 0%, $zenable-blue 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// Card
+.reveal .modern-card {
+  background: $zenable-dark-surface;
+  border: 1px solid $zenable-border;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  h4 {
+    font-size: 0.7em;
+    margin: 0 0 8px 0;
+    color: #FFFFFF;
+  }
+
+  p {
+    font-size: 0.55em;
+    margin: 0;
+    color: $zenable-text-secondary;
+    line-height: 1.4;
+  }
+
+  // Accent variants
+  &.accent-teal {
+    border-top: 3px solid $zenable-primary;
+  }
+
+  &.accent-blue {
+    border-top: 3px solid $zenable-blue;
+  }
+
+  &.accent-amber {
+    border-top: 3px solid $zenable-amber;
+  }
+}
+
+// Grid layouts
+.reveal .modern-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.reveal .modern-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.reveal .modern-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+// Pill / badge
+.reveal .modern-pill {
+  display: inline-block;
+  font-size: 0.45em;
+  font-weight: 500;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba($zenable-primary, 0.15);
+  color: $zenable-primary;
+  border: 1px solid rgba($zenable-primary, 0.3);
+
+  &.pill-blue {
+    background: rgba($zenable-blue, 0.15);
+    color: $zenable-blue;
+    border-color: rgba($zenable-blue, 0.3);
+  }
+
+  &.pill-amber {
+    background: rgba($zenable-amber, 0.15);
+    color: $zenable-amber;
+    border-color: rgba($zenable-amber, 0.3);
+  }
+}
+
+// Split layout — 50/50 side-by-side
+.reveal .modern-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  margin-top: 20px;
+  text-align: left;
+}
+
+// Flow — horizontal steps with arrow separators
+.reveal .modern-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+
+  .flow-step {
+    background: $zenable-dark-surface;
+    border: 1px solid $zenable-border;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.6em;
+    font-weight: 500;
+    color: $zenable-text-primary;
+  }
+
+  .flow-arrow {
+    font-size: 0.7em;
+    color: $zenable-primary;
+  }
+}
+
+// Stat — large number display
+.reveal .modern-stat {
+  text-align: center;
+
+  .stat-number {
+    font-size: 2em;
+    font-weight: 800;
+    color: $zenable-primary;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 0.5em;
+    color: $zenable-text-secondary;
+    font-weight: 400;
+  }
+}
+
+// List item — card-style items with title + description
+.reveal .modern-list-item {
+  background: $zenable-dark-surface;
+  border: 1px solid $zenable-border;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+
+  .list-icon {
+    font-size: 0.7em;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .list-content {
+    flex: 1;
+
+    strong {
+      font-size: 0.65em;
+      color: #FFFFFF;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    p, span {
+      font-size: 0.5em;
+      color: $zenable-text-secondary;
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+}
+
+// Color utilities
+.reveal .teal {
+  color: $zenable-primary !important;
+}
+
+.reveal .blue {
+  color: $zenable-blue !important;
+}
+
+.reveal .amber {
+  color: $zenable-amber !important;
 }
 
 // Theme template -----------------
