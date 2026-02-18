@@ -1,11 +1,11 @@
-{%- from "modern_macros.j2" import section_label, pill, card, card_grid, flow_steps, icon_list, circles_reveal, level_card, guideline_grid, resource_grid, timeline, section_header, split_personas, fs_explorer, org_chart, roadmap, stat_grid, quote_embed, quote_conversation -%}
+{%- from "modern_macros.j2" import section_label, pill, card, card_grid, flow_steps, icon_list, circles_reveal, level_card, guideline_grid, resource_grid, timeline, section_header, side_by_side, fs_explorer, org_chart, roadmap, stat_grid, quote_embed, quote_conversation -%}
 
 {# ============================================================
    ISACA-DC: Guardrails for AI Coding — Modern engine content
    ============================================================ #}
 
 <!-- Slide 0: Title -->
-<section class="slide flex items-center justify-center p-12" data-label="Intro">
+<section class="slide flex items-center justify-center p-8" data-label="Intro">
   <div class="text-center fade-in">
     <h1 class="text-7xl font-bold mb-4 tracking-tight text-white">Guardrails for AI Coding</h1>
     <p class="text-2xl font-medium mb-8 italic gradient-text">Practical controls for confident adoption</p>
@@ -22,46 +22,46 @@
 </section>
 
 <!-- Slide 1: Speaker -->
-<section class="slide flex items-center justify-center p-12" data-label="Speaker">
-  <div class="max-w-5xl mx-auto w-full fade-in">
+<section class="slide flex items-center justify-center p-8" data-label="Speaker">
+  <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("About") }}
     <h3 class="text-4xl font-bold text-white mb-10">Jon Zeolla</h3>
     <div class="grid grid-cols-2 gap-6">
-      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
-        <div class="flex items-center gap-4 mb-2">
-          <img src="presentations/2026-02-ISACA-DC/img/zenable.svg" alt="Zenable" class="h-6 w-auto">
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <img src="presentations/2026-02-ISACA-DC/img/zenable-icon.svg" alt="Zenable" class="h-14 w-14 object-contain shrink-0">
+        <div>
           <h4 class="text-lg font-semibold text-white">Zenable</h4>
+          <p class="text-sm text-slate-400 mt-1">Co-founder, Enterprise Coding Agent Guardrails</p>
         </div>
-        <p class="text-sm text-slate-400">Co-founder &mdash; Enterprise Coding Agent Guardrails</p>
       </div>
-      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
-        <div class="flex items-center gap-4 mb-2">
-          <img src="presentations/2026-02-ISACA-DC/img/sans.svg" alt="SANS" class="h-6 w-auto">
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <img src="presentations/2026-02-ISACA-DC/img/sans.svg" alt="SANS" class="h-14 w-14 object-contain shrink-0">
+        <div>
           <h4 class="text-lg font-semibold text-white">SANS Instructor</h4>
+          <p class="text-sm text-slate-400 mt-1">Cloud security and DevSecOps classes</p>
         </div>
-        <p class="text-sm text-slate-400">Cloud security and DevSecOps classes</p>
       </div>
-      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
-        <div class="flex items-center gap-4 mb-2">
-          <img src="presentations/2026-02-ISACA-DC/img/cncf.svg" alt="CNCF" class="h-6 w-auto">
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <img src="presentations/2026-02-ISACA-DC/img/cncf-icon.svg" alt="CNCF" class="h-14 w-14 object-contain shrink-0">
+        <div>
           <h4 class="text-lg font-semibold text-white">CNCF Ambassador</h4>
+          <p class="text-sm text-slate-400 mt-1">Open source contributor</p>
         </div>
-        <p class="text-sm text-slate-400">Open source contributor</p>
       </div>
-      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-6 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
-        <div class="flex items-center gap-4 mb-2">
-          <img src="presentations/2026-02-ISACA-DC/img/bsidespgh.png" alt="BSides Pittsburgh" class="h-6 w-auto">
+      <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+        <img src="presentations/2026-02-ISACA-DC/img/bsidespgh.png" alt="BSides Pittsburgh" class="h-14 w-14 object-contain shrink-0">
+        <div>
           <h4 class="text-lg font-semibold text-white">BSides Pittsburgh</h4>
+          <p class="text-sm text-slate-400 mt-1">Conference organizer</p>
         </div>
-        <p class="text-sm text-slate-400">Conference organizer</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Slide 2: Say No to Slop -->
-<section class="slide flex items-center justify-center p-12" data-label="Say No to Slop">
-  <div class="max-w-3xl mx-auto w-full fade-in">
+<section class="slide flex items-center justify-center p-8" data-label="Say No to Slop">
+  <div class="max-w-5xl mx-auto w-full fade-in">
     {{ quote_embed(
       "Say no to slop. <strong>Managing AI generated code at scale is an emerging problem</strong>, and will require new processes and conventions to keep code quality high.",
       "Greg Brockman",
@@ -74,15 +74,15 @@
 </section>
 
 <!-- Slide 4: Quotes -->
-<section class="slide flex items-center justify-center p-12" data-label="Quotes">
-  <div class="max-w-4xl mx-auto w-full fade-in">
+<section class="slide flex items-center justify-center p-8" data-label="Quotes">
+  <div class="max-w-6xl mx-auto w-full fade-in">
     <div class="space-y-6">
       {{ quote_conversation(
         [
           {"quote": "It's another thing to deploy that in a way that many people can use it, at a higher level with safeguards.", "author": "Joe Heitzeberg", "title": "Founder, AI Tinkerers"},
           {"quote": "<strong>That's the fundamental problem that the industry faces.</strong>", "author": "Steve Yegge", "title": "Creator of Gastown &amp; Beads"},
         ],
-        "AI Tinkerers &mdash; youtube.com",
+        "AI Tinkerers, youtube.com",
         "https://www.youtube.com/watch?v=s96O9oWI_tI&t=2402s",
         "youtube"
       ) }}
@@ -90,7 +90,7 @@
         "...compound engineering creates a learning loop for your agents and members of your team, so that each bug, failed test, or a-ha problem-solving insight gets documented and used by future agents. <strong>The complexity of your codebase still grows, but now so does the AI's knowledge of it, which makes future development work faster.</strong>",
         "Dan Shipper &amp; Kieran Klaassen",
         "Every",
-        "Compound Engineering &mdash; every.to",
+        "Compound Engineering, every.to",
         "https://every.to/source-code/compound-engineering-how-every-codes-with-agents-af3a1bae-cf9b-458e-8048-c6b4ba860e62",
         "blog"
       ) }}
@@ -100,17 +100,17 @@
 
 <!-- Slide 4: Dev Evolution -->
 <section class="slide flex items-center justify-center p-12 image-slide" data-label="Dev Evolution">
-  <div class="max-w-5xl mx-auto w-full text-center fade-in">
+  <div class="max-w-7xl mx-auto w-full text-center fade-in">
     {{ section_label("The Landscape") }}
     <h3 class="text-4xl font-bold text-white mb-6">Where Are We Headed?</h3>
-    <img src="presentations/2026-02-ISACA-DC/img/dev_evolution_8_stages.png" alt="The 8 Stages of Dev Evolution To AI">
-    <p class="citation">&ldquo;Figure 2: The 8 Stages of Dev Evolution To AI&rdquo; &mdash; Steve Yegge, <a href="https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04" class="hover:text-zenable-teal transition-colors">Welcome to Gas Town</a>, January 1, 2026</p>
+    <img src="presentations/2026-02-ISACA-DC/img/dev_evolution_8_stages.png" alt="The 8 Stages of Dev Evolution To AI" class="mb-6">
+    <p class="citation">&ldquo;Figure 2: The 8 Stages of Dev Evolution To AI&rdquo;, Steve Yegge, <a href="https://steve-yegge.medium.com/welcome-to-gas-town-4f25ee16dd04" class="hover:text-zenable-teal transition-colors">Welcome to Gas Town</a>, January 1, 2026</p>
   </div>
 </section>
 
 <!-- Slide 6: Guardrails Landscape -->
-<section class="slide flex items-center justify-center p-12" data-label="Guardrails Landscape">
-  <div class="max-w-5xl mx-auto w-full fade-in">
+<section class="slide flex items-center justify-center p-8" data-label="Guardrails Landscape">
+  <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Guardrails Landscape") }}
     <h3 class="text-4xl font-bold text-white mb-6">Types of AI Guardrails</h3>
     {{ card_grid([
@@ -125,44 +125,34 @@
 </section>
 
 <!-- Slide 7: Simple Solutions -->
-<section class="slide flex items-center justify-center p-12" data-label="Simple Solutions">
-  <div class="max-w-5xl mx-auto w-full fade-in">
+<section class="slide flex items-center justify-center p-8" data-label="Simple Solutions">
+  <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Starting Point") }}
     <h3 class="text-4xl font-bold text-white mb-6">Simple Solutions</h3>
     {{ card_grid([
-      {"title": "Human in the Loop", "desc": "Manual review of every AI-generated change before merge &mdash; the most fundamental guardrail", "accent": "teal"},
+      {"title": "Human in the Loop", "desc": "Manual review of every AI-generated change before merge. The most fundamental guardrail", "accent": "teal"},
       {"title": "Procedures &amp; Policies", "desc": "Written guidelines for when and how to use AI coding tools, acceptable use policies", "accent": "blue"},
       {"title": "Training &amp; Awareness", "desc": "Educate developers on AI tool limitations, prompt engineering, and review best practices", "accent": "teal"},
-      {"title": "Pair Programming", "desc": "Developer + AI as a pair &mdash; human stays engaged and reviews in real time", "accent": "blue"},
+      {"title": "Pair Programming", "desc": "Developer + AI as a pair. Human stays engaged and reviews in real time", "accent": "blue"},
     ]) }}
     <p class="text-sm text-slate-500 mt-8 text-center">These work, but they don't scale. What happens when you have 500 developers?</p>
   </div>
 </section>
 
 <!-- Slide 8: Three Levels Section Header -->
-{{ section_header("Framework", "Four Maturity Levels", "Progressive controls for agentic coding") }}
-
-<!-- Levels Overview Flow -->
-<section class="slide flex items-center justify-center p-12" data-label="Overview">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Overview") }}
-    <h3 class="text-4xl font-bold text-white mb-8">Progressive Guardrails</h3>
-    {{ flow_steps(["1: Crawl", "2: Walk", "3: Run", "4: Fly"]) }}
-    <p class="text-sm text-slate-500 mt-8 text-center">Each level builds on the last &mdash; start where you are, grow as you mature</p>
-  </div>
-</section>
+{{ section_header("", "AI Coding", "Crawl · Walk · Run · Fly") }}
 
 <!-- Level 1 Section Header — with Boris Cherny quote -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 1">
+<section class="slide flex items-center justify-center p-8" data-label="Level 1">
   <div class="text-center fade-in">
-    <h2 class="text-[10px] font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-3">Level 1 &mdash; Crawl</h2>
+    <h2 class="text-[10px] font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-3">Level 1: Crawl</h2>
     <h3 class="text-5xl font-bold gradient-text">Basic Steering</h3>
     <p class="text-xl text-slate-400 mt-4">Set expectations through context files</p>
     <div class="max-w-2xl mx-auto mt-8">
       {{ quote_embed(
-        "Ruthlessly edit Claude MD.",
+        "Ruthlessly edit your CLAUDE.md over time. Keep iterating until Claude's mistake rate measurably drops.",
         "Boris Cherny",
-        "Engineering",
+        "Creator of Claude Code, Anthropic",
         "x.com",
         "https://x.com/bcherny/status/2017742747067945390",
         "twitter"
@@ -172,198 +162,871 @@
 </section>
 
 <!-- Level 1 — What It Is -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 1 Details">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 1: Crawl &mdash; Basic Steering") }}
+<section class="slide flex items-center justify-center p-8" data-label="Level 1 Details">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 1: Crawl") }}
     <h3 class="text-4xl font-bold text-white mb-6">Context Files &amp; Rules</h3>
-    {{ card_grid([
-      {"title": "CLAUDE.md", "desc": "Anthropic's convention for project context &mdash; architecture decisions, patterns, and constraints", "accent": "teal"},
-      {"title": ".cursorrules", "desc": "Cursor IDE context file &mdash; coding standards, library preferences, and project conventions", "accent": "blue"},
-      {"title": "copilot-instructions", "desc": "GitHub Copilot's instruction mechanism &mdash; team-wide or per-repo guidance", "accent": "teal"},
-      {"title": "Low Barrier to Entry", "desc": "Just a markdown file in your repo &mdash; version controlled, reviewable, easy to start", "accent": "blue"},
-    ]) }}
+    <div class="flex gap-8 items-start">
+      <!-- Example markdown file -->
+      <div class="flex-1 relative">
+        <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/60">
+          <div class="flex items-center gap-2 px-4 py-2 bg-slate-800/80 border-b border-slate-700">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+            </div>
+            <span class="text-xs text-slate-400 font-mono ml-2">CLAUDE.md</span>
+          </div>
+          <div class="p-5 font-mono text-sm leading-relaxed text-slate-300 max-h-[45vh] overflow-hidden relative">
+            <p class="text-zenable-teal font-bold text-base mb-3"># Project Rules</p>
+            <p class="text-slate-500 mb-3">## Architecture</p>
+            <p class="mb-1">- Use the <span class="text-amber-400">repository pattern</span> for all data access</p>
+            <p class="mb-1">- All API endpoints <span class="text-amber-400">must validate input</span> with Pydantic</p>
+            <p class="mb-1">- Use dependency injection for services</p>
+            <p class="mb-4">- Never call the database directly from route handlers</p>
+            <p class="text-slate-500 mb-3">## Security Requirements</p>
+            <p class="mb-1">- <span class="text-red-400">Never</span> commit secrets or API keys</p>
+            <p class="mb-1">- All user input must be <span class="text-amber-400">sanitized</span></p>
+            <p class="mb-1">- Use parameterized queries for database access</p>
+            <p class="mb-4">- Enable CORS only for approved origins</p>
+            <p class="text-slate-500 mb-3">## Code Standards</p>
+            <p class="mb-1">- Follow PEP 8 conventions</p>
+            <p class="mb-1">- All public functions require docstrings</p>
+            <p class="mb-1">- Minimum 80% test coverage for new code</p>
+            <p class="mb-1">- Use type hints on all function signatures</p>
+            <!-- Fade-out overlay -->
+            <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-zenable-bg-light/95 to-transparent"></div>
+          </div>
+        </div>
+      </div>
+      <!-- File types list -->
+      <div class="w-72 shrink-0 space-y-3">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Works with</p>
+        <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-teal/40 transition-all">
+          <p class="font-mono text-sm text-zenable-teal">CLAUDE.md</p>
+          <p class="text-xs text-slate-500">Anthropic / Claude Code</p>
+        </div>
+        <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-teal/40 transition-all">
+          <p class="font-mono text-sm text-zenable-teal">AGENTS.md</p>
+          <p class="text-xs text-slate-500">Anthropic / Claude Code</p>
+        </div>
+        <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-blue/40 transition-all">
+          <p class="font-mono text-sm text-zenable-blue">copilot-instructions.md</p>
+          <p class="text-xs text-slate-500">GitHub Copilot</p>
+        </div>
+        <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-blue/40 transition-all">
+          <p class="font-mono text-sm text-zenable-blue">rules/**/*.md</p>
+          <p class="text-xs text-slate-500">Cursor IDE</p>
+        </div>
+      </div>
+    </div>
+    <!-- Low barrier callout -->
+    <div class="mt-6 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-4 text-center">
+      <p class="text-sm text-slate-300"><span class="text-zenable-teal font-semibold">Low barrier to entry.</span> Just a markdown file in your repo. Version controlled, reviewable, easy to start.</p>
+    </div>
   </div>
 </section>
 
 <!-- Level 1 — Benefits vs Shortcomings -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 1 Tradeoffs">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 1: Crawl &mdash; Tradeoffs") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Shortcomings</h3>
-    <div class="grid grid-cols-2 gap-8">
-      <div>
-        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
-        {{ icon_list([
-          "Zero cost &mdash; just a markdown file in your repo",
-          "Version controlled and reviewable",
-          "Reduces variability across developers and agents",
-          "Easy to start &mdash; lowest barrier to entry",
-        ]) }}
-      </div>
-      <div>
-        <h4 class="text-lg font-semibold text-amber-400 mb-4">Shortcomings</h4>
-        {{ icon_list([
-          "Context rot &mdash; files go stale as projects evolve",
-          "Quality dropoff at scale &mdash; long context gets ignored",
-          "No enforcement &mdash; AI can disregard instructions",
-          "No audit trail &mdash; no evidence of compliance",
-        ]) }}
-      </div>
-    </div>
-    <div class="mt-6 flex items-center gap-6">
-      <div class="flex-1 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-4 text-xs text-slate-400 italic">
-        &ldquo;Performance drops dramatically when long code length &gt; 32K&rdquo; &mdash; Li et al., <a href="https://aclanthology.org/2025.acl-long.1324/" class="text-zenable-teal hover:text-zenable-teal/80">&ldquo;Benchmarking Long-Context LLMs on Long Code Understanding&rdquo;</a>, ACL 2025
-      </div>
-      <div class="flex-1">
-        <img src="presentations/2026-02-ISACA-DC/img/context_length_degradation.png" alt="Semantic Relation Extraction scores by context length" class="rounded-lg max-h-[25vh] mx-auto">
-      </div>
-    </div>
-  </div>
-</section>
+{{ side_by_side(
+  "Benefits", "Level 1: Crawl",
+  [
+    {"title": "Very little cost", "desc": "Just a markdown file in your repo"},
+    {"title": "Version controlled", "desc": "Reviewable through standard processes"},
+    {"title": "Reduces variability", "desc": "Across developers and agents"},
+    {"title": "Easy to start", "desc": "Lowest barrier to entry"},
+  ],
+  "Shortcomings", "Level 1: Crawl",
+  [
+    {"title": "Context rot", "desc": "Files go stale as projects evolve"},
+    {"title": "Best effort instructions", "desc": "AI can still disregard them"},
+    {"title": "No audit trail", "desc": "No evidence of compliance"},
+  ]
+) }}
 
 <!-- Level 2 Section Header -->
-{{ section_header("Level 2 &mdash; Walk", "Agent Reviewing Agents", "Multi-perspective automated review") }}
+{{ section_header("Level 2: Walk", "Agent Reviewing Agents", "Multi-perspective automated review") }}
 
 <!-- Level 2 — What It Is -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 2 Details">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 2: Walk &mdash; Agent Reviewing Agents") }}
+<section class="slide flex items-center justify-center p-8" data-label="Level 2 Details">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 2: Walk") }}
     <h3 class="text-4xl font-bold text-white mb-6">Layered AI Review</h3>
-    {{ card_grid([
-      {"title": "QA Agent", "desc": "Reviews code for correctness, test coverage, and functional requirements", "accent": "teal"},
-      {"title": "Security Agent", "desc": "Checks for vulnerabilities, secrets, insecure patterns, and dependency risks", "accent": "blue"},
-      {"title": "Best Practices Agent", "desc": "Enforces coding standards, architectural patterns, and team conventions", "accent": "teal"},
-      {"title": "How It Works", "desc": "Review agents inspect the coding agent's output, then instruct fixes &mdash; local or at PR time", "accent": "blue"},
-    ]) }}
+    <div class="flex gap-4 items-center">
+      <!-- VS Code-like IDE on the left -->
+      <div class="flex-1 relative">
+        <div class="rounded-xl border border-slate-700 overflow-hidden bg-[#1e1e2e]">
+          <!-- Title bar -->
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-[#181825] border-b border-slate-700">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono ml-2">auth_service.py · my-project</span>
+          </div>
+          <div class="flex">
+            <!-- Activity bar -->
+            <div class="w-8 bg-[#181825] border-r border-slate-700/50 flex flex-col items-center py-2 gap-3 shrink-0">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+              <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            </div>
+            <!-- File explorer sidebar -->
+            <div class="w-32 bg-[#181825]/60 border-r border-slate-700/50 py-2 px-2 shrink-0">
+              <p class="text-[9px] font-semibold uppercase tracking-wider text-slate-600 mb-2 px-1">Explorer</p>
+              <div class="space-y-0.5 text-[10px] font-mono">
+                <p class="text-slate-500 px-1">&blacktriangledown; src/</p>
+                <p class="text-slate-500 px-3">&blacktriangledown; auth/</p>
+                <p class="text-white bg-slate-700/50 rounded px-4 py-0.5">auth_service.py</p>
+                <p class="text-slate-600 px-4">models.py</p>
+                <p class="text-slate-600 px-4">routes.py</p>
+                <p class="text-slate-600 px-4">schemas.py</p>
+                <p class="text-slate-500 px-3">&blacktriangledown; utils/</p>
+                <p class="text-slate-600 px-4">crypto.py</p>
+                <p class="text-slate-600 px-4">tokens.py</p>
+                <p class="text-slate-600 px-3">main.py</p>
+                <p class="text-slate-600 px-3">config.py</p>
+                <p class="text-slate-500 px-1">&blacktriangledown; tests/</p>
+                <p class="text-slate-600 px-3">test_auth.py</p>
+                <p class="text-slate-600 px-3">conftest.py</p>
+                <p class="text-slate-600 px-1">CLAUDE.md</p>
+                <p class="text-slate-600 px-1">pyproject.toml</p>
+              </div>
+            </div>
+            <!-- Editor area + terminal -->
+            <div class="flex-1 flex flex-col">
+              <!-- Tab bar -->
+              <div class="flex bg-[#181825]/40 border-b border-slate-700/50">
+                <div class="px-3 py-1 text-[10px] font-mono text-slate-300 bg-[#1e1e2e] border-r border-slate-700/50 border-b-2 border-b-zenable-teal">auth_service.py</div>
+                <div class="px-3 py-1 text-[10px] font-mono text-slate-600">models.py</div>
+              </div>
+              <!-- Code -->
+              <div class="p-3 font-mono text-[11px] leading-relaxed text-slate-400 flex-1">
+                <p><span class="text-slate-600 select-none mr-3"> 1</span><span class="text-purple-400">import</span> <span class="text-slate-300">hashlib</span></p>
+                <p><span class="text-slate-600 select-none mr-3"> 2</span><span class="text-purple-400">from</span> <span class="text-slate-300">db</span> <span class="text-purple-400">import</span> <span class="text-slate-300">session</span></p>
+                <p><span class="text-slate-600 select-none mr-3"> 3</span></p>
+                <p><span class="text-slate-600 select-none mr-3"> 4</span><span class="text-purple-400">def</span> <span class="text-amber-300">login</span>(request):</p>
+                <p><span class="text-slate-600 select-none mr-3"> 5</span>  user = db.query(</p>
+                <p><span class="text-slate-600 select-none mr-3"> 6</span>    <span class="text-green-400">f"SELECT * FROM users</span></p>
+                <p><span class="text-slate-600 select-none mr-3"> 7</span>    <span class="text-green-400"> WHERE email='{request.email}'"</span></p>
+                <p><span class="text-slate-600 select-none mr-3"> 8</span>  )</p>
+                <p><span class="text-slate-600 select-none mr-3"> 9</span>  <span class="text-purple-400">if</span> user.password == request.pw:</p>
+                <p><span class="text-slate-600 select-none mr-3">10</span>    token = <span class="text-amber-300">make_token</span>(user)</p>
+                <p><span class="text-slate-600 select-none mr-3">11</span>    <span class="text-purple-400">return</span> {<span class="text-green-400">"token"</span>: token}</p>
+                <p><span class="text-slate-600 select-none mr-3">12</span>  <span class="text-purple-400">return</span> {<span class="text-green-400">"error"</span>: <span class="text-green-400">"fail"</span>}</p>
+                <p><span class="text-slate-600 select-none mr-3">13</span></p>
+                <p><span class="text-slate-600 select-none mr-3">14</span><span class="text-purple-400">def</span> <span class="text-amber-300">register</span>(request):</p>
+                <p><span class="text-slate-600 select-none mr-3">15</span>  user = User(</p>
+                <p><span class="text-slate-600 select-none mr-3">16</span>    email=request.email,</p>
+                <p><span class="text-slate-600 select-none mr-3">17</span>    password=request.password</p>
+                <p><span class="text-slate-600 select-none mr-3">18</span>  )</p>
+                <p><span class="text-slate-600 select-none mr-3">19</span>  db.<span class="text-amber-300">save</span>(user)</p>
+                <p><span class="text-slate-600 select-none mr-3">20</span>  <span class="text-purple-400">return</span> {<span class="text-green-400">"ok"</span>: <span class="text-purple-400">True</span>}</p>
+              </div>
+              <!-- Terminal -->
+              <div class="border-t border-slate-700/50 bg-[#11111b]">
+                <div class="flex items-center px-3 py-1 border-b border-slate-700/30">
+                  <span class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold">Terminal</span>
+                </div>
+                <div class="px-3 py-2 font-mono text-[10px] text-slate-500">
+                  <p><span class="text-green-500/70">$</span> claude code --review auth_service.py</p>
+                  <p class="text-slate-600">Running review agents...</p>
+                  <p class="text-amber-400/70">&#x2714; Security agent complete (3 findings)</p>
+                  <p class="text-amber-400/70">&#x2714; QA agent complete (2 findings)</p>
+                  <p class="text-slate-600 animate-pulse">&#x25cf; Best practices agent running...</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Arrows pointing LEFT (agents reviewing code) -->
+      <div class="flex flex-col gap-8 shrink-0 w-10 items-center justify-center">
+        <svg class="w-7 h-7 text-red-400 -rotate-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+        <svg class="w-7 h-7 text-amber-400 rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+        <svg class="w-7 h-7 text-blue-400 -rotate-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+      </div>
+      <!-- Agents on the right, overlapping -->
+      <div class="w-72 shrink-0 relative" style="height: 430px;">
+        <!-- Security Agent -->
+        <div class="absolute top-0 left-0 right-0 rounded-xl border border-red-500/40 bg-slate-900/95 shadow-lg shadow-red-500/5 p-3 z-30">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider">Security Agent</span>
+          </div>
+          <p class="text-[10px] text-slate-300 font-mono bg-slate-800/60 rounded p-2 border-l-2 border-red-500/60">&ldquo;SQL injection on L3-4. Use parameterized queries. Hash passwords, never compare plaintext.&rdquo;</p>
+        </div>
+        <!-- QA Agent -->
+        <div class="absolute top-[145px] left-2 right-0 rounded-xl border border-amber-500/40 bg-slate-900/95 shadow-lg shadow-amber-500/5 p-3 z-20">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">QA Agent</span>
+          </div>
+          <p class="text-[10px] text-slate-300 font-mono bg-slate-800/60 rounded p-2 border-l-2 border-amber-500/60">&ldquo;No tests. Missing error handling for null user. Generic error message leaks nothing, good.&rdquo;</p>
+        </div>
+        <!-- Best Practices Agent -->
+        <div class="absolute top-[290px] left-0 right-2 rounded-xl border border-blue-500/40 bg-slate-900/95 shadow-lg shadow-blue-500/5 p-3 z-10">
+          <div class="flex items-center gap-2 mb-2">
+            <div class="w-6 h-6 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Best Practices</span>
+          </div>
+          <p class="text-[10px] text-slate-300 font-mono bg-slate-800/60 rounded p-2 border-l-2 border-blue-500/60">&ldquo;Use repository pattern per CLAUDE.md. Add type hints. Return proper HTTP status codes.&rdquo;</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Level 2 — Benefits vs Drawbacks -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 2 Tradeoffs">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 2: Walk &mdash; Tradeoffs") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Drawbacks</h3>
-    <div class="grid grid-cols-2 gap-8">
-      <div>
-        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
-        {{ icon_list([
-          "Catches more issues than a single agent",
-          "Multi-perspective review (security, quality, style)",
-          "Can run locally during development or at PR time",
-          "Adapts to different types of changes",
-        ]) }}
-      </div>
-      <div>
-        <h4 class="text-lg font-semibold text-amber-400 mb-4">Drawbacks</h4>
-        {{ icon_list([
-          "All LLMs &mdash; expensive, slow, and imperfect",
-          "Not reproducible &mdash; essentially automated code review",
-          "Non-deterministic &mdash; same input can produce different results",
-          "Can hallucinate issues or miss real ones",
-        ]) }}
-      </div>
-    </div>
-    <p class="text-sm text-slate-500 mt-8 text-center">* Still requires human review &mdash; these agents augment, not replace, human judgment</p>
-  </div>
-</section>
+{{ side_by_side(
+  "Benefits", "Level 2: Walk",
+  [
+    {"title": "Catches more issues", "desc": "Multiple perspectives beat a single agent"},
+    {"title": "Multi-perspective review", "desc": "Security, quality, and style in parallel"},
+    {"title": "Flexible deployment", "desc": "Run locally during development or at PR time"},
+    {"title": "Adapts to change types", "desc": "Different reviewers for different kinds of changes"},
+  ],
+  "Drawbacks", "Level 2: Walk",
+  [
+    {"title": "Expensive and slow", "desc": "All LLMs: compute costs add up"},
+    {"title": "Not reproducible", "desc": "Essentially automated code review"},
+    {"title": "Non-deterministic", "desc": "Same input can produce different results"},
+    {"title": "Hallucination risk", "desc": "Can fabricate issues or miss real ones"},
+  ]
+) }}
 
 <!-- Level 3 Section Header -->
-{{ section_header("Level 3 &mdash; Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
+{{ section_header("Level 3: Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
 
 <!-- Level 3 — What It Is -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 3 Details">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 3: Run &mdash; Policy-as-Code") }}
+<section class="slide flex items-center justify-center p-8" data-label="Level 3 Details">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 3: Run") }}
     <h3 class="text-4xl font-bold text-white mb-6">Deterministic Guardrails</h3>
-    {{ card_grid([
-      {"title": "Deterministic Checks", "desc": "Same input always produces the same result &mdash; no LLM variability", "accent": "teal"},
-      {"title": "Reproducible", "desc": "Every developer, every CI run, every time &mdash; consistent enforcement", "accent": "blue"},
-      {"title": "Audit-Ready Evidence", "desc": "Every check produces traceable, reviewable artifacts for governance and compliance", "accent": "teal"},
-      {"title": "Fast &amp; Efficient", "desc": "Low compute cost, runs in seconds, scales to thousands of repos and developers", "accent": "blue"},
-    ]) }}
+    <!-- VS Code with chat pane -->
+    <div class="rounded-xl border border-slate-700 overflow-hidden bg-[#1e1e2e]">
+      <!-- Title bar -->
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-[#181825] border-b border-slate-700">
+        <div class="flex gap-1.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+        </div>
+        <span class="text-[10px] text-slate-500 font-mono ml-2">payment_handler.py · my-project</span>
+      </div>
+      <div class="flex">
+        <!-- Activity bar -->
+        <div class="w-8 bg-[#181825] border-r border-slate-700/50 flex flex-col items-center py-2 gap-3 shrink-0">
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </div>
+        <!-- File explorer (narrow) -->
+        <div class="w-28 bg-[#181825]/60 border-r border-slate-700/50 py-2 shrink-0 overflow-hidden">
+          <p class="text-[9px] font-semibold uppercase tracking-wider text-slate-600 mb-2 px-3">Explorer</p>
+          <div class="space-y-0.5 text-[10px] font-mono">
+            <p class="text-slate-500 px-3">&blacktriangledown; src/</p>
+            <p class="text-slate-500 px-5">&blacktriangledown; payments/</p>
+            <p class="text-white bg-slate-700/50 px-6 py-0.5">payment_handler.py</p>
+            <p class="text-slate-600 px-6">models.py</p>
+            <p class="text-slate-500 px-5">&blacktriangleright; auth/</p>
+            <p class="text-slate-600 px-3">CLAUDE.md</p>
+          </div>
+        </div>
+        <!-- Chat pane (70% of remaining space) -->
+        <div class="flex-1 flex flex-col border-l border-slate-700/50">
+          <!-- Chat header -->
+          <div class="flex items-center px-4 py-1.5 bg-[#181825]/40 border-b border-slate-700/50">
+            <svg class="w-3.5 h-3.5 text-zenable-teal mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            <span class="text-[10px] font-semibold text-slate-400">Agent Chat</span>
+          </div>
+          <!-- Chat messages -->
+          <div class="flex-1 px-4 py-3 space-y-3 overflow-hidden">
+            <!-- Agent generating code (cut off at top like a screenshot scroll) -->
+            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30 -mt-14">
+              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] text-slate-400 leading-relaxed">
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;amount = request.amount</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;card = request.card_number</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;cvv = request.cvv</p>
+                <p></p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;log.info(<span class="text-green-400">f"Charging </span><span class="text-amber-300">${amount}</span><span class="text-green-400"> to card </span><span class="text-amber-300">{card}</span><span class="text-green-400">, cvv </span><span class="text-amber-300">{cvv}</span><span class="text-green-400">"</span>)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;result = stripe.charge(card, amount)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;db.execute(<span class="text-green-400">f"INSERT INTO payments VALUES ('</span><span class="text-amber-300">{card}</span><span class="text-green-400">', </span><span class="text-amber-300">{amount}</span><span class="text-green-400">)"</span>)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"status"</span>: <span class="text-green-400">"ok"</span>, <span class="text-green-400">"id"</span>: result.id}</p>
+              </div>
+            </div>
+            <!-- Guardrail failure -->
+            <div class="bg-red-950/30 rounded-lg p-3 border border-red-500/30">
+              <div class="flex items-center gap-2 mb-1.5">
+                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <p class="text-[10px] font-bold text-red-400">Guardrail Violation</p>
+                <span class="text-[8px] font-mono text-slate-600 ml-auto">7f3a91c2</span>
+              </div>
+              <p class="text-[10px] text-red-300/80 font-mono">Policy <span class="text-red-400 font-semibold">pci-dss/no-pan-logging</span>: Logging raw card number and CVV violates PCI-DSS &sect;3.4. Sensitive card data must be masked before logging. SQL string interpolation violates <span class="text-red-400 font-semibold">sql-injection/no-interpolation</span>.</p>
+            </div>
+            <!-- Agent acknowledgment + diff fix -->
+            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30">
+              <p class="text-[10px] text-purple-400 font-semibold mb-1.5">Claude</p>
+              <p class="text-[10px] text-slate-400 mb-2">Good catch. Masking the PAN, removing CVV from logs, and switching to parameterized queries:</p>
+              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] leading-relaxed overflow-hidden">
+                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>log.info(f"Charging ${amount} to card {card}, cvv {cvv}")</p>
+                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>log.info(f"Charging ${amount} to card ****{card[-4:]}")</p>
+                <p class="text-slate-600 px-1">&nbsp;</p>
+                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>db.execute(f"INSERT INTO payments VALUES ('{card}', {amount})")</p>
+                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>db.execute("INSERT INTO payments VALUES (%s, %s)", (masked, amou</p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat input -->
+          <div class="px-4 py-2 border-t border-slate-700/50 bg-[#181825]/40">
+            <div class="flex items-center bg-[#11111b] rounded-lg px-3 py-1.5 border border-slate-700/50">
+              <span class="text-[10px] text-slate-600 font-mono">Ask Claude...</span>
+              <svg class="w-3.5 h-3.5 text-slate-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- Level 3 — How It Works: MCP Servers & Skills -->
-<section class="slide flex items-center justify-center p-12" data-label="MCP Servers">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 3: Run &mdash; How It Works") }}
-    <h3 class="text-4xl font-bold text-white mb-6">MCP Servers &amp; Skills</h3>
-    <div class="grid grid-cols-2 gap-6">
-      {{ card("MCP Servers", "Agentic IDEs connect to external tools via the Model Context Protocol &mdash; linters, policy engines, and custom checks become agent-accessible", "teal") }}
-      {{ card("Skills / Slash Commands", "Package guardrail workflows as reusable skills &mdash; agents invoke them like /review, /security-check, /compliance", "blue") }}
+<!-- Level 3 — How It Works: Skills -->
+<section class="slide flex items-center justify-center p-8" data-label="Skills">
+  <div class="max-w-7xl mx-auto w-full fade-in fs-explorer">
+    {{ section_label("Level 3: Run") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Skills / Slash Commands</h3>
+    <div class="flex gap-8 items-start">
+      <!-- Filesystem explorer showing skill structure -->
+      <div class="w-64 shrink-0">
+        <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/50 font-mono text-sm">
+          <div class="px-4 py-2 bg-slate-800/60 border-b border-slate-700 text-xs text-slate-400">
+            <span class="text-zenable-teal font-semibold">security-review/</span>
+          </div>
+          <div class="p-4 space-y-1">
+            <div class="fs-item fs-item-active cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded border border-transparent" data-fs-detail="skill-md">
+              <svg class="w-4 h-4 text-zenable-teal shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span class="text-zenable-teal">SKILL.md</span>
+              <span class="text-[10px] text-slate-500 ml-auto">required</span>
+            </div>
+            <div class="fs-item cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded border border-transparent" data-fs-detail="scripts">
+              <svg class="w-4 h-4 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+              <span class="text-amber-400">scripts/</span>
+              <span class="text-[10px] text-slate-500 ml-auto">optional</span>
+            </div>
+            <div class="fs-item cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded border border-transparent" data-fs-detail="references">
+              <svg class="w-4 h-4 text-blue-400 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+              <span class="text-blue-400">references/</span>
+              <span class="text-[10px] text-slate-500 ml-auto">optional</span>
+            </div>
+            <div class="fs-item cursor-pointer flex items-center gap-2 px-2 py-1.5 rounded border border-transparent" data-fs-detail="assets">
+              <svg class="w-4 h-4 text-slate-500 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/></svg>
+              <span class="text-slate-500">assets/</span>
+              <span class="text-[10px] text-slate-500 ml-auto">optional</span>
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 mt-3 text-center">Agent Skills spec: <span class="text-slate-400">agentskills.io</span></p>
+      </div>
+      <!-- Detail panels (swap on click) -->
+      <div class="flex-1 relative">
+        <!-- SKILL.md panel -->
+        <div class="fs-detail-content" data-fs-detail-id="skill-md">
+          <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/60">
+            <div class="flex items-center gap-2 px-4 py-2 bg-slate-800/80 border-b border-slate-700">
+              <div class="flex gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+              </div>
+              <span class="text-xs text-slate-400 font-mono ml-2">SKILL.md</span>
+            </div>
+            <div class="p-5 font-mono text-[11px] leading-relaxed text-slate-400 overflow-hidden relative">
+              <p class="text-slate-500">---</p>
+              <p><span class="text-purple-400">name</span>:&nbsp;<span class="text-green-400">security-review</span></p>
+              <p><span class="text-purple-400">description</span>:&nbsp;<span class="text-green-400">Run security checks on code changes.</span></p>
+              <p>&nbsp;&nbsp;<span class="text-green-400">Use when reviewing PRs or before commit.</span></p>
+              <p><span class="text-purple-400">allowed-tools</span>:&nbsp;<span class="text-green-400">Bash(semgrep:*) Read</span></p>
+              <p class="text-slate-500">---</p>
+              <p></p>
+              <p class="text-zenable-teal font-bold"># Security Review</p>
+              <p></p>
+              <p class="text-slate-300">When invoked via <span class="text-amber-300">/security-review</span>:</p>
+              <p></p>
+              <p>1. Get the list of changed files</p>
+              <p>2. Run <span class="text-amber-300">semgrep</span> with the project ruleset</p>
+              <p>3. Check for hardcoded secrets</p>
+              <p>4. Verify dependencies against known CVEs</p>
+              <p>5. Report findings with severity levels</p>
+            </div>
+          </div>
+        </div>
+        <!-- scripts/ panel -->
+        <div class="fs-detail-content hidden" data-fs-detail-id="scripts">
+          <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/60">
+            <div class="flex items-center gap-2 px-4 py-2 bg-slate-800/80 border-b border-slate-700">
+              <div class="flex gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+              </div>
+              <span class="text-xs text-slate-400 font-mono ml-2">scripts/run_review.sh</span>
+            </div>
+            <div class="p-5 font-mono text-[11px] leading-relaxed text-slate-400">
+              <p class="text-slate-500">#!/usr/bin/env bash</p>
+              <p class="text-slate-500"># Run security scanning tools</p>
+              <p></p>
+              <p><span class="text-purple-400">set</span>&nbsp;<span class="text-amber-300">-euo pipefail</span></p>
+              <p></p>
+              <p class="text-slate-500"># Run semgrep with org ruleset</p>
+              <p><span class="text-amber-300">semgrep</span> --config=p/owasp-top-ten \</p>
+              <p>&nbsp;&nbsp;--config=.semgrep/ \</p>
+              <p>&nbsp;&nbsp;--json --output=results.json \</p>
+              <p>&nbsp;&nbsp;<span class="text-green-400">"$@"</span></p>
+              <p></p>
+              <p class="text-slate-500"># Check for secrets</p>
+              <p><span class="text-amber-300">gitleaks</span> detect --source=. --no-git</p>
+              <p></p>
+              <p class="text-slate-500"># Dependency audit</p>
+              <p><span class="text-amber-300">pip-audit</span> --strict --desc</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">Executable scripts the skill can invoke via the <span class="text-slate-400">Bash</span> tool.</p>
+        </div>
+        <!-- references/ panel -->
+        <div class="fs-detail-content hidden" data-fs-detail-id="references">
+          <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/60">
+            <div class="flex items-center gap-2 px-4 py-2 bg-slate-800/80 border-b border-slate-700">
+              <div class="flex gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+              </div>
+              <span class="text-xs text-slate-400 font-mono ml-2">references/</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
+                <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                  <p class="text-sm text-blue-400 font-mono">owasp_top_10.md</p>
+                  <p class="text-xs text-slate-500">OWASP Top 10 checklist for the agent to reference</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
+                <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                  <p class="text-sm text-blue-400 font-mono">pci_dss_4.0.md</p>
+                  <p class="text-xs text-slate-500">PCI DSS 4.0 requirements relevant to code</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
+                <svg class="w-5 h-5 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                  <p class="text-sm text-blue-400 font-mono">internal_policy.md</p>
+                  <p class="text-xs text-slate-500">Company-specific secure coding standards</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">Context documents loaded into the agent's prompt for grounded analysis.</p>
+        </div>
+        <!-- assets/ panel -->
+        <div class="fs-detail-content hidden" data-fs-detail-id="assets">
+          <div class="rounded-xl border border-slate-700 overflow-hidden bg-zenable-bg-light/60">
+            <div class="flex items-center gap-2 px-4 py-2 bg-slate-800/80 border-b border-slate-700">
+              <div class="flex gap-1.5">
+                <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+              </div>
+              <span class="text-xs text-slate-400 font-mono ml-2">assets/</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
+                <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <div>
+                  <p class="text-sm text-slate-300 font-mono">.semgrep.yml</p>
+                  <p class="text-xs text-slate-500">Custom semgrep rules for this org</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3 p-3 bg-slate-800/40 rounded-lg border border-slate-700/50">
+                <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                <div>
+                  <p class="text-sm text-slate-300 font-mono">report_template.md</p>
+                  <p class="text-xs text-slate-500">Output template for security findings</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 mt-3">Static files used by scripts or referenced in the skill prompt.</p>
+        </div>
+      </div>
     </div>
-    {{ flow_steps(["Agent writes code", "Invokes MCP tool", "Policy engine evaluates", "Result fed back"]) }}
+  </div>
+</section>
+
+<!-- Level 3 — How It Works: MCP -->
+<section class="slide flex items-center justify-center p-8" data-label="MCP">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 3: Run") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Model Context Protocol (MCP)</h3>
+    <div class="flex gap-8 items-start">
+      <!-- MCP Server features -->
+      <div class="flex-1">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Server Features</p>
+        <div class="space-y-3">
+          <div class="p-4 rounded-xl bg-zenable-bg-light/50 border border-zenable-teal/30">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-5 h-5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="font-semibold text-white text-sm">Tools</span>
+            </div>
+            <p class="text-xs text-slate-400">Functions the LLM can call. Run linters, check policies, query databases.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span class="font-medium text-slate-300 text-sm">Resources</span>
+            </div>
+            <p class="text-xs text-slate-500">Contextual data: file contents, git history, documentation.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+              <span class="font-medium text-slate-300 text-sm">Prompts</span>
+            </div>
+            <p class="text-xs text-slate-500">Pre-defined templates and instructions. Slash commands, menu options.</p>
+          </div>
+        </div>
+        <div class="mt-4 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
+          <p class="text-[10px] text-slate-500"><span class="text-slate-400">Client features:</span> Elicitation, Sampling, Roots (not covered here)</p>
+        </div>
+      </div>
+      <!-- MCP Tool example with IDE connection -->
+      <div class="flex-[1.3]">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Example: Policy Check Tool</p>
+        <!-- MCP Server box -->
+        <div class="rounded-xl border border-zenable-teal/40 bg-zenable-bg-light/50 p-4 mb-3">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-6 h-6 rounded-lg bg-zenable-teal/20 border border-zenable-teal/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path></svg>
+            </div>
+            <span class="text-xs font-bold text-zenable-teal uppercase tracking-wider">MCP Server</span>
+          </div>
+          <div class="bg-[#11111b] rounded-lg p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
+            <p><span class="text-purple-400">from</span> <span class="text-slate-300">fastmcp</span> <span class="text-purple-400">import</span> <span class="text-slate-300">FastMCP</span></p>
+            <p></p>
+            <p></p>
+            <p><span class="text-amber-300">@mcp.tool</span></p>
+            <p><span class="text-purple-400">def</span> <span class="text-amber-300">check_policy</span>(file_path: <span class="text-slate-300">str</span>) -> <span class="text-slate-300">dict</span>:</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400">"""Run policy checks on a file."""</span></p>
+            <p></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;results = <span class="text-amber-300">run_semgrep</span>(file_path)</p>
+            <p></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"violations"</span>: results}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- Level 3 — How It Works: Hooks -->
-<section class="slide flex items-center justify-center p-12" data-label="Hooks">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 3: Run &mdash; How It Works") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Hooks: When X, Then Y</h3>
-    <div class="grid grid-cols-3 gap-6">
-      {{ card("Pre-Commit", "When code is committed &rarr; run policy checks before it lands", "teal") }}
-      {{ card("Post-Change", "When a file is modified &rarr; trigger relevant guardrail scans", "blue") }}
-      {{ card("PR Gate", "When a PR is opened &rarr; enforce compliance and block on failure", "teal") }}
+<section class="slide flex items-center justify-center p-8" data-label="Hooks">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 3: Run") }}
+    <h3 class="text-4xl font-bold text-white mb-2">Hooks: When X, Then Y</h3>
+    <p class="text-slate-400 mb-6">Deterministic code that runs at specific points in the AI coding lifecycle</p>
+    <!-- Hook events row -->
+    <div class="flex gap-2 mb-8 flex-wrap">
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400">SessionStart</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400">UserPromptSubmit</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-zenable-teal/10 border border-zenable-teal/30 text-zenable-teal font-bold">PreToolUse</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400">PostToolUse</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400">Stop</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-500/10 border border-slate-500/30 text-slate-400">Notification</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-500/10 border border-slate-500/30 text-slate-400">SubagentStop</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-500/10 border border-slate-500/30 text-slate-400">SessionEnd</span>
+      <span class="text-[10px] font-mono px-2.5 py-1 rounded-full bg-slate-500/10 border border-slate-500/30 text-slate-500">+ more</span>
     </div>
-    <div class="mt-8 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-5">
-      <p class="text-sm text-slate-300 font-mono text-center">event: <span class="text-zenable-teal">file_changed</span> &rarr; action: <span class="text-amber-400">run_guardrails</span> &rarr; result: <span class="text-green-400">pass</span> | <span class="text-red-400">fail + fix</span></p>
+    <!-- Example 1: PreToolUse Write → block protected files -->
+    <div class="space-y-5">
+      <div class="flex items-center gap-3">
+        <!-- Event -->
+        <div class="flex-1 min-w-0">
+          <div class="rounded-lg bg-zenable-teal/10 border border-zenable-teal/30 p-3 text-center">
+            <p class="text-[10px] font-mono text-zenable-teal font-bold">PreToolUse</p>
+            <p class="text-[9px] text-slate-500 mt-0.5">matcher: <span class="text-slate-400">Write</span></p>
+          </div>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Code -->
+        <div class="flex-1 min-w-0 rounded-lg bg-[#11111b] border border-slate-700/50 p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
+          <p class="text-slate-500">#!/bin/bash</p>
+          <p>FILE=$(<span class="text-amber-300">jq</span> -r '.tool_input.file_path')</p>
+          <p><span class="text-purple-400">if</span> [[ <span class="text-green-400">"$FILE"</span> == *.tfstate* ]]; <span class="text-purple-400">then</span></p>
+          <p>&nbsp;&nbsp;<span class="text-purple-400">echo</span> <span class="text-green-400">"Protected file"</span> &gt;&amp;2; <span class="text-purple-400">exit</span> 2</p>
+          <p><span class="text-purple-400">fi</span></p>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Result -->
+        <div class="flex-1 min-w-0 rounded-lg bg-red-950/30 border border-red-500/30 p-3">
+          <div class="flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+            <span class="text-[10px] font-bold text-red-400 uppercase">Blocked</span>
+          </div>
+          <p class="text-[10px] text-red-300/70 font-mono">"You are not allowed to modify .tfstate files"</p>
+        </div>
+      </div>
+      <!-- Example 2: PostToolUse Edit → lint → tell AI to fix -->
+      <div class="flex items-center gap-3">
+        <!-- Event -->
+        <div class="flex-1 min-w-0">
+          <div class="rounded-lg bg-amber-500/10 border border-amber-500/30 p-3 text-center">
+            <p class="text-[10px] font-mono text-amber-400 font-bold">PostToolUse</p>
+            <p class="text-[9px] text-slate-500 mt-0.5">matcher: <span class="text-slate-400">Edit|Write</span></p>
+          </div>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Code -->
+        <div class="flex-1 min-w-0 rounded-lg bg-[#11111b] border border-slate-700/50 p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
+          <p class="text-slate-500">#!/bin/bash</p>
+          <p>FILE=$(<span class="text-amber-300">jq</span> -r '.tool_input.file_path')</p>
+          <p>RESULT=$(<span class="text-amber-300">semgrep</span> --config=policy/ <span class="text-green-400">"$FILE"</span>)</p>
+          <p><span class="text-purple-400">if</span> [ $? -ne 0 ]; <span class="text-purple-400">then</span></p>
+          <p>&nbsp;&nbsp;<span class="text-purple-400">echo</span> <span class="text-green-400">"$RESULT"</span> &gt;&amp;2; <span class="text-purple-400">exit</span> 2</p>
+          <p><span class="text-purple-400">fi</span></p>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Result -->
+        <div class="flex-1 min-w-0 rounded-lg bg-amber-950/30 border border-amber-500/30 p-3">
+          <div class="flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <span class="text-[10px] font-bold text-amber-400 uppercase">Feedback to AI</span>
+          </div>
+          <p class="text-[10px] text-amber-300/70 font-mono">"Policy violation: SQL string interpolation. Use parameterized queries."</p>
+        </div>
+      </div>
+      <!-- Example 3: UserPromptSubmit → DB query → add context -->
+      <div class="flex items-center gap-3">
+        <!-- Event -->
+        <div class="flex-1 min-w-0">
+          <div class="rounded-lg bg-purple-500/10 border border-purple-500/30 p-3 text-center">
+            <p class="text-[10px] font-mono text-purple-400 font-bold">UserPromptSubmit</p>
+          </div>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Code -->
+        <div class="flex-1 min-w-0 rounded-lg bg-[#11111b] border border-slate-700/50 p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
+          <p class="text-slate-500">#!/bin/bash</p>
+          <p>PROMPT=$(<span class="text-amber-300">jq</span> -r '.prompt')</p>
+          <p>CONTEXT=$(<span class="text-amber-300">psql</span> -t -c \</p>
+          <p>&nbsp;&nbsp;<span class="text-green-400">"SELECT owner, tier FROM services"</span>)</p>
+          <p><span class="text-purple-400">echo</span> <span class="text-green-400">"$CONTEXT"</span></p>
+        </div>
+        <!-- Arrow -->
+        <svg class="w-5 h-5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <!-- Result -->
+        <div class="flex-1 min-w-0 rounded-lg bg-green-950/30 border border-green-500/30 p-3">
+          <div class="flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-[10px] font-bold text-green-400 uppercase">Context Added</span>
+          </div>
+          <p class="text-[10px] text-green-300/70 font-mono">"Adding context: service owner, data tier, deployment environment"</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Level 3 — Benefits vs Challenges -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 3 Tradeoffs">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 3: Run &mdash; Tradeoffs") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Benefits &amp; Challenges</h3>
-    <div class="grid grid-cols-2 gap-8">
-      <div>
-        <h4 class="text-lg font-semibold text-zenable-teal mb-4">Benefits</h4>
-        {{ icon_list([
-          "Deterministic &mdash; same input, same result, every time",
-          "Reproducible across all developers and CI runs",
-          "Audit-ready evidence for governance and compliance",
-          "Fast and cheap &mdash; scales to thousands of repos",
-        ]) }}
+{{ side_by_side(
+  "Benefits", "Level 3: Run",
+  [
+    {"title": "Deterministic", "desc": "Same input, same result, every time"},
+    {"title": "Reproducible", "desc": "Across all developers and CI runs"},
+    {"title": "Audit-ready evidence", "desc": "Traceable artifacts for governance and compliance"},
+    {"title": "Fast and cheap", "desc": "Scales to thousands of repos"},
+  ],
+  "Challenges", "Level 3: Run",
+  [
+    {"title": "Difficult to write", "desc": "Niche languages like Rego, Semgrep, etc."},
+    {"title": "AI is bad at them", "desc": "Limited training data for policy languages"},
+    {"title": "Decisions evolve", "desc": "Guardrails must keep pace with the codebase"},
+    {"title": "Distribution problem", "desc": "Getting guardrails to every developer"},
+  ]
+) }}
+
+<!-- Slide 21: Continuous Improvement Section Header -->
+{{ section_header("Level 4: Fly", "Continuous Improvement", "The feedback loop") }}
+
+<!-- Level 4 — Compounding Benefits -->
+<section class="slide flex items-center justify-center p-8" data-label="Level 4">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Compounding Benefits</h3>
+    <div class="grid grid-cols-3 gap-6">
+      {{ card("Level 1: Lay the Foundation", "Set expectations through context files: CLAUDE.md, .cursorrules, copilot-instructions", "teal") }}
+      {{ card("Level 2: Follow Standards", "Layer AI review agents for multi-perspective automated checks on every change", "blue") }}
+      {{ card("Level 3: Enforce Guardrails", "Deterministic policy-as-code checks that are reproducible, fast, and audit-ready", "teal") }}
+    </div>
+    <div class="mt-6">
+      {{ card("Level 4: Learn and Improve", "Each level feeds the others. Enforcement outcomes refine context files, review agents learn from policy failures, new guardrails are born from real violations, and coverage grows organically from actual risk. The system gets smarter with every cycle.", "blue") }}
+    </div>
+  </div>
+</section>
+
+<!-- Level 4 — Evolving Requirements -->
+<section class="slide flex items-center justify-center p-8" data-label="Requirements">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-2">Requirements Evolve</h3>
+    <p class="text-slate-400 mb-6">Guardrails are living artifacts. These are the triggers that keep them current.</p>
+    <div class="grid grid-cols-3 gap-3">
+      <!-- Row 1 -->
+      <div class="p-3 rounded-xl bg-red-500/5 border border-red-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-red-500/20 border border-red-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-red-400">Recent Incident</span>
+        </div>
+        <p class="text-xs text-slate-400">Identify new requirements from a breach, near-miss, or audit finding</p>
       </div>
-      <div>
-        <h4 class="text-lg font-semibold text-amber-400 mb-4">Challenges</h4>
-        {{ icon_list([
-          "Difficult to write &mdash; niche languages (Rego, Semgrep, etc.)",
-          "AI is bad at them &mdash; limited training data",
-          "Decisions evolve &mdash; guardrails must keep pace",
-          "Distribution problem &mdash; getting guardrails to every developer",
-        ]) }}
+      <div class="p-3 rounded-xl bg-amber-500/5 border border-amber-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-amber-400">New Contract</span>
+        </div>
+        <p class="text-xs text-slate-400">Pull in requirements from a customer agreement or regulatory mandate</p>
+      </div>
+      <div class="p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-purple-400">Risk Assessment</span>
+        </div>
+        <p class="text-xs text-slate-400">Draft a new requirement from a risk rated unacceptable</p>
+      </div>
+      <!-- Row 2 -->
+      <div class="p-3 rounded-xl bg-zenable-teal/5 border border-zenable-teal/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-zenable-teal/20 border border-zenable-teal/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-zenable-teal">Refine Scope</span>
+        </div>
+        <p class="text-xs text-slate-400">Increase, decrease, or split a requirement into two with different scopes</p>
+      </div>
+      <div class="p-3 rounded-xl bg-blue-500/5 border border-blue-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-blue-400">New Threat</span>
+        </div>
+        <p class="text-xs text-slate-400">Identify a new threat and add guardrails before it becomes an incident</p>
+      </div>
+      <div class="p-3 rounded-xl bg-slate-500/5 border border-slate-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-slate-400/20 border border-slate-400/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-slate-300">Add Exception</span>
+        </div>
+        <p class="text-xs text-slate-400">Grant a documented exception to an existing requirement with compensating controls</p>
+      </div>
+      <!-- Row 3 — wide -->
+      <div class="col-span-3 p-3 rounded-xl bg-zenable-bg-light/40 border border-slate-700/50">
+        <div class="flex items-center gap-3">
+          <div class="w-6 h-6 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-orange-400">New Data Type or Volume</span>
+          <p class="text-xs text-slate-400 ml-2">Receiving sensitive data you didn't handle before, or a significant increase in volume that changes your risk profile</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Slide 21: Continuous Improvement Section Header -->
-{{ section_header("Level 4 &mdash; Fly", "The Feedback Loop", "Every level gets better over time") }}
-
-<!-- Level 4 — Compounding Benefits -->
-<section class="slide flex items-center justify-center p-12" data-label="Level 4">
-  <div class="max-w-5xl mx-auto w-full fade-in">
-    {{ section_label("Level 4: Fly &mdash; Continuous Improvement") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Compounding Benefits</h3>
-    <div class="grid grid-cols-3 gap-6">
-      {{ card("Level 1 Compounds", "Every PR teaches you what context files are missing. Enforcement outcomes refine steering &mdash; automatically.", "teal") }}
-      {{ card("Level 2 Compounds", "Review agents learn from Level 3 failures. Each cycle sharpens prompts and reduces false positives.", "blue") }}
-      {{ card("Level 3 Compounds", "New guardrails are born from real violations. Coverage grows organically from actual risk.", "teal") }}
+<!-- Now What? -->
+<section class="slide flex items-center justify-center p-8" data-label="Now What?">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    <h3 class="text-4xl font-bold text-white mb-8">Now What?</h3>
+    <div class="space-y-4">
+      <!-- Today -->
+      <div class="flex gap-4 items-start">
+        <div class="shrink-0 w-28 py-2 text-right">
+          <span class="text-xs font-bold uppercase tracking-wider text-zenable-teal">Today</span>
+        </div>
+        <div class="w-px bg-zenable-teal/40 shrink-0 self-stretch"></div>
+        <div class="flex-1 p-3 rounded-xl bg-zenable-teal/5 border border-zenable-teal/20">
+          <p class="text-sm font-semibold text-white mb-1">Create in-repo context files</p>
+          <p class="text-xs text-slate-400">Add a CLAUDE.md, .cursorrules, or copilot-instructions to one repo. Coding standards, architecture decisions, what not to touch. Iterate every time the AI gets something wrong.</p>
+        </div>
+      </div>
+      <!-- This week -->
+      <div class="flex gap-4 items-start">
+        <div class="shrink-0 w-28 py-2 text-right">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-400">This week</span>
+        </div>
+        <div class="w-px bg-blue-500/40 shrink-0 self-stretch"></div>
+        <div class="flex-1 flex gap-3">
+          <div class="flex-1 p-3 rounded-xl bg-blue-500/5 border border-blue-500/20">
+            <p class="text-sm font-semibold text-white mb-1">Add a review agent</p>
+            <p class="text-xs text-slate-400">Set up one automated AI reviewer (security, QA, or best practices) that runs on every PR or during local development.</p>
+          </div>
+          <div class="flex-1 p-3 rounded-xl bg-blue-500/5 border border-blue-500/20">
+            <p class="text-sm font-semibold text-white mb-1">Make policies accessible</p>
+            <p class="text-xs text-slate-400">Get your policies into a format agents can consume (markdown files) and a location they can reach (network access, permissions). If agents can't read it, they can't enforce it.</p>
+          </div>
+        </div>
+      </div>
+      <!-- This month -->
+      <div class="flex gap-4 items-start">
+        <div class="shrink-0 w-28 py-2 text-right">
+          <span class="text-xs font-bold uppercase tracking-wider text-purple-400">This month</span>
+        </div>
+        <div class="w-px bg-purple-500/40 shrink-0 self-stretch"></div>
+        <div class="flex-1 flex gap-3">
+          <div class="flex-1 p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
+            <p class="text-sm font-semibold text-white mb-1">Build continuous improvement</p>
+            <p class="text-xs text-slate-400">Incidents, audit findings, and policy exceptions should feed back into your guardrails. Start somewhere, get better over time, don't over-design it.</p>
+          </div>
+          <div class="flex-1 p-3 rounded-xl bg-purple-500/5 border border-purple-500/20">
+            <p class="text-sm font-semibold text-white mb-1">Make it a process, not a project</p>
+            <p class="text-xs text-slate-400">Build lightweight processes so agents learn and improve. Refine context files from enforcement outcomes, add guardrails from real violations. Consistent beats comprehensive.</p>
+          </div>
+        </div>
+      </div>
     </div>
-    {{ flow_steps(["Enforce", "Learn", "Steer Better", "Enforce Again"]) }}
-    <p class="text-sm text-slate-500 mt-8 text-center">Each level feeds the others &mdash; the system gets smarter with every cycle</p>
+    <div class="mt-6 p-4 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50 text-center">
+      <p class="text-sm text-slate-300">From guardrails to <span class="text-zenable-teal font-semibold">guiderails</span>. Guide toward secure-by-default with paved roads.</p>
+    </div>
   </div>
 </section>
 
 <!-- Slide 23: Questions -->
-<section class="slide flex items-center justify-center p-12" data-label="Questions">
+<section class="slide flex items-center justify-center p-8" data-label="Questions">
   <div class="text-center fade-in">
-    <h3 class="text-5xl font-bold text-white mb-6">Questions?</h3>
+    <h3 class="text-5xl font-bold text-white mb-8">Questions?</h3>
+    <img src="modules/shared/img/jon_zeolla_linkedin_qr.png" alt="LinkedIn QR Code" class="w-48 h-48 mx-auto mb-6 rounded-lg">
     <p class="text-slate-400">Thank you!</p>
-    <p class="text-sm text-slate-500 mt-4">linkedin.com/in/jonzeolla</p>
+    <p class="text-sm text-slate-500 mt-2">linkedin.com/in/jonzeolla</p>
   </div>
 </section>

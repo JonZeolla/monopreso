@@ -92,6 +92,58 @@
         .show-hidden .hidden-slide-dot {
             display: block;
         }
+
+        /* Print / PDF export styles */
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+            html, body {
+                height: auto !important;
+                overflow: visible !important;
+                background: #0B1120 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .scroll-container {
+                height: auto !important;
+                overflow: visible !important;
+                scroll-snap-type: none !important;
+            }
+            .slide, section.slide {
+                min-height: 100vh !important;
+                height: 100vh !important;
+                page-break-after: always !important;
+                break-after: page !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            .slide:last-child {
+                page-break-after: auto !important;
+                break-after: auto !important;
+            }
+            /* Hide UI chrome */
+            #nav-dots,
+            .nav-dot,
+            .fixed {
+                display: none !important;
+            }
+            /* Ensure backgrounds print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            /* Disable animations */
+            .fade-in {
+                animation: none !important;
+            }
+            /* Ensure gradient text prints */
+            .gradient-text {
+                -webkit-text-fill-color: #00BAAE !important;
+            }
+        }
     </style>
 </head>
 <body class="font-sans text-slate-200 bg-zenable-bg">
