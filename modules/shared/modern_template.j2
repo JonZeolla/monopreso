@@ -136,6 +136,10 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            /* Disable box shadows — browsers render them as solid blocks in PDF */
+            * {
+                box-shadow: none !important;
+            }
             /* Disable animations */
             .fade-in {
                 animation: none !important;
