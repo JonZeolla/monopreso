@@ -4,11 +4,11 @@
    ISACA-DC: Guardrails for AI Coding — Modern engine content
    ============================================================ #}
 
-<!-- Slide 0: Title -->
+<!-- Title -->
 <section class="slide flex items-center justify-center p-8" data-label="Intro">
   <div class="text-center fade-in">
     <h1 class="text-7xl font-bold mb-4 tracking-tight text-white">Guardrails for AI Coding</h1>
-    <p class="text-2xl font-medium mb-8 italic gradient-text">Practical controls for confident adoption</p>
+    <p class="text-2xl font-medium mb-8 italic gradient-text">Real-world lessons learned</p>
     <div class="flex gap-4 justify-center text-sm text-slate-300 flex-wrap">
       <span class="bg-zenable-bg-light/30 px-4 py-2 rounded-full border border-zenable-teal/30">ISACA Greater Washington, D.C.</span>
       <span class="bg-zenable-bg-light/30 px-4 py-2 rounded-full border border-zenable-teal/30">February 19, 2026</span>
@@ -21,24 +21,25 @@
   </div>
 </section>
 
-<!-- Slide 1: Speaker -->
+<!-- Speaker -->
 <section class="slide flex items-center justify-center p-8" data-label="Speaker">
   <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("About") }}
-    <h3 class="text-4xl font-bold text-white mb-10">Jon Zeolla</h3>
+    <h3 class="text-4xl font-bold text-white mb-2">Jon Zeolla</h3>
+    <p class="text-lg text-slate-400 italic mb-8">AI Janitor</p>
     <div class="grid grid-cols-2 gap-6">
       <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
         <img src="presentations/2026-02-ISACA-DC/img/zenable-icon.svg" alt="Zenable" class="h-14 w-14 object-contain shrink-0">
         <div>
           <h4 class="text-lg font-semibold text-white">Zenable</h4>
-          <p class="text-sm text-slate-400 mt-1">Co-founder, Enterprise Coding Agent Guardrails</p>
+          <p class="text-sm text-slate-400 mt-1">Founder, AI Coding Guardrails</p>
         </div>
       </div>
       <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-blue/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
         <img src="presentations/2026-02-ISACA-DC/img/sans.svg" alt="SANS" class="h-14 w-14 object-contain shrink-0">
         <div>
           <h4 class="text-lg font-semibold text-white">SANS Instructor</h4>
-          <p class="text-sm text-slate-400 mt-1">Cloud security and DevSecOps classes</p>
+          <p class="text-sm text-slate-400 mt-1">GenAI, Application, Cloud, and DevOps Security</p>
         </div>
       </div>
       <div class="bg-zenable-bg-light/50 border border-slate-700 rounded-xl p-5 flex items-center gap-5 hover:border-zenable-teal/40 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
@@ -59,7 +60,7 @@
   </div>
 </section>
 
-<!-- Slide 2: Say No to Slop -->
+<!-- Say No to Slop -->
 <section class="slide flex items-center justify-center p-8" data-label="Say No to Slop">
   <div class="max-w-5xl mx-auto w-full fade-in">
     {{ quote_embed(
@@ -73,32 +74,7 @@
   </div>
 </section>
 
-<!-- Slide 4: Quotes -->
-<section class="slide flex items-center justify-center p-8" data-label="Quotes">
-  <div class="max-w-6xl mx-auto w-full fade-in">
-    <div class="space-y-6">
-      {{ quote_conversation(
-        [
-          {"quote": "It's another thing to deploy that in a way that many people can use it, at a higher level with safeguards.", "author": "Joe Heitzeberg", "title": "Founder, AI Tinkerers"},
-          {"quote": "<strong>That's the fundamental problem that the industry faces.</strong>", "author": "Steve Yegge", "title": "Creator of Gastown &amp; Beads"},
-        ],
-        "AI Tinkerers, youtube.com",
-        "https://www.youtube.com/watch?v=s96O9oWI_tI&t=2402s",
-        "youtube"
-      ) }}
-      {{ quote_embed(
-        "...compound engineering creates a learning loop for your agents and members of your team, so that each bug, failed test, or a-ha problem-solving insight gets documented and used by future agents. <strong>The complexity of your codebase still grows, but now so does the AI's knowledge of it, which makes future development work faster.</strong>",
-        "Dan Shipper &amp; Kieran Klaassen",
-        "Every",
-        "Compound Engineering, every.to",
-        "https://every.to/source-code/compound-engineering-how-every-codes-with-agents-af3a1bae-cf9b-458e-8048-c6b4ba860e62",
-        "blog"
-      ) }}
-    </div>
-  </div>
-</section>
-
-<!-- Slide 4: Dev Evolution -->
+<!-- Dev Evolution -->
 <section class="slide flex items-center justify-center p-12 image-slide" data-label="Dev Evolution">
   <div class="max-w-7xl mx-auto w-full text-center fade-in">
     {{ section_label("The Landscape") }}
@@ -108,39 +84,25 @@
   </div>
 </section>
 
-<!-- Slide 6: Guardrails Landscape -->
-<section class="slide flex items-center justify-center p-8" data-label="Guardrails Landscape">
-  <div class="max-w-7xl mx-auto w-full fade-in">
-    {{ section_label("Guardrails Landscape") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Types of AI Guardrails</h3>
-    {{ card_grid([
-      {"title": "Input / Output Moderation", "desc": "Filter and validate what goes in and comes out", "accent": "teal"},
-      {"title": "Data Classification &amp; Privacy", "desc": "Protect sensitive data throughout the pipeline", "accent": "blue"},
-      {"title": "Hallucinations &amp; Misinformation", "desc": "Detect and prevent fabricated content", "accent": "teal"},
-      {"title": "Policy &amp; Compliance", "desc": "Enforce organizational and regulatory requirements", "accent": "blue"},
-      {"title": "Ethics &amp; Bias", "desc": "Ensure fair and responsible outputs", "accent": "teal"},
-      {"title": "Context", "desc": "Scope and constrain the agent's operating boundaries", "accent": "blue"},
-    ], 3) }}
-  </div>
-</section>
-
-<!-- Slide 7: Simple Solutions -->
+<!-- Simple Solutions -->
 <section class="slide flex items-center justify-center p-8" data-label="Simple Solutions">
   <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Starting Point") }}
     <h3 class="text-4xl font-bold text-white mb-6">Simple Solutions</h3>
     {{ card_grid([
+      {"title": "Disallow AI Use", "desc": "Ban AI coding tools entirely &mdash; eliminates risk but also eliminates productivity gains", "accent": "amber"},
+      {"title": "Tool Allowlisting", "desc": "Only permit approved AI tools &mdash; security assessment, third-party review", "accent": "teal"},
       {"title": "Human in the Loop", "desc": "Manual review of every AI-generated change before merge. The most fundamental guardrail", "accent": "teal"},
       {"title": "Procedures &amp; Policies", "desc": "Written guidelines for when and how to use AI coding tools, acceptable use policies", "accent": "blue"},
       {"title": "Training &amp; Awareness", "desc": "Educate developers on AI tool limitations, prompt engineering, and review best practices", "accent": "teal"},
       {"title": "Pair Programming", "desc": "Developer + AI as a pair. Human stays engaged and reviews in real time", "accent": "blue"},
-    ]) }}
+    ], 3) }}
     <p class="text-sm text-slate-500 mt-8 text-center">These work, but they don't scale. What happens when you have 500 developers?</p>
   </div>
 </section>
 
-<!-- Slide 8: Three Levels Section Header -->
-{{ section_header("", "AI Coding", "Crawl · Walk · Run · Fly") }}
+<!-- Four Levels Section Header -->
+{{ section_header("", "Coding Agents Maturity Model", "Crawl · Walk · Run · Fly") }}
 
 <!-- Level 1 Section Header — with Boris Cherny quote -->
 <section class="slide flex items-center justify-center p-8" data-label="Level 1">
@@ -209,15 +171,18 @@
         </div>
         <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-teal/40 transition-all">
           <p class="font-mono text-sm text-zenable-teal">AGENTS.md</p>
-          <p class="text-xs text-slate-500">Anthropic / Claude Code</p>
+          <p class="text-xs text-slate-500">Open standard, dozens of IDEs</p>
         </div>
         <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-blue/40 transition-all">
           <p class="font-mono text-sm text-zenable-blue">copilot-instructions.md</p>
           <p class="text-xs text-slate-500">GitHub Copilot</p>
         </div>
         <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 hover:border-zenable-blue/40 transition-all">
-          <p class="font-mono text-sm text-zenable-blue">rules/**/*.md</p>
-          <p class="text-xs text-slate-500">Cursor IDE</p>
+          <p class="font-mono text-sm text-zenable-blue">GEMINI.md</p>
+          <p class="text-xs text-slate-500">Google / Antigravity</p>
+        </div>
+        <div class="p-3 rounded-lg bg-zenable-bg-light/40 border border-slate-700/50 transition-all">
+          <p class="font-mono text-sm text-slate-400 text-center">... and dozens more</p>
         </div>
       </div>
     </div>
@@ -232,18 +197,86 @@
 {{ side_by_side(
   "Benefits", "Level 1: Crawl",
   [
-    {"title": "Very little cost", "desc": "Just a markdown file in your repo"},
+    {"title": "Very little cost", "desc": "Just a markdown file, but adds tokens to every session"},
     {"title": "Version controlled", "desc": "Reviewable through standard processes"},
     {"title": "Reduces variability", "desc": "Across developers and agents"},
     {"title": "Easy to start", "desc": "Lowest barrier to entry"},
   ],
   "Shortcomings", "Level 1: Crawl",
   [
-    {"title": "Context rot", "desc": "Files go stale as projects evolve"},
+    {"title": "Doesn't scale", "desc": "Every repo needs its own file; hundreds of repos to update for one policy change"},
+    {"title": "Hard to maintain", "desc": "Projects evolve and files become stale misinformation"},
     {"title": "Best effort instructions", "desc": "AI can still disregard them"},
     {"title": "No audit trail", "desc": "No evidence of compliance"},
   ]
 ) }}
+
+<!-- Context Degradation -->
+<section class="slide flex items-center justify-center p-8" data-label="Context Degradation">
+  <div class="max-w-4xl mx-auto w-full fade-in text-center">
+    <h3 class="text-3xl font-bold text-white mb-2">Semantic Relation Extraction (T2)</h3>
+    <p class="text-sm text-slate-500 mb-6">Performance by context length</p>
+    <table class="w-full text-sm font-mono border-collapse">
+      <thead>
+        <tr>
+          <th class="p-3 text-center text-slate-400 font-semibold">0-8K</th>
+          <th class="p-3 text-center text-slate-400 font-semibold">8-16K</th>
+          <th class="p-3 text-center text-slate-400 font-semibold">16-32K</th>
+          <th class="p-3 text-center text-slate-400 font-semibold">32-64K</th>
+          <th class="p-3 text-center text-slate-400 font-semibold">64-128K</th>
+        </tr>
+      </thead>
+      <tbody class="text-white">
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.55)">43.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.30)">26.0</td>
+          <td class="p-2 text-center text-slate-600">-</td>
+          <td class="p-2 text-center text-slate-600">-</td>
+          <td class="p-2 text-center text-slate-600">-</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.62)">48.7</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.40)">34.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.18)">16.9</td>
+          <td class="p-2 text-center text-slate-600">-</td>
+          <td class="p-2 text-center text-slate-600">-</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.40)">33.7</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.30)">25.7</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.17)">15.8</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.09)">8.8</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.03)">2.6</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.68)">53.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.58)">45.6</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.30)">25.8</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.25)">22.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.07)">6.8</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.65)">50.9</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.50)">39.3</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.19)">17.6</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.14)">12.9</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.10)">9.5</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.92)">70.9</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.78)">60.5</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.48)">38.1</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.47)">37.2</td>
+          <td class="p-2 text-center text-slate-600">-</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.91)">70.4</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.75)">58.1</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.33)">28.8</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.37)">31.2</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.30)">26.4</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.90)">70.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.70)">54.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.20)">18.4</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.16)">15.3</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.11)">10.4</td></tr>
+        <tr><td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.95)">73.5</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.76)">58.8</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.47)">37.0</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.46)">36.7</td>
+          <td class="p-2 text-center rounded" style="background:rgba(59,130,246,0.34)">29.6</td></tr>
+      </tbody>
+    </table>
+    <p class="text-sm text-slate-500 italic mt-6"><a href="https://arxiv.org/abs/2307.03172" target="_blank" class="hover:text-zenable-teal transition-colors">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024</p>
+  </div>
+</section>
 
 <!-- Level 2 Section Header -->
 {{ section_header("Level 2: Walk", "Agent Reviewing Agents", "Multi-perspective automated review") }}
@@ -385,123 +418,10 @@
   </div>
 </section>
 
-<!-- Level 2 — Benefits vs Drawbacks -->
-{{ side_by_side(
-  "Benefits", "Level 2: Walk",
-  [
-    {"title": "Catches more issues", "desc": "Multiple perspectives beat a single agent"},
-    {"title": "Multi-perspective review", "desc": "Security, quality, and style in parallel"},
-    {"title": "Flexible deployment", "desc": "Run locally during development or at PR time"},
-    {"title": "Adapts to change types", "desc": "Different reviewers for different kinds of changes"},
-  ],
-  "Drawbacks", "Level 2: Walk",
-  [
-    {"title": "Expensive and slow", "desc": "All LLMs: compute costs add up"},
-    {"title": "Not reproducible", "desc": "Essentially automated code review"},
-    {"title": "Non-deterministic", "desc": "Same input can produce different results"},
-    {"title": "Hallucination risk", "desc": "Can fabricate issues or miss real ones"},
-  ]
-) }}
-
-<!-- Level 3 Section Header -->
-{{ section_header("Level 3: Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
-
-<!-- Level 3 — What It Is -->
-<section class="slide flex items-center justify-center p-8" data-label="Level 3 Details">
-  <div class="max-w-7xl mx-auto w-full fade-in">
-    {{ section_label("Level 3: Run") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Deterministic Guardrails</h3>
-    <!-- VS Code with chat pane -->
-    <div class="rounded-xl border border-slate-700 overflow-hidden bg-[#1e1e2e]">
-      <!-- Title bar -->
-      <div class="flex items-center gap-2 px-3 py-1.5 bg-[#181825] border-b border-slate-700">
-        <div class="flex gap-1.5">
-          <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
-          <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
-        </div>
-        <span class="text-[10px] text-slate-500 font-mono ml-2">payment_handler.py · my-project</span>
-      </div>
-      <div class="flex">
-        <!-- Activity bar -->
-        <div class="w-8 bg-[#181825] border-r border-slate-700/50 flex flex-col items-center py-2 gap-3 shrink-0">
-          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
-          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-        </div>
-        <!-- File explorer (narrow) -->
-        <div class="w-28 bg-[#181825]/60 border-r border-slate-700/50 py-2 shrink-0 overflow-hidden">
-          <p class="text-[9px] font-semibold uppercase tracking-wider text-slate-600 mb-2 px-3">Explorer</p>
-          <div class="space-y-0.5 text-[10px] font-mono">
-            <p class="text-slate-500 px-3">&blacktriangledown; src/</p>
-            <p class="text-slate-500 px-5">&blacktriangledown; payments/</p>
-            <p class="text-white bg-slate-700/50 px-6 py-0.5">payment_handler.py</p>
-            <p class="text-slate-600 px-6">models.py</p>
-            <p class="text-slate-500 px-5">&blacktriangleright; auth/</p>
-            <p class="text-slate-600 px-3">CLAUDE.md</p>
-          </div>
-        </div>
-        <!-- Chat pane (70% of remaining space) -->
-        <div class="flex-1 flex flex-col border-l border-slate-700/50">
-          <!-- Chat header -->
-          <div class="flex items-center px-4 py-1.5 bg-[#181825]/40 border-b border-slate-700/50">
-            <svg class="w-3.5 h-3.5 text-zenable-teal mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-            <span class="text-[10px] font-semibold text-slate-400">Agent Chat</span>
-          </div>
-          <!-- Chat messages -->
-          <div class="flex-1 px-4 py-3 space-y-3 overflow-hidden">
-            <!-- Agent generating code (cut off at top like a screenshot scroll) -->
-            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30 -mt-14">
-              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] text-slate-400 leading-relaxed">
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;amount = request.amount</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;card = request.card_number</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;cvv = request.cvv</p>
-                <p></p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;log.info(<span class="text-green-400">f"Charging </span><span class="text-amber-300">${amount}</span><span class="text-green-400"> to card </span><span class="text-amber-300">{card}</span><span class="text-green-400">, cvv </span><span class="text-amber-300">{cvv}</span><span class="text-green-400">"</span>)</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;result = stripe.charge(card, amount)</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;db.execute(<span class="text-green-400">f"INSERT INTO payments VALUES ('</span><span class="text-amber-300">{card}</span><span class="text-green-400">', </span><span class="text-amber-300">{amount}</span><span class="text-green-400">)"</span>)</p>
-                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"status"</span>: <span class="text-green-400">"ok"</span>, <span class="text-green-400">"id"</span>: result.id}</p>
-              </div>
-            </div>
-            <!-- Guardrail failure -->
-            <div class="bg-red-950/30 rounded-lg p-3 border border-red-500/30">
-              <div class="flex items-center gap-2 mb-1.5">
-                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                <p class="text-[10px] font-bold text-red-400">Guardrail Violation</p>
-                <span class="text-[8px] font-mono text-slate-600 ml-auto">7f3a91c2</span>
-              </div>
-              <p class="text-[10px] text-red-300/80 font-mono">Policy <span class="text-red-400 font-semibold">pci-dss/no-pan-logging</span>: Logging raw card number and CVV violates PCI-DSS &sect;3.4. Sensitive card data must be masked before logging. SQL string interpolation violates <span class="text-red-400 font-semibold">sql-injection/no-interpolation</span>.</p>
-            </div>
-            <!-- Agent acknowledgment + diff fix -->
-            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30">
-              <p class="text-[10px] text-purple-400 font-semibold mb-1.5">Claude</p>
-              <p class="text-[10px] text-slate-400 mb-2">Good catch. Masking the PAN, removing CVV from logs, and switching to parameterized queries:</p>
-              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] leading-relaxed overflow-hidden">
-                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>log.info(f"Charging ${amount} to card {card}, cvv {cvv}")</p>
-                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>log.info(f"Charging ${amount} to card ****{card[-4:]}")</p>
-                <p class="text-slate-600 px-1">&nbsp;</p>
-                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>db.execute(f"INSERT INTO payments VALUES ('{card}', {amount})")</p>
-                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>db.execute("INSERT INTO payments VALUES (%s, %s)", (masked, amou</p>
-              </div>
-            </div>
-          </div>
-          <!-- Chat input -->
-          <div class="px-4 py-2 border-t border-slate-700/50 bg-[#181825]/40">
-            <div class="flex items-center bg-[#11111b] rounded-lg px-3 py-1.5 border border-slate-700/50">
-              <span class="text-[10px] text-slate-600 font-mono">Ask Claude...</span>
-              <svg class="w-3.5 h-3.5 text-slate-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Level 3 — How It Works: Skills -->
+<!-- Level 2 — Skills / Slash Commands -->
 <section class="slide flex items-center justify-center p-8" data-label="Skills">
   <div class="max-w-7xl mx-auto w-full fade-in fs-explorer">
-    {{ section_label("Level 3: Run") }}
+    {{ section_label("Level 2: Walk") }}
     <h3 class="text-4xl font-bold text-white mb-6">Skills / Slash Commands</h3>
     <div class="flex gap-8 items-start">
       <!-- Filesystem explorer showing skill structure -->
@@ -672,64 +592,112 @@
   </div>
 </section>
 
-<!-- Level 3 — How It Works: MCP -->
-<section class="slide flex items-center justify-center p-8" data-label="MCP">
+<!-- Level 2 — Benefits vs Drawbacks -->
+{{ side_by_side(
+  "Benefits", "Level 2: Walk",
+  [
+    {"title": "Catches more issues", "desc": "Segmented, focused context with fewer responsibilities per agent"},
+    {"title": "Multi-perspective review", "desc": "Security, quality, and style in parallel"},
+    {"title": "Flexible deployment", "desc": "Run locally during development or at PR time"},
+    {"title": "Adapts to change types", "desc": "Different reviewers for different kinds of changes"},
+  ],
+  "Drawbacks", "Level 2: Walk",
+  [
+    {"title": "Expensive", "desc": "LLM compute costs add up quickly at scale"},
+    {"title": "Slow", "desc": "Reviewing with LLMs adds latency to every change"},
+    {"title": "Not reproducible", "desc": "Non-deterministic, can forget context, same input may produce different results"},
+    {"title": "Hallucination risk", "desc": "Can fabricate issues or miss real ones"},
+  ]
+) }}
+
+<!-- Level 3 Section Header -->
+{{ section_header("Level 3: Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
+
+<!-- Level 3 — What It Is -->
+<section class="slide flex items-center justify-center p-8" data-label="Level 3 Details">
   <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Level 3: Run") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Model Context Protocol (MCP)</h3>
-    <div class="flex gap-8 items-start">
-      <!-- MCP Server features -->
-      <div class="flex-1">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Server Features</p>
-        <div class="space-y-3">
-          <div class="p-4 rounded-xl bg-zenable-bg-light/50 border border-zenable-teal/30">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-5 h-5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span class="font-semibold text-white text-sm">Tools</span>
-            </div>
-            <p class="text-xs text-slate-400">Functions the LLM can call. Run linters, check policies, query databases.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-              <span class="font-medium text-slate-300 text-sm">Resources</span>
-            </div>
-            <p class="text-xs text-slate-500">Contextual data: file contents, git history, documentation.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-              <span class="font-medium text-slate-300 text-sm">Prompts</span>
-            </div>
-            <p class="text-xs text-slate-500">Pre-defined templates and instructions. Slash commands, menu options.</p>
-          </div>
+    <h3 class="text-4xl font-bold text-white mb-6">Deterministic Guardrails</h3>
+    <!-- VS Code with chat pane -->
+    <div class="rounded-xl border border-slate-700 overflow-hidden bg-[#1e1e2e]">
+      <!-- Title bar -->
+      <div class="flex items-center gap-2 px-3 py-1.5 bg-[#181825] border-b border-slate-700">
+        <div class="flex gap-1.5">
+          <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+          <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
         </div>
-        <div class="mt-4 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
-          <p class="text-[10px] text-slate-500"><span class="text-slate-400">Client features:</span> Elicitation, Sampling, Roots (not covered here)</p>
-        </div>
+        <span class="text-[10px] text-slate-500 font-mono ml-2">payment_handler.py · my-project</span>
       </div>
-      <!-- MCP Tool example with IDE connection -->
-      <div class="flex-[1.3]">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Example: Policy Check Tool</p>
-        <!-- MCP Server box -->
-        <div class="rounded-xl border border-zenable-teal/40 bg-zenable-bg-light/50 p-4 mb-3">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-6 h-6 rounded-lg bg-zenable-teal/20 border border-zenable-teal/40 flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path></svg>
-            </div>
-            <span class="text-xs font-bold text-zenable-teal uppercase tracking-wider">MCP Server</span>
+      <div class="flex">
+        <!-- Activity bar -->
+        <div class="w-8 bg-[#181825] border-r border-slate-700/50 flex flex-col items-center py-2 gap-3 shrink-0">
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>
+          <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        </div>
+        <!-- File explorer (narrow) -->
+        <div class="w-28 bg-[#181825]/60 border-r border-slate-700/50 py-2 shrink-0 overflow-hidden">
+          <p class="text-[9px] font-semibold uppercase tracking-wider text-slate-600 mb-2 px-3">Explorer</p>
+          <div class="space-y-0.5 text-[10px] font-mono">
+            <p class="text-slate-500 px-3">&blacktriangledown; src/</p>
+            <p class="text-slate-500 px-5">&blacktriangledown; payments/</p>
+            <p class="text-white bg-slate-700/50 px-6 py-0.5">payment_handler.py</p>
+            <p class="text-slate-600 px-6">models.py</p>
+            <p class="text-slate-500 px-5">&blacktriangleright; auth/</p>
+            <p class="text-slate-600 px-3">CLAUDE.md</p>
           </div>
-          <div class="bg-[#11111b] rounded-lg p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
-            <p><span class="text-purple-400">from</span> <span class="text-slate-300">fastmcp</span> <span class="text-purple-400">import</span> <span class="text-slate-300">FastMCP</span></p>
-            <p></p>
-            <p></p>
-            <p><span class="text-amber-300">@mcp.tool</span></p>
-            <p><span class="text-purple-400">def</span> <span class="text-amber-300">check_policy</span>(file_path: <span class="text-slate-300">str</span>) -> <span class="text-slate-300">dict</span>:</p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400">"""Run policy checks on a file."""</span></p>
-            <p></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;results = <span class="text-amber-300">run_semgrep</span>(file_path)</p>
-            <p></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"violations"</span>: results}</p>
+        </div>
+        <!-- Chat pane (70% of remaining space) -->
+        <div class="flex-1 flex flex-col border-l border-slate-700/50">
+          <!-- Chat header -->
+          <div class="flex items-center px-4 py-1.5 bg-[#181825]/40 border-b border-slate-700/50">
+            <svg class="w-3.5 h-3.5 text-zenable-teal mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            <span class="text-[10px] font-semibold text-slate-400">Agent Chat</span>
+          </div>
+          <!-- Chat messages -->
+          <div class="flex-1 px-4 py-3 space-y-3 overflow-hidden">
+            <!-- Agent generating code (cut off at top like a screenshot scroll) -->
+            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30 -mt-14">
+              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] text-slate-400 leading-relaxed">
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;amount = request.amount</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;card = request.card_number</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;cvv = request.cvv</p>
+                <p></p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;log.info(<span class="text-green-400">f"Charging </span><span class="text-amber-300">${amount}</span><span class="text-green-400"> to card </span><span class="text-amber-300">{card}</span><span class="text-green-400">, cvv </span><span class="text-amber-300">{cvv}</span><span class="text-green-400">"</span>)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;result = stripe.charge(card, amount)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;db.execute(<span class="text-green-400">f"INSERT INTO payments VALUES ('</span><span class="text-amber-300">{card}</span><span class="text-green-400">', </span><span class="text-amber-300">{amount}</span><span class="text-green-400">)"</span>)</p>
+                <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"status"</span>: <span class="text-green-400">"ok"</span>, <span class="text-green-400">"id"</span>: result.id}</p>
+              </div>
+            </div>
+            <!-- Guardrail failure -->
+            <div class="bg-red-950/30 rounded-lg p-3 border border-red-500/30">
+              <div class="flex items-center gap-2 mb-1.5">
+                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <p class="text-[10px] font-bold text-red-400">Guardrail Violation</p>
+                <span class="text-[8px] font-mono text-slate-600 ml-auto">7f3a91c2</span>
+              </div>
+              <p class="text-[10px] text-red-300/80 font-mono">Policy <span class="text-red-400 font-semibold">pci-dss/no-pan-logging</span>: Logging raw card number and CVV violates PCI-DSS &sect;3.4. Sensitive card data must be masked before logging. SQL string interpolation violates <span class="text-red-400 font-semibold">sql-injection/no-interpolation</span>.</p>
+            </div>
+            <!-- Agent acknowledgment + diff fix -->
+            <div class="bg-slate-800/40 rounded-lg p-3 border border-slate-700/30">
+              <p class="text-[10px] text-purple-400 font-semibold mb-1.5">Claude</p>
+              <p class="text-[10px] text-slate-400 mb-2">Good catch. Masking the PAN, removing CVV from logs, and switching to parameterized queries:</p>
+              <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] leading-relaxed overflow-hidden">
+                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>log.info(f"Charging ${amount} to card {card}, cvv {cvv}")</p>
+                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>log.info(f"Charging ${amount} to card ****{card[-4:]}")</p>
+                <p class="text-slate-600 px-1">&nbsp;</p>
+                <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>db.execute(f"INSERT INTO payments VALUES ('{card}', {amount})")</p>
+                <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>db.execute("INSERT INTO payments VALUES (%s, %s)", (masked, amou</p>
+              </div>
+            </div>
+          </div>
+          <!-- Chat input -->
+          <div class="px-4 py-2 border-t border-slate-700/50 bg-[#181825]/40">
+            <div class="flex items-center bg-[#11111b] rounded-lg px-3 py-1.5 border border-slate-700/50">
+              <span class="text-[10px] text-slate-600 font-mono">Ask Claude...</span>
+              <svg class="w-3.5 h-3.5 text-slate-600 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+            </div>
           </div>
         </div>
       </div>
@@ -854,10 +822,10 @@
 {{ side_by_side(
   "Benefits", "Level 3: Run",
   [
-    {"title": "Deterministic", "desc": "Same input, same result, every time"},
-    {"title": "Reproducible", "desc": "Across all developers and CI runs"},
+    {"title": "Deterministic and reproducible", "desc": "Same input, same result, every time, across all developers and CI runs"},
     {"title": "Audit-ready evidence", "desc": "Traceable artifacts for governance and compliance"},
-    {"title": "Fast and cheap", "desc": "Scales to thousands of repos"},
+    {"title": "Fast", "desc": "No LLM latency; runs in milliseconds"},
+    {"title": "Cheap", "desc": "No compute costs; scales to thousands of repos"},
   ],
   "Challenges", "Level 3: Run",
   [
@@ -868,7 +836,7 @@
   ]
 ) }}
 
-<!-- Slide 21: Continuous Improvement Section Header -->
+<!-- Level 4 Section Header -->
 {{ section_header("Level 4: Fly", "Continuous Improvement", "The feedback loop") }}
 
 <!-- Level 4 — Compounding Benefits -->
@@ -887,12 +855,76 @@
   </div>
 </section>
 
+
+<!-- How It Works: MCP -->
+<section class="slide flex items-center justify-center p-8" data-label="MCP">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Model Context Protocol (MCP)</h3>
+    <div class="flex gap-8 items-start">
+      <!-- MCP Server features -->
+      <div class="flex-1">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Server Features</p>
+        <div class="space-y-3">
+          <div class="p-4 rounded-xl bg-zenable-bg-light/50 border border-zenable-teal/30">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-5 h-5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="font-semibold text-white text-sm">Tools</span>
+            </div>
+            <p class="text-xs text-slate-400">Functions the LLM can call. Run linters, check policies, query databases.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span class="font-medium text-slate-300 text-sm">Resources</span>
+            </div>
+            <p class="text-xs text-slate-500">Contextual data: file contents, git history, documentation.</p>
+          </div>
+          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
+            <div class="flex items-center gap-2 mb-1">
+              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+              <span class="font-medium text-slate-300 text-sm">Prompts</span>
+            </div>
+            <p class="text-xs text-slate-500">Pre-defined templates and instructions. Slash commands, menu options.</p>
+          </div>
+        </div>
+        <div class="mt-4 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
+          <p class="text-[10px] text-slate-500"><span class="text-slate-400">Client features:</span> Elicitation, Sampling, Roots (not covered here)</p>
+        </div>
+      </div>
+      <!-- MCP Tool example with IDE connection -->
+      <div class="flex-[1.3]">
+        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Example: Policy Check Tool</p>
+        <!-- MCP Server box -->
+        <div class="rounded-xl border border-zenable-teal/40 bg-zenable-bg-light/50 p-4 mb-3">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-6 h-6 rounded-lg bg-zenable-teal/20 border border-zenable-teal/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path></svg>
+            </div>
+            <span class="text-xs font-bold text-zenable-teal uppercase tracking-wider">MCP Server</span>
+          </div>
+          <div class="bg-[#11111b] rounded-lg p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
+            <p><span class="text-purple-400">from</span> <span class="text-slate-300">fastmcp</span> <span class="text-purple-400">import</span> <span class="text-slate-300">FastMCP</span></p>
+            <br>
+            <p><span class="text-amber-300">@mcp.tool</span></p>
+            <p><span class="text-purple-400">def</span> <span class="text-amber-300">check_policy</span>(file_path: <span class="text-slate-300">str</span>) -> <span class="text-slate-300">dict</span>:</p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400">"""Run policy checks on a file."""</span></p>
+            <p></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;results = <span class="text-amber-300">run_semgrep</span>(file_path)</p>
+            <p></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"violations"</span>: results}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Level 4 — Evolving Requirements -->
 <section class="slide flex items-center justify-center p-8" data-label="Requirements">
   <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Level 4: Fly") }}
-    <h3 class="text-4xl font-bold text-white mb-2">Requirements Evolve</h3>
-    <p class="text-slate-400 mb-6">Guardrails are living artifacts. These are the triggers that keep them current.</p>
+    <h3 class="text-4xl font-bold text-white mb-6">Requirements Evolve</h3>
     <div class="grid grid-cols-3 gap-3">
       <!-- Row 1 -->
       <div class="p-3 rounded-xl bg-red-500/5 border border-red-500/20">
@@ -950,16 +982,38 @@
         </div>
         <p class="text-xs text-slate-400">Grant a documented exception to an existing requirement with compensating controls</p>
       </div>
-      <!-- Row 3 — wide -->
-      <div class="col-span-3 p-3 rounded-xl bg-zenable-bg-light/40 border border-slate-700/50">
-        <div class="flex items-center gap-3">
+      <!-- Row 3 -->
+      <div class="p-3 rounded-xl bg-orange-500/5 border border-orange-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
           <div class="w-6 h-6 rounded-lg bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
             <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
           </div>
-          <span class="text-sm font-semibold text-orange-400">New Data Type or Volume</span>
-          <p class="text-xs text-slate-400 ml-2">Receiving sensitive data you didn't handle before, or a significant increase in volume that changes your risk profile</p>
+          <span class="text-sm font-semibold text-orange-400">New Data Type</span>
         </div>
+        <p class="text-xs text-slate-400">Sensitive data you didn't handle before that changes your risk profile</p>
       </div>
+      <div class="p-3 rounded-xl bg-pink-500/5 border border-pink-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-pink-500/20 border border-pink-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-pink-400">Regulatory Update</span>
+        </div>
+        <p class="text-xs text-slate-400">New law or standard (EU AI Act, PCI DSS 4.0, state privacy law)</p>
+      </div>
+      <div class="p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/20">
+        <div class="flex items-center gap-2 mb-1.5">
+          <div class="w-6 h-6 rounded-lg bg-cyan-500/20 border border-cyan-500/30 flex items-center justify-center shrink-0">
+            <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          </div>
+          <span class="text-sm font-semibold text-cyan-400">Technology Change</span>
+        </div>
+        <p class="text-xs text-slate-400">New framework, language, or runtime that existing guardrails don't cover</p>
+      </div>
+    </div>
+    <div class="mt-4 p-4 rounded-xl bg-zenable-teal/5 border border-zenable-teal/20 text-center">
+      <p class="text-sm font-semibold text-zenable-teal mb-1">Use these events to improve every level</p>
+      <p class="text-xs text-slate-400">Update context foundations automatically, pull new context into reviewing agents, author new deterministic guardrails. Then roll them all out to every developer.</p>
     </div>
   </div>
 </section>
@@ -1021,7 +1075,29 @@
   </div>
 </section>
 
-<!-- Slide 23: Questions -->
+<!-- AI Coding Workshops -->
+<section class="slide flex items-center justify-center p-8" data-label="Workshops">
+  <div class="max-w-4xl mx-auto w-full fade-in">
+    <div class="rounded-2xl border border-zenable-teal/30 bg-gradient-to-br from-zenable-teal/5 via-zenable-bg-light/40 to-zenable-blue/5 p-12 text-center relative overflow-hidden">
+      <!-- Decorative corner accents -->
+      <div class="absolute top-0 left-0 w-24 h-24 border-t-2 border-l-2 border-zenable-teal/20 rounded-tl-2xl"></div>
+      <div class="absolute bottom-0 right-0 w-24 h-24 border-b-2 border-r-2 border-zenable-teal/20 rounded-br-2xl"></div>
+      <h3 class="text-5xl font-bold text-white mb-3">AI Coding Workshops</h3>
+      <p class="text-xl text-slate-300 mb-8">Hands-on, in-person training</p>
+      <div class="flex justify-center gap-4 mb-8">
+        <span class="px-4 py-2 rounded-full bg-zenable-bg/60 border border-slate-700 text-sm text-slate-300">Half-day</span>
+        <span class="px-4 py-2 rounded-full bg-zenable-bg/60 border border-slate-700 text-sm text-slate-300">1 day</span>
+        <span class="px-4 py-2 rounded-full bg-zenable-bg/60 border border-slate-700 text-sm text-slate-300">2 days</span>
+      </div>
+      <div class="inline-block rounded-xl bg-zenable-teal/10 border border-zenable-teal/30 px-8 py-4">
+        <p class="text-sm text-slate-400 mb-1">Drop me a line</p>
+        <p class="text-xl text-zenable-teal font-semibold">jon@zenable.io</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Questions -->
 <section class="slide flex items-center justify-center p-8" data-label="Questions">
   <div class="text-center fade-in">
     <h3 class="text-5xl font-bold text-white mb-8">Questions?</h3>
