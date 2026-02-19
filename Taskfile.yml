@@ -59,18 +59,18 @@ tasks:
   lint:
     desc: Run the linter(s)
     cmds:
-      - uv run pre-commit run --all-files
+      - prek run --all-files
 
   validate:
     desc: Validate the pre-commit config and hooks files
     cmds:
-      - uv run pre-commit validate-config .pre-commit-config.yaml
+      - prek validate-config .pre-commit-config.yaml
 
   update:
     desc: Update the project dependencies, and other misc components
     cmds:
       - uv lock
-      - pre-commit autoupdate --bleeding-edge --freeze --jobs 4
+      - prek autoupdate --bleeding-edge --freeze --jobs 4
       - for repo in $(find ./modules/iac_security/demo -type d -mindepth 1 -maxdepth 1); do pushd "${repo}"; git pull origin main; popd; done
 
   start:
@@ -130,6 +130,8 @@ tasks:
     cmds:
       - mv -f reveal.js/index.html.bkp reveal.js/index.html 2>/dev/null || true
       - rm -f modules/current.html
+              current.html
+              modules/shared/css/modern.css
               reveal.js/modules 2>/dev/null || true
       - rm -f reveal.js/dist/theme/fonts/bitter
               reveal.js/dist/theme/fonts/rock-salt

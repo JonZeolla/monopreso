@@ -18,8 +18,9 @@ function help() {
   exitCode="${1:-0}"
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
-		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--branding=BRANDING] [--no-open] [--no-cleanup]
-		--branding     Use the specified branding i.e. --branding=seiso or --branding=zenable
+		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--no-open] [--no-cleanup]
+		--branding     Use the specified branding i.e. --branding=seiso or --branding=zenable (revealjs engine only)
+		--engine       Presentation engine: modern (default) or revealjs
 		--list         List the available presentations
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
@@ -50,6 +51,19 @@ function feedback() {
     esac
 }
 
+function run_quiet() {
+  # Run a command, suppressing output on success. On failure, display captured output.
+  local _qout _rc
+  _qout=$(mktemp)
+  _rc=0
+  "$@" >"${_qout}" 2>&1 || _rc=$?
+  if [[ "${_rc}" -ne 0 ]]; then
+    cat "${_qout}" >&2
+  fi
+  rm -f "${_qout}"
+  return "${_rc}"
+}
+
 function cleanup() {
   feedback INFO "Cleaning up..."
   task stop clean
@@ -68,6 +82,7 @@ SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION="current.html"
 BRANDING="False"
+ENGINE="modern"
 NO_CLEANUP="False"
 NO_OPEN="False"
 
@@ -83,6 +98,12 @@ while getopts "${OPTSPEC}" optchar; do
 
         branding=*)
           BRANDING=${OPTARG#*=} ;;
+
+        engine)
+          ENGINE="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
+
+        engine=*)
+          ENGINE=${OPTARG#*=} ;;
 
         list)
           LIST_PRESENTATIONS="True" ;;
@@ -125,7 +146,7 @@ if [[ "${LIST_PRESENTATIONS}" == "True" ]]; then
   pushd "${SCRIPT_DIR}" > /dev/null
   while read -r presentation; do
     basename "${presentation//_content.j2/}"
-  done < <(find modules presentations -type f -name "*_content.j2")
+  done < <(find modules presentations -type f -name "*_content.j2" | sed 's/_modern_content\.j2/_content.j2/' | sort -u)
   popd > /dev/null
   exit 0
 fi
@@ -133,10 +154,32 @@ fi
 ## Validation
 echo -en "Getting set up.."
 
+# Engine must be valid
+echo -n "."
+if [[ "${ENGINE,,}" != "revealjs" ]] && [[ "${ENGINE,,}" != "modern" ]]; then
+  feedback ERROR "${ENGINE} is not a valid engine option"
+fi
+
 # Presentation is required
 echo -n "."
 if [[ -z "${PRESENTATION}" ]]; then
   feedback ERROR "--preso is required"
+fi
+
+# Content file resolution based on engine
+echo -n "."
+if [[ "${ENGINE,,}" == "modern" ]]; then
+  MODERN_CONTENT="$(find modules presentations -type f -name "${PRESENTATION}_modern_content.j2" -print -quit)"
+  if [[ ! "${MODERN_CONTENT}" ]]; then
+    feedback WARNING "No modern content for ${PRESENTATION}, falling back to revealjs engine"
+    ENGINE="revealjs"
+    PRESENTATION_CONTENT_FILE="$(find modules presentations -type f -name "${PRESENTATION}_content.j2" -print -quit)"
+    if [[ ! "${PRESENTATION_CONTENT_FILE}" ]]; then
+      feedback ERROR "Unable to find the presentation \"${PRESENTATION}\""
+    fi
+  else
+    PRESENTATION_CONTENT_FILE="${MODERN_CONTENT}"
+  fi
 else
   PRESENTATION_CONTENT_FILE="$(find modules presentations -type f -name "${PRESENTATION}_content.j2" -print -quit)"
   if [[ ! "${PRESENTATION_CONTENT_FILE}" ]]; then
@@ -150,54 +193,117 @@ if [[ "${BRANDING}" != "False" ]]; then
   if [[ "${BRANDING,,}" != "seiso" ]] && [[ "${BRANDING,,}" != "zenable" ]]; then
     feedback ERROR "${BRANDING} is not a valid branding option"
   fi
+  if [[ "${ENGINE,,}" != "revealjs" ]]; then
+    feedback WARNING "--branding is only used with --engine=revealjs, ignoring"
+    BRANDING="False"
+  fi
 fi
 
 ## Environment setup
 # Start with a clean slate
 task clean
-# Update submodules if needed
-while read -r submodule_status; do
+
+if [[ "${ENGINE,,}" == "modern" ]]; then
+  ##############################################################################
+  # Modern engine path
+  ##############################################################################
+
+  # 1. Render Jinja2 — content macros first, then main template
   echo -n "."
-  if grep -q '^-' <<< "${submodule_status}"; then
-    SUBMODULES_NEED_UPDATE="True"
-    break
+  _qout=$(mktemp)
+  _rc=0
+  docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
+                                                                                && uv run python3 << PYEOF
+from jinja2 import Environment, FileSystemLoader
+
+env = Environment(loader=FileSystemLoader(['.', 'modules/shared/', 'modules/shared/components/']))
+
+# Render the content file (which may import macros)
+content_src = open('${PRESENTATION_CONTENT_FILE}').read()
+content_tmpl = env.from_string(content_src)
+rendered_content = content_tmpl.render()
+
+# Render the main template with the content
+main = env.get_template('modern_template.j2')
+out = main.render(title='${PRESENTATION}', content=rendered_content)
+
+with open('${RENDERED_PRESENTATION}', 'w') as f:
+    f.write(out)
+PYEOF" >"${_qout}" 2>&1 || _rc=$?
+  if [[ "${_rc}" -ne 0 ]]; then cat "${_qout}" >&2; rm -f "${_qout}"; exit 1; fi
+  rm -f "${_qout}"
+
+  # 2. Compile Tailwind CSS
+  echo -n "."
+  run_quiet docker run --rm -v .:/data -w /data node:alpine \
+    npx tailwindcss@3 \
+      -i modules/shared/css/modern-input.css \
+      -o modules/shared/css/modern.css \
+      --config modules/shared/tailwind.config.js \
+      --minify
+
+  # 3. Build and run lightweight server
+  echo -n "."
+  docker buildx build --quiet --load -f Dockerfile.modern -t monopreso-modern:latest . >/dev/null 2>&1 || true
+  echo -n "."
+  container_id="$(docker run --rm -d -p 8000:8000 -v .:/srv -w /srv monopreso-modern:latest)"
+
+  # 4. Wait for server
+  until curl --fail -s http://localhost:8000/current.html >/dev/null; do
+    echo -n "."
+    sleep .4
+  done
+  url="http://localhost:8000/current.html"
+
+else
+  ##############################################################################
+  # Reveal.js engine path (existing behavior)
+  ##############################################################################
+
+  # Update submodules if needed
+  while read -r submodule_status; do
+    echo -n "."
+    if grep -q '^-' <<< "${submodule_status}"; then
+      SUBMODULES_NEED_UPDATE="True"
+      break
+    fi
+  done < <(docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule status")
+
+  if [[ "${SUBMODULES_NEED_UPDATE}" == "True" ]]; then
+    echo -n "."
+    docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule update --init --recursive >/dev/null"
   fi
-done < <(docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule status")
 
-if [[ "${SUBMODULES_NEED_UPDATE}" == "True" ]]; then
-  echo -n "."
-  docker run --rm -v .:/git -w /git --entrypoint /bin/sh cgr.dev/chainguard/git:latest-dev -c "git config --global --add safe.directory /git && git submodule update --init --recursive >/dev/null"
-fi
-
-# Only backup if index.html is a normal file and bkp doesn't exist
-if [[ -f reveal.js/index.html && ! ( -f reveal.js/index.html.bkp || -L reveal.js/index.html.bkp ) ]]; then
-  echo -n "."
-  mv reveal.js/index.html{,.bkp}
-fi
-
-# Generate the presentation
-content=$(cat "${PRESENTATION_CONTENT_FILE}")
-
-for template in title reveal_config; do
-  echo -n "."
-  # Purposefully only return the first match
-  search="$(find modules presentations -type f -name "${PRESENTATION}_${template}.j2" -print -quit)"
-
-  if [[ "${search}" ]]; then
-    # If the search found a match, use it
-    declare "${template}=$(cat "${search}")"
-  else
-    # Otherwise, use the default
-    declare "${template}=$(cat modules/shared/default_${template}.j2)"
+  # Only backup if index.html is a normal file and bkp doesn't exist
+  if [[ -f reveal.js/index.html && ! ( -f reveal.js/index.html.bkp || -L reveal.js/index.html.bkp ) ]]; then
+    echo -n "."
+    mv reveal.js/index.html{,.bkp}
   fi
-done
 
-# Generate the presentation
-echo -n "."
-# 2>&1 is to remove noisy known warnings
-# shellcheck disable=SC2154
-docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
-                                                                              && uv run python3 << EOF
+  # Generate the presentation
+  content=$(cat "${PRESENTATION_CONTENT_FILE}")
+
+  for template in title reveal_config; do
+    echo -n "."
+    # Purposefully only return the first match
+    search="$(find modules presentations -type f -name "${PRESENTATION}_${template}.j2" -print -quit)"
+
+    if [[ "${search}" ]]; then
+      # If the search found a match, use it
+      declare "${template}=$(cat "${search}")"
+    else
+      # Otherwise, use the default
+      declare "${template}=$(cat modules/shared/default_${template}.j2)"
+    fi
+  done
+
+  # Generate the presentation
+  echo -n "."
+  # shellcheck disable=SC2154
+  _qout=$(mktemp)
+  _rc=0
+  docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
+                                                                                && uv run python3 << EOF
 from jinja2 import Environment, FileSystemLoader
 
 title = '''${title}'''
@@ -211,40 +317,46 @@ out = template.render(title=title, content=content, reveal_config=reveal_config,
 
 with open(\"${RENDERED_PRESENTATION}\", \"w\") as f:
   f.write(out)
-EOF"
+EOF" >"${_qout}" 2>&1 || _rc=$?
+  if [[ "${_rc}" -ne 0 ]]; then cat "${_qout}" >&2; rm -f "${_qout}"; exit 1; fi
+  rm -f "${_qout}"
 
-# Setup links
-echo -n "."
-ln -sf "../${RENDERED_PRESENTATION}" reveal.js/index.html
-ln -sFh ../modules reveal.js/modules
-ln -sFh ../presentations reveal.js/presentations
-ln -sf ../../../../modules/shared/scss/custom.scss reveal.js/css/theme/source/
-docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/custom.scss modules/shared/css/custom.css
-ln -sf ../../../modules/shared/css/custom.css reveal.js/dist/theme/custom.css
+  # Setup links
+  echo -n "."
+  ln -sf "../${RENDERED_PRESENTATION}" reveal.js/index.html
+  ln -sFh ../modules reveal.js/modules
+  ln -sFh ../presentations reveal.js/presentations
+  ln -sf ../../../../modules/shared/scss/custom.scss reveal.js/css/theme/source/
+  run_quiet docker run --rm -v .:/data -w /data node:alpine npx sass --silence-deprecation=import reveal.js/css/theme/source/custom.scss modules/shared/css/custom.css
+  ln -sf ../../../modules/shared/css/custom.css reveal.js/dist/theme/custom.css
 
-# Render and link branded css
-if [[ "${BRANDING,,}" == "seiso" ]]; then
-  ln -sf ../../../../modules/shared/scss/seiso.scss reveal.js/css/theme/source/
+  # Render and link branded css
+  if [[ "${BRANDING,,}" == "seiso" ]]; then
+    ln -sf ../../../../modules/shared/scss/seiso.scss reveal.js/css/theme/source/
+    echo -n "."
+    run_quiet docker run --rm -v .:/data -w /data node:alpine npx sass --silence-deprecation=import reveal.js/css/theme/source/seiso.scss modules/shared/css/seiso.css
+    ln -sf ../../../modules/shared/css/seiso.css reveal.js/dist/theme/seiso.css
+  elif [[ "${BRANDING,,}" == "zenable" ]]; then
+    ln -sf ../../../../modules/shared/scss/zenable.scss reveal.js/css/theme/source/
+    echo -n "."
+    run_quiet docker run --rm -v .:/data -w /data node:alpine npx sass --silence-deprecation=import reveal.js/css/theme/source/zenable.scss modules/shared/css/zenable.css
+    ln -sf ../../../modules/shared/css/zenable.css reveal.js/dist/theme/zenable.css
+  fi
+
+  ## Start the presentation
   echo -n "."
-  docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/seiso.scss modules/shared/css/seiso.css
-  ln -sf ../../../modules/shared/css/seiso.css reveal.js/dist/theme/seiso.css
-elif [[ "${BRANDING,,}" == "zenable" ]]; then
-  ln -sf ../../../../modules/shared/scss/zenable.scss reveal.js/css/theme/source/
+  docker buildx build --quiet --load -t monopreso:latest . >/dev/null 2>&1 || true # Continue regardless; assume it failed due to no internet but we have an old version available
   echo -n "."
-  docker run --rm -v .:/data -w /data node:alpine npx sass reveal.js/css/theme/source/zenable.scss modules/shared/css/zenable.css
-  ln -sf ../../../modules/shared/css/zenable.css reveal.js/dist/theme/zenable.css
+  container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
+  until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
+    echo -n "."
+    sleep .4
+  done
+  url="http://localhost:8000/"
+
 fi
 
-## Start the presentation
-echo -n "."
-docker buildx build --quiet --load -t monopreso:latest . >/dev/null || true # Continue regardless; assume it failed due to no internet but we have an old version available
-echo -n "."
-container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
-until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
-  echo -n "."
-  sleep .4
-done
-url="http://localhost:8000/"
+## Common post-startup
 echo -e "\n\nYour presentation is now running at ${url}"
 echo "${container_id}" > .container_id
 if [[ "${NO_OPEN}" == "False" ]]; then

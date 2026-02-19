@@ -25,12 +25,17 @@ jobs:
         run: uv python install
       - name: Install Task
         uses: arduino/setup-task@v2
+      - name: Install prek
+        run: uv tool install prek
+      - name: Cache the prek cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/prek
+          key: ${{ runner.os }}-prek-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-prek-
       - name: Run the linters
         run: task lint
-      - name: Run the goat
-        uses: seisollc/goat@main
-        with:
-          exclude: '.*/\.venv/|(\.css|\.scss|\.js|\.html|\.md|\.json)$|.*modules/iac_security/demo/.*|.*reveal.js/node_modules/.*|.*modules/shared/demo/demo-magic.sh$'
   test:
     name: Test
     runs-on: Ubuntu-22.04

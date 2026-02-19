@@ -1,0 +1,9 @@
+FROM python:3.12-slim
+WORKDIR /srv
+EXPOSE 8000
+CMD ["python", "-m", "http.server", "8000"]
+
+# These align with https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL org.opencontainers.image.title="Monopreso Modern"
+LABEL org.opencontainers.image.description="Modern presentation engine for monopreso"
+LABEL org.opencontainers.image.source="https://github.com/jonzeolla/monopreso"
