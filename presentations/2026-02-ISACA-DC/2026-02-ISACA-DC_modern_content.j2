@@ -855,70 +855,289 @@
   </div>
 </section>
 
-
-<!-- How It Works: MCP -->
-<section class="slide flex items-center justify-center p-8" data-label="MCP">
+<!-- Level 4 — How Level 1 Improves -->
+<section class="slide flex items-center justify-center p-8" data-label="L1 Improves">
   <div class="max-w-7xl mx-auto w-full fade-in">
     {{ section_label("Level 4: Fly") }}
-    <h3 class="text-4xl font-bold text-white mb-6">Model Context Protocol (MCP)</h3>
-    <div class="flex gap-8 items-start">
-      <!-- MCP Server features -->
-      <div class="flex-1">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Server Features</p>
-        <div class="space-y-3">
-          <div class="p-4 rounded-xl bg-zenable-bg-light/50 border border-zenable-teal/30">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-5 h-5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-              <span class="font-semibold text-white text-sm">Tools</span>
-            </div>
-            <p class="text-xs text-slate-400">Functions the LLM can call. Run linters, check policies, query databases.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-              <span class="font-medium text-slate-300 text-sm">Resources</span>
-            </div>
-            <p class="text-xs text-slate-500">Contextual data: file contents, git history, documentation.</p>
-          </div>
-          <div class="p-3 rounded-xl bg-zenable-bg-light/30 border border-slate-700/50">
-            <div class="flex items-center gap-2 mb-1">
-              <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-              <span class="font-medium text-slate-300 text-sm">Prompts</span>
-            </div>
-            <p class="text-xs text-slate-500">Pre-defined templates and instructions. Slash commands, menu options.</p>
-          </div>
+    <h3 class="text-4xl font-bold text-white mb-2">Level 1 Learns &amp; Improves</h3>
+    <p class="text-slate-400 mb-8">Enforcement outcomes automatically refine context files across repos</p>
+    <div class="relative mx-auto" style="max-width: 720px; height: 400px;">
+      <!-- PR 6 (furthest back) -->
+      <div class="absolute rounded-xl border border-slate-700/30 bg-slate-900/50 p-4" style="width: 560px; top: 0; left: 180px; transform: rotate(3deg);">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded-full bg-purple-500/30 shrink-0"></div>
+          <span class="text-[10px] text-slate-600">PR #1204 &middot; Update AGENTS.md &mdash; logging standards</span>
         </div>
-        <div class="mt-4 p-3 rounded-lg bg-slate-800/30 border border-slate-700/30">
-          <p class="text-[10px] text-slate-500"><span class="text-slate-400">Client features:</span> Elicitation, Sampling, Roots (not covered here)</p>
-        </div>
+        <div class="h-10 bg-slate-800/30 rounded mt-2"></div>
       </div>
-      <!-- MCP Tool example with IDE connection -->
-      <div class="flex-[1.3]">
-        <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Example: Policy Check Tool</p>
-        <!-- MCP Server box -->
-        <div class="rounded-xl border border-zenable-teal/40 bg-zenable-bg-light/50 p-4 mb-3">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-6 h-6 rounded-lg bg-zenable-teal/20 border border-zenable-teal/40 flex items-center justify-center">
-              <svg class="w-3.5 h-3.5 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2"></path></svg>
-            </div>
-            <span class="text-xs font-bold text-zenable-teal uppercase tracking-wider">MCP Server</span>
-          </div>
-          <div class="bg-[#11111b] rounded-lg p-3 font-mono text-[10px] text-slate-400 leading-relaxed">
-            <p><span class="text-purple-400">from</span> <span class="text-slate-300">fastmcp</span> <span class="text-purple-400">import</span> <span class="text-slate-300">FastMCP</span></p>
-            <br>
-            <p><span class="text-amber-300">@mcp.tool</span></p>
-            <p><span class="text-purple-400">def</span> <span class="text-amber-300">check_policy</span>(file_path: <span class="text-slate-300">str</span>) -> <span class="text-slate-300">dict</span>:</p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-green-400">"""Run policy checks on a file."""</span></p>
-            <p></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;results = <span class="text-amber-300">run_semgrep</span>(file_path)</p>
-            <p></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">return</span> {<span class="text-green-400">"violations"</span>: results}</p>
-          </div>
+      <!-- PR 5 -->
+      <div class="absolute rounded-xl border border-slate-700/30 bg-slate-900/55 p-4" style="width: 560px; top: 35px; left: 145px; transform: rotate(-1.5deg);">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded-full bg-purple-500/30 shrink-0"></div>
+          <span class="text-[10px] text-slate-600">PR #1198 &middot; Update AGENTS.md &mdash; error handling policy</span>
         </div>
+        <div class="h-10 bg-slate-800/30 rounded mt-2"></div>
+      </div>
+      <!-- PR 4 -->
+      <div class="absolute rounded-xl border border-slate-700/35 bg-slate-900/60 p-4" style="width: 560px; top: 70px; left: 110px; transform: rotate(2deg);">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded-full bg-purple-500/30 shrink-0"></div>
+          <span class="text-[10px] text-slate-600">PR #1185 &middot; Update AGENTS.md &mdash; input validation</span>
+        </div>
+        <div class="h-10 bg-slate-800/30 rounded mt-2"></div>
+      </div>
+      <!-- PR 3 -->
+      <div class="absolute rounded-xl border border-slate-700/40 bg-slate-900/70 p-4" style="width: 560px; top: 105px; left: 70px; transform: rotate(-1deg);">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded-full bg-purple-500/30 shrink-0"></div>
+          <span class="text-[10px] text-slate-600">PR #1171 &middot; Update AGENTS.md &mdash; API versioning</span>
+        </div>
+        <div class="h-10 bg-slate-800/30 rounded mt-2"></div>
+      </div>
+      <!-- PR 2 -->
+      <div class="absolute rounded-xl border border-slate-700/40 bg-slate-900/80 p-4" style="width: 560px; top: 140px; left: 35px; transform: rotate(1.5deg);">
+        <div class="flex items-center gap-2">
+          <div class="w-4 h-4 rounded-full bg-purple-500/30 shrink-0"></div>
+          <span class="text-[10px] text-slate-600">PR #1163 &middot; Update AGENTS.md &mdash; dependency policy</span>
+        </div>
+        <div class="h-10 bg-slate-800/30 rounded mt-2"></div>
+      </div>
+      <!-- PR 1 (front, fully readable) -->
+      <div class="absolute rounded-xl border border-purple-500/40 bg-slate-900/95 shadow-2xl shadow-purple-500/10 p-5" style="width: 620px; top: 180px; left: 0;">
+        <div class="flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 012 2v7"/><line x1="6" y1="9" x2="6" y2="21"/></svg>
+          <span class="text-sm font-semibold text-purple-400">PR #1152</span>
+          <span class="text-xs text-slate-400">Update AGENTS.md &mdash; password hashing</span>
+          <span class="ml-auto text-[9px] font-mono px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/30 text-green-400">merged</span>
+        </div>
+        <div class="rounded-lg bg-[#11111b] border border-slate-700/50 p-4 font-mono text-[11px] leading-relaxed">
+          <p class="text-slate-500 mb-2">## Security Requirements</p>
+          <p class="text-red-400 bg-red-500/10 px-2 py-0.5 rounded"><span class="select-none">- </span>Hash passwords before storing them in the database</p>
+          <p class="text-green-400 bg-green-500/10 px-2 py-0.5 rounded mt-1"><span class="select-none">+ </span>Use bcrypt with minimum cost factor 12 for password hashing;</p>
+          <p class="text-green-400 bg-green-500/10 px-2 py-0.5 rounded"><span class="select-none">+ </span>never use MD5 or SHA-1 for any security purpose</p>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-3 italic">Auto-generated from Level 3 guardrail violation #GR-0847</p>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Level 4 — How Level 2 Improves -->
+<section class="slide flex items-center justify-center p-8" data-label="L2 Improves">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-2">Level 2 Learns &amp; Improves</h3>
+    <p class="text-slate-400 mb-8">Review agents pull from a shared knowledge base that evolves independently</p>
+    <div class="flex items-center gap-4">
+      <!-- Left: continuous updates flowing in -->
+      <div class="w-64 shrink-0 space-y-3">
+        <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-500 mb-2">Continuous Updates</p>
+        <div class="p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <span class="text-xs font-semibold text-amber-400">Audit finding</span>
+          </div>
+          <p class="text-[10px] text-slate-500">Missing rate limiting on auth endpoints</p>
+        </div>
+        <div class="p-3 rounded-lg bg-purple-500/5 border border-purple-500/20">
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4 text-purple-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <span class="text-xs font-semibold text-purple-400">Policy update</span>
+          </div>
+          <p class="text-[10px] text-slate-500">PCI DSS 4.0.1 clarification on MFA</p>
+        </div>
+        <div class="p-3 rounded-lg bg-red-500/5 border border-red-500/20">
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="text-xs font-semibold text-red-400">Incident postmortem</span>
+          </div>
+          <p class="text-[10px] text-slate-500">SSRF via URL preview feature</p>
+        </div>
+      </div>
+      <!-- Arrow: write -->
+      <div class="flex flex-col items-center gap-1 shrink-0">
+        <svg class="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+        <span class="text-[9px] text-slate-600">write</span>
+      </div>
+      <!-- Center: Knowledge Base -->
+      <div class="shrink-0 text-center">
+        <div class="w-36 rounded-xl border-2 border-zenable-teal/50 bg-zenable-teal/5 p-5">
+          <svg class="w-12 h-12 text-zenable-teal mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+          <p class="text-sm font-bold text-zenable-teal">Knowledge Base</p>
+          <p class="text-[10px] text-slate-500 mt-1">Policies, patterns, known issues</p>
+        </div>
+      </div>
+      <!-- Arrow: read (points left, from agents toward DB) -->
+      <div class="flex flex-col items-center gap-1 shrink-0">
+        <svg class="w-8 h-8 text-zenable-teal" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"></path></svg>
+        <span class="text-[9px] text-slate-600">read</span>
+      </div>
+      <!-- Right: Three agents -->
+      <div class="flex-1 space-y-3">
+        <div class="rounded-xl border border-red-500/40 bg-slate-900/90 p-3">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-red-500/20 border border-red-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider">Security Agent</span>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1 font-mono">&ldquo;Checking for SSRF patterns per KB-2847...&rdquo;</p>
+        </div>
+        <div class="rounded-xl border border-amber-500/40 bg-slate-900/90 p-3">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider">QA Agent</span>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1 font-mono">&ldquo;Verifying rate limit tests per KB-2851...&rdquo;</p>
+        </div>
+        <div class="rounded-xl border border-blue-500/40 bg-slate-900/90 p-3">
+          <div class="flex items-center gap-2">
+            <div class="w-6 h-6 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
+              <svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            </div>
+            <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Best Practices</span>
+          </div>
+          <p class="text-[10px] text-slate-500 mt-1 font-mono">&ldquo;Enforcing MFA requirements per KB-2849...&rdquo;</p>
+        </div>
+      </div>
+    </div>
+    <div class="mt-6 bg-zenable-bg-light/30 border border-slate-700 rounded-lg p-3 text-center">
+      <p class="text-sm text-slate-300"><span class="text-zenable-teal font-semibold">Decoupled.</span> The knowledge base evolves independently &mdash; agents always have the latest policies without redeployment.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Level 4 — How Level 3 Improves -->
+<section class="slide flex items-center justify-center p-8" data-label="L3 Improves">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Level 3 Learns &amp; Improves</h3>
+    <!-- New requirement banner -->
+    <div class="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4 mb-5">
+      <div class="flex items-center gap-2 mb-1">
+        <svg class="w-5 h-5 text-amber-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span class="text-sm font-semibold text-amber-400">New Requirement</span>
+      </div>
+      <p class="text-sm text-slate-300">Contract with <span class="font-semibold text-white">Customer A</span> requires FIPS 140-2 validated encryption at rest and TLS 1.3+ for all data in transit</p>
+    </div>
+    <!-- Arrow down -->
+    <div class="text-center mb-4">
+      <svg class="w-6 h-6 text-slate-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+      <p class="text-[10px] text-slate-500">Generates 10 new guardrails</p>
+    </div>
+    <!-- 10 tools grid -->
+    <div class="grid grid-cols-5 gap-2 mb-5">
+      <div class="p-2.5 rounded-lg bg-red-500/5 border border-red-500/20 text-center">
+        <p class="text-xs font-semibold text-red-400">Semgrep</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Detect unencrypted data stores</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-red-500/5 border border-red-500/20 text-center">
+        <p class="text-xs font-semibold text-red-400">SonarQube</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Flag weak cipher usage</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-red-500/5 border border-red-500/20 text-center">
+        <p class="text-xs font-semibold text-red-400">Bandit</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Insecure crypto functions</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-red-500/5 border border-red-500/20 text-center">
+        <p class="text-xs font-semibold text-red-400">gosec</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Verify TLS configuration</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20 text-center">
+        <p class="text-xs font-semibold text-amber-400">Checkov</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Enforce S3 encryption</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20 text-center">
+        <p class="text-xs font-semibold text-amber-400">tfsec</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Validate RDS encryption</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20 text-center">
+        <p class="text-xs font-semibold text-blue-400">AWS SCPs</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Deny unencrypted storage</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20 text-center">
+        <p class="text-xs font-semibold text-blue-400">Azure Policy</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Require storage encryption</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-purple-500/5 border border-purple-500/20 text-center">
+        <p class="text-xs font-semibold text-purple-400">ESLint Security</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Flag hardcoded crypto keys</p>
+      </div>
+      <div class="p-2.5 rounded-lg bg-purple-500/5 border border-purple-500/20 text-center">
+        <p class="text-xs font-semibold text-purple-400">Pylint</p>
+        <p class="text-[9px] text-slate-500 mt-0.5">Deprecated crypto imports</p>
+      </div>
+    </div>
+    <!-- Arrow down -->
+    <div class="text-center mb-4">
+      <svg class="w-6 h-6 text-slate-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+      <p class="text-[10px] text-slate-500">Automatically enforced in every IDE</p>
+    </div>
+    <!-- IDE chat showing guardrail catch + auto-fix (height-capped) -->
+    <div class="rounded-xl border border-slate-700 overflow-hidden bg-[#1e1e2e] max-h-[38vh] relative">
+      <!-- Title bar -->
+      <div class="flex items-center gap-2 px-3 py-1 bg-[#181825] border-b border-slate-700">
+        <div class="flex gap-1.5">
+          <div class="w-2 h-2 rounded-full bg-red-500/60"></div>
+          <div class="w-2 h-2 rounded-full bg-yellow-500/60"></div>
+          <div class="w-2 h-2 rounded-full bg-green-500/60"></div>
+        </div>
+        <span class="text-[10px] text-slate-500 font-mono ml-2">tls_config.py &middot; api-gateway</span>
+        <span class="text-[10px] text-slate-400 font-semibold ml-auto">Agent Chat</span>
+      </div>
+      <div class="px-4 py-2 space-y-2">
+        <!-- Agent generates code with old TLS config -->
+        <div class="bg-slate-800/40 rounded-lg p-2 border border-slate-700/30">
+          <p class="text-[10px] text-purple-400 font-semibold mb-1">Claude</p>
+          <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] text-slate-400 leading-relaxed">
+            <p>ssl_context = ssl.SSLContext(ssl.<span class="text-amber-300">PROTOCOL_TLS</span>)</p>
+            <p>ssl_context.minimum_version = ssl.<span class="text-amber-300">TLSVersion.TLSv1</span></p>
+            <p>ssl_context.set_ciphers(<span class="text-green-400">'DEFAULT'</span>)</p>
+          </div>
+        </div>
+        <!-- Guardrail fires -->
+        <div class="bg-red-950/30 rounded-lg p-2 border border-red-500/30">
+          <div class="flex items-center gap-2 mb-1">
+            <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <p class="text-[10px] font-bold text-red-400">Guardrail Violation</p>
+            <span class="text-[8px] font-mono text-slate-600 ml-auto">customer-a/fips-tls</span>
+          </div>
+          <p class="text-[10px] text-red-300/80 font-mono">Policy <span class="text-red-400 font-semibold">tls-minimum-1.3</span>: TLS minimum must be TLSv1.3 per Customer A contract. FIPS-validated ciphers only.</p>
+        </div>
+        <!-- Agent auto-fixes with backwards compat approach -->
+        <div class="bg-slate-800/40 rounded-lg p-2 border border-slate-700/30">
+          <p class="text-[10px] text-purple-400 font-semibold mb-1">Claude</p>
+          <p class="text-[10px] text-slate-400 mb-1">Upgrading to TLS 1.3 with FIPS ciphers. Adding metrics for migration tracking:</p>
+          <div class="bg-[#11111b] rounded p-2 font-mono text-[10px] leading-relaxed">
+            <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>ssl_context.minimum_version = ssl.TLSVersion.TLSv1</p>
+            <p class="text-red-400 bg-red-500/10 px-1 rounded"><span class="select-none">- </span>ssl_context.set_ciphers('DEFAULT')</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded mt-1"><span class="select-none">+ </span>ssl_context.minimum_version = ssl.TLSVersion.TLSv1_3</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>ssl_context.set_ciphers('AESGCM+ECDHE:AESGCM+DHE')</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span># Track legacy clients for migration</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>tls_version_counter = metrics.counter(</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>    'tls_negotiated_version',</p>
+            <p class="text-green-400 bg-green-500/10 px-1 rounded"><span class="select-none">+ </span>    labels=['version', 'client_id'])</p>
+          </div>
+        </div>
+      </div>
+      <!-- Fade-out at bottom if truncated -->
+      <div class="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-[#1e1e2e] to-transparent pointer-events-none"></div>
+    </div>
+  </div>
+</section>
+
+
+{# MCP slide — commented out for now
+<section class="slide flex items-center justify-center p-8" data-label="MCP">
+  <div class="max-w-7xl mx-auto w-full fade-in">
+    {{ section_label("Level 4: Fly") }}
+    <h3 class="text-4xl font-bold text-white mb-6">Model Context Protocol (MCP)</h3>
+    ...
+  </div>
+</section>
+#}
 
 <!-- Level 4 — Evolving Requirements -->
 <section class="slide flex items-center justify-center p-8" data-label="Requirements">

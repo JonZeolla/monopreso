@@ -172,6 +172,15 @@
             const nav = document.getElementById('nav-dots');
             const slides = container.querySelectorAll(':scope > section.slide, :scope > section:not(.slide)');
 
+            // Hide nav dots when there are too many slides to display cleanly
+            var visibleCount = 0;
+            slides.forEach(function(s) {
+                if (!s.classList.contains('hidden-slide')) visibleCount++;
+            });
+            if (visibleCount > 15) {
+                nav.style.display = 'none';
+            }
+
             // Build slide_labels from data-label attributes or fallback to index
             slides.forEach((slide, i) => {
                 const label = slide.getAttribute('data-label') || ('Slide ' + i);
