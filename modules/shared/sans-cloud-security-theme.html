@@ -1,0 +1,351 @@
+<!--
+  SANS Cloud Security Theme for reveal.js
+  ========================================
+  Include this file via data-external at the TOP of your content .j2 file,
+  BEFORE any content slides:
+
+    <section data-external="modules/shared/sans-cloud-security-theme.html"></section>
+
+  This applies the full SANS Cloud Security visual theme (matching the
+  official slide master from the "Scaling Compliance" webinar deck) using
+  pure HTML + CSS — no SCSS compilation or -\-branding flag required.
+
+  Special slide types (add to the OUTER <section>):
+    Title slide:      data-background-color="#F5821F" class="no-bg"
+    Section divider:  class="sans-section-divider no-bg"
+    Full-bleed image: class="no-bg"
+    Dark bg slide:    data-background-image="..." data-background-size="cover"
+-->
+
+<!-- Theme CSS injected into the page -->
+<style>
+/* ==========================================================================
+   SANS Cloud Security Theme — Pure CSS override for reveal.js black theme
+   ========================================================================== */
+
+/* -- Google Fonts --------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+/* -- Color variables (CSS custom properties) ------------------------------ */
+:root {
+  --sans-orange:       #F5821F;
+  --sans-orange-dark:  #D96E10;
+  --sans-teal:         #005880;
+  --sans-blue:         #0455A5;
+  --sans-link-blue:    #418EDA;
+  --sans-charcoal:     #404041;
+  --sans-header-bg:    #F5F6F7;
+  --sans-offwhite:     #E6E7E8;
+  --sans-slide-num:    #7F7F7F;
+  --sans-white:        #FFFFFF;
+}
+
+/* -- Viewport ------------------------------------------------------------- */
+body.reveal-viewport {
+  background-color: var(--sans-header-bg) !important;
+}
+
+/* -- Global reveal overrides ---------------------------------------------- */
+.reveal {
+  font-family: 'Fira Sans', Arial, Helvetica, Verdana, sans-serif !important;
+  color: var(--sans-charcoal);
+}
+
+/* -- Slide backgrounds ---------------------------------------------------- */
+/* Content slides get a white background */
+.reveal .slides > section:not(.no-bg) {
+  background: var(--sans-white) !important;
+}
+
+/* Vertical sub-slides also get white */
+.reveal .slides > section:not(.no-bg) > section {
+  background: var(--sans-white) !important;
+}
+
+/* -- Headings ------------------------------------------------------------- */
+.reveal h1, .reveal h2, .reveal h3, .reveal h4, .reveal h5, .reveal h6 {
+  font-family: 'Fira Sans', Arial, Helvetica, Verdana, sans-serif !important;
+  color: var(--sans-teal) !important;
+  text-align: left;
+  font-weight: 700;
+  line-height: 1.3em;
+  margin-bottom: 0.4em;
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: none;
+}
+
+.reveal h1 { font-size: 1.6em; }
+.reveal h2 { font-size: 1.3em; }
+.reveal h3 { font-size: 1.1em; }
+.reveal h4 { font-size: 0.9em; }
+
+/* -- Body text ------------------------------------------------------------ */
+.reveal p, .reveal li, .reveal td, .reveal th {
+  color: var(--sans-charcoal);
+}
+
+/* -- Lists ---------------------------------------------------------------- */
+.reveal ul, .reveal ol {
+  text-align: left;
+}
+
+.reveal li {
+  margin-bottom: 10px;
+  color: var(--sans-charcoal);
+}
+
+.reveal li p {
+  margin: 10px 0;
+}
+
+/* -- Links ---------------------------------------------------------------- */
+.reveal a {
+  color: var(--sans-link-blue) !important;
+  text-decoration: none;
+}
+
+.reveal a:hover {
+  color: #6AAFEF !important;
+}
+
+/* -- Tables --------------------------------------------------------------- */
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+}
+
+.reveal table th {
+  background: var(--sans-teal) !important;
+  color: var(--sans-white) !important;
+  font-weight: 700;
+  padding: 10px 15px;
+  text-align: left;
+}
+
+.reveal table td {
+  padding: 10px 15px;
+  border-bottom: 1px solid var(--sans-offwhite);
+  color: var(--sans-charcoal);
+}
+
+.reveal table tr:last-child td {
+  border-bottom: none;
+}
+
+/* -- Code blocks ---------------------------------------------------------- */
+.reveal pre {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+}
+
+.reveal pre code {
+  max-height: 400px;
+  padding: 16px;
+}
+
+/* -- Blockquotes ---------------------------------------------------------- */
+.reveal blockquote {
+  background: var(--sans-offwhite);
+  border-left: 5px solid var(--sans-orange);
+  padding: 15px 25px;
+  color: var(--sans-charcoal);
+  font-style: italic;
+  box-shadow: none;
+}
+
+/* -- Images --------------------------------------------------------------- */
+.reveal section img.plain {
+  border: none !important;
+  box-shadow: none !important;
+  background: none !important;
+}
+
+/* -- Controls ------------------------------------------------------------- */
+.reveal .controls {
+  color: var(--sans-teal);
+}
+
+/* -- Progress bar --------------------------------------------------------- */
+.reveal .progress span {
+  background: var(--sans-orange) !important;
+}
+
+/* -- Slide number — repositioned to top-right ----------------------------- */
+.reveal .slide-number {
+  background: none !important;
+  color: var(--sans-slide-num) !important;
+  font-weight: 700;
+  font-family: 'Fira Sans', Arial, sans-serif;
+  font-size: 14px;
+  right: 20px !important;
+  top: 10px !important;
+  bottom: auto !important;
+  left: auto !important;
+}
+
+/* =========================================================================
+   SANS Cloud Security Header Bar
+   =========================================================================
+   Fixed gray strip across the top with the orange logo block.
+   This sits ABOVE all slides at z-index 30.
+   ========================================================================= */
+.sans-cloud-header-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background: var(--sans-header-bg);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.sans-cloud-header-bar .sans-logo {
+  display: flex;
+  align-items: center;
+  background: var(--sans-orange);
+  padding: 4px 10px;
+  border-radius: 2px;
+  height: 30px;
+  gap: 0;
+  text-decoration: none;
+}
+
+.sans-cloud-header-bar .sans-logo .sans-wordmark {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--sans-white);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.sans-cloud-header-bar .sans-logo .sans-pipe {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.7);
+  margin: 0 8px;
+  flex-shrink: 0;
+}
+
+.sans-cloud-header-bar .sans-logo .sans-subtitle {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 9px;
+  color: var(--sans-white);
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+/* =========================================================================
+   Utility classes
+   ========================================================================= */
+
+/* Orange accent */
+.reveal .orange,
+.reveal .sans-orange {
+  color: var(--sans-orange) !important;
+}
+.reveal .orange h1, .reveal .orange h2, .reveal .orange h3,
+.reveal .orange h4, .reveal .orange h5, .reveal .orange h6 {
+  color: var(--sans-orange) !important;
+}
+
+/* Teal accent */
+.reveal .teal,
+.reveal .sans-teal {
+  color: var(--sans-teal) !important;
+}
+
+/* Blue accent */
+.reveal .blue,
+.reveal .sans-blue {
+  color: var(--sans-blue) !important;
+}
+
+/* Fragment highlight in SANS orange */
+.reveal .fragment.highlight-sans-orange {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-sans-orange.visible {
+  color: var(--sans-orange);
+  font-weight: bold;
+}
+
+/* =========================================================================
+   Special slide types
+   ========================================================================= */
+
+/* Title slide — use data-background-color="#F5821F" class="no-bg" */
+.reveal .slides section[data-background-color="#F5821F"] h1,
+.reveal .slides section[data-background-color="#F5821F"] h2,
+.reveal .slides section[data-background-color="#F5821F"] h3,
+.reveal .slides section[data-background-color="#F5821F"] h4 {
+  color: var(--sans-white) !important;
+  text-align: left;
+}
+.reveal .slides section[data-background-color="#F5821F"],
+.reveal .slides section[data-background-color="#F5821F"] p,
+.reveal .slides section[data-background-color="#F5821F"] small {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Section divider — use class="sans-section-divider no-bg" */
+.reveal .slides section.sans-section-divider {
+  background: var(--sans-orange) !important;
+}
+.reveal .slides section.sans-section-divider h1,
+.reveal .slides section.sans-section-divider h2,
+.reveal .slides section.sans-section-divider h3 {
+  color: var(--sans-white) !important;
+  text-align: center;
+  font-size: 2em;
+}
+.reveal .slides section.sans-section-divider,
+.reveal .slides section.sans-section-divider p {
+  color: var(--sans-white) !important;
+}
+
+/* Dark background slides — white text */
+.reveal .slides section[data-background-image] h1,
+.reveal .slides section[data-background-image] h2,
+.reveal .slides section[data-background-image] h3,
+.reveal .slides section[data-background-image] h4 {
+  color: var(--sans-white) !important;
+}
+.reveal .slides section[data-background-image],
+.reveal .slides section[data-background-image] p,
+.reveal .slides section[data-background-image] li {
+  color: var(--sans-white) !important;
+}
+.reveal .slides section[data-background-image] a {
+  color: var(--sans-link-blue) !important;
+}
+
+/* =========================================================================
+   Print overrides
+   ========================================================================= */
+@media print {
+  .sans-cloud-header-bar {
+    position: absolute;
+  }
+  .reveal .slides > section {
+    background: var(--sans-white) !important;
+  }
+}
+</style>
+
+<!-- Header bar HTML — fixed overlay across the top of the viewport -->
+<div class="sans-cloud-header-bar">
+  <div class="sans-logo">
+    <span class="sans-wordmark">SANS</span>
+    <span class="sans-pipe"></span>
+    <span class="sans-subtitle">CLOUD<br>SECURITY</span>
+  </div>
+</div>

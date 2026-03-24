@@ -1,0 +1,22 @@
+<section data-transition="none">
+  <h2>Demo: OpenVSCode Server + Continue</h2>
+  <ul>
+    <li>Self-hosted VS Code in the browser via OpenVSCode Server</li>
+    <li>Continue extension configured with an OpenAI-compatible LLM</li>
+    <li>No vendor lock-in — use any model provider</li>
+  </ul>
+  <pre><code class="json" style="font-size: 0.5em;">{
+  "models": [
+    {
+      "title": "LLM",
+      "provider": "openai",
+      "model": "gpt-4o",
+      "apiBase": "https://your-llm-endpoint/v1"
+    }
+  ]
+}</code></pre>
+  <aside class="notes">
+    Live demo: configuring an OpenVSCode server with the Continue AI extension
+    connected to an OpenAI-compatible LLM.
+  </aside>
+</section>
