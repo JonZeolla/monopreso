@@ -329,6 +329,45 @@ body.reveal-viewport {
 }
 
 /* =========================================================================
+   Dark content slides — add class="sans-dark no-bg" to outer <section>
+   ========================================================================= */
+.reveal .slides .sans-dark,
+.reveal .slides .sans-dark > section {
+  background: #0c0c1d !important;
+}
+.reveal .slides .sans-dark h1,
+.reveal .slides .sans-dark h2,
+.reveal .slides .sans-dark h3,
+.reveal .slides .sans-dark h4,
+.reveal .slides .sans-dark h5,
+.reveal .slides .sans-dark h6 {
+  color: var(--sans-orange) !important;
+}
+.reveal .slides .sans-dark,
+.reveal .slides .sans-dark p,
+.reveal .slides .sans-dark li,
+.reveal .slides .sans-dark td,
+.reveal .slides .sans-dark div {
+  color: var(--sans-offwhite) !important;
+}
+.reveal .slides .sans-dark a {
+  color: var(--sans-link-blue) !important;
+}
+.reveal .slides .sans-dark strong {
+  color: var(--sans-orange) !important;
+}
+.reveal .slides .sans-dark table th {
+  background: var(--sans-teal) !important;
+  color: var(--sans-white) !important;
+}
+.reveal .slides .sans-dark pre {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+.reveal .slides .sans-dark pre code {
+  color: var(--sans-offwhite);
+}
+
+/* =========================================================================
    Print overrides
    ========================================================================= */
 @media print {

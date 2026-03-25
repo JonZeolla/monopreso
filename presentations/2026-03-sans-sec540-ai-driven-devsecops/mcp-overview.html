@@ -1,12 +1,27 @@
 <section data-transition="none">
+  <h2>The Problem: Tool Integration</h2>
+  <ul style="font-size: 0.9em; line-height: 1.8;">
+    <li>Every AI agent builds its own integrations</li>
+    <li>N agents &times; M tools = N&times;M custom connectors</li>
+    <li>No standard for authentication, permissions, or data formats</li>
+    <li>Fragile, hard to audit, impossible to govern</li>
+  </ul>
+  <aside class="notes">
+    Before MCP, every agent had to build bespoke integrations for every tool.
+    This creates an explosion of custom connectors that are hard to secure and maintain.
+  </aside>
+</section>
+<section data-transition="none">
   <h2>Model Context Protocol (MCP)</h2>
-  <ul>
+  <ul style="font-size: 0.9em; line-height: 1.8;">
     <li>Open standard by Anthropic for connecting AI models to external data and tools</li>
     <li>Provides a universal interface between LLMs and the systems they interact with</li>
     <li>Think of it as <strong>USB-C for AI</strong> — one protocol, many integrations</li>
+    <li>Released Nov 2024 — rapidly adopted across the ecosystem</li>
   </ul>
   <aside class="notes">
     MCP standardizes how AI models interact with external systems.
+    Open-sourced by Anthropic in November 2024, now supported by most major AI coding tools.
   </aside>
 </section>
 <section data-transition="none">
