@@ -1,0 +1,1796 @@
+{# ================================================================
+   SANS SEC540 AI-Driven DevSecOps — Modern engine content
+   Theme: SANS Cloud Security (matches master slides exactly)
+   ================================================================ #}
+
+<!-- SANS Cloud Security Theme Override -->
+<style>
+/* ── Google Fonts ──────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Mono:wght@400;500;700&display=swap');
+
+/* ── CSS Variables ─────────────────────────────────────────────── */
+:root {
+  --sans-orange:     #F5821F;
+  --sans-teal:       #005880;
+  --sans-blue:       #0455A5;
+  --sans-link:       #418EDA;
+  --sans-charcoal:   #404041;
+  --sans-body:       #000000;
+  --sans-header-bg:  #F5F6F7;
+  --sans-offwhite:   #E6E7E8;
+  --sans-gray:       #7F7F7F;
+  --sans-white:      #FFFFFF;
+  /* Visual slide palette — dark mode (default) */
+  --vis-bg:          #0c0c1d;
+  --vis-card:        rgba(30,41,59,0.6);
+  --vis-card-border: rgba(51,65,85,0.5);
+  --vis-card-header: rgba(30,41,59,0.8);
+  --vis-text:        #e2e8f0;
+  --vis-muted:       #94a3b8;
+  --vis-dim:         #64748b;
+  --vis-code-bg:     #11111b;
+  --vis-code-text:   #cbd5e1;
+}
+/* ── Light mode overrides ───────────────────────────────────────── */
+body.light-mode {
+  --vis-bg:          #FFFFFF;
+  --vis-card:        rgba(241,245,249,0.8);
+  --vis-card-border: rgba(203,213,225,0.6);
+  --vis-card-header: rgba(241,245,249,0.95);
+  --vis-text:        #1e293b;
+  --vis-muted:       #475569;
+  --vis-dim:         #94a3b8;
+  --vis-code-bg:     #f1f5f9;
+  --vis-code-text:   #334155;
+}
+body.light-mode .vis-slide .vis-title { color: var(--sans-teal); }
+body.light-mode .vis-slide .vis-label { color: var(--sans-orange); }
+body.light-mode .vis-slide .vis-subtitle { color: var(--sans-charcoal); }
+body.light-mode .vis-card-filename { color: var(--vis-muted); }
+body.light-mode .vis-code { color: var(--vis-code-text); }
+/* Syntax colors — light mode */
+body.light-mode .syn-key { color: #0d7377; }
+body.light-mode .syn-str { color: #16a34a; }
+body.light-mode .syn-type { color: #7c3aed; }
+body.light-mode .syn-id { color: #b45309; }
+body.light-mode .syn-comment { color: #94a3b8; }
+body.light-mode .syn-num { color: #2563eb; }
+/* Light mode colored cards — stronger borders, lighter fills */
+body.light-mode .vis-blue-card { background: rgba(59,130,246,0.06); border-color: rgba(59,130,246,0.25); }
+body.light-mode .vis-purple-card { background: rgba(168,85,247,0.06); border-color: rgba(168,85,247,0.25); }
+body.light-mode .vis-teal-card { background: rgba(20,184,166,0.06); border-color: rgba(20,184,166,0.25); }
+body.light-mode .vis-amber-card { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.25); }
+body.light-mode .vis-red-card { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.25); }
+body.light-mode .vis-green-card { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.25); }
+/* Light mode callouts */
+body.light-mode .vis-callout-amber { background: rgba(245,158,11,0.06); border-color: rgba(245,158,11,0.3); color: #92400e; }
+body.light-mode .vis-callout-teal { background: rgba(20,184,166,0.06); border-color: rgba(20,184,166,0.3); color: #115e59; }
+body.light-mode .vis-callout-green { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.3); color: #166534; }
+/* Light mode bars */
+body.light-mode .vis-bar-track { background: rgba(241,245,249,0.9); border-color: rgba(203,213,225,0.5); }
+/* Light mode step circles — keep their accent colors but darken text */
+body.light-mode .vis-badge { border-width: 1px; }
+/* Light mode — override inline dark colors on vis-slides */
+body.light-mode .vis-slide p,
+body.light-mode .vis-slide span { color: inherit; }
+body.light-mode .vis-slide [style*="color:#fff"],
+body.light-mode .vis-slide [style*="color: #fff"],
+body.light-mode .vis-slide [style*="color:#FFF"],
+body.light-mode .vis-slide [style*="color: #FFF"] { color: var(--sans-teal) !important; }
+body.light-mode .vis-slide [style*="color:#e2e8f0"],
+body.light-mode .vis-slide [style*="color:#cbd5e1"] { color: #1e293b !important; }
+body.light-mode .vis-slide [style*="color:#94a3b8"] { color: #475569 !important; }
+body.light-mode .vis-slide [style*="color:#64748b"] { color: #64748b !important; }
+body.light-mode .vis-slide [style*="background:#11111b"],
+body.light-mode .vis-slide [style*="background: #11111b"] { background: #f1f5f9 !important; }
+body.light-mode .vis-slide [style*="background:rgba(30,41,59"] { background: rgba(241,245,249,0.6) !important; }
+body.light-mode .vis-slide [style*="background:rgba(15,23,42"] { background: rgba(241,245,249,0.95) !important; }
+body.light-mode .vis-slide [style*="background:rgba(127,29,29"] { background: rgba(254,226,226,0.5) !important; }
+body.light-mode .vis-slide [style*="background:rgba(120,53,15"] { background: rgba(254,243,199,0.5) !important; }
+body.light-mode .vis-slide [style*="background:rgba(5,46,22"] { background: rgba(220,252,231,0.5) !important; }
+/* Light mode — keep accent colors readable */
+body.light-mode .vis-slide [style*="color:#2dd4bf"] { color: #0d9488 !important; }
+body.light-mode .vis-slide [style*="color:#60a5fa"] { color: #2563eb !important; }
+body.light-mode .vis-slide [style*="color:#c084fc"] { color: #7c3aed !important; }
+body.light-mode .vis-slide [style*="color:#fbbf24"] { color: #b45309 !important; }
+body.light-mode .vis-slide [style*="color:#f87171"] { color: #dc2626 !important; }
+body.light-mode .vis-slide [style*="color:#4ade80"] { color: #16a34a !important; }
+body.light-mode .vis-slide [style*="color:#f59e0b"] { color: #d97706 !important; }
+body.light-mode .vis-slide [style*="color:#5eead4"] { color: #0d9488 !important; }
+body.light-mode .vis-slide [style*="color:#93c5fd"] { color: #2563eb !important; }
+body.light-mode .vis-slide [style*="color:#d8b4fe"] { color: #7c3aed !important; }
+body.light-mode .vis-slide [style*="color:#fcd34d"] { color: #92400e !important; }
+body.light-mode .vis-slide [style*="color:rgba(248,113,113,0.7)"] { color: #dc2626 !important; }
+body.light-mode .vis-slide [style*="color:rgba(252,211,77,0.7)"] { color: #b45309 !important; }
+body.light-mode .vis-slide [style*="color:rgba(134,239,172,0.7)"] { color: #16a34a !important; }
+body.light-mode .vis-slide [style*="color:rgba(248,113,113,0.8)"] { color: #dc2626 !important; }
+body.light-mode .vis-slide [style*="color:rgba(255,255,255,0.7)"] { color: #64748b !important; }
+body.light-mode .vis-slide [style*="color:rgba(255,255,255,0.6)"] { color: #94a3b8 !important; }
+/* Diff lines in light mode */
+body.light-mode .vis-slide [style*="background:rgba(239,68,68,0.1)"] { background: rgba(254,226,226,0.6) !important; }
+body.light-mode .vis-slide [style*="background:rgba(34,197,94,0.1)"] { background: rgba(220,252,231,0.6) !important; }
+/* SVG arrows in light mode */
+body.light-mode .vis-slide svg path[stroke="#475569"] { stroke: #94a3b8; }
+body.light-mode .vis-slide svg path[stroke="#2dd4bf"] { stroke: #0d9488; }
+body.light-mode .vis-slide svg path[stroke="#60a5fa"] { stroke: #2563eb; }
+body.light-mode .vis-slide svg path[stroke="#c084fc"] { stroke: #7c3aed; }
+/* Light mode toggle button */
+.theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 200;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba(100,116,139,0.3);
+  background: rgba(15,23,42,0.85);
+  color: #fbbf24;
+  cursor: pointer;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+.theme-toggle:hover { transform: scale(1.1); }
+body.light-mode .theme-toggle {
+  background: rgba(255,255,255,0.9);
+  border-color: rgba(203,213,225,0.6);
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* ── Global resets for SANS theme ──────────────────────────────── */
+body.font-sans {
+  font-family: 'Fira Sans', Arial, Helvetica, sans-serif !important;
+  background: var(--sans-white) !important;
+  color: var(--sans-body) !important;
+}
+
+/* Hide the default zenable nav dots */
+#nav-dots { display: none !important; }
+/* Hide the default keyboard hint */
+.fixed.bottom-6.left-6 { display: none !important; }
+
+/* ── SANS Header Bar ───────────────────────────────────────────── */
+.sans-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 18px;
+  background: var(--sans-header-bg);
+  border-bottom: 1px solid var(--sans-offwhite);
+  z-index: 100;
+}
+.sans-logo {
+  position: fixed;
+  top: 0;
+  left: 20px;
+  z-index: 101;
+}
+.sans-logo img {
+  height: 86px;
+  width: auto;
+  display: block;
+}
+
+/* ── Slide base ────────────────────────────────────────────────── */
+.sans-slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  background: var(--sans-white);
+  display: flex;
+  flex-direction: column;
+  padding: 100px 64px 48px 64px;
+  box-sizing: border-box;
+  font-family: 'Fira Sans', Arial, Helvetica, sans-serif;
+  color: var(--sans-body);
+}
+
+/* ── Headings ──────────────────────────────────────────────────── */
+.sans-slide h2 {
+  color: var(--sans-teal);
+  font-weight: 700;
+  font-size: 36px;
+  margin: 0 0 28px 0;
+  line-height: 1.25;
+}
+.sans-slide h3 {
+  color: var(--sans-teal);
+  font-weight: 700;
+  font-size: 26px;
+  margin: 0 0 18px 0;
+  line-height: 1.3;
+}
+
+/* ── Body text ─────────────────────────────────────────────────── */
+.sans-slide p {
+  color: var(--sans-body);
+  font-size: 22px;
+  line-height: 1.6;
+  margin: 0 0 14px 0;
+}
+.sans-slide .subtitle {
+  color: var(--sans-charcoal);
+  font-size: 18px;
+}
+
+/* ── Lists ─────────────────────────────────────────────────────── */
+.sans-slide ul {
+  list-style: disc;
+  padding-left: 36px;
+  margin: 12px 0 20px 0;
+}
+.sans-slide ul li {
+  font-size: 24px;
+  color: var(--sans-body);
+  line-height: 1.6;
+  margin-bottom: 18px;
+}
+.sans-slide ul li strong { font-weight: 700; }
+.sans-slide ul ul { list-style: circle; margin-top: 8px; margin-bottom: 8px; }
+.sans-slide ul ul li { font-size: 20px; margin-bottom: 10px; }
+.sans-slide ol { list-style: decimal; padding-left: 36px; margin: 12px 0 20px 0; }
+.sans-slide ol li { font-size: 24px; color: var(--sans-body); line-height: 1.6; margin-bottom: 18px; }
+
+/* ── Links ─────────────────────────────────────────────────────── */
+.sans-slide a { color: var(--sans-link); text-decoration: none; }
+.sans-slide a:hover { text-decoration: underline; }
+.sans-slide a.orange-link { color: var(--sans-orange); font-weight: 700; }
+
+/* ── Tables ────────────────────────────────────────────────────── */
+.sans-slide table { border-collapse: collapse; width: 100%; font-size: 22px; margin: 16px 0; }
+.sans-slide th { background: var(--sans-teal); color: var(--sans-white); font-weight: 700; text-align: left; padding: 14px 20px; }
+.sans-slide td { padding: 14px 20px; border-bottom: 1px solid #E0E0E0; color: var(--sans-body); }
+.sans-slide tr.highlight-row { color: var(--sans-orange); font-weight: 700; }
+
+/* ── Code blocks ───────────────────────────────────────────────── */
+.sans-slide pre { background: #1E1E1E; color: #D4D4D4; border-radius: 6px; padding: 20px; font-size: 15px; line-height: 1.5; overflow-x: auto; margin: 16px 0; font-family: 'Fira Mono', 'Consolas', monospace; }
+.sans-slide code { font-family: 'Fira Mono', 'Consolas', monospace; }
+.sans-slide p code, .sans-slide li code { background: #F0F0F0; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; color: var(--sans-charcoal); }
+
+/* ── Orange/teal accents ──────────────────────────────────────── */
+.sans-orange { color: var(--sans-orange) !important; }
+.sans-teal   { color: var(--sans-teal) !important; }
+
+/* ── Title slide ──────────────────────────────────────────────── */
+.sans-title-slide {
+  background: var(--sans-orange) url('presentations/2026-03-sans-sec540-ai-driven-devsecops/img/sans-title-ace-bg.jpg') center/cover no-repeat !important;
+  color: var(--sans-white) !important;
+  padding-top: 44px !important;
+}
+.sans-title-slide h1 { font-size: 72px; font-weight: 700; color: var(--sans-white); line-height: 1.1; margin: 0 0 20px 0; }
+.sans-title-slide p { color: rgba(255,255,255,0.9); }
+
+/* ── End slide ────────────────────────────────────────────────── */
+.sans-end-slide {
+  background-size: cover;
+  background-position: center;
+  color: var(--sans-white) !important;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.sans-end-slide p, .sans-end-slide a { color: var(--sans-offwhite); }
+.sans-end-slide a { color: var(--sans-link); }
+
+/* ── Section Divider ──────────────────────────────────────────── */
+.sans-section-divider {
+  background: var(--sans-orange) url('presentations/2026-03-sans-sec540-ai-driven-devsecops/img/sans-title-ace-bg.jpg') center/cover no-repeat !important;
+  color: var(--sans-white) !important;
+  justify-content: center; align-items: center; text-align: center;
+  padding-top: 44px !important;
+}
+.sans-section-divider h2 { color: var(--sans-white); font-size: 48px; margin-bottom: 12px; }
+.sans-section-divider p { color: rgba(255,255,255,0.9); font-size: 22px; }
+
+/* ── Image slide ──────────────────────────────────────────────── */
+.sans-slide img.slide-img { max-width: 90%; max-height: 70vh; border-radius: 8px; display: block; margin: 0 auto; }
+.sans-slide img.plain { border: none; box-shadow: none; }
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK VISUAL SLIDE STYLES
+   Rich, dark-themed slides matching the interactive app components
+   ══════════════════════════════════════════════════════════════════ */
+.vis-slide {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  background: var(--vis-bg) !important;
+  display: flex;
+  flex-direction: column;
+  padding: 96px 56px 40px 56px;
+  box-sizing: border-box;
+  font-family: 'Fira Sans', Arial, Helvetica, sans-serif;
+  color: var(--vis-text);
+}
+.vis-slide .vis-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: #2dd4bf;
+  margin-bottom: 12px;
+}
+.vis-slide .vis-title {
+  font-size: 38px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+.vis-slide .vis-subtitle {
+  font-size: 15px;
+  color: var(--vis-muted);
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+/* Cards */
+.vis-card {
+  background: var(--vis-card);
+  border: 1px solid var(--vis-card-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.vis-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--vis-card-header);
+  border-bottom: 1px solid var(--vis-card-border);
+}
+.vis-card-dots {
+  display: flex;
+  gap: 6px;
+}
+.vis-card-dots span {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.vis-card-dots .dot-red { background: rgba(239,68,68,0.6); }
+.vis-card-dots .dot-yellow { background: rgba(234,179,8,0.6); }
+.vis-card-dots .dot-green { background: rgba(34,197,94,0.6); }
+.vis-card-filename {
+  font-family: 'Fira Mono', monospace;
+  font-size: 11px;
+  color: var(--vis-muted);
+  margin-left: 6px;
+}
+.vis-card-body {
+  padding: 20px;
+}
+/* Code text */
+.vis-mono {
+  font-family: 'Fira Mono', monospace;
+}
+.vis-code {
+  font-family: 'Fira Mono', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #cbd5e1;
+}
+/* Syntax colors */
+.syn-key { color: #2dd4bf; }
+.syn-str { color: #4ade80; }
+.syn-type { color: #c084fc; }
+.syn-id { color: #fbbf24; }
+.syn-comment { color: #475569; }
+.syn-num { color: #60a5fa; }
+/* Badges/tags */
+.vis-badge {
+  display: inline-block;
+  font-family: 'Fira Mono', monospace;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  font-weight: 600;
+}
+/* Step circles */
+.vis-step {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+/* Progress bars */
+.vis-bar-track {
+  width: 100%;
+  height: 24px;
+  border-radius: 8px;
+  background: rgba(15,23,42,0.8);
+  border: 1px solid var(--vis-card-border);
+  overflow: hidden;
+  display: flex;
+}
+/* Callout boxes */
+.vis-callout {
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 12px;
+}
+.vis-callout-amber {
+  background: rgba(245,158,11,0.05);
+  border: 1px solid rgba(245,158,11,0.2);
+  color: #fcd34d;
+}
+.vis-callout-teal {
+  background: rgba(20,184,166,0.05);
+  border: 1px solid rgba(20,184,166,0.2);
+  color: #5eead4;
+}
+.vis-callout-green {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.2);
+  color: #86efac;
+}
+/* Grid helpers */
+.vis-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.vis-grid-5-7 { display: grid; grid-template-columns: 5fr 7fr; gap: 24px; }
+.vis-flex { display: flex; }
+.vis-gap-2 { gap: 8px; }
+.vis-gap-3 { gap: 12px; }
+.vis-gap-4 { gap: 16px; }
+.vis-gap-5 { gap: 20px; }
+.vis-gap-6 { gap: 24px; }
+.vis-items-center { align-items: center; }
+.vis-flex-1 { flex: 1; }
+.vis-shrink-0 { flex-shrink: 0; }
+/* Arrow SVG */
+.vis-arrow {
+  width: 20px; height: 20px;
+  color: var(--vis-dim);
+  flex-shrink: 0;
+}
+/* Colored borders/bgs for agent cards */
+.vis-blue-card { background: rgba(59,130,246,0.05); border: 1px solid rgba(59,130,246,0.2); border-radius: 12px; padding: 16px; }
+.vis-purple-card { background: rgba(168,85,247,0.05); border: 1px solid rgba(168,85,247,0.2); border-radius: 12px; padding: 16px; }
+.vis-teal-card { background: rgba(20,184,166,0.05); border: 1px solid rgba(20,184,166,0.2); border-radius: 12px; padding: 16px; }
+.vis-amber-card { background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 12px; padding: 16px; }
+.vis-red-card { background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 16px; }
+.vis-green-card { background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.2); border-radius: 12px; padding: 16px; }
+/* tool tag small */
+.vis-tool-tag {
+  font-family: 'Fira Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* ── Zenable logo dark/light swap ──────────────────────────────── */
+.zenable-logo-light { display: none; }
+.zenable-logo-dark  { display: inline-block; }
+body.light-mode .zenable-logo-light { display: inline-block; }
+body.light-mode .zenable-logo-dark  { display: none; }
+
+/* ── Print / PDF overrides ─────────────────────────────────────── */
+@media print {
+  .sans-header { position: absolute; }
+  .sans-logo { position: absolute; }
+  .sans-slide, .vis-slide {
+    page-break-after: always; break-after: page;
+    page-break-inside: avoid; break-inside: avoid;
+    height: 100vh; min-height: 100vh; overflow: hidden;
+  }
+  body { background: var(--sans-white) !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  * { box-shadow: none !important; }
+}
+</style>
+
+<!-- SANS Cloud Security Header Bar — fixed across all slides -->
+<div class="sans-header">
+  <div class="sans-logo">
+    <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/sans-header-logo@2x.png"
+         alt="SANS | Cloud Security">
+  </div>
+</div>
+
+<!-- Theme toggle button — starts in light mode -->
+<button class="theme-toggle" onclick="document.body.classList.toggle('light-mode'); this.textContent = document.body.classList.contains('light-mode') ? '🌙' : '☀️';" title="Toggle light/dark mode">🌙</button>
+<script>document.body.classList.add('light-mode');</script>
+
+<!-- ================================================================
+     SLIDES
+     ================================================================ -->
+
+<!-- 1. Title Slide -->
+<section class="sans-slide sans-title-slide" data-label="Title">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding: 40px 20px 40px 20px;">
+    <h1>AI-Driven DevSecOps</h1>
+    <p style="font-size:32px; margin-bottom:28px; font-style:italic;">Securing Coding Agents with Model Context Protocol (MCP)</p>
+    <p style="font-size:22px; font-weight:600;">Jon Zeolla</p>
+  </div>
+</section>
+
+<!-- 2. Speaker -->
+<section class="vis-slide" data-label="Speaker" style="justify-content:center; align-items:center; text-align:center;">
+  <div class="vis-title" style="font-size:48px; text-align:center; margin-bottom:40px;">Jon Zeolla</div>
+  <div style="margin-bottom:48px;">
+    <a href="https://zenable.io">
+      <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/zenable.svg" alt="Zenable" style="height:56px;" class="plain zenable-logo-dark">
+      <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/zenable-dark.svg" alt="Zenable" style="height:56px;" class="plain zenable-logo-light">
+    </a>
+  </div>
+  <p style="font-size:20px; color:#94a3b8; margin:0 0 48px 0; font-style:italic;">AI Guardrails that learn from you</p>
+  <div style="font-size:24px; line-height:2.8; color:#e2e8f0;">
+    <p style="margin:0;">SANS Instructor — SEC540 &amp; SEC545</p>
+    <p style="margin:0;">CNCF Ambassador &bull; BSides Pittsburgh Organizer</p>
+  </div>
+</section>
+
+<!-- 3. Webcast Series Overview -->
+<section class="vis-slide" data-label="Series Overview" style="justify-content:center; align-items:center; padding-top:44px;">
+  <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/AI_DevSecOps_Series.png"
+       alt="5 Part AI-Driven DevSecOps Series — Part 1: Securing Coding Agents with MCP (Mar 25), Part 2: Protecting Kubernetes Microservices with Kong (Apr 23), Part 3: Agentic Code Review in GitLab &amp; GitHub (May 19), Part 4: Observing Microservices with OpenTelemetry and Grafana (Jun 18), Part 5: Zero-Downtime Deployments with Kubernetes (Jul 9)"
+       style="max-width:90%; max-height:80vh; border-radius:8px;" class="plain">
+</section>
+
+<!-- The Evolution of AI Coding Agents -->
+<section class="vis-slide" data-label="AI Coding Agents" style="justify-content:center; align-items:center;">
+  <div class="vis-title" style="text-align:center; margin-bottom:20px;">The Evolution of AI Coding Agents</div>
+  <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/coding-agent-evolution.webp"
+       alt="Figure 1-8: The evolution of AI coding agents from autocomplete to fully autonomous agents"
+       style="max-width:85%; max-height:65vh; border-radius:8px;" class="plain">
+  <p style="font-size:11px; color:#64748b; margin-top:16px; text-align:center;">
+    Source: <a href="https://www.dolthub.com/blog/2026-01-15-a-day-in-gas-town/" style="color:#64748b;">dolthub.com/blog/2026-01-15-a-day-in-gas-town</a>
+  </p>
+</section>
+
+<!-- Context Files & Rules -->
+<section class="vis-slide" data-label="Context Files">
+  <div class="vis-label">LLM Steering</div>
+  <div class="vis-title">Context Files &amp; Rules</div>
+  <div style="display:flex; gap:32px; flex:1;">
+    <div style="flex:1;">
+      <div class="vis-card">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">CLAUDE.md</span>
+        </div>
+        <div class="vis-card-body vis-mono" style="font-size:13px; line-height:1.9; color:#cbd5e1; max-height:52vh; overflow:hidden; position:relative;">
+          <p style="color:#2dd4bf; font-weight:700; font-size:15px; margin:0 0 12px 0;"># Project Rules</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Architecture</p>
+          <p style="margin:0 0 4px 0;">- Use the <span class="syn-id">repository pattern</span> for all data access</p>
+          <p style="margin:0 0 4px 0;">- All API endpoints <span class="syn-id">must validate input</span> with Pydantic</p>
+          <p style="margin:0 0 4px 0;">- Use dependency injection for services</p>
+          <p style="margin:0 0 16px 0;">- Never call the database directly from route handlers</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Security Requirements</p>
+          <p style="margin:0 0 4px 0;">- <span style="color:#f87171;">Never</span> commit secrets or API keys</p>
+          <p style="margin:0 0 4px 0;">- All user input must be <span class="syn-id">sanitized</span></p>
+          <p style="margin:0 0 4px 0;">- Use parameterized queries for database access</p>
+          <p style="margin:0 0 16px 0;">- Enable CORS only for approved origins</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Code Standards</p>
+          <p style="margin:0 0 4px 0;">- Follow PEP 8 conventions</p>
+          <p style="margin:0 0 4px 0;">- All public functions require docstrings</p>
+          <p style="margin:0 0 4px 0;">- Minimum 80% test coverage for new code</p>
+          <p style="margin:0 0 0 0;">- Use type hints on all function signatures</p>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(transparent, rgba(30,41,59,0.95));"></div>
+        </div>
+      </div>
+    </div>
+    <div style="width:280px; flex-shrink:0; display:flex; flex-direction:column; gap:12px;">
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 8px 0;">Works with</p>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#2dd4bf; margin:0 0 4px 0;">CLAUDE.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Anthropic / Claude Code</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#2dd4bf; margin:0 0 4px 0;">AGENTS.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Open standard, dozens of IDEs</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#60a5fa; margin:0 0 4px 0;">copilot-instructions.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">GitHub Copilot</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#60a5fa; margin:0 0 4px 0;">GEMINI.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Google / Antigravity</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); text-align:center;">
+        <p class="vis-mono" style="font-size:13px; color:#64748b; margin:0;">... and dozens more</p>
+      </div>
+    </div>
+  </div>
+  <div class="vis-callout-teal vis-callout" style="margin-top:16px; text-align:center;">
+    <span style="font-weight:600;">Low barrier to entry.</span> Just a markdown file in your repo. Version controlled, reviewable, easy to start.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════════
+     MCP SPEC DEEP-DIVE SLIDES
+     ════════════════════════════════════════════════════════════════ -->
+
+<!-- MCP Request Flow Diagram (image) -->
+<section class="vis-slide" data-label="MCP Flow" style="padding:72px 32px 24px 32px;">
+  <div class="vis-label">Model Context Protocol</div>
+  <div class="vis-title" style="margin-bottom:12px;">How MCP Works: End-to-End Flow</div>
+  <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:16px; display:inline-block;">
+      <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/mcp-flow-diagram.png"
+           alt="MCP End-to-End Flow: User asks a question → Coding Agent sends to LLM → LLM doesn't know → Agent asks MCP Server → MCP executes tool → Data returns → Agent sends enriched context to LLM → LLM answers → User gets response"
+           style="max-width:100%; max-height:68vh; display:block;" class="plain">
+    </div>
+  </div>
+</section>
+
+<!-- MCP Server & Client Primitives -->
+<section class="vis-slide" data-label="MCP Spec">
+  <div class="vis-label">Model Context Protocol Specification</div>
+  <div class="vis-title">MCP Server &amp; Client Primitives</div>
+  <div class="vis-subtitle">What servers expose and what clients provide — the two sides of the protocol.</div>
+  <div class="vis-grid-2" style="flex:1;">
+    <!-- Left: Server Primitives -->
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#2dd4bf; margin:0 0 16px 0;">Server Primitives</p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">🔧</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#2dd4bf;">Tools</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Executable functions the AI can invoke to perform actions — <span class="vis-mono syn-str">trivy_scan()</span>, <span class="vis-mono syn-str">create_pr()</span></p>
+        </div>
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(96,165,250,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">📄</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#60a5fa;">Resources</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Data sources that provide contextual information — file contents, database records, API responses</p>
+        </div>
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">💬</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#c084fc;">Prompts</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Reusable templates that structure LLM interactions — system prompts, few-shot examples</p>
+        </div>
+      </div>
+    </div>
+    <!-- Right: Client Primitives -->
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#60a5fa; margin:0 0 16px 0;">Client Primitives</p>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(245,158,11,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">🧠</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#f59e0b;">Sampling</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Servers can request LLM completions from the client's AI application — enables model-independent agentic loops inside MCP servers</p>
+        </div>
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(251,191,36,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">💁</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#fbbf24;">Elicitation</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Servers can request additional information or confirmation from users through the client</p>
+        </div>
+        <div class="vis-card" style="padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+            <div style="width:28px;height:28px;border-radius:8px;background:rgba(148,163,184,0.2);display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:14px;">📊</span>
+            </div>
+            <span style="font-size:14px; font-weight:700; color:#94a3b8;">Logging</span>
+          </div>
+          <p style="font-size:12px; color:#94a3b8; margin:0;">Servers send structured log messages to clients for debugging and monitoring</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MCP: Tools via JSON Schema -->
+<section class="vis-slide" data-label="MCP Tools">
+  <div class="vis-label">Model Context Protocol</div>
+  <div class="vis-title">MCP: Tools via JSON Schema</div>
+  <div class="vis-subtitle">Servers expose callable functions with machine-readable schemas — clients discover and invoke them automatically.</div>
+  <div class="vis-grid-2" style="flex:1;">
+    <!-- Left: Tool definition -->
+    <div>
+      <div class="vis-card">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">tool_definition.json</span>
+        </div>
+        <div class="vis-card-body vis-code" style="font-size:13px; line-height:1.8;">
+          <p>{</p>
+          <p>&nbsp;&nbsp;<span class="syn-key">"name"</span>: <span class="syn-str">"trivy_scan"</span>,</p>
+          <p>&nbsp;&nbsp;<span class="syn-key">"description"</span>: <span class="syn-str">"Scan a container image for CVEs"</span>,</p>
+          <p>&nbsp;&nbsp;<span class="syn-key">"inputSchema"</span>: {</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"type"</span>: <span class="syn-type">"object"</span>,</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"properties"</span>: {</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"image"</span>: {</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"type"</span>: <span class="syn-type">"string"</span>,</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"description"</span>: <span class="syn-str">"Image ref"</span></p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"severity"</span>: {</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"type"</span>: <span class="syn-type">"string"</span>,</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"enum"</span>: [<span class="syn-str">"LOW"</span>,<span class="syn-str">"MED"</span>,<span class="syn-str">"HIGH"</span>,<span class="syn-str">"CRIT"</span>]</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;},</p>
+          <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-key">"required"</span>: [<span class="syn-str">"image"</span>]</p>
+          <p>&nbsp;&nbsp;}</p>
+          <p>}</p>
+        </div>
+      </div>
+    </div>
+    <!-- Right: What the spec provides -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+      <div class="vis-card" style="padding:20px;">
+        <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 14px 0;">Tool Discovery &amp; Execution</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf;">1</div>
+            <p style="font-size:13px; color:#e2e8f0; margin:0;">Client sends <span class="vis-mono syn-key">tools/list</span> request</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">2</div>
+            <p style="font-size:13px; color:#e2e8f0; margin:0;">Server returns tool name + JSON Schema</p>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">3</div>
+            <p style="font-size:13px; color:#e2e8f0; margin:0;">LLM matches user intent → calls <span class="vis-mono syn-key">tools/call</span></p>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">4</div>
+            <p style="font-size:13px; color:#e2e8f0; margin:0;">Result returns as structured content array</p>
+          </div>
+        </div>
+      </div>
+      <div class="vis-callout-teal vis-callout">
+        <span style="font-weight:600;">Key insight:</span> The model never sees implementation code — only the schema. Tools are opaque functions behind a JSON contract.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. MCP Architecture — IDE Mockup -->
+<section class="vis-slide" data-label="MCP Architecture">
+  <div class="vis-label">Architecture</div>
+  <div class="vis-title">How MCP Connects Your IDE to the World</div>
+  <div style="flex:1; display:flex; gap:20px; margin-top:8px;">
+    <!-- Big IDE mockup (left) -->
+    <div style="flex:1;">
+      <div class="vis-card" style="padding:0; height:100%;">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">deployment.yaml — my-project</span>
+          <span style="margin-left:auto; font-size:10px; color:#64748b;">MCP: 3 servers connected</span>
+        </div>
+        <div style="display:flex; height:calc(100% - 32px);">
+          <!-- File sidebar -->
+          <div style="width:160px; background:rgba(15,23,42,0.8); border-right:1px solid rgba(51,65,85,0.5); padding:12px 8px; font-size:11px;">
+            <p style="color:#64748b; font-weight:600; margin:0 0 8px 0; font-size:10px; text-transform:uppercase; letter-spacing:0.1em;">Explorer</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0;">📁 src/</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0; padding-left:12px;">📄 app.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0; padding-left:12px;">📄 auth.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0;">📁 k8s/</p>
+            <p class="vis-mono" style="color:#e2e8f0; margin:0 0 4px 0; padding-left:12px; background:rgba(45,212,191,0.1); border-radius:3px; padding:2px 4px 2px 12px;">📄 deployment.yaml</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0; padding-left:12px;">📄 service.yaml</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 4px 0;">📄 CLAUDE.md</p>
+          </div>
+          <!-- Code editor -->
+          <div style="flex:1; padding:12px; font-size:12px; line-height:1.8; overflow:hidden;" class="vis-mono">
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 1</span><span class="syn-key">apiVersion</span>: <span class="syn-str">apps/v1</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 2</span><span class="syn-key">kind</span>: <span class="syn-str">Deployment</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 3</span><span class="syn-key">metadata</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 4</span>  <span class="syn-key">name</span>: <span class="syn-str">web-api</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 5</span><span class="syn-key">spec</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 6</span>  <span class="syn-key">replicas</span>: <span class="syn-num">3</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 7</span>  <span class="syn-key">template</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 8</span>    <span class="syn-key">spec</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 9</span>      <span class="syn-key">containers</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">10</span>      - <span class="syn-key">name</span>: <span class="syn-str">api</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">11</span>        <span class="syn-key">image</span>: <span class="syn-str">ghcr.io/org/api:v2.1</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">12</span>        <span class="syn-key">ports</span>:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">13</span>        - <span class="syn-key">containerPort</span>: <span class="syn-num">8080</span></p>
+          </div>
+          <!-- Chat sidebar -->
+          <div style="width:260px; background:rgba(15,23,42,0.8); border-left:1px solid rgba(51,65,85,0.5); padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <p style="font-size:10px; font-weight:600; color:#c084fc; text-transform:uppercase; letter-spacing:0.1em; margin:0;">Agent Chat</p>
+            <div style="background:rgba(30,41,59,0.6); border-radius:8px; padding:8px; border-left:2px solid rgba(96,165,250,0.6);">
+              <p style="font-size:10px; color:#60a5fa; font-weight:600; margin:0 0 4px 0;">You</p>
+              <p class="vis-mono" style="font-size:10px; color:#cbd5e1; margin:0;">Scan this image for CVEs before deploying</p>
+            </div>
+            <div style="background:rgba(30,41,59,0.6); border-radius:8px; padding:8px; border-left:2px solid rgba(168,85,247,0.6);">
+              <p style="font-size:10px; color:#c084fc; font-weight:600; margin:0 0 4px 0;">Claude</p>
+              <p class="vis-mono" style="font-size:10px; color:#cbd5e1; margin:0 0 6px 0;">Running trivy_scan via MCP...</p>
+              <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                <span class="vis-tool-tag" style="background:rgba(45,212,191,0.1); color:#5eead4; font-size:9px;">trivy_scan()</span>
+                <span class="vis-tool-tag" style="background:rgba(96,165,250,0.1); color:#93c5fd; font-size:9px;">get_pods()</span>
+              </div>
+            </div>
+            <div style="background:rgba(34,197,94,0.05); border-radius:8px; padding:8px; border:1px solid rgba(34,197,94,0.2);">
+              <p class="vis-mono" style="font-size:10px; color:#4ade80; margin:0;">0 CRITICAL, 0 HIGH</p>
+              <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:2px 0 0 0;">2 MEDIUM (non-blocking)</p>
+            </div>
+            <div style="display:flex; gap:4px; margin-top:auto;">
+              <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-size:8px;">GitHub</span>
+              <span class="vis-badge" style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; font-size:8px;">K8s</span>
+              <span class="vis-badge" style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); color:#c084fc; font-size:8px;">Trivy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MCP Servers Fill Your Context Window -->
+<section class="vis-slide" data-label="Context Window" id="ctx-slide" style="padding-bottom:24px;">
+  <div class="vis-label">Context Management</div>
+  <div class="vis-title" style="margin-bottom:4px;">How Your Context Window Fills Up</div>
+  <div class="vis-subtitle" style="margin-bottom:12px;">Click through each step to see tokens consumed from your 200K context window.</div>
+  <div style="flex:1; display:flex; gap:20px; min-height:0;">
+    <!-- Left: Chat log (scrollable, fixed height) -->
+    <div style="flex:1; display:flex; flex-direction:column; gap:8px; overflow-y:auto; min-height:0; padding-right:8px;" id="ctx-log">
+      <!-- Step 0: System prompt (always visible) -->
+      <div class="vis-card" style="padding:8px 12px; border-color:rgba(100,116,139,0.4); flex-shrink:0;">
+        <p style="font-size:9px; font-weight:600; color:#64748b; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 2px 0;">System Prompt</p>
+        <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0;">You are Claude Code. You have access to Read, Edit, Bash, Grep...</p>
+      </div>
+      <!-- Step 1: Context file loaded at startup -->
+      <div id="ctx-step1" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(45,212,191,0.05); border:1px solid rgba(45,212,191,0.3); border-radius:8px; padding:8px 12px;">
+          <p style="font-size:9px; font-weight:600; color:#2dd4bf; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 2px 0;">Startup: Loading context files</p>
+          <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0;">Read AGENTS.md — project rules, architecture constraints, security requirements</p>
+        </div>
+      </div>
+      <!-- Step 2: MCP server loading at startup -->
+      <div id="ctx-step2" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.3); border-radius:8px; padding:8px 12px;">
+          <p style="font-size:9px; font-weight:600; color:#f59e0b; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 4px 0;">Startup: MCP Server — GitHub (24 tools)</p>
+          <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0 0 4px 0;">Loading tool schemas into system prompt...</p>
+          <div style="display:flex; gap:3px; flex-wrap:wrap;">
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">create_pr()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">list_issues()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">get_repo()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">search_code()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">+ 20 more</span>
+          </div>
+        </div>
+      </div>
+      <!-- Step 3: User prompt -->
+      <div id="ctx-step3" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(30,41,59,0.6); border-radius:8px; padding:8px 12px; border-left:2px solid rgba(96,165,250,0.6);">
+          <p style="font-size:9px; color:#60a5fa; font-weight:600; margin:0 0 2px 0;">You</p>
+          <p class="vis-mono" style="font-size:11px; color:#e2e8f0; margin:0;">Fix the SQL injection vulnerability in our auth service</p>
+        </div>
+      </div>
+      <!-- Step 4: Agent asks to read -->
+      <div id="ctx-step4" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(30,41,59,0.6); border-radius:8px; padding:8px 12px; border-left:2px solid rgba(168,85,247,0.6);">
+          <p style="font-size:9px; color:#c084fc; font-weight:600; margin:0 0 2px 0;">Claude</p>
+          <p class="vis-mono" style="font-size:10px; color:#cbd5e1; margin:0 0 4px 0;">I'll read the auth service to find the vulnerability.</p>
+          <div style="background:rgba(15,23,42,0.6); border:1px solid rgba(51,65,85,0.5); border-radius:4px; padding:4px 8px; display:inline-flex; align-items:center; gap:6px;">
+            <span class="vis-mono" style="font-size:10px; color:#2dd4bf;">Read</span>
+            <span class="vis-mono" style="font-size:10px; color:#94a3b8;">src/auth_service.py</span>
+          </div>
+        </div>
+      </div>
+      <!-- Step 5: File contents loaded -->
+      <div id="ctx-step5" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(30,41,59,0.4); border-radius:8px; padding:8px 12px; border:1px solid rgba(51,65,85,0.3);">
+          <p style="font-size:9px; color:#64748b; font-weight:600; margin:0 0 2px 0;">Tool Result — 847 tokens</p>
+          <p class="vis-mono" style="font-size:9px; color:#94a3b8; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><span class="syn-type">def</span> <span class="syn-id">login</span>(req): user = db.query(<span class="syn-str">f"SELECT * FROM users WHERE email='{req.email}'"</span>)...</p>
+        </div>
+      </div>
+      <!-- Step 6: Read another file -->
+      <div id="ctx-step6" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(30,41,59,0.4); border-radius:8px; padding:8px 12px; border:1px solid rgba(51,65,85,0.3);">
+          <p style="font-size:9px; color:#64748b; font-weight:600; margin:0 0 2px 0;">Read models.py — 1,240 tokens</p>
+          <p class="vis-mono" style="font-size:9px; color:#94a3b8; margin:0;">class User(Base): email = Column(String), password_hash = Column(String)...</p>
+        </div>
+      </div>
+    </div>
+    <!-- Right: Context bar + controls -->
+    <div style="width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:10px;">
+      <p style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0;">200K Token Context Window</p>
+      <!-- Animated bar with inline hover labels -->
+      <style>
+        .ctx-seg { width:100%; transition:height 0.6s ease; position:relative; cursor:default; overflow:hidden; }
+        .ctx-seg .ctx-lbl { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; font-family:'Fira Mono',monospace; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+        .ctx-seg:hover .ctx-lbl { opacity:1; }
+      </style>
+      <div class="vis-bar-track" style="height:320px; flex-direction:column; border-radius:12px;">
+        <div id="ctx-bar-system" class="ctx-seg" style="height:5%; background:rgba(100,116,139,0.4); border-bottom:1px solid rgba(100,116,139,0.3);"><span class="ctx-lbl" style="color:#94a3b8;" id="ctx-pct-sys">System 5%</span></div>
+        <div id="ctx-bar-ctx" class="ctx-seg" style="height:0%; background:rgba(34,197,94,0.4); border-bottom:1px solid rgba(34,197,94,0.3);"><span class="ctx-lbl" style="color:#4ade80;" id="ctx-pct-ctx"></span></div>
+        <div id="ctx-bar-mcp" class="ctx-seg" style="height:0%; background:rgba(245,158,11,0.4); border-bottom:1px solid rgba(245,158,11,0.3);"><span class="ctx-lbl" style="color:#fcd34d;" id="ctx-pct-mcp"></span></div>
+        <div id="ctx-bar-prompt" class="ctx-seg" style="height:0%; background:rgba(96,165,250,0.4); border-bottom:1px solid rgba(96,165,250,0.3);"><span class="ctx-lbl" style="color:#93c5fd;" id="ctx-pct-prompt"></span></div>
+        <div id="ctx-bar-files" class="ctx-seg" style="height:0%; background:rgba(45,212,191,0.4);"><span class="ctx-lbl" style="color:#5eead4;" id="ctx-pct-files"></span></div>
+      </div>
+      <!-- Token counter -->
+      <div class="vis-card" style="padding:8px; text-align:center;">
+        <p style="font-size:10px; color:#64748b; margin:0 0 2px 0;">Tokens used</p>
+        <p style="font-size:24px; font-weight:700; color:#e2e8f0; margin:0; font-family:'Fira Mono',monospace;" id="ctx-counter">10,000</p>
+        <p style="font-size:10px; color:#64748b; margin:2px 0 0 0;">of 200,000</p>
+      </div>
+      <!-- Next button -->
+      <button id="ctx-next-btn" onclick="ctxNext()" style="background:var(--sans-orange); color:#fff; border:none; border-radius:8px; padding:10px 20px; font-size:13px; font-weight:700; cursor:pointer; font-family:'Fira Sans',sans-serif;">
+        Start Session ▶
+      </button>
+    </div>
+  </div>
+  <script>
+  (function(){
+    var step = 0;
+    // [elemId, ctx%, mcp%, prompt%, files%, tokens, nextBtnLabel]
+    var steps = [
+      ['ctx-step1', 3,  0,  0, 0, 16000,  'Connect MCP Server ▶'],
+      ['ctx-step2', 3,  33, 0, 0, 76000,  'Send Prompt ▶'],
+      ['ctx-step3', 3,  33, 2, 0, 78400,  'Allow Read ▶'],
+      ['ctx-step4', 3,  33, 3, 0, 80200,  'Allow ▶'],
+      ['ctx-step5', 3,  33, 3, 4, 88000,  'Allow Read ▶'],
+      ['ctx-step6', 3,  33, 3, 10,100200, ''],
+    ];
+    window.ctxNext = function(){
+      if(step >= steps.length) return;
+      var s = steps[step];
+      document.getElementById(s[0]).style.display = 'block';
+      var log = document.getElementById('ctx-log');
+      setTimeout(function(){ log.scrollTop = log.scrollHeight; }, 50);
+      document.getElementById('ctx-bar-ctx').style.height = s[1]+'%';
+      document.getElementById('ctx-bar-mcp').style.height = s[2]+'%';
+      document.getElementById('ctx-bar-prompt').style.height = s[3]+'%';
+      document.getElementById('ctx-bar-files').style.height = s[4]+'%';
+      document.getElementById('ctx-counter').textContent = s[5].toLocaleString();
+      if(s[1]>0) document.getElementById('ctx-pct-ctx').textContent = 'Context files '+s[1]+'%';
+      if(s[2]>0) document.getElementById('ctx-pct-mcp').textContent = 'MCP schemas '+s[2]+'%';
+      if(s[3]>0) document.getElementById('ctx-pct-prompt').textContent = 'Conversation '+s[3]+'%';
+      if(s[4]>0) document.getElementById('ctx-pct-files').textContent = 'File reads '+s[4]+'%';
+      step++;
+      if(step < steps.length){
+        document.getElementById('ctx-next-btn').textContent = steps[step-1][6];
+      } else {
+        document.getElementById('ctx-next-btn').style.display = 'none';
+      }
+    };
+  })();
+  </script>
+</section>
+
+<!-- Context Length Degrades Quality -->
+<section class="vis-slide" data-label="Context Degradation">
+  <div class="vis-label">Why This Matters</div>
+  <div class="vis-title">More Context = Worse Performance</div>
+  <div class="vis-subtitle">Semantic Relation Extraction (T2) — accuracy drops dramatically as context length increases.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <table style="width:90%; max-width:800px; border-collapse:separate; border-spacing:4px; font-family:'Fira Mono',monospace; font-size:14px; text-align:center;">
+      <thead>
+        <tr>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">0–8K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">8–16K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">16–32K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">32–64K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">64–128K</th>
+        </tr>
+      </thead>
+      <tbody style="color:#fff;">
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.55);">43.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.0</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.62);">48.7</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.40);">34.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.18);">16.9</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.68);">53.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.58);">45.6</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">25.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.25);">22.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.07);">6.8</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.92);">70.9</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.78);">60.5</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.48);">38.1</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.2</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.91);">70.4</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.75);">58.1</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.33);">28.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.37);">31.2</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.4</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.95);">73.5</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.76);">58.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.46);">36.7</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.34);">29.6</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:#64748b; font-style:italic; margin-top:20px;">
+      <a href="https://arxiv.org/abs/2307.03172" style="color:#64748b;">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024
+    </p>
+  </div>
+</section>
+
+<!-- 8. Skills: Description-Only Loading (Interactive) -->
+<section class="vis-slide" data-label="Skills">
+  <div class="vis-label">Context Management</div>
+  <div class="vis-title">Skills: Description-Only Loading</div>
+  <div class="vis-subtitle">Click any SKILL.md to see its contents. Only the name + description sit in the prompt — the full body loads on demand.</div>
+  <div style="flex:1; display:flex; gap:20px; min-height:0;">
+    <!-- Left: Filesystem view (clickable) -->
+    <div style="width:280px; flex-shrink:0;">
+      <div class="vis-card" style="padding:0; height:100%;">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">.claude/skills/</span>
+        </div>
+        <div class="vis-card-body vis-mono" style="font-size:12px; line-height:1.9; color:#cbd5e1;">
+          <p style="margin:0;"><span style="color:#64748b;">📁</span> security-review/</p>
+          <p style="margin:0 0 6px 0; padding-left:20px; cursor:pointer;" onclick="showSkill('sec')" id="sk-nav-sec"><span style="color:#64748b;">📄</span> <span class="syn-key" style="text-decoration:underline; text-decoration-color:rgba(45,212,191,0.3);">SKILL.md</span> <span style="font-size:9px; color:#64748b;">2.4 KB</span></p>
+          <p style="margin:0;"><span style="color:#64748b;">📁</span> k8s-deploy/</p>
+          <p style="margin:0 0 2px 0; padding-left:20px; cursor:pointer;" onclick="showSkill('k8s')" id="sk-nav-k8s"><span style="color:#64748b;">📄</span> <span class="syn-key" style="text-decoration:underline; text-decoration-color:rgba(45,212,191,0.3);">SKILL.md</span> <span style="font-size:9px; color:#64748b;">1.8 KB</span></p>
+          <p style="margin:0 0 0 0; padding-left:20px;"><span style="color:#64748b;">📁</span> <span style="color:#64748b;">scripts/</span></p>
+          <p style="margin:0 0 6px 0; padding-left:40px;"><span style="color:#64748b;">📄</span> <span style="color:#64748b; font-size:11px;">validate-manifests.sh</span></p>
+          <p style="margin:0;"><span style="color:#64748b;">📁</span> terraform-plan/</p>
+          <p style="margin:0 0 2px 0; padding-left:20px; cursor:pointer;" onclick="showSkill('tf')" id="sk-nav-tf"><span style="color:#64748b;">📄</span> <span class="syn-key" style="text-decoration:underline; text-decoration-color:rgba(45,212,191,0.3);">SKILL.md</span> <span style="font-size:9px; color:#64748b;">3.1 KB</span></p>
+          <p style="margin:0 0 0 0; padding-left:20px;"><span style="color:#64748b;">📁</span> <span style="color:#64748b;">references/</span></p>
+          <p style="margin:0 0 6px 0; padding-left:40px;"><span style="color:#64748b;">📄</span> <span style="color:#64748b; font-size:11px;">provider-patterns.md</span></p>
+          <p style="margin:0;"><span style="color:#64748b;">📁</span> incident-response/</p>
+          <p style="margin:0 0 0px 0; padding-left:20px; cursor:pointer;" onclick="showSkill('ir')" id="sk-nav-ir"><span style="color:#64748b;">📄</span> <span class="syn-key" style="text-decoration:underline; text-decoration-color:rgba(45,212,191,0.3);">SKILL.md</span> <span style="font-size:9px; color:#64748b;">4.2 KB</span></p>
+        </div>
+      </div>
+    </div>
+    <!-- Right: Skill content viewer -->
+    <div style="flex:1; display:flex; flex-direction:column; min-height:0;">
+      <!-- Default: system prompt view -->
+      <div id="sk-default" style="flex:1; display:flex; flex-direction:column;">
+        <p style="font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 8px 0;">What the agent sees in its prompt</p>
+        <div class="vis-card" style="flex:1;">
+          <div class="vis-card-header"><span class="vis-card-filename">system_prompt (excerpt)</span></div>
+          <div class="vis-card-body vis-code" style="font-size:12px; line-height:2.2;">
+            <p style="margin:0;"><span class="syn-comment"># Available Skills</span></p>
+            <p style="margin:0;">&nbsp;</p>
+            <p style="margin:0;"><span class="syn-key">security-review</span>: <span class="syn-str">"Run a security review of the current PR"</span></p>
+            <p style="margin:0;"><span class="syn-key">k8s-deploy</span>: <span class="syn-str">"Deploy to K8s with security policies"</span></p>
+            <p style="margin:0;"><span class="syn-key">terraform-plan</span>: <span class="syn-str">"Run terraform plan with policy checks"</span></p>
+            <p style="margin:0;"><span class="syn-key">incident-response</span>: <span class="syn-str">"Triage and respond to incidents"</span></p>
+            <p style="margin:0;">&nbsp;</p>
+            <p style="margin:0;"><span class="syn-comment"># Full body loaded on demand via Read tool</span></p>
+          </div>
+        </div>
+        <div class="vis-callout-amber vis-callout" style="margin-top:10px;">
+          <span style="font-weight:600;">~1% context cost.</span> Only name + one-line description in the prompt. Click a SKILL.md to see what loads on demand.
+        </div>
+      </div>
+      <!-- Skill viewers (hidden by default) -->
+      <div id="sk-sec" style="display:none; flex:1; flex-direction:column; min-height:0;">
+        <div class="vis-card" style="flex:1; padding:0; overflow:hidden;">
+          <div class="vis-card-header"><div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><span class="vis-card-filename">security-review/SKILL.md</span><span style="margin-left:auto; font-size:10px; color:#64748b; cursor:pointer;" onclick="showSkill(null)">✕ close</span></div>
+          <div class="vis-card-body vis-mono" style="font-size:11px; line-height:1.7; color:#cbd5e1; overflow-y:auto; max-height:52vh;">
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:0;"><span class="syn-key">name</span>: <span class="syn-str">security-review</span></p>
+            <p style="margin:0;"><span class="syn-key">description</span>: <span class="syn-str">Run a comprehensive security review</span></p>
+            <p style="margin:0;"><span class="syn-str">&nbsp;&nbsp;of the current PR. Use when the user asks to</span></p>
+            <p style="margin:0;"><span class="syn-str">&nbsp;&nbsp;review code for security issues or vulnerabilities.</span></p>
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:8px 0 0 0;"><span style="color:#2dd4bf; font-weight:700;"># Security Review</span></p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Workflow</span></p>
+            <p style="margin:0;">1. Read all changed files from the PR diff</p>
+            <p style="margin:0;">2. Check for OWASP Top 10 vulnerabilities</p>
+            <p style="margin:0;">3. Verify secrets are not committed</p>
+            <p style="margin:0;">4. Check dependency versions for known CVEs</p>
+            <p style="margin:0;">5. Validate input sanitization on all endpoints</p>
+            <p style="margin:0;">6. Report findings with severity and remediation</p>
+          </div>
+        </div>
+      </div>
+      <div id="sk-k8s" style="display:none; flex:1; flex-direction:column; min-height:0;">
+        <div class="vis-card" style="flex:1; padding:0; overflow:hidden;">
+          <div class="vis-card-header"><div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><span class="vis-card-filename">k8s-deploy/SKILL.md</span><span style="margin-left:auto; font-size:10px; color:#64748b; cursor:pointer;" onclick="showSkill(null)">✕ close</span></div>
+          <div class="vis-card-body vis-mono" style="font-size:11px; line-height:1.7; color:#cbd5e1; overflow-y:auto; max-height:52vh;">
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:0;"><span class="syn-key">name</span>: <span class="syn-str">k8s-deploy</span></p>
+            <p style="margin:0;"><span class="syn-key">description</span>: <span class="syn-str">Deploy to Kubernetes with security policies.</span></p>
+            <p style="margin:0;"><span class="syn-key">allowed-tools</span>: <span class="syn-str">Read, Bash(kubectl:*)</span></p>
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:8px 0 0 0;"><span style="color:#2dd4bf; font-weight:700;"># Kubernetes Deploy</span></p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Pre-deploy checks</span></p>
+            <p style="margin:0;">1. Run <span class="syn-id">scripts/validate-manifests.sh</span></p>
+            <p style="margin:0;">2. Verify image is from approved registry</p>
+            <p style="margin:0;">3. Check resource limits are set</p>
+            <p style="margin:0;">4. Ensure no <span style="color:#f87171;">privileged: true</span> containers</p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Deploy</span></p>
+            <p style="margin:0;">1. <span class="syn-id">kubectl apply -f k8s/ --dry-run=server</span></p>
+            <p style="margin:0;">2. Wait for rollout status</p>
+            <p style="margin:0;">3. Verify pod health checks pass</p>
+          </div>
+        </div>
+      </div>
+      <div id="sk-tf" style="display:none; flex:1; flex-direction:column; min-height:0;">
+        <div class="vis-card" style="flex:1; padding:0; overflow:hidden;">
+          <div class="vis-card-header"><div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><span class="vis-card-filename">terraform-plan/SKILL.md</span><span style="margin-left:auto; font-size:10px; color:#64748b; cursor:pointer;" onclick="showSkill(null)">✕ close</span></div>
+          <div class="vis-card-body vis-mono" style="font-size:11px; line-height:1.7; color:#cbd5e1; overflow-y:auto; max-height:52vh;">
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:0;"><span class="syn-key">name</span>: <span class="syn-str">terraform-plan</span></p>
+            <p style="margin:0;"><span class="syn-key">description</span>: <span class="syn-str">Run terraform plan with policy checks.</span></p>
+            <p style="margin:0;"><span class="syn-key">allowed-tools</span>: <span class="syn-str">Read, Bash(terraform:*)</span></p>
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:8px 0 0 0;"><span style="color:#2dd4bf; font-weight:700;"># Terraform Plan</span></p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Workflow</span></p>
+            <p style="margin:0;">1. Run <span class="syn-id">terraform init</span> if needed</p>
+            <p style="margin:0;">2. Run <span class="syn-id">terraform plan -out=plan.tfplan</span></p>
+            <p style="margin:0;">3. Check plan against OPA/Conftest policies</p>
+            <p style="margin:0;">4. Flag any public access or missing encryption</p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## References</span></p>
+            <p style="margin:0;">For provider-specific patterns, see</p>
+            <p style="margin:0;"><span class="syn-id">references/provider-patterns.md</span></p>
+          </div>
+        </div>
+      </div>
+      <div id="sk-ir" style="display:none; flex:1; flex-direction:column; min-height:0;">
+        <div class="vis-card" style="flex:1; padding:0; overflow:hidden;">
+          <div class="vis-card-header"><div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div><span class="vis-card-filename">incident-response/SKILL.md</span><span style="margin-left:auto; font-size:10px; color:#64748b; cursor:pointer;" onclick="showSkill(null)">✕ close</span></div>
+          <div class="vis-card-body vis-mono" style="font-size:11px; line-height:1.7; color:#cbd5e1; overflow-y:auto; max-height:52vh;">
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:0;"><span class="syn-key">name</span>: <span class="syn-str">incident-response</span></p>
+            <p style="margin:0;"><span class="syn-key">description</span>: <span class="syn-str">Triage and respond to production incidents.</span></p>
+            <p style="margin:0;"><span class="syn-key">preconditions</span>:</p>
+            <p style="margin:0;">&nbsp;&nbsp;- <span class="syn-str">Active incident or alert firing</span></p>
+            <p style="color:#64748b; margin:0;">---</p>
+            <p style="margin:8px 0 0 0;"><span style="color:#2dd4bf; font-weight:700;"># Incident Response</span></p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Triage</span></p>
+            <p style="margin:0;">1. Identify the affected service and severity</p>
+            <p style="margin:0;">2. Check recent deploys via <span class="syn-id">git log --since=24h</span></p>
+            <p style="margin:0;">3. Pull relevant logs and metrics</p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Mitigate</span></p>
+            <p style="margin:0;">1. If deploy-related → rollback to last known good</p>
+            <p style="margin:0;">2. If config-related → revert config change</p>
+            <p style="margin:0;">3. Scale up if capacity issue</p>
+            <p style="margin:4px 0 0 0;"><span style="color:#64748b;">## Communicate</span></p>
+            <p style="margin:0;">Post status update to #incidents channel</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  window.showSkill = function(id){
+    ['sk-default','sk-sec','sk-k8s','sk-tf','sk-ir'].forEach(function(k){
+      document.getElementById(k).style.display = 'none';
+    });
+    ['sk-nav-sec','sk-nav-k8s','sk-nav-tf','sk-nav-ir'].forEach(function(k){
+      document.getElementById(k).style.background = 'none';
+    });
+    if(id){
+      document.getElementById('sk-'+id).style.display = 'flex';
+      document.getElementById('sk-nav-'+id).style.background = 'rgba(45,212,191,0.1)';
+    } else {
+      document.getElementById('sk-default').style.display = 'flex';
+    }
+  };
+  </script>
+</section>
+
+<!-- 9. CLI: Zero Upfront Context -->
+<section class="vis-slide" data-label="CLI Tools">
+  <div class="vis-label">Context Management</div>
+  <div class="vis-title">CLI: Zero Upfront Context</div>
+  <div class="vis-subtitle">CLI tools like Bash, Grep, Read don't appear in the system prompt at all — the agent discovers them at runtime.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div style="display:flex; align-items:center; justify-content:center; gap:20px; margin-bottom:32px;">
+      <!-- Step 1: Discover -->
+      <div style="text-align:center;">
+        <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; width:48px; height:48px; font-size:18px; margin:0 auto 10px auto;">1</div>
+        <div class="vis-card" style="padding:16px; width:180px;">
+          <p style="font-size:14px; font-weight:700; color:#60a5fa; margin:0 0 6px 0;">Discover</p>
+          <p style="font-size:11px; color:#94a3b8; margin:0;">Agent reads tool descriptions from its built-in catalog</p>
+        </div>
+      </div>
+      <svg width="40" height="24" viewBox="0 0 40 24" style="flex-shrink:0;"><path d="M0 12h32m-6-5l6 5-6 5" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <!-- Step 2: Inspect -->
+      <div style="text-align:center;">
+        <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc; width:48px; height:48px; font-size:18px; margin:0 auto 10px auto;">2</div>
+        <div class="vis-card" style="padding:16px; width:180px;">
+          <p style="font-size:14px; font-weight:700; color:#c084fc; margin:0 0 6px 0;">Inspect</p>
+          <p style="font-size:11px; color:#94a3b8; margin:0;">Checks parameters, types, and constraints before calling</p>
+        </div>
+      </div>
+      <svg width="40" height="24" viewBox="0 0 40 24" style="flex-shrink:0;"><path d="M0 12h32m-6-5l6 5-6 5" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <!-- Step 3: Execute -->
+      <div style="text-align:center;">
+        <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; width:48px; height:48px; font-size:18px; margin:0 auto 10px auto;">3</div>
+        <div class="vis-card" style="padding:16px; width:180px;">
+          <p style="font-size:14px; font-weight:700; color:#2dd4bf; margin:0 0 6px 0;">Execute</p>
+          <p style="font-size:11px; color:#94a3b8; margin:0;">Runs the tool with validated arguments</p>
+        </div>
+      </div>
+      <svg width="40" height="24" viewBox="0 0 40 24" style="flex-shrink:0;"><path d="M0 12h32m-6-5l6 5-6 5" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <!-- Step 4: Adapt -->
+      <div style="text-align:center;">
+        <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24; width:48px; height:48px; font-size:18px; margin:0 auto 10px auto;">4</div>
+        <div class="vis-card" style="padding:16px; width:180px;">
+          <p style="font-size:14px; font-weight:700; color:#fbbf24; margin:0 0 6px 0;">Adapt</p>
+          <p style="font-size:11px; color:#94a3b8; margin:0;">Interprets output, decides next step, or retries</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+      <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf;">Bash</span>
+      <span class="vis-badge" style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">Read</span>
+      <span class="vis-badge" style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">Grep</span>
+      <span class="vis-badge" style="background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">Glob</span>
+      <span class="vis-badge" style="background:rgba(148,163,184,0.1); border:1px solid rgba(148,163,184,0.3); color:#94a3b8;">Write</span>
+      <span class="vis-badge" style="background:rgba(148,163,184,0.1); border:1px solid rgba(148,163,184,0.3); color:#94a3b8;">Edit</span>
+    </div>
+    <div class="vis-callout-teal vis-callout" style="margin-top:20px; text-align:center;">
+      <span style="font-weight:600;">0% context cost.</span> CLI tools are fully runtime-discovered — nothing in the system prompt. The agent only pays context tokens when it actually uses one.
+    </div>
+  </div>
+</section>
+
+<!-- 11. Subagents Segment Your Context -->
+<section class="vis-slide" data-label="Subagents">
+  <div class="vis-label">Context Management</div>
+  <div class="vis-title">Subagents Segment Your Context</div>
+  <div class="vis-subtitle">Claude Code spawns specialized subagents with isolated context windows — heavy lifting stays out of your main conversation.</div>
+  <div class="vis-grid-5-7" style="flex:1;">
+    <!-- Left: Agent types -->
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <!-- Explore Agent -->
+      <div class="vis-blue-card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(96,165,250,0.2);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:14px;">🔍</span>
+          </div>
+          <span style="font-size:14px; font-weight:700; color:#60a5fa;">Explore Agent</span>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin:0 0 8px 0;">Fast, read-only codebase exploration</p>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
+          <span class="vis-tool-tag" style="background:rgba(96,165,250,0.1); color:#93c5fd;">Glob</span>
+          <span class="vis-tool-tag" style="background:rgba(96,165,250,0.1); color:#93c5fd;">Grep</span>
+          <span class="vis-tool-tag" style="background:rgba(96,165,250,0.1); color:#93c5fd;">Read</span>
+          <span class="vis-tool-tag" style="background:rgba(239,68,68,0.1); color:#f87171; text-decoration:line-through;">Edit</span>
+          <span class="vis-tool-tag" style="background:rgba(239,68,68,0.1); color:#f87171; text-decoration:line-through;">Write</span>
+        </div>
+      </div>
+      <!-- Plan Agent -->
+      <div class="vis-purple-card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(168,85,247,0.2);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:14px;">📋</span>
+          </div>
+          <span style="font-size:14px; font-weight:700; color:#c084fc;">Plan Agent</span>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin:0 0 8px 0;">Strategic architecture &amp; implementation design</p>
+        <div style="display:flex; gap:4px; flex-wrap:wrap;">
+          <span class="vis-tool-tag" style="background:rgba(168,85,247,0.1); color:#d8b4fe;">Glob</span>
+          <span class="vis-tool-tag" style="background:rgba(168,85,247,0.1); color:#d8b4fe;">Grep</span>
+          <span class="vis-tool-tag" style="background:rgba(168,85,247,0.1); color:#d8b4fe;">Read</span>
+          <span class="vis-tool-tag" style="background:rgba(239,68,68,0.1); color:#f87171; text-decoration:line-through;">Edit</span>
+          <span class="vis-tool-tag" style="background:rgba(239,68,68,0.1); color:#f87171; text-decoration:line-through;">Write</span>
+        </div>
+      </div>
+      <!-- Main Agent -->
+      <div class="vis-teal-card">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+          <div style="width:28px;height:28px;border-radius:8px;background:rgba(45,212,191,0.2);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:14px;">⚡</span>
+          </div>
+          <span style="font-size:14px; font-weight:700; color:#2dd4bf;">Main Agent</span>
+        </div>
+        <p style="font-size:11px; color:#94a3b8; margin:0 0 8px 0;">Receives compact results, executes with clean context</p>
+        <div style="display:flex; gap:4px;">
+          <span class="vis-tool-tag" style="background:rgba(45,212,191,0.1); color:#5eead4;">All Tools</span>
+        </div>
+      </div>
+    </div>
+    <!-- Right: Context comparison -->
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 12px 0;">Context window usage comparison</p>
+      <div class="vis-card" style="padding:20px;">
+        <!-- Without subagents -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+            <span style="color:#f87171; font-weight:600;">Without subagents</span>
+            <span style="color:#f87171;">~80% used before implementation</span>
+          </div>
+          <div class="vis-bar-track" style="height:36px;">
+            <div class="ctx-seg" style="width:15%; height:100%; background:rgba(100,116,139,0.4); border-right:1px solid rgba(100,116,139,0.3);"><span class="ctx-lbl" style="color:#94a3b8; font-size:8px;">System 15%</span></div>
+            <div class="ctx-seg" style="width:10%; height:100%; background:rgba(245,158,11,0.4); border-right:1px solid rgba(245,158,11,0.3);"><span class="ctx-lbl" style="color:#fcd34d; font-size:8px;">MCP 10%</span></div>
+            <div class="ctx-seg" style="width:25%; height:100%; background:rgba(239,68,68,0.4); border-right:1px solid rgba(239,68,68,0.3);"><span class="ctx-lbl" style="color:#fca5a5; font-size:8px;">File reads 25%</span></div>
+            <div class="ctx-seg" style="width:30%; height:100%; background:rgba(239,68,68,0.3);"><span class="ctx-lbl" style="color:#fca5a5; font-size:8px;">Searches 30%</span></div>
+          </div>
+        </div>
+        <!-- With subagents -->
+        <div style="margin-bottom:18px;">
+          <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:6px;">
+            <span style="color:#4ade80; font-weight:600;">With Explore / Plan subagents</span>
+            <span style="color:#4ade80;">~30% used — 70% for implementation</span>
+          </div>
+          <div class="vis-bar-track" style="height:36px;">
+            <div class="ctx-seg" style="width:15%; height:100%; background:rgba(100,116,139,0.4); border-right:1px solid rgba(100,116,139,0.3);"><span class="ctx-lbl" style="color:#94a3b8; font-size:8px;">System 15%</span></div>
+            <div class="ctx-seg" style="width:10%; height:100%; background:rgba(245,158,11,0.4); border-right:1px solid rgba(245,158,11,0.3);"><span class="ctx-lbl" style="color:#fcd34d; font-size:8px;">MCP 10%</span></div>
+            <div class="ctx-seg" style="width:5%; height:100%; background:rgba(34,197,94,0.4);"><span class="ctx-lbl" style="color:#86efac; font-size:8px;">Results 5%</span></div>
+          </div>
+        </div>
+        <!-- Flow diagram -->
+        <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:14px;">
+          <p style="font-size:11px; color:#64748b; font-weight:600; margin:0 0 10px 0;">How it works</p>
+          <div style="display:flex; align-items:center; gap:10px; justify-content:center;">
+            <div class="vis-teal-card" style="padding:10px 16px; text-align:center;">
+              <p style="font-size:11px; font-weight:700; color:#2dd4bf; margin:0;">Main Agent</p>
+              <p style="font-size:10px; color:#64748b; margin:2px 0 0 0;">"Fix auth bug"</p>
+            </div>
+            <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8h18m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              <div class="vis-blue-card" style="padding:6px 14px; text-align:center;">
+                <p style="font-size:10px; font-weight:700; color:#60a5fa; margin:0;">Explore</p>
+                <p style="font-size:9px; color:#64748b; margin:0;">50 files searched</p>
+              </div>
+              <div class="vis-purple-card" style="padding:6px 14px; text-align:center;">
+                <p style="font-size:10px; font-weight:700; color:#c084fc; margin:0;">Plan</p>
+                <p style="font-size:9px; color:#64748b; margin:0;">Architecture analyzed</p>
+              </div>
+            </div>
+            <svg width="24" height="16" viewBox="0 0 24 16"><path d="M0 8h18m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+            <div class="vis-green-card" style="padding:10px 16px; text-align:center;">
+              <p style="font-size:11px; font-weight:700; color:#4ade80; margin:0;">Compact Result</p>
+              <p style="font-size:10px; color:#64748b; margin:2px 0 0 0;">"auth.ts:45, middleware.ts:122"</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Demo Section Divider -->
+<section class="sans-slide sans-section-divider" data-label="Demo">
+  <h2 style="font-size:192px;">Demo</h2>
+</section>
+
+<!-- 12. Hooks: When X, Then Y -->
+<section class="vis-slide" data-label="Hooks">
+  <div class="vis-label">Deterministic Enforcement</div>
+  <div class="vis-title">Hooks: When X, Then Y</div>
+  <div class="vis-subtitle">Hooks are deterministic shell commands that run at specific lifecycle events — not AI suggestions, but guaranteed execution.</div>
+  <div class="vis-grid-2" style="flex:1;">
+    <!-- Left: How it works -->
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 14px 0;">How it works</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">1</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">AI triggers a lifecycle event (e.g. about to write a file)</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">2</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Claude Code checks settings.json for matching hooks</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf;">3</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Hook script runs with event data piped as JSON to stdin</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">4</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Exit code determines outcome: 0 = allow, 2 = block</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(248,113,113,0.2); border:1px solid rgba(248,113,113,0.3); color:#f87171;">5</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">stdout/stderr fed back to AI as context or error message</p>
+        </div>
+      </div>
+    </div>
+    <!-- Right: Configuration -->
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 14px 0;">Configuration</p>
+      <div class="vis-card">
+        <div class="vis-card-header">
+          <span class="vis-card-filename">.claude/settings.json</span>
+        </div>
+        <div class="vis-card-body vis-code" style="font-size:13px; line-height:1.8;">
+          <p style="margin:0;">{</p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-key">"hooks"</span>: {</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-type">"PreToolUse"</span>: [{</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"matcher"</span>: <span class="syn-str">"Write"</span>,</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"hooks"</span>: [{</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"type"</span>: <span class="syn-str">"command"</span>,</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"command"</span>: <span class="syn-str">"./check.sh"</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;}]</p>
+          <p style="margin:0;">&nbsp;&nbsp;}</p>
+          <p style="margin:0;">}</p>
+        </div>
+      </div>
+      <div class="vis-callout-teal vis-callout" style="margin-top:14px;">
+        <span style="font-weight:600;">Key insight:</span> Hooks run your code, not AI code. They are deterministic, auditable, and cannot be bypassed by the model.
+      </div>
+    </div>
+  </div>
+  <!-- Lifecycle events -->
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;">
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PreToolUse</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PostToolUse</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">UserPromptSubmit</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">Stop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SessionStart</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SessionEnd</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">Notification</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SubagentStop</span>
+  </div>
+</section>
+
+<!-- 13. Hooks in Action -->
+<section class="vis-slide" data-label="Hooks in Action">
+  <div class="vis-label">Real-World Hooks</div>
+  <div class="vis-title">Hooks in Action</div>
+  <div class="vis-subtitle">Deterministic code that runs at specific points in the AI coding lifecycle</div>
+  <!-- Hook events row -->
+  <div style="display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;">
+    <span class="vis-badge" style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">SessionStart</span>
+    <span class="vis-badge" style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">UserPromptSubmit</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PreToolUse</span>
+    <span class="vis-badge" style="background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">PostToolUse</span>
+    <span class="vis-badge" style="background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:#f87171;">Stop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">Notification</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">SubagentStop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">SessionEnd</span>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:16px; flex:1;">
+    <!-- Example 1: PreToolUse → Block protected files -->
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#2dd4bf; margin:0;">PreToolUse</p>
+          <p style="font-size:10px; color:#64748b; margin:4px 0 0 0;">matcher: <span style="color:#94a3b8;">Write</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">FILE=$(<span class="syn-id">jq</span> -r '.tool_input.file_path')</p>
+          <p style="margin:0;"><span class="syn-type">if</span> [[ <span class="syn-str">"$FILE"</span> == *.tfstate* ]]; <span class="syn-type">then</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-type">echo</span> <span class="syn-str">"Protected file"</span> &gt;&amp;2; <span class="syn-type">exit</span> 2</p>
+          <p style="margin:0;"><span class="syn-type">fi</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(127,29,29,0.3); border:1px solid rgba(239,68,68,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">🚫</span>
+            <span style="font-size:11px; font-weight:700; color:#f87171; text-transform:uppercase;">Blocked</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(248,113,113,0.7); margin:0;">"You are not allowed to modify .tfstate files"</p>
+        </div>
+      </div>
+    </div>
+    <!-- Example 2: PostToolUse → Lint → Feedback -->
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#fbbf24; margin:0;">PostToolUse</p>
+          <p style="font-size:10px; color:#64748b; margin:4px 0 0 0;">matcher: <span style="color:#94a3b8;">Edit|Write</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">FILE=$(<span class="syn-id">jq</span> -r '.tool_input.file_path')</p>
+          <p style="margin:0;">RESULT=$(<span class="syn-id">semgrep</span> --config=policy/ <span class="syn-str">"$FILE"</span>)</p>
+          <p style="margin:0;"><span class="syn-type">if</span> [ $? -ne 0 ]; <span class="syn-type">then</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-type">echo</span> <span class="syn-str">"$RESULT"</span> &gt;&amp;2; <span class="syn-type">exit</span> 2</p>
+          <p style="margin:0;"><span class="syn-type">fi</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(120,53,15,0.3); border:1px solid rgba(251,191,36,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">⚠️</span>
+            <span style="font-size:11px; font-weight:700; color:#fbbf24; text-transform:uppercase;">Feedback to AI</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(252,211,77,0.7); margin:0;">"Policy violation: SQL string interpolation. Use parameterized queries."</p>
+        </div>
+      </div>
+    </div>
+    <!-- Example 3: UserPromptSubmit → DB query → Context -->
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#c084fc; margin:0;">UserPromptSubmit</p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">PROMPT=$(<span class="syn-id">jq</span> -r '.prompt')</p>
+          <p style="margin:0;">CONTEXT=$(<span class="syn-id">psql</span> -t -c \</p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-str">"SELECT owner, tier FROM services"</span>)</p>
+          <p style="margin:0;"><span class="syn-type">echo</span> <span class="syn-str">"$CONTEXT"</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(5,46,22,0.3); border:1px solid rgba(34,197,94,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">✅</span>
+            <span style="font-size:11px; font-weight:700; color:#4ade80; text-transform:uppercase;">Context Added</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(134,239,172,0.7); margin:0;">"Adding context: service owner, data tier, deployment environment"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 14. Layered AI Review -->
+<section class="vis-slide" data-label="Agent Review">
+  <div class="vis-label">Agent Review</div>
+  <div class="vis-title">Layered AI Review</div>
+  <div style="display:flex; gap:20px; align-items:stretch; flex:1;">
+    <!-- Left: Full IDE mockup -->
+    <div style="flex:1;">
+      <div class="vis-card" style="padding:0; height:100%;">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">auth_service.py — my-project</span>
+          <span style="margin-left:auto; font-size:10px; color:#64748b;">3 agents reviewing</span>
+        </div>
+        <div style="display:flex; height:calc(100% - 32px);">
+          <!-- File sidebar -->
+          <div style="width:140px; background:rgba(15,23,42,0.8); border-right:1px solid rgba(51,65,85,0.5); padding:10px 6px; font-size:10px;">
+            <p style="color:#64748b; font-weight:600; margin:0 0 8px 0; font-size:9px; text-transform:uppercase; letter-spacing:0.1em;">Explorer</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📁 src/</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 app.py</p>
+            <p class="vis-mono" style="color:#e2e8f0; margin:0 0 3px 0; padding-left:10px; background:rgba(96,165,250,0.1); border-radius:3px; padding:2px 4px 2px 10px;">📄 auth_service.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 models.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📁 tests/</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 test_auth.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📄 CLAUDE.md</p>
+          </div>
+          <!-- Code editor -->
+          <div style="flex:1; padding:10px; font-size:12px; line-height:1.8; overflow:hidden;" class="vis-mono">
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 1</span><span class="syn-type">import</span> <span style="color:#cbd5e1;">hashlib</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 2</span><span class="syn-type">from</span> <span style="color:#cbd5e1;">db</span> <span class="syn-type">import</span> <span style="color:#cbd5e1;">session</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 3</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 4</span><span class="syn-type">def</span> <span class="syn-id">login</span>(request):</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 5</span>&nbsp;&nbsp;user = db.query(</p>
+            <p style="margin:0; background:rgba(248,113,113,0.08);"><span style="color:#475569; margin-right:8px;"> 6</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-str">f"SELECT * FROM users</span></p>
+            <p style="margin:0; background:rgba(248,113,113,0.08);"><span style="color:#475569; margin-right:8px;"> 7</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-str"> WHERE email='{request.email}'"</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 8</span>&nbsp;&nbsp;)</p>
+            <p style="margin:0; background:rgba(251,191,36,0.06);"><span style="color:#475569; margin-right:8px;"> 9</span>&nbsp;&nbsp;<span class="syn-type">if</span> user.password == request.pw:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">10</span>&nbsp;&nbsp;&nbsp;&nbsp;token = <span class="syn-id">make_token</span>(user)</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">11</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-type">return</span> {<span class="syn-str">"token"</span>: token}</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">12</span>&nbsp;&nbsp;<span class="syn-type">return</span> {<span class="syn-str">"error"</span>: <span class="syn-str">"fail"</span>}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Arrows -->
+    <div style="display:flex; flex-direction:column; gap:32px; flex-shrink:0; width:40px; align-items:center; justify-content:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#f87171;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#fbbf24;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#60a5fa;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <!-- Right: Agent review cards -->
+    <div style="width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; justify-content:center;">
+      <!-- Security Agent -->
+      <div style="border-radius:12px; border:1px solid rgba(248,113,113,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(248,113,113,0.2);border:1px solid rgba(248,113,113,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">🛡️</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#f87171; text-transform:uppercase; letter-spacing:0.05em;">Security Agent</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(248,113,113,0.6); margin:0;">"SQL injection on L6-7. Use parameterized queries. Hash passwords, never compare plaintext."</p>
+      </div>
+      <!-- QA Agent -->
+      <div style="border-radius:12px; border:1px solid rgba(251,191,36,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">🧪</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#fbbf24; text-transform:uppercase; letter-spacing:0.05em;">QA Agent</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(251,191,36,0.6); margin:0;">"No tests. Missing error handling for null user. Generic error message leaks nothing, good."</p>
+      </div>
+      <!-- Best Practices Agent -->
+      <div style="border-radius:12px; border:1px solid rgba(96,165,250,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(96,165,250,0.2);border:1px solid rgba(96,165,250,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">📐</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#60a5fa; text-transform:uppercase; letter-spacing:0.05em;">Best Practices</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(96,165,250,0.6); margin:0;">"Use repository pattern per CLAUDE.md. Add type hints. Return proper HTTP status codes."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 15. Deterministic Guardrails -->
+<section class="vis-slide" data-label="Guardrails">
+  <div class="vis-label">Policy-as-Code</div>
+  <div class="vis-title">Deterministic Guardrails</div>
+  <div style="flex:1;">
+    <div class="vis-card">
+      <div class="vis-card-header">
+        <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+        <span class="vis-card-filename">payment_handler.py</span>
+        <span style="margin-left:auto; font-size:11px; color:#94a3b8; font-weight:600;">Agent Chat</span>
+      </div>
+      <div style="padding:16px; display:flex; flex-direction:column; gap:14px;">
+        <!-- Bad code -->
+        <div style="background:rgba(30,41,59,0.4); border-radius:8px; padding:14px; border:1px solid rgba(51,65,85,0.3);">
+          <div style="background:#11111b; border-radius:6px; padding:10px;" class="vis-mono vis-code" style="font-size:12px; line-height:1.7;">
+            <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;log.info(<span class="syn-str">f"Charging ${amount} to card {card}, cvv {cvv}"</span>)</p>
+            <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;db.execute(<span class="syn-str">f"INSERT INTO payments VALUES ('{card}', {amount})"</span>)</p>
+          </div>
+        </div>
+        <!-- Violation callout -->
+        <div style="background:rgba(127,29,29,0.3); border-radius:8px; padding:14px; border:1px solid rgba(239,68,68,0.3);">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <span style="font-size:14px;">⚠️</span>
+            <span style="font-size:12px; font-weight:700; color:#f87171;">Guardrail Violation</span>
+          </div>
+          <p class="vis-mono" style="font-size:11px; color:rgba(248,113,113,0.8); margin:0;">Policy <span style="color:#f87171; font-weight:600;">pci-dss/no-pan-logging</span>: Logging raw card number and CVV violates PCI-DSS §3.4. SQL string interpolation violates <span style="color:#f87171; font-weight:600;">sql-injection/no-interpolation</span>.</p>
+        </div>
+        <!-- AI fix -->
+        <div style="background:rgba(30,41,59,0.4); border-radius:8px; padding:14px; border:1px solid rgba(51,65,85,0.3);">
+          <p style="font-size:12px; color:#c084fc; font-weight:600; margin:0 0 8px 0;">Claude</p>
+          <p style="font-size:12px; color:#94a3b8; margin:0 0 10px 0;">Good catch. Masking the PAN, removing CVV from logs, and switching to parameterized queries:</p>
+          <div style="background:#11111b; border-radius:6px; padding:10px;" class="vis-mono vis-code">
+            <p style="margin:0; color:#f87171; background:rgba(239,68,68,0.1); padding:2px 6px; border-radius:4px;"><span style="user-select:none;">- </span>log.info(f"Charging ${amount} to card {card}, cvv {cvv}")</p>
+            <p style="margin:0; color:#4ade80; background:rgba(34,197,94,0.1); padding:2px 6px; border-radius:4px;"><span style="user-select:none;">+ </span>log.info(f"Charging ${amount} to card ****{card[-4:]}")</p>
+            <p style="margin:0;">&nbsp;</p>
+            <p style="margin:0; color:#f87171; background:rgba(239,68,68,0.1); padding:2px 6px; border-radius:4px;"><span style="user-select:none;">- </span>db.execute(f"INSERT INTO payments VALUES ('{card}', {amount})")</p>
+            <p style="margin:0; color:#4ade80; background:rgba(34,197,94,0.1); padding:2px 6px; border-radius:4px;"><span style="user-select:none;">+ </span>db.execute("INSERT INTO payments VALUES (%s, %s)", (masked, amount))</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. Key Takeaways -->
+<section class="vis-slide" data-label="Takeaways">
+  <div class="vis-label">Wrap-Up</div>
+  <div class="vis-title">Key Takeaways</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:32px; margin-top:8px;">
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; width:52px; height:52px; font-size:22px;">1</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">MCP standardizes agent-tool interaction</p>
+        <p style="font-size:17px; color:#94a3b8; margin:0;">One protocol for tools, resources, prompts, and completions — across every IDE and agent</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; width:52px; height:52px; font-size:22px;">2</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">Context engineering is the new skill to master</p>
+        <p style="font-size:17px; color:#94a3b8; margin:0;">Steering with rules files, managing context windows, and using subagents for segmentation</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc; width:52px; height:52px; font-size:22px;">3</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">Guardrails are non-negotiable for AI-generated code</p>
+        <p style="font-size:17px; color:#94a3b8; margin:0;">Security, quality, performance, and architecture — enforced deterministically with hooks</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24; width:52px; height:52px; font-size:22px;">4</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">Secure your agent toolchain like any supply chain</p>
+        <p style="font-size:17px; color:#94a3b8; margin:0;">Allowlist MCP servers, audit tool usage, sandbox execution, vet dependencies</p>
+      </div>
+    </div>
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:rgba(248,113,113,0.2); border:1px solid rgba(248,113,113,0.3); color:#f87171; width:52px; height:52px; font-size:22px;">5</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">Policy as Code + AI agents = DevSecOps at scale</p>
+        <p style="font-size:17px; color:#94a3b8; margin:0;">Semgrep, Conftest, hooks, and agent review create a layered defense that continuously improves</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17. CSE Summit Promo -->
+<section class="sans-slide" data-label="CSE Summit" style="background:#000 !important; justify-content:center; align-items:center; padding:44px 0 0 0;">
+  <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/cse-summit-2026.jpg"
+       alt="SANS Cloud Security Exchange Summit 2026"
+       style="max-width:90%; max-height:80vh; border-radius:8px;" class="plain">
+  <p style="text-align:center; margin-top:16px;">
+    <a href="https://go.sans.org/cloud-exchange-summit" style="color:var(--sans-orange); font-weight:700; font-size:20px;">go.sans.org/cloud-exchange-summit</a>
+  </p>
+</section>
+
+<!-- Emergency Webcast: TeamPCP Supply Chain Attack -->
+<section class="vis-slide" data-label="Emergency Webcast" style="justify-content:center;">
+  <div style="max-width:800px; margin:0 auto; text-align:center;">
+    <div class="vis-label" style="text-align:center;">SANS Cloud Security Emergency Webcast</div>
+    <div class="vis-title" style="text-align:center; font-size:32px; margin-bottom:12px;">When the Security Scanner Became the Weapon</div>
+    <p style="font-size:18px; color:#f59e0b; margin:0 0 40px 0; font-style:italic;">Inside the TeamPCP Supply Chain Attack</p>
+    <div style="display:flex; justify-content:center; gap:48px; margin-bottom:36px;">
+      <div style="text-align:center;">
+        <p style="font-size:12px; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 6px 0;">When</p>
+        <p style="font-size:18px; color:#e2e8f0; font-weight:600; margin:0;">Wed Mar 25 &bull; 3 PM EDT</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="font-size:12px; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 6px 0;">Speakers</p>
+        <p style="font-size:18px; color:#e2e8f0; font-weight:600; margin:0;">Eric Johnson &amp; Kenneth G. Hartman</p>
+      </div>
+    </div>
+    <p style="font-size:15px; color:#94a3b8; margin:0 0 32px 0;">How attackers compromised the Trivy security scanner to launch a cascading supply chain attack affecting CI/CD pipelines across thousands of organizations</p>
+    <a href="https://www.sans.org/webcasts/when-security-scanner-became-weapon" style="color:var(--sans-orange); font-weight:700; font-size:20px;">sans.org/webcasts/when-security-scanner-became-weapon</a>
+  </div>
+</section>
+
+<!-- 18. End Slide -->
+<section class="sans-slide sans-end-slide" data-label="End"
+         style="background-image: url('presentations/2026-03-sans-sec540-ai-driven-devsecops/img/sans-cloud-bg-dark.jpg');">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 40px;">
+    <p style="font-size:48px; font-style:italic; color:#FFF; margin-bottom:16px; font-weight:300;">Thank you for attending!</p>
+    <p style="font-size:32px; color:var(--sans-orange); font-weight:700; margin-bottom:16px;">Jon Zeolla</p>
+    <div style="margin-bottom:6px;">
+      <a href="https://zenable.io">
+        <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/zenable.svg" alt="Zenable" style="height:40px;" class="plain zenable-logo-dark">
+        <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/zenable-dark.svg" alt="Zenable" style="height:40px;" class="plain zenable-logo-light">
+      </a>
+    </div>
+    <p style="font-size:20px; color:var(--sans-offwhite); margin-top:0;">
+      <a href="https://linkedin.com/in/jonzeolla/" style="color:var(--sans-offwhite);">linkedin.com/in/jonzeolla/</a>
+    </p>
+    <hr style="width:60%; border:none; border-top:1px solid rgba(255,255,255,0.3); margin:28px auto;">
+    <p style="font-size:20px; color:var(--sans-offwhite); margin-bottom:8px;">Take a Journey to Become a SANS Cloud Ace</p>
+    <p style="font-size:36px; color:#FFF; font-weight:700; margin-top:8px;">
+      <a href="https://sans.org/sec540" style="color:#FFF;">sans.org/sec540</a>
+    </p>
+    <div style="display:flex; justify-content:center; gap:64px; margin-top:36px;">
+      <div style="text-align:center;">
+        <p style="color:var(--sans-orange); font-weight:700; font-size:20px; margin-bottom:4px;">SANS 2026</p>
+        <p style="margin:0; font-size:18px; color:var(--sans-offwhite);">Orlando, FL &amp; Virtual</p>
+        <p style="margin:0; font-size:16px; color:rgba(255,255,255,0.7);">Sun Mar 29 – Thurs Apr 2, 2026</p>
+        <p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">with Eric Johnson</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="color:var(--sans-orange); font-weight:700; font-size:20px; margin-bottom:4px;">SANS Rocky Mountain 2026</p>
+        <p style="margin:0; font-size:18px; color:var(--sans-offwhite);">Denver, CO &amp; Virtual</p>
+        <p style="margin:0; font-size:16px; color:rgba(255,255,255,0.7);">Mon Apr 20 – Fri Apr 24</p>
+        <p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">with Dakota Riley</p>
+      </div>
+      <div style="text-align:center;">
+        <p style="color:var(--sans-orange); font-weight:700; font-size:20px; margin-bottom:4px;">SANS Security West 2026</p>
+        <p style="margin:0; font-size:18px; color:var(--sans-offwhite);">San Diego, CA &amp; Virtual</p>
+        <p style="margin:0; font-size:16px; color:rgba(255,255,255,0.7);">Mon May 11 – May 16, 2026</p>
+        <p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">with David Hazar</p>
+      </div>
+    </div>
+  </div>
+</section>

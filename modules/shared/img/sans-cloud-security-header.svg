@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 36" width="160" height="36">
+  <!-- Orange background -->
+  <rect width="160" height="36" rx="2" fill="#F5821F"/>
+  <!-- SANS text — serif, white, matching the official SANS wordmark style -->
+  <text x="10" y="24" font-family="'Georgia', 'Times New Roman', serif" font-weight="bold" font-size="16" fill="#FFFFFF" letter-spacing="0.5">SANS</text>
+  <!-- Pipe separator -->
+  <line x1="58" y1="6" x2="58" y2="30" stroke="#FFFFFF" stroke-width="1.2" opacity="0.8"/>
+  <!-- CLOUD SECURITY text — bold sans-serif -->
+  <text x="64" y="17" font-family="'Arial', 'Helvetica', sans-serif" font-weight="bold" font-size="9.5" fill="#FFFFFF" letter-spacing="0.3">CLOUD</text>
+  <text x="64" y="28" font-family="'Arial', 'Helvetica', sans-serif" font-weight="bold" font-size="9.5" fill="#FFFFFF" letter-spacing="0.3">SECURITY</text>
+</svg>
