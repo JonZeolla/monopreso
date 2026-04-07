@@ -1,0 +1,4 @@
+# Only reveal.js/package.json and reveal.js/package-lock.json are needed for the build
+**
+!reveal.js/package.json
+!reveal.js/package-lock.json

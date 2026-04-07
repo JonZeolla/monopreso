@@ -1,0 +1,25 @@
+<section data-transition="none">
+  <h2>Demo: MCP Servers in Action</h2>
+  <ul>
+    <li>Extending the LLM with MCP servers for tool access</li>
+    <li>Connecting to CLIs, APIs, and security tools</li>
+    <li>Agent uses MCP tools to perform DevSecOps tasks</li>
+  </ul>
+  <pre><code class="json" style="font-size: 0.5em;">{
+  "mcpServers": {
+    "kubernetes": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-kubernetes"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_TOKEN": "${GITHUB_TOKEN}" }
+    }
+  }
+}</code></pre>
+  <aside class="notes">
+    Live demo: adding MCP servers to extend the agent's capabilities
+    with access to Kubernetes, GitHub, and security scanning tools.
+  </aside>
+</section>

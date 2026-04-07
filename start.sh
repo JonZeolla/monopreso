@@ -70,8 +70,8 @@ function cleanup() {
   feedback INFO "Cleanup complete"
 }
 
-# Run cleanup if we receive a SIGINT
-trap cleanup SIGINT
+# Run cleanup and exit if we receive a SIGINT
+trap 'cleanup; exit 130' SIGINT
 
 OPTSPEC=":h-:"
 PRESENTATION=
@@ -212,8 +212,7 @@ if [[ "${ENGINE,,}" == "modern" ]]; then
   echo -n "."
   _qout=$(mktemp)
   _rc=0
-  docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
-                                                                                && uv run python3 << PYEOF
+  uv run python3 << PYEOF >"${_qout}" 2>&1 || _rc=$?
 from jinja2 import Environment, FileSystemLoader
 
 env = Environment(loader=FileSystemLoader(['.', 'modules/shared/', 'modules/shared/components/']))
@@ -229,7 +228,7 @@ out = main.render(title='${PRESENTATION}', content=rendered_content)
 
 with open('${RENDERED_PRESENTATION}', 'w') as f:
     f.write(out)
-PYEOF" >"${_qout}" 2>&1 || _rc=$?
+PYEOF
   if [[ "${_rc}" -ne 0 ]]; then cat "${_qout}" >&2; rm -f "${_qout}"; exit 1; fi
   rm -f "${_qout}"
 
@@ -302,8 +301,7 @@ else
   # shellcheck disable=SC2154
   _qout=$(mktemp)
   _rc=0
-  docker run --rm -v .:/usr/src/app -w /usr/src/app python:3.12-slim /bin/bash -c "python -m pip install --upgrade pip uv >/dev/null 2>&1 \
-                                                                                && uv run python3 << EOF
+  uv run python3 << EOF >"${_qout}" 2>&1 || _rc=$?
 from jinja2 import Environment, FileSystemLoader
 
 title = '''${title}'''
@@ -315,9 +313,9 @@ branding = '''${BRANDING}'''
 template = Environment(loader=FileSystemLoader('${SHARED_DIR}')).get_template('${JINJA2_TEMPLATE}')
 out = template.render(title=title, content=content, reveal_config=reveal_config, branding=branding)
 
-with open(\"${RENDERED_PRESENTATION}\", \"w\") as f:
+with open("${RENDERED_PRESENTATION}", "w") as f:
   f.write(out)
-EOF" >"${_qout}" 2>&1 || _rc=$?
+EOF
   if [[ "${_rc}" -ne 0 ]]; then cat "${_qout}" >&2; rm -f "${_qout}"; exit 1; fi
   rm -f "${_qout}"
 
