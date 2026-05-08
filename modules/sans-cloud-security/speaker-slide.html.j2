@@ -1,0 +1,26 @@
+{# SANS speaker slide.
+   Vars:
+     sans_speaker            — speaker display name
+     sans_speaker_logo_url   — homepage / brand link wrapped around the logo (optional)
+     sans_speaker_logo_dark  — path to logo for dark mode (default theme)
+     sans_speaker_logo_light — path to logo for light mode
+     sans_speaker_tagline    — italic tagline beneath the logo (optional)
+     sans_speaker_roles      — list of role/affiliation strings, each its own line
+#}
+<section class="vis-slide" data-label="Speaker" style="justify-content:center; align-items:center; text-align:center;">
+  <div class="vis-title" style="font-size:48px; text-align:center; margin-bottom:40px;">{{ sans_speaker }}</div>
+  {% if sans_speaker_logo_dark or sans_speaker_logo_light %}
+  <div style="margin-bottom:48px;">
+    {% if sans_speaker_logo_url %}<a href="{{ sans_speaker_logo_url }}">{% endif %}
+      {% if sans_speaker_logo_dark %}<img src="{{ sans_speaker_logo_dark }}" alt="{{ sans_speaker }}" style="height:56px;" class="plain zenable-logo-dark">{% endif %}
+      {% if sans_speaker_logo_light %}<img src="{{ sans_speaker_logo_light }}" alt="{{ sans_speaker }}" style="height:56px;" class="plain zenable-logo-light">{% endif %}
+    {% if sans_speaker_logo_url %}</a>{% endif %}
+  </div>
+  {% endif %}
+  {% if sans_speaker_tagline %}<p style="font-size:20px; color:#94a3b8; margin:0 0 48px 0; font-style:italic;">{{ sans_speaker_tagline }}</p>{% endif %}
+  {% if sans_speaker_roles %}
+  <div style="font-size:24px; line-height:2.8; color:#e2e8f0;">
+    {% for role in sans_speaker_roles %}<p style="margin:0;">{{ role }}</p>{% endfor %}
+  </div>
+  {% endif %}
+</section>
