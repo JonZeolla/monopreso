@@ -1,0 +1,13 @@
+{# SANS title slide — orange backdrop with ace bg.
+   Vars (set in consuming preso):
+     sans_title    — the H1, the "what is this talk" line (e.g. "AI-Driven DevSecOps")
+     sans_subtitle — italic subtitle below the H1 (the after-the-colon part of a longer title)
+     sans_speaker  — the speaker name shown beneath
+#}
+<section class="sans-slide sans-title-slide" data-label="Title">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; padding: 40px 20px 40px 20px;">
+    <h1>{{ sans_title }}</h1>
+    {% if sans_subtitle %}<p style="font-size:32px; margin-bottom:28px; font-style:italic;">{{ sans_subtitle }}</p>{% endif %}
+    <p style="font-size:22px; font-weight:600;">{{ sans_speaker }}</p>
+  </div>
+</section>

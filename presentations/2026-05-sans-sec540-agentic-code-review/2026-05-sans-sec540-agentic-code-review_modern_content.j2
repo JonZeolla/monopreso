@@ -1,0 +1,85 @@
+{# ================================================================
+   SANS — AI-Driven DevSecOps Part 3:
+   Agentic Code Review in GitLab & GitHub
+   Tue, May 19, 2026
+   Theme: SANS Cloud Security (shared module)
+   ================================================================ #}
+
+{# ── Shared SANS variables (consumed by modules/sans-cloud-security/*) ── #}
+{% set sans_title    = "AI-Driven DevSecOps" %}
+{% set sans_subtitle = "Agentic Code Review in GitLab & GitHub" %}
+{% set sans_speaker  = "Jon Zeolla" %}
+{% set sans_speaker_linkedin   = "linkedin.com/in/jonzeolla/" %}
+{% set sans_speaker_logo_url   = "https://zenable.io" %}
+{% set sans_speaker_logo_dark  = "presentations/2026-05-sans-sec540-agentic-code-review/img/zenable.svg" %}
+{% set sans_speaker_logo_light = "presentations/2026-05-sans-sec540-agentic-code-review/img/zenable-dark.svg" %}
+{% set sans_speaker_tagline    = "Governance, Guardrails, and Observability<br>for coding agents like Claude Code, Cursor, VS Code, and more" %}
+{% set sans_speaker_roles      = [
+  "SANS Instructor — SEC540 & SEC545",
+  "CNCF Ambassador • BSides Pittsburgh Organizer",
+] %}
+
+{% set sans_series_image = "presentations/2026-05-sans-sec540-agentic-code-review/img/AI_DevSecOps_Series.png" %}
+{% set sans_series_alt   = "5 Part AI-Driven DevSecOps Series — Part 1: Securing Coding Agents with MCP (Mar 25), Part 2: Protecting Kubernetes Microservices with Kong (Apr 23), Part 3: Agentic Code Review in GitLab & GitHub (May 19), Part 4: Observing Microservices with OpenTelemetry and Grafana (Jun 18), Part 5: Zero-Downtime Deployments with Kubernetes (Jul 9)" %}
+
+{% set sans_takeaways_label = "Wrap-Up" %}
+{% set sans_takeaways_title = "Key Takeaways" %}
+{# TODO: replace with this webcast's takeaways. Items can be a string (title-only) or a {title, detail} dict. #}
+{% set sans_takeaways = [
+  {"title": "TODO: takeaway #1", "detail": "TODO: supporting detail"},
+  {"title": "TODO: takeaway #2", "detail": "TODO: supporting detail"},
+  {"title": "TODO: takeaway #3", "detail": "TODO: supporting detail"},
+] %}
+
+{% set sans_course_url     = "sans.org/sec540" %}
+{% set sans_course_tagline = "Take a Journey to Become a SANS Cloud Ace" %}
+{% set sans_training_events = [
+  {"name": "SANS Chicago 2026", "location": "Chicago, IL & Virtual",
+   "dates": "Mon Jun 8 – Fri Jun 12, 2026", "instructor": "Dakota Riley"},
+  {"name": "SANSFIRE 2026", "location": "Washington, DC & Virtual",
+   "dates": "Mon Jul 13 – Fri Jul 17, 2026", "instructor": "David Hazar"},
+  {"name": "SANS Cloud Security Exchange Summit & Training 2026", "location": "San Francisco, CA & Virtual",
+   "dates": "Wed Aug 19 – Sun Aug 23, 2026", "instructor": "Dakota Riley"},
+] %}
+
+{# ── Theme + header bar (shared) ─────────────────────────────────────── #}
+{% include "modules/sans-cloud-security/theme.html.j2" %}
+{% include "modules/sans-cloud-security/header.html.j2" %}
+
+{# ================================================================
+   SLIDES
+   ================================================================ #}
+
+<!-- 1. Title Slide -->
+{% include "modules/sans-cloud-security/title-slide.html.j2" %}
+
+<!-- 2. Speaker -->
+{% include "modules/sans-cloud-security/speaker-slide.html.j2" %}
+
+<!-- 3. Webcast Series Overview -->
+{% include "modules/sans-cloud-security/series-overview-slide.html.j2" %}
+
+<!-- ============================================================
+     CONTENT SLIDES — TODO
+     Add your event-specific slides here. Common patterns from the
+     SANS Cloud Security theme:
+       <section class="vis-slide" data-label="…">…</section>     ← dark
+       <section class="sans-slide" data-label="…">…</section>    ← light
+       <section class="sans-slide sans-section-divider"
+                data-label="…"><h2>Section</h2></section>
+     ============================================================ -->
+
+<section class="vis-slide" data-label="TODO First Content Slide">
+  <div class="vis-label">TODO Eyebrow</div>
+  <div class="vis-title">TODO Slide Title</div>
+  <div class="vis-subtitle">TODO Subtitle</div>
+  <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+    <p style="font-size:24px; color:var(--vis-muted);">Replace this slide with your content.</p>
+  </div>
+</section>
+
+<!-- 16. Key Takeaways -->
+{% include "modules/sans-cloud-security/takeaways-slide.html.j2" %}
+
+<!-- 18. End Slide -->
+{% include "modules/sans-cloud-security/end-slide.html.j2" %}

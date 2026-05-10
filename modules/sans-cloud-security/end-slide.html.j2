@@ -1,0 +1,50 @@
+{# SANS Cloud Security end slide — thank-you, course CTA, upcoming training events.
+   Vars:
+     sans_speaker             — speaker name (orange line)
+     sans_speaker_linkedin    — LinkedIn URL (optional)
+     sans_speaker_logo_url    — homepage URL wrapped around the logo (optional)
+     sans_speaker_logo_dark   — logo path for dark mode (optional)
+     sans_speaker_logo_light  — logo path for light mode (optional)
+     sans_course_tagline      — small line above the course CTA (default: "Take a Journey to Become a SANS Cloud Ace")
+     sans_course_url          — display text + href for the big course link (e.g. "sans.org/sec540")
+     sans_training_events     — list of dicts: { name, location, dates, instructor }
+#}
+<section class="sans-slide sans-end-slide" data-label="End"
+         style="background-image: url('modules/sans-cloud-security/img/sans-cloud-bg-dark.jpg');">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:0 40px;">
+    <p style="font-size:48px; font-style:italic; color:#FFF; margin-bottom:16px; font-weight:300;">Thank you for attending!</p>
+    <p style="font-size:32px; color:var(--sans-orange); font-weight:700; margin-bottom:16px;">{{ sans_speaker }}</p>
+    {% if sans_speaker_logo_dark or sans_speaker_logo_light %}
+    <div style="margin-bottom:6px;">
+      {% if sans_speaker_logo_url %}<a href="{{ sans_speaker_logo_url }}">{% endif %}
+        {% if sans_speaker_logo_dark %}<img src="{{ sans_speaker_logo_dark }}" alt="{{ sans_speaker }}" style="height:40px;" class="plain zenable-logo-dark">{% endif %}
+        {% if sans_speaker_logo_light %}<img src="{{ sans_speaker_logo_light }}" alt="{{ sans_speaker }}" style="height:40px;" class="plain zenable-logo-light">{% endif %}
+      {% if sans_speaker_logo_url %}</a>{% endif %}
+    </div>
+    {% endif %}
+    {% if sans_speaker_linkedin %}
+    <p style="font-size:20px; color:var(--sans-offwhite); margin-top:0;">
+      <a href="https://{{ sans_speaker_linkedin }}" style="color:var(--sans-offwhite);">{{ sans_speaker_linkedin }}</a>
+    </p>
+    {% endif %}
+    {% if sans_course_url %}
+    <hr style="width:60%; border:none; border-top:1px solid rgba(255,255,255,0.3); margin:28px auto;">
+    <p style="font-size:20px; color:var(--sans-offwhite); margin-bottom:8px;">{{ sans_course_tagline | default("Take a Journey to Become a SANS Cloud Ace") }}</p>
+    <p style="font-size:36px; color:#FFF; font-weight:700; margin-top:8px;">
+      <a href="https://{{ sans_course_url }}" style="color:#FFF;">{{ sans_course_url }}</a>
+    </p>
+    {% endif %}
+    {% if sans_training_events %}
+    <div style="display:flex; justify-content:center; gap:64px; margin-top:36px;">
+      {% for ev in sans_training_events %}
+      <div style="text-align:center;">
+        <p style="color:var(--sans-orange); font-weight:700; font-size:20px; margin-bottom:4px;">{{ ev.name }}</p>
+        <p style="margin:0; font-size:18px; color:var(--sans-offwhite);">{{ ev.location }}</p>
+        <p style="margin:0; font-size:16px; color:rgba(255,255,255,0.7);">{{ ev.dates }}</p>
+        {% if ev.instructor %}<p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">with {{ ev.instructor }}</p>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
