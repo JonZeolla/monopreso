@@ -1,0 +1,28 @@
+<section data-transition="none">
+  <h2>MCP Security Considerations</h2>
+  <ul>
+    <li><strong>Tool approval</strong> — Require explicit user consent before agent invokes tools</li>
+    <li><strong>Least privilege</strong> — MCP servers should only expose necessary capabilities</li>
+    <li><strong>Transport security</strong> — Use stdio for local, SSE/Streamable HTTP for remote with TLS</li>
+    <li><strong>Input validation</strong> — MCP servers must validate all inputs from the model</li>
+    <li><strong>Prompt injection</strong> — Untrusted data in tool results can manipulate agent behavior</li>
+  </ul>
+  <aside class="notes">
+    Security is critical when giving AI agents access to tools and systems.
+    MCP provides the mechanism, but you need to configure it securely.
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>Securing the Agent Toolchain</h2>
+  <ul>
+    <li><strong>Allowlist MCP servers</strong> — Only approved servers in your configuration</li>
+    <li><strong>Audit tool usage</strong> — Log all MCP tool invocations for review</li>
+    <li><strong>Sandbox execution</strong> — Run MCP servers in containers or restricted environments</li>
+    <li><strong>Policy as Code</strong> — Enforce guardrails via automated policy checks</li>
+    <li><strong>Supply chain</strong> — Vet MCP server dependencies like any other software</li>
+  </ul>
+  <aside class="notes">
+    Apply the same supply chain security practices to MCP servers
+    that you would to any third-party dependency.
+  </aside>
+</section>

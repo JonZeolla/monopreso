@@ -1,0 +1,31 @@
+{# SANS-themed key-takeaways slide — dark vis-slide with numbered step circles.
+   Vars:
+     sans_takeaways_label — uppercase eyebrow above the title (default: "Wrap-Up")
+     sans_takeaways_title — slide heading (default: "Key Takeaways")
+     sans_takeaways       — list of dicts: { title, detail }
+                            (or list of strings — rendered title-only)
+   Step accent colors cycle through teal / blue / purple / amber / red.
+#}
+{%- set _accents = [
+  {"bg": "rgba(45,212,191,0.2)",  "border": "rgba(45,212,191,0.3)",  "text": "#2dd4bf"},
+  {"bg": "rgba(96,165,250,0.2)",  "border": "rgba(96,165,250,0.3)",  "text": "#60a5fa"},
+  {"bg": "rgba(168,85,247,0.2)",  "border": "rgba(168,85,247,0.3)",  "text": "#c084fc"},
+  {"bg": "rgba(251,191,36,0.2)",  "border": "rgba(251,191,36,0.3)",  "text": "#fbbf24"},
+  {"bg": "rgba(248,113,113,0.2)", "border": "rgba(248,113,113,0.3)", "text": "#f87171"},
+] -%}
+<section class="vis-slide" data-label="Takeaways">
+  <div class="vis-label">{{ sans_takeaways_label | default("Wrap-Up") }}</div>
+  <div class="vis-title">{{ sans_takeaways_title | default("Key Takeaways") }}</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:32px; margin-top:8px;">
+    {% for item in sans_takeaways %}
+    {%- set a = _accents[loop.index0 % _accents | length] -%}
+    <div style="display:flex; align-items:flex-start; gap:20px;">
+      <div class="vis-step" style="background:{{ a.bg }}; border:1px solid {{ a.border }}; color:{{ a.text }}; width:52px; height:52px; font-size:22px;">{{ loop.index }}</div>
+      <div>
+        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 6px 0;">{{ item.title if item.title is defined else item }}</p>
+        {% if item.detail is defined %}<p style="font-size:17px; color:#94a3b8; margin:0;">{{ item.detail }}</p>{% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

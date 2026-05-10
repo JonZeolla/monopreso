@@ -1,0 +1,57 @@
+<section data-transition="none">
+  <h2>MCP Architecture</h2>
+  <pre><code style="font-size: 0.55em;">┌─────────────────────────────────────────────────┐
+│                   MCP Host                      │
+│              (IDE / AI Agent)                    │
+│                                                 │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐   │
+│  │ MCP Client│  │ MCP Client│  │ MCP Client│   │
+│  └─────┬─────┘  └─────┬─────┘  └─────┬─────┘   │
+└────────┼──────────────┼──────────────┼──────────┘
+         │              │              │
+    ┌────▼────┐   ┌─────▼────┐  ┌─────▼─────┐
+    │MCP Server│  │MCP Server│  │MCP Server │
+    │(kubectl) │  │(GitHub)  │  │(Scanner)  │
+    └─────────┘  └──────────┘  └───────────┘</code></pre>
+  <ul style="font-size: 0.7em;">
+    <li><strong>Host</strong> — The application (IDE, agent) that connects to MCP servers</li>
+    <li><strong>Client</strong> — Maintains 1:1 connection with each server</li>
+    <li><strong>Server</strong> — Exposes tools, resources, and prompts</li>
+  </ul>
+  <aside class="notes">
+    MCP uses a client-server architecture. The host (IDE/agent) connects to multiple MCP servers,
+    each providing access to different tools and data sources.
+  </aside>
+</section>
+<section data-transition="none">
+  <h2>MCP Capabilities</h2>
+  <table style="font-size: 0.6em;">
+    <thead>
+      <tr>
+        <th>Capability</th>
+        <th>Description</th>
+        <th>Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Tools</strong></td>
+        <td>Functions the model can invoke</td>
+        <td>Run a security scan, create a PR</td>
+      </tr>
+      <tr>
+        <td><strong>Resources</strong></td>
+        <td>Data the model can read</td>
+        <td>Database schemas, API docs</td>
+      </tr>
+      <tr>
+        <td><strong>Prompts</strong></td>
+        <td>Reusable prompt templates</td>
+        <td>Code review checklist</td>
+      </tr>
+    </tbody>
+  </table>
+  <aside class="notes">
+    MCP servers expose three types of capabilities: tools, resources, and prompts.
+  </aside>
+</section>

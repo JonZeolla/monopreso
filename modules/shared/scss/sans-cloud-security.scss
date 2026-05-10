@@ -1,0 +1,354 @@
+/**
+ * SANS Cloud Security theme for reveal.js
+ *
+ * Matches the official SANS Cloud Security curriculum slide master from
+ * the "Scaling Compliance" webinar deck (2025-06).
+ *
+ * Layout reference
+ * ────────────────
+ * ┌──────────────────────────────────────────────────────┐
+ * │ [SANS|CLOUD SECURITY]  (light gray bar)        [##] │  ← header bar
+ * ├──────────────────────────────────────────────────────┤
+ * │                                                      │
+ * │  Heading (teal, bold, left-aligned)                  │
+ * │                                                      │
+ * │  • Body text (charcoal)                              │
+ * │  • Body text                                         │
+ * │                                                      │
+ * └──────────────────────────────────────────────────────┘
+ */
+
+// Default mixins and settings -----------------
+@import "../template/mixins";
+@import "../template/settings";
+// ---------------------------------------------
+
+// Fira Sans — the font used in the SANS Cloud Security master slides.
+// Loaded from Google Fonts for simplicity; self-host for offline use.
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&display=swap');
+
+// =============================================
+// SANS Cloud Security color palette
+// =============================================
+$sans-orange:        #F5821F;   // Primary accent, title slide bg, highlights
+$sans-orange-dark:   #D96E10;   // Hover / pressed state
+$sans-teal:          #005880;   // Headings, links on dark bg
+$sans-blue:          #0455A5;   // Secondary blue accent
+$sans-link-blue:     #418EDA;   // Hyperlinks
+$sans-charcoal:      #404041;   // Body text
+$sans-header-bg:     #F5F6F7;   // Header bar background
+$sans-offwhite:      #E6E7E8;   // Subtle backgrounds
+$sans-slide-num:     #7F7F7F;   // Slide number color
+$sans-white:         #FFFFFF;
+
+// =============================================
+// Override reveal.js theme settings
+// (see reveal.js/css/theme/template/settings.scss)
+// =============================================
+$backgroundColor: $sans-white;
+
+$mainColor: $sans-charcoal;
+$headingColor: $sans-teal;
+
+$mainFontSize: 36px;
+$mainFont: 'Fira Sans', Arial, Helvetica, Verdana, sans-serif;
+$headingFont: 'Fira Sans', Arial, Helvetica, Verdana, sans-serif;
+$headingTextShadow: none;
+$headingLetterSpacing: normal;
+$headingTextTransform: none;
+$headingFontWeight: 700;
+$linkColor: $sans-link-blue;
+$linkColorHover: lighten($sans-link-blue, 15%);
+$selectionBackgroundColor: lighten($sans-link-blue, 25%);
+
+$heading1Size: 1.6em;
+$heading2Size: 1.3em;
+$heading3Size: 1.1em;
+$heading4Size: 0.9em;
+
+// Light backgrounds use dark text
+@include light-bg-text-color(#000000);
+
+// Theme template ------------------------------
+@import "../template/theme";
+// ---------------------------------------------
+
+
+// =============================================================
+// SANS Cloud Security – Custom overrides
+// =============================================================
+
+// -- Viewport / outer chrome ----------------------------------
+body.reveal-viewport {
+  background-color: $sans-header-bg !important;
+}
+
+// -- Slide defaults -------------------------------------------
+.reveal .slides > section:not(.no-bg) {
+  background: $sans-white;
+}
+
+.reveal {
+  // Heading styles — left-aligned, teal
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-teal;
+    text-align: left;
+    font-weight: 700;
+    line-height: 1.3em;
+    margin-bottom: 0.4em;
+  }
+
+  // Body text
+  color: $sans-charcoal;
+
+  // Lists
+  ul, ol {
+    text-align: left;
+    padding-right: 15px;
+  }
+
+  li {
+    margin-bottom: 10px;
+    color: $sans-charcoal;
+
+    p {
+      margin: 10px 0;
+    }
+  }
+
+  // Links
+  a {
+    color: $sans-link-blue;
+    text-decoration: none;
+
+    &:hover {
+      color: lighten($sans-link-blue, 15%);
+    }
+  }
+
+  // Code
+  pre code {
+    max-height: 400px;
+  }
+
+  // Controls
+  .controls {
+    color: $sans-teal;
+  }
+
+  // Progress bar — orange
+  .progress span {
+    background: $sans-orange;
+  }
+
+  // Content padding — account for header bar height (~44px)
+  .slides > section > section {
+    padding-top: 10px;
+  }
+}
+
+// -- Slide number — top-right, matching PPTX master -----------
+.reveal .slide-number {
+  background: none !important;
+  color: $sans-slide-num;
+  font-weight: 700;
+  font-family: $mainFont;
+  font-size: 14px;
+  // Move from default bottom-right to top-right
+  right: 20px;
+  top: 10px;
+  bottom: auto !important;
+  left: auto !important;
+}
+
+// -- SANS Cloud Security header bar ---------------------------
+// This is the light gray strip across the top of every content
+// slide, with the orange SANS | CLOUD SECURITY logo block in
+// the top-left corner.
+.sans-cloud-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background: $sans-header-bg;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  box-sizing: border-box;
+
+  img {
+    height: 28px;
+    width: auto;
+  }
+}
+
+// -- Branding logo (injected by template.j2) ------------------
+.branding.sans-cloud-security {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  background: $sans-header-bg;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  box-sizing: border-box;
+
+  img {
+    height: 28px;
+    width: auto;
+    border: none;
+    box-shadow: none;
+    margin: 0;
+  }
+}
+
+// -- Utility classes ------------------------------------------
+
+// Orange accent text — use on highlighted bullets or labels
+.reveal .orange {
+  color: $sans-orange !important;
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-orange !important;
+  }
+}
+
+// Teal accent text
+.reveal .teal {
+  color: $sans-teal !important;
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-teal !important;
+  }
+}
+
+// Blue accent text
+.reveal .blue {
+  color: $sans-blue !important;
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-blue !important;
+  }
+}
+
+// Fragment highlight-sans-orange
+.reveal .fragment.highlight-sans-orange {
+  opacity: 1;
+  visibility: inherit;
+}
+.reveal .fragment.highlight-sans-orange.visible {
+  color: $sans-orange;
+  font-weight: bold;
+}
+
+// -- Title slide overrides ------------------------------------
+// Use data-background-color="#F5821F" and class="no-bg" on the
+// outer <section> for a title slide.  Text should be white.
+.reveal .slides section[data-background-color="#{$sans-orange}"],
+.reveal .slides section.sans-title-slide {
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-white;
+    text-shadow: none;
+  }
+  color: $sans-white;
+
+  small, p {
+    color: rgba($sans-white, 0.9);
+  }
+}
+
+// -- Section divider ------------------------------------------
+// Use class="sans-section-divider" for orange section breaks
+.reveal .slides section.sans-section-divider {
+  background: $sans-orange !important;
+
+  h1, h2, h3, h4, h5, h6 {
+    color: $sans-white;
+    text-align: center;
+    font-size: 2em;
+  }
+
+  color: $sans-white;
+}
+
+// -- Tables ---------------------------------------------------
+.reveal table {
+  margin: auto;
+  border-collapse: collapse;
+
+  th {
+    background: $sans-teal;
+    color: $sans-white;
+    font-weight: 700;
+    padding: 12px 15px;
+    text-align: left;
+  }
+
+  td {
+    padding: 10px 15px;
+    border-bottom: 1px solid $sans-offwhite;
+    color: $sans-charcoal;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// -- Blockquotes ----------------------------------------------
+.reveal blockquote {
+  background: $sans-offwhite;
+  border-left: 5px solid $sans-orange;
+  padding: 15px 25px;
+  color: $sans-charcoal;
+  font-style: italic;
+  box-shadow: none;
+}
+
+// -- Images — remove default shadow for .plain ----------------
+.reveal section img.plain {
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+
+// -- Print overrides ------------------------------------------
+@media print {
+  .branding.sans-cloud-security {
+    position: absolute;
+  }
+  .reveal .slides > section {
+    background: $sans-white !important;
+  }
+}
+
+// -- Grid container from custom.scss --------------------------
+.container {
+  display: grid;
+  grid-auto-flow: column;
+}
+
+// -- Blinking animation from custom.scss ----------------------
+blink, .blink {
+  -webkit-animation: blink 1s step-end infinite;
+  -moz-animation: blink 1s step-end infinite;
+  -o-animation: blink 1s step-end infinite;
+  animation: blink 1s step-end infinite;
+}
+@-webkit-keyframes blink { 67% { opacity: 0 }}
+@-moz-keyframes blink { 67% { opacity: 0 }}
+@-o-keyframes blink { 67% { opacity: 0 }}
+@keyframes blink { 67% { opacity: 0 }}
+
+// -- Image overlay from custom.scss ---------------------------
+.image-float {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.reveal .content-aside {
+  margin-top: 1em;
+}
