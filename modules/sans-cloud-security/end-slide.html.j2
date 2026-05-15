@@ -7,7 +7,9 @@
      sans_speaker_logo_light  — logo path for light mode (optional)
      sans_course_tagline      — small line above the course CTA (default: "Take a Journey to Become a SANS Cloud Ace")
      sans_course_url          — display text + href for the big course link (e.g. "sans.org/sec540")
-     sans_training_events     — list of dicts: { name, location, dates, instructor }
+     sans_training_events     — list of dicts: { name, location, dates,
+                                instructor (optional, rendered as "with X"),
+                                modality (optional, e.g. "In-person & Live Online") }
 #}
 <section class="sans-slide sans-end-slide" data-label="End"
          style="background-image: url('modules/sans-cloud-security/img/sans-cloud-bg-dark.jpg');">
@@ -41,6 +43,7 @@
         <p style="color:var(--sans-orange); font-weight:700; font-size:20px; margin-bottom:4px;">{{ ev.name }}</p>
         <p style="margin:0; font-size:18px; color:var(--sans-offwhite);">{{ ev.location }}</p>
         <p style="margin:0; font-size:16px; color:rgba(255,255,255,0.7);">{{ ev.dates }}</p>
+        {% if ev.modality %}<p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">{{ ev.modality }}</p>{% endif %}
         {% if ev.instructor %}<p style="margin:0; font-size:15px; color:rgba(255,255,255,0.6);">with {{ ev.instructor }}</p>{% endif %}
       </div>
       {% endfor %}
