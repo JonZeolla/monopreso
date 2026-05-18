@@ -29,11 +29,11 @@
    "detail": "Every change — human or AI — flows through this gate. Put your guardrails here."},
   {"title": "Layer deterministic + AI review",
    "detail": "Semgrep finds known patterns repo-wide; AI reasons about novel issues in context. Each one's blind spot is the other's strength."},
-  {"title": "Same hook pattern, two surfaces",
+  {"title": "Use hooks to inject analysis at specified points",
    "detail": "Local file save / pre-commit and server-side webhooks fire on the same primitive: when X, then Y."},
-  {"title": "Context files steer both tiers",
+  {"title": "Context files are quick wins for steering, but imperfect",
    "detail": "CLAUDE.md / AGENTS.md drive the local agent and the MR reviewer. Treat them like CI config: in the repo, reviewed, kept current."},
-  {"title": "Humans own approval, architecture, judgment",
+  {"title": "Humans are still accountable... for now",
    "detail": "Agents scale analysis. You scale judgment. The approval gate stays human."},
 ] %}
 
@@ -301,90 +301,65 @@
   <div class="vis-title">AI shows up at every stage</div>
   <div class="vis-subtitle">Today: where Build hands off to Review.</div>
 
-  <div style="flex:1; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:auto 1fr; gap:14px; align-content:center; padding:12px 0;">
+  <div style="flex:1; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:auto auto; gap:20px; align-content:center; padding:16px 0;">
 
     <!-- Today's focus overlay — spans columns 2-3 of row 1 -->
-    <div style="grid-column:2/4; grid-row:1; padding:10px 16px; background:rgba(45,212,191,0.15); border:1.5px dashed rgba(45,212,191,0.6); border-radius:10px; text-align:center;">
-      <span class="vis-mono" style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#2dd4bf; font-weight:700;">▾ Today's focus ▾</span>
+    <div style="grid-column:2/4; grid-row:1; padding:16px 20px; background:rgba(45,212,191,0.15); border:1.5px dashed rgba(45,212,191,0.6); border-radius:10px; text-align:center;">
+      <span class="vis-mono" style="font-size:16px; letter-spacing:0.2em; text-transform:uppercase; color:#2dd4bf; font-weight:700;">▾ Today's focus ▾</span>
     </div>
 
     <!-- DESIGN -->
-    <div style="grid-column:1/2; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Design</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">Ticketing &amp; specs</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Drafts specs from issues</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Triages &amp; clusters tickets</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Suggests acceptance criteria</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Linear</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Jira</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">GH Issues</span>
+    <div style="grid-column:1/2; grid-row:2; padding:28px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:18px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Design</p>
+      <p style="font-size:22px; color:#cbd5e1; margin:0;">Ticketing &amp; specs</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Drafts specs from issues</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Triages &amp; clusters tickets</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Suggests acceptance criteria</p>
       </div>
     </div>
 
     <!-- BUILD (highlighted) -->
-    <div style="grid-column:2/3; grid-row:2; padding:20px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Build</p>
-      <p style="font-size:14px; color:#e2e8f0; margin:0;">IDE</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Writes &amp; refactors code</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Catches issues as you type</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0; line-height:1.5;">• Local agent reviews diff</p>
-      </div>
-      <div style="border-top:1px solid rgba(45,212,191,0.25); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">VS Code</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Cursor</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Claude Code</span>
+    <div style="grid-column:2/3; grid-row:2; padding:28px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:18px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Build</p>
+      <p style="font-size:22px; color:#e2e8f0; margin:0;">IDE</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Writes &amp; refactors code</p>
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Catches issues as you type</p>
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Local agent reviews diff</p>
       </div>
     </div>
 
     <!-- REVIEW (highlighted) -->
-    <div style="grid-column:3/4; grid-row:2; padding:20px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Review</p>
-      <p style="font-size:14px; color:#e2e8f0; margin:0;">CI / MR / PR</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Reviewer fires on MR open</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Posts inline findings</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0; line-height:1.5;">• Suggests fixes, not just flags</p>
-      </div>
-      <div style="border-top:1px solid rgba(45,212,191,0.25); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">GitLab / GitHub</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Semgrep</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Zenable</span>
+    <div style="grid-column:3/4; grid-row:2; padding:28px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:18px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Review</p>
+      <p style="font-size:22px; color:#e2e8f0; margin:0;">CI / MR / PR</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Reviewer fires on MR open</p>
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Posts inline findings</p>
+        <p style="font-size:18px; color:#cbd5e1; margin:0; line-height:1.5;">• Suggests fixes, not just flags</p>
       </div>
     </div>
 
     <!-- DEPLOY -->
-    <div style="grid-column:4/5; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Deploy</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">CD &amp; runtime</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Generates &amp; reviews IaC</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Summarizes pipeline diffs</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Flags risky deploys</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Argo</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Spinnaker</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">k8s · AWS/GCP</span>
+    <div style="grid-column:4/5; grid-row:2; padding:28px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:18px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Deploy</p>
+      <p style="font-size:22px; color:#cbd5e1; margin:0;">CD &amp; runtime</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Generates &amp; reviews IaC</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Summarizes pipeline diffs</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Flags risky deploys</p>
       </div>
     </div>
 
     <!-- MAINTAIN -->
-    <div style="grid-column:5/6; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Maintain</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">Cloud runtime controls</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Triages alerts</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Summarizes incidents</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Detects drift / anomalies</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">OPA</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Snyk · Wiz</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Drift / WAF</span>
+    <div style="grid-column:5/6; grid-row:2; padding:28px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:18px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Maintain</p>
+      <p style="font-size:22px; color:#cbd5e1; margin:0;">Cloud runtime controls</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Triages alerts</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Summarizes incidents</p>
+        <p style="font-size:18px; color:#94a3b8; margin:0; line-height:1.5;">• Detects drift / anomalies</p>
       </div>
     </div>
   </div>
@@ -658,7 +633,6 @@
     <div>
       <div style="margin-bottom:14px;">
         <p style="font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#2dd4bf; margin:0;">⚙  Deterministic</p>
-        <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Semgrep · Conftest · OPA</p>
       </div>
 
       <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:14px 0 10px 0;">Benefits</p>
@@ -698,7 +672,6 @@
     <div>
       <div style="margin-bottom:14px;">
         <p style="font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#c084fc; margin:0;">🤖  AI Review</p>
-        <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Zenable · CodeRabbit · custom agents</p>
       </div>
 
       <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:14px 0 10px 0;">Benefits</p>
