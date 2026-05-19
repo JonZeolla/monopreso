@@ -29,11 +29,11 @@
    "detail": "Every change — human or AI — flows through this gate. Put your guardrails here."},
   {"title": "Layer deterministic + AI review",
    "detail": "Semgrep finds known patterns repo-wide; AI reasons about novel issues in context. Each one's blind spot is the other's strength."},
-  {"title": "Same hook pattern, two surfaces",
+  {"title": "Use hooks to inject analysis at specified points",
    "detail": "Local file save / pre-commit and server-side webhooks fire on the same primitive: when X, then Y."},
-  {"title": "Context files steer both tiers",
+  {"title": "Context files are quick wins for steering, but imperfect",
    "detail": "CLAUDE.md / AGENTS.md drive the local agent and the MR reviewer. Treat them like CI config: in the repo, reviewed, kept current."},
-  {"title": "Humans own approval, architecture, judgment",
+  {"title": "Humans are still accountable... for now",
    "detail": "Agents scale analysis. You scale judgment. The approval gate stays human."},
 ] %}
 
@@ -67,141 +67,334 @@
 <!-- 3. Webcast Series Overview -->
 {% include "modules/sans-cloud-security/series-overview-slide.html.j2" %}
 
-<!-- 4. Review at AI velocity -->
-<section class="vis-slide" data-label="The Problem">
-  <div class="vis-label">The Problem</div>
-  <div class="vis-title">Review at AI velocity</div>
-  <div class="vis-subtitle">When AI is doing the coding, who's doing the reviewing?</div>
-  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:28px;">
-    <div class="vis-grid-2" style="gap:24px;">
-      <!-- Before -->
-      <div class="vis-card" style="padding:24px;">
-        <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 8px 0;">Before</p>
-        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 16px 0;">Humans wrote code at human pace</p>
-        <ul style="margin:0; padding-left:20px; font-size:15px; color:#94a3b8; line-height:1.8;">
-          <li>A few PRs per dev per day</li>
-          <li>Reviewer capacity roughly matched input</li>
-          <li>Manual review tedious but tractable</li>
-        </ul>
+<!-- 4. Agentic coding -->
+<section class="vis-slide" data-label="Agentic coding">
+  <div class="vis-label">Where the code is coming from</div>
+  <div class="vis-title">Agents are writing the code now</div>
+  <div class="vis-subtitle">The IDE is no longer just an editor — it's a workspace for autonomous coding agents.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:20px;">
+
+    <!-- IDE mockup + agent panel -->
+    <div style="display:grid; grid-template-columns: 1.4fr 1fr; gap:18px; align-items:stretch;">
+
+      <!-- Mock editor -->
+      <div style="border-radius:12px; overflow:hidden; border:1px solid rgba(51,65,85,0.6); background:#1e1e2e;">
+        <div style="display:flex; align-items:center; gap:8px; padding:8px 12px; background:#181825; border-bottom:1px solid rgba(51,65,85,0.6);">
+          <span style="width:10px; height:10px; border-radius:50%; background:rgba(239,68,68,0.6);"></span>
+          <span style="width:10px; height:10px; border-radius:50%; background:rgba(234,179,8,0.6);"></span>
+          <span style="width:10px; height:10px; border-radius:50%; background:rgba(34,197,94,0.6);"></span>
+          <span class="vis-mono" style="font-size:11px; color:#94a3b8; margin-left:8px;">payments_service.py — main</span>
+        </div>
+        <div class="vis-mono" style="padding:14px 16px; font-size:12px; line-height:1.7; color:#cbd5e1;">
+          <div><span style="color:#64748b; display:inline-block; width:24px;">14</span><span style="color:#c084fc;">def</span> <span style="color:#fbbf24;">charge</span>(order_id, amount):</div>
+          <div><span style="color:#64748b; display:inline-block; width:24px;">15</span>&nbsp;&nbsp;<span style="color:#94a3b8;"># TODO: add idempotency key</span></div>
+          <div style="background:rgba(45,212,191,0.12); border-left:2px solid #2dd4bf; padding-left:4px;"><span style="color:#64748b; display:inline-block; width:22px;">16</span>&nbsp;&nbsp;key = <span style="color:#fbbf24;">hashlib</span>.sha256(<span style="color:#86efac;">f"&#123;order_id&#125;:&#123;amount&#125;"</span>).hexdigest()</div>
+          <div style="background:rgba(45,212,191,0.12); border-left:2px solid #2dd4bf; padding-left:4px;"><span style="color:#64748b; display:inline-block; width:22px;">17</span>&nbsp;&nbsp;<span style="color:#c084fc;">if</span> redis.get(<span style="color:#86efac;">f"idem:&#123;key&#125;"</span>):</div>
+          <div style="background:rgba(45,212,191,0.12); border-left:2px solid #2dd4bf; padding-left:4px;"><span style="color:#64748b; display:inline-block; width:22px;">18</span>&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#c084fc;">return</span> redis.get(<span style="color:#86efac;">f"idem:&#123;key&#125;"</span>)</div>
+          <div><span style="color:#64748b; display:inline-block; width:24px;">19</span>&nbsp;&nbsp;result = stripe.Charge.create(amount=amount, ...)</div>
+          <div style="margin-top:8px; padding:6px 10px; background:rgba(45,212,191,0.08); border:1px solid rgba(45,212,191,0.3); border-radius:6px; font-size:11px; color:#5eead4;">
+            ✦ <span style="font-weight:600;">Claude Code</span> · suggested 4 lines · accept · revise · explain
+          </div>
+        </div>
       </div>
-      <!-- After -->
-      <div class="vis-card" style="padding:24px; border-color:rgba(248,113,113,0.4); background:rgba(127,29,29,0.1);">
-        <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#f87171; margin:0 0 8px 0;">After AI coding tools</p>
-        <p style="font-size:22px; font-weight:700; color:#fff; margin:0 0 16px 0;">Code volume jumps — reviewer count doesn't</p>
-        <ul style="margin:0; padding-left:20px; font-size:15px; color:#94a3b8; line-height:1.8;">
-          <li>More PRs, more often, larger diffs</li>
-          <li>Reviewer attention is rate-limited</li>
-          <li>Expertise is concentrated and human</li>
-        </ul>
+
+      <!-- Agent activity panel -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <p style="margin:0; font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#94a3b8;">Coding agents in the IDE</p>
+        <div class="vis-card" style="padding:12px 14px;">
+          <p style="margin:0; font-size:14px; font-weight:700; color:#fff;">Inline completions</p>
+          <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Copilot, Cursor Tab, Supermaven — keystroke-level</p>
+        </div>
+        <div class="vis-card" style="padding:12px 14px;">
+          <p style="margin:0; font-size:14px; font-weight:700; color:#fff;">Chat / edit mode</p>
+          <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">Cursor, VS Code Copilot Chat — multi-file edits with context</p>
+        </div>
+        <div class="vis-card" style="padding:12px 14px; border-color:rgba(45,212,191,0.5); background:rgba(45,212,191,0.06);">
+          <p style="margin:0; font-size:14px; font-weight:700; color:#fff;">Agentic mode</p>
+          <p style="margin:2px 0 0 0; font-size:12px; color:#cbd5e1;">Claude Code, Cursor Agents, Codex CLI, Devin — plan → edit → run tests → commit</p>
+        </div>
+        <div class="vis-card" style="padding:12px 14px;">
+          <p style="margin:0; font-size:14px; font-weight:700; color:#fff;">Background agents</p>
+          <p style="margin:2px 0 0 0; font-size:12px; color:#94a3b8;">GitHub coding agent, Copilot Workspace — open the PR for you</p>
+        </div>
       </div>
     </div>
-    <div class="vis-callout vis-callout-amber" style="text-align:center;">
-      <span style="font-weight:600;">We didn't make reviewers slower.</span> We made everyone else faster.
+
+    <div class="vis-callout vis-callout-teal" style="text-align:center;">
+      <span style="font-weight:600;">The author of the diff isn't always a human anymore.</span> The reviewer still is.
     </div>
   </div>
 </section>
 
-<!-- 5. SDLC Lifecycle -->
-<section class="vis-slide" data-label="SDLC Lifecycle">
-  <div class="vis-label">The lifecycle view</div>
+<!-- 5. Ten years of public GitHub activity -->
+<section class="vis-slide" data-label="10 years of code">
+  <div class="vis-label">The data</div>
+  <div class="vis-title">Ten years of public GitHub</div>
+  <div class="vis-subtitle">Commits and pull requests opened — all public repositories, 2015 – 2024.</div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px;">
+
+    <!-- Legend -->
+    <div style="display:flex; justify-content:center; gap:28px; font-size:13px;">
+      <span style="display:inline-flex; align-items:center; gap:8px; color:#e2e8f0;">
+        <span style="display:inline-block; width:24px; height:3px; background:#2dd4bf; border-radius:2px;"></span>
+        Commits (billions, left axis)
+      </span>
+      <span style="display:inline-flex; align-items:center; gap:8px; color:#e2e8f0;">
+        <span style="display:inline-block; width:24px; height:3px; background:#fbbf24; border-radius:2px;"></span>
+        Pull requests opened (millions, right axis)
+      </span>
+    </div>
+
+    <!-- SVG chart -->
+    <div style="flex:1; display:flex; justify-content:center; align-items:center;">
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet" style="width:100%; max-height:54vh;" aria-label="Public GitHub commits and pull requests opened, 2015 to 2024">
+        <!-- Plot area background -->
+        <rect x="60" y="30" width="880" height="320" fill="rgba(15,23,42,0.35)" stroke="rgba(51,65,85,0.5)" stroke-width="1" rx="6"/>
+
+        <!-- Horizontal grid lines (5 ticks: 0/1/2/3/4B commits, also 0/25/50/75/100M PRs) -->
+        <g stroke="rgba(51,65,85,0.45)" stroke-width="1" stroke-dasharray="3 4">
+          <line x1="60" y1="350" x2="940" y2="350"/>
+          <line x1="60" y1="286" x2="940" y2="286"/>
+          <line x1="60" y1="222" x2="940" y2="222"/>
+          <line x1="60" y1="158" x2="940" y2="158"/>
+          <line x1="60" y1="94"  x2="940" y2="94"/>
+          <line x1="60" y1="30"  x2="940" y2="30"/>
+        </g>
+
+        <!-- Left Y axis labels (commits, billions) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="end">
+          <text x="54" y="354">0</text>
+          <text x="54" y="290">1B</text>
+          <text x="54" y="226">2B</text>
+          <text x="54" y="162">3B</text>
+          <text x="54" y="98">4B</text>
+          <text x="54" y="34">5B</text>
+        </g>
+
+        <!-- Right Y axis labels (PRs, millions) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="start">
+          <text x="946" y="354">0</text>
+          <text x="946" y="290">20M</text>
+          <text x="946" y="226">40M</text>
+          <text x="946" y="162">60M</text>
+          <text x="946" y="98">80M</text>
+          <text x="946" y="34">100M</text>
+        </g>
+
+        <!-- X axis labels (years; data points at x = 110, 198, 286, 374, 462, 550, 638, 726, 814, 902) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#cbd5e1" text-anchor="middle">
+          <text x="110" y="372">2015</text>
+          <text x="198" y="372">2016</text>
+          <text x="286" y="372">2017</text>
+          <text x="374" y="372">2018</text>
+          <text x="462" y="372">2019</text>
+          <text x="550" y="372">2020</text>
+          <text x="638" y="372">2021</text>
+          <text x="726" y="372">2022</text>
+          <text x="814" y="372">2023</text>
+          <text x="902" y="372">2024</text>
+        </g>
+
+        <!-- Commits line (teal #2dd4bf) — scale: 5B fills 320px, y = 350 - (commits_M / 5000) * 320 -->
+        <polyline fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+          points="110,324.85 198,316.34 286,307.25 374,301.55 462,285.62 550,263.79 638,235.06 726,144.05 814,95.34 902,75.06"/>
+        <!-- Commits area fill -->
+        <polygon fill="url(#tealFade)" opacity="0.18"
+          points="110,324.85 198,316.34 286,307.25 374,301.55 462,285.62 550,263.79 638,235.06 726,144.05 814,95.34 902,75.06 902,350 110,350"/>
+
+        <!-- Commits points + labels -->
+        <g fill="#2dd4bf">
+          <circle cx="110" cy="324.85" r="4"/>
+          <circle cx="198" cy="316.34" r="4"/>
+          <circle cx="286" cy="307.25" r="4"/>
+          <circle cx="374" cy="301.55" r="4"/>
+          <circle cx="462" cy="285.62" r="4"/>
+          <circle cx="550" cy="263.79" r="4"/>
+          <circle cx="638" cy="235.06" r="4"/>
+          <circle cx="726" cy="144.05" r="4"/>
+          <circle cx="814" cy="95.34"  r="4"/>
+          <circle cx="902" cy="75.06"  r="5"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#5eead4" text-anchor="middle">
+          <text x="110" y="316">0.39B</text>
+          <text x="462" y="277">1.01B</text>
+          <text x="726" y="136">3.22B</text>
+          <text x="902" y="64">4.30B</text>
+        </g>
+
+        <!-- PRs line (amber #fbbf24) — scale: 100M fills 320px, y = 350 - (prs_M / 100) * 320 -->
+        <polyline fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="0"
+          points="110,332.4 198,320.56 286,312.24 374,304.24 462,270.96 550,189.36 638,146.48 726,109.68 814,170.16 902,166.64"/>
+        <g fill="#fbbf24">
+          <circle cx="110" cy="332.4"  r="4"/>
+          <circle cx="198" cy="320.56" r="4"/>
+          <circle cx="286" cy="312.24" r="4"/>
+          <circle cx="374" cy="304.24" r="4"/>
+          <circle cx="462" cy="270.96" r="4"/>
+          <circle cx="550" cy="189.36" r="4"/>
+          <circle cx="638" cy="146.48" r="4"/>
+          <circle cx="726" cy="109.68" r="4"/>
+          <circle cx="814" cy="170.16" r="4"/>
+          <circle cx="902" cy="166.64" r="4"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#fcd34d" text-anchor="middle">
+          <text x="110" y="346">5.5M</text>
+          <text x="550" y="183">50M</text>
+          <text x="726" y="103">75M</text>
+          <text x="902" y="184">57M</text>
+        </g>
+
+        <!-- Copilot launch annotation (June 2021, technical preview Oct 2021 — anchor between 2021 & 2022) -->
+        <g>
+          <line x1="638" y1="30" x2="638" y2="350" stroke="rgba(148,163,184,0.35)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="644" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#cbd5e1">Copilot preview · Jun 2021</text>
+        </g>
+        <!-- ChatGPT / GPT-4 era marker (between 2022 and 2023) -->
+        <g>
+          <line x1="770" y1="30" x2="770" y2="350" stroke="rgba(148,163,184,0.35)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="776" y="58" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#cbd5e1">ChatGPT · Nov 2022</text>
+        </g>
+
+        <defs>
+          <linearGradient id="tealFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Caption -->
+    <div class="vis-callout vis-callout-teal" style="text-align:center;">
+      <span style="font-weight:700;">11× more public commits in 2024 than 2015.</span>
+      The reviewer pool didn't grow 11×.
+    </div>
+
+    <p style="text-align:center; font-size:10.5px; color:#64748b; margin:0; line-height:1.5;">
+      Source: <a href="https://www.gharchive.org/" style="color:#94a3b8;">GH Archive</a> · public events only (private repos excluded; bot accounts not filtered).
+      Commits = sum of <span class="vis-mono">PushEvent.payload.distinct_size</span>; PRs = <span class="vis-mono">PullRequestEvent</span> with <span class="vis-mono">action="opened"</span>.
+      Queried via the public <span class="vis-mono">github_events</span> table on <a href="https://play.clickhouse.com/" style="color:#94a3b8;">ClickHouse Playground</a> on 2026-05-17.
+    </p>
+  </div>
+</section>
+
+<!-- 6. Record acceleration (GitHub's own chart) -->
+<section class="vis-slide" data-label="Record acceleration">
+  <div class="vis-label">Inflection</div>
+  <div class="vis-title">…and then late 2025 happened</div>
+  <div class="vis-subtitle">GitHub's own record-acceleration chart from the April 2026 availability post.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
+    <img src="presentations/2026-05-sans-sec540-agentic-code-review/img/github-record-acceleration.png"
+         alt="GitHub record acceleration: pull requests merged, commits, and new repositories per month, late 2024 through early 2026 — sharp upward inflection beginning H2 2025."
+         class="plain"
+         style="max-width:90%; max-height:62vh; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.3);"/>
+    <p style="text-align:center; font-size:11px; color:#64748b; margin:0; line-height:1.5;">
+      Image source: GitHub — <a href="https://github.blog/news-insights/company-news/an-update-on-github-availability/" style="color:#94a3b8;">github.blog/news-insights/company-news/an-update-on-github-availability/</a>
+    </p>
+  </div>
+</section>
+
+<!-- 8. Tracy Bannon: Infusing AI across the DevSecOps Continuum -->
+<section class="vis-slide" data-label="Infusing AI (Bannon)">
+  <div class="vis-label">A wider view</div>
   <div class="vis-title">AI shows up at every stage</div>
-  <div class="vis-subtitle">Today: where Build hands off to Review.</div>
+  <div class="vis-subtitle">Tracy Bannon's map of AI across the DevSecOps continuum — the IDE is just one stop.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
+    <img src="presentations/2026-05-sans-sec540-agentic-code-review/img/tracy-bannon-infusing-ai-devsecops.png"
+         alt="Diagram by Tracy Bannon: AI applications mapped onto each stage of the DevSecOps infinity loop — Plan, Code, Build, Test, Release, Deploy, Operate, Monitor, with Security infused throughout."
+         class="plain"
+         style="max-width:88%; max-height:64vh; border-radius:8px; background:#fff; box-shadow:0 4px 24px rgba(0,0,0,0.3);"/>
+    <p style="text-align:center; font-size:11px; color:#64748b; margin:0; line-height:1.5;">
+      Image source: Tracy Bannon — <a href="https://sec540.com/001" style="color:#94a3b8;">sec540.com/001</a>
+    </p>
+  </div>
+</section>
 
-  <div style="flex:1; display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:auto 1fr; gap:14px; align-content:center; padding:12px 0;">
+<!-- Context files: benefits & shortcomings (zenable pill-card style) -->
+<section class="vis-slide" data-label="Context Files">
+  <div class="vis-label">Steering coding agents</div>
+  <div class="vis-title">Context files: your team's rules, in plain English</div>
+  <div class="vis-subtitle">Markdown in the repo that coding agents read automatically.</div>
 
-    <!-- Today's focus overlay — spans columns 2-3 of row 1 -->
-    <div style="grid-column:2/4; grid-row:1; padding:10px 16px; background:rgba(45,212,191,0.15); border:1.5px dashed rgba(45,212,191,0.6); border-radius:10px; text-align:center;">
-      <span class="vis-mono" style="font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:#2dd4bf; font-weight:700;">▾ Today's focus ▾</span>
-    </div>
+  <!-- Filename badges -->
+  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px 0 22px 0;">
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">CLAUDE.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">AGENTS.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">.github/copilot-instructions.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">GEMINI.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(100,116,139,0.4); color:#94a3b8;">…and more</span>
+  </div>
 
-    <!-- DESIGN -->
-    <div style="grid-column:1/2; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Design</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">Ticketing &amp; specs</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#475569; margin:0 0 8px 0;">AI shows up as</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Drafts specs from issues</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Triages &amp; clusters tickets</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Suggests acceptance criteria</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Linear</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Jira</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">GH Issues</span>
-      </div>
-    </div>
-
-    <!-- BUILD (highlighted) -->
-    <div style="grid-column:2/3; grid-row:2; padding:20px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Build</p>
-      <p style="font-size:14px; color:#e2e8f0; margin:0;">IDE</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0 0 8px 0; opacity:0.8;">AI shows up as</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Writes &amp; refactors code</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Catches issues as you type</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0; line-height:1.5;">• Local agent reviews diff</p>
-      </div>
-      <div style="border-top:1px solid rgba(45,212,191,0.25); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">VS Code</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Cursor</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Claude Code</span>
-      </div>
-    </div>
-
-    <!-- REVIEW (highlighted) -->
-    <div style="grid-column:3/4; grid-row:2; padding:20px; background:rgba(45,212,191,0.08); border:1.5px solid rgba(45,212,191,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0;">Review</p>
-      <p style="font-size:14px; color:#e2e8f0; margin:0;">CI / MR / PR</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0 0 8px 0; opacity:0.8;">AI shows up as</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Reviewer fires on MR open</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0 0 6px 0; line-height:1.5;">• Posts inline findings</p>
-        <p style="font-size:12px; color:#cbd5e1; margin:0; line-height:1.5;">• Suggests fixes, not just flags</p>
-      </div>
-      <div style="border-top:1px solid rgba(45,212,191,0.25); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">GitLab / GitHub</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Semgrep</span>
-        <span class="vis-mono" style="font-size:11px; color:#cbd5e1;">Zenable</span>
+  <div class="vis-grid-2" style="flex:1; gap:32px;">
+    <!-- BENEFITS -->
+    <div>
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:0 0 14px 0;">Benefits</p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Very little cost</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Just a markdown file — though it does add tokens to every session.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Version-controlled</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Reviewed and merged like any other code change.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Works everywhere the agent runs</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">One file, picked up by IDE agents, CLI agents, and CI reviewers alike.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Reduces variability</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Across developers and agents — "we do it this way here."</p>
+        </div>
       </div>
     </div>
 
-    <!-- DEPLOY -->
-    <div style="grid-column:4/5; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Deploy</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">CD &amp; runtime</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#475569; margin:0 0 8px 0;">AI shows up as</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Generates &amp; reviews IaC</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Summarizes pipeline diffs</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Flags risky deploys</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Argo</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Spinnaker</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">k8s · AWS/GCP</span>
-      </div>
-    </div>
-
-    <!-- MAINTAIN -->
-    <div style="grid-column:5/6; grid-row:2; padding:20px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); border-radius:12px; display:flex; flex-direction:column; gap:10px;">
-      <p style="font-size:13px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0;">Maintain</p>
-      <p style="font-size:14px; color:#cbd5e1; margin:0;">Cloud runtime controls</p>
-      <div style="flex:1; padding-top:8px;">
-        <p style="font-size:10px; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:#475569; margin:0 0 8px 0;">AI shows up as</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Triages alerts</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0 0 6px 0; line-height:1.5;">• Summarizes incidents</p>
-        <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.5;">• Detects drift / anomalies</p>
-      </div>
-      <div style="border-top:1px solid rgba(51,65,85,0.5); padding-top:10px; display:flex; flex-direction:column; gap:4px;">
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">OPA</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Snyk · Wiz</span>
-        <span class="vis-mono" style="font-size:11px; color:#64748b;">Drift / WAF</span>
+    <!-- SHORTCOMINGS -->
+    <div>
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f87171; margin:0 0 14px 0;">Shortcomings</p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Doesn't scale</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">One file per repo — hundreds of files to update for one policy change.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Hard to maintain</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Projects evolve and files become stale misinformation.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Best-effort instructions</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">The agent may downweight or disregard them. No real enforcement.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">No audit trail</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">No evidence of which rule applied where — bad for compliance.</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 6. CI/CD: the enforcement window -->
+<!-- MCP Flow Diagram (reused from March deck) -->
+<section class="vis-slide" data-label="MCP Flow" style="padding:72px 32px 24px 32px;">
+  <div class="vis-label">Model Context Protocol</div>
+  <div class="vis-title" style="margin-bottom:12px;">How MCP Works: End-to-End Flow</div>
+  <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:12px; padding:16px; display:inline-block;">
+      <img src="presentations/2026-05-sans-sec540-agentic-code-review/img/mcp-flow-diagram.png"
+           alt="MCP End-to-End Flow: User asks a question → Coding Agent sends to LLM → LLM doesn't know → Agent asks MCP Server → MCP executes tool → Data returns → Agent sends enriched context to LLM → LLM answers → User gets response"
+           style="max-width:100%; max-height:68vh; display:block;" class="plain">
+    </div>
+  </div>
+</section>
+
+<!-- Demo 1 divider -->
+<section class="sans-slide sans-section-divider" data-label="Demo 1">
+  <h2>Demo 1 — Local AI Code Review</h2>
+  <p>Continue + Semgrep MCP review a repository before anything leaves the laptop</p>
+</section>
+
+<!-- CI/CD: the enforcement window -->
 <section class="vis-slide" data-label="CI/CD Enforcement">
   <div class="vis-label">Where guardrails fire</div>
   <div class="vis-title">CI/CD is your enforcement window</div>
@@ -268,89 +461,6 @@
 
   <div class="vis-callout vis-callout-teal" style="text-align:center;">
     <span style="font-weight:600;">AI accelerates input.</span> CI is where you keep up.
-  </div>
-</section>
-
-<!-- Demo 1 divider -->
-<section class="sans-slide sans-section-divider" data-label="Demo 1">
-  <h2>Demo 1 — Local AI Code Review</h2>
-  <p>Continue + Semgrep MCP review a repository before anything leaves the laptop</p>
-</section>
-
-<!-- 7. MCP Flow Diagram (reused from March deck) -->
-<section class="vis-slide" data-label="MCP Flow" style="padding:72px 32px 24px 32px;">
-  <div class="vis-label">Model Context Protocol</div>
-  <div class="vis-title" style="margin-bottom:12px;">How MCP Works: End-to-End Flow</div>
-  <div style="flex:1; display:flex; align-items:center; justify-content:center;">
-    <div style="background:#fff; border-radius:12px; padding:16px; display:inline-block;">
-      <img src="presentations/2026-05-sans-sec540-agentic-code-review/img/mcp-flow-diagram.png"
-           alt="MCP End-to-End Flow: User asks a question → Coding Agent sends to LLM → LLM doesn't know → Agent asks MCP Server → MCP executes tool → Data returns → Agent sends enriched context to LLM → LLM answers → User gets response"
-           style="max-width:100%; max-height:68vh; display:block;" class="plain">
-    </div>
-  </div>
-</section>
-
-<!-- 8. Context files: benefits & shortcomings (zenable pill-card style) -->
-<section class="vis-slide" data-label="Context Files">
-  <div class="vis-label">Steering both tiers</div>
-  <div class="vis-title">Context files: same rules, both surfaces</div>
-  <div class="vis-subtitle">Markdown in the repo tells the agent what your team cares about — locally and on the server.</div>
-
-  <!-- Filename badges -->
-  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px 0 22px 0;">
-    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">CLAUDE.md</span>
-    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">AGENTS.md</span>
-    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">.github/copilot-instructions.md</span>
-    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">GEMINI.md</span>
-    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(100,116,139,0.4); color:#94a3b8;">…and more</span>
-  </div>
-
-  <div class="vis-grid-2" style="flex:1; gap:32px;">
-    <!-- BENEFITS -->
-    <div>
-      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:0 0 14px 0;">Benefits</p>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Very little cost</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Just a markdown file — though it does add tokens to every session.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Version-controlled</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Reviewed and merged like any other code change.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Both surfaces</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">The same file steers the local agent and the server-side MR reviewer.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Reduces variability</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Across developers and agents — "we do it this way here."</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- SHORTCOMINGS -->
-    <div>
-      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f87171; margin:0 0 14px 0;">Shortcomings</p>
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Doesn't scale</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">One file per repo — hundreds of files to update for one policy change.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Hard to maintain</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Projects evolve and files become stale misinformation.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Best-effort instructions</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">The agent may downweight or disregard them. No real enforcement.</p>
-        </div>
-        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
-          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">No audit trail</p>
-          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">No evidence of which rule applied where — bad for compliance.</p>
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -453,7 +563,6 @@
     <div>
       <div style="margin-bottom:14px;">
         <p style="font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#2dd4bf; margin:0;">⚙  Deterministic</p>
-        <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Semgrep · Conftest · OPA</p>
       </div>
 
       <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:14px 0 10px 0;">Benefits</p>
@@ -493,7 +602,6 @@
     <div>
       <div style="margin-bottom:14px;">
         <p style="font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#c084fc; margin:0;">🤖  AI Review</p>
-        <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Zenable · CodeRabbit · custom agents</p>
       </div>
 
       <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:14px 0 10px 0;">Benefits</p>
@@ -530,9 +638,6 @@
     </div>
   </div>
 
-  <div class="vis-callout vis-callout-teal" style="text-align:center; margin-top:14px;">
-    <span style="font-weight:600;">Coming up in Demo 2:</span> Semgrep finds the SQLi. Zenable finds the auth bypass. Neither finds the other.
-  </div>
 </section>
 
 <!-- 11. Server-side wiring -->
@@ -593,52 +698,7 @@
 <!-- Demo 2 divider -->
 <section class="sans-slide sans-section-divider" data-label="Demo 2">
   <h2>Demo 2 — Server-Side AI Review</h2>
-  <p>Semgrep CI + Zenable AI on a real GitLab merge request</p>
-</section>
-
-<!-- 13. What humans still own -->
-<section class="vis-slide" data-label="Humans">
-  <div class="vis-label">The human in the loop</div>
-  <div class="vis-title">What humans still own</div>
-  <div class="vis-subtitle">Agents scale analysis. You scale judgment.</div>
-
-  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:16px;">
-    <div style="display:flex; align-items:flex-start; gap:18px;">
-      <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; width:44px; height:44px; font-size:18px;">✓</div>
-      <div>
-        <p style="font-size:20px; font-weight:700; color:#fff; margin:0 0 4px 0;">Approve and merge</p>
-        <p style="font-size:14px; color:#94a3b8; margin:0;">The agent suggests. The human accepts. Required approvals stay required.</p>
-      </div>
-    </div>
-    <div style="display:flex; align-items:flex-start; gap:18px;">
-      <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa; width:44px; height:44px; font-size:18px;">✓</div>
-      <div>
-        <p style="font-size:20px; font-weight:700; color:#fff; margin:0 0 4px 0;">Architecture &amp; system design</p>
-        <p style="font-size:14px; color:#94a3b8; margin:0;">"Should we build this at all?" is still a human question.</p>
-      </div>
-    </div>
-    <div style="display:flex; align-items:flex-start; gap:18px;">
-      <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc; width:44px; height:44px; font-size:18px;">✓</div>
-      <div>
-        <p style="font-size:20px; font-weight:700; color:#fff; margin:0 0 4px 0;">Hard logic and novel domains</p>
-        <p style="font-size:14px; color:#94a3b8; margin:0;">Subtle business rules, regulated logic, anything not yet in the training data.</p>
-      </div>
-    </div>
-    <div style="display:flex; align-items:flex-start; gap:18px;">
-      <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24; width:44px; height:44px; font-size:18px;">✓</div>
-      <div>
-        <p style="font-size:20px; font-weight:700; color:#fff; margin:0 0 4px 0;">Social context</p>
-        <p style="font-size:14px; color:#94a3b8; margin:0;">Who needs to know. When to escalate. Whose change is this really about.</p>
-      </div>
-    </div>
-    <div style="display:flex; align-items:flex-start; gap:18px;">
-      <div class="vis-step" style="background:rgba(248,113,113,0.2); border:1px solid rgba(248,113,113,0.3); color:#f87171; width:44px; height:44px; font-size:18px;">✓</div>
-      <div>
-        <p style="font-size:20px; font-weight:700; color:#fff; margin:0 0 4px 0;">Writing the rules</p>
-        <p style="font-size:14px; color:#94a3b8; margin:0;">Policy, requirements, context files. The reviewer is only as good as the rules.</p>
-      </div>
-    </div>
-  </div>
+  <p>Zenable review on a real GitLab merge request</p>
 </section>
 
 <!-- 16. Key Takeaways -->
