@@ -1,0 +1,83 @@
+{#- modules/shared/slides/agent-review.j2
+    Shared slide content extracted from 2026-06-coding-guardrails.
+    Currently emits sans-cloud-flavored HTML (vis-* classes); valid under
+    branding="sans-cloud". Future work: replace inline markup with brand-pack
+    primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro layered_ai_review() -%}
+<section class="vis-slide" data-label="Agent Review">
+  <div class="vis-label">Agent Review</div>
+  <div class="vis-title">Layered AI Review</div>
+  <div style="display:flex; gap:20px; align-items:stretch; flex:1;">
+    <div style="flex:1;">
+      <div class="vis-card" style="padding:0; height:100%;">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">auth_service.py — my-project</span>
+          <span style="margin-left:auto; font-size:10px; color:#64748b;">3 agents reviewing</span>
+        </div>
+        <div style="display:flex; height:calc(100% - 32px);">
+          <div style="width:140px; background:rgba(15,23,42,0.8); border-right:1px solid rgba(51,65,85,0.5); padding:10px 6px; font-size:10px;">
+            <p style="color:#64748b; font-weight:600; margin:0 0 8px 0; font-size:9px; text-transform:uppercase; letter-spacing:0.1em;">Explorer</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📁 src/</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 app.py</p>
+            <p class="vis-mono" style="color:#e2e8f0; margin:0 0 3px 0; padding-left:10px; background:rgba(96,165,250,0.1); border-radius:3px; padding:2px 4px 2px 10px;">📄 auth_service.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 models.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📁 tests/</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0; padding-left:10px;">📄 test_auth.py</p>
+            <p class="vis-mono" style="color:#94a3b8; margin:0 0 3px 0;">📄 CLAUDE.md</p>
+          </div>
+          <div style="flex:1; padding:10px; font-size:12px; line-height:1.8; overflow:hidden;" class="vis-mono">
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 1</span><span class="syn-type">import</span> <span style="color:#cbd5e1;">hashlib</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 2</span><span class="syn-type">from</span> <span style="color:#cbd5e1;">db</span> <span class="syn-type">import</span> <span style="color:#cbd5e1;">session</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 3</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 4</span><span class="syn-type">def</span> <span class="syn-id">login</span>(request):</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 5</span>&nbsp;&nbsp;user = db.query(</p>
+            <p style="margin:0; background:rgba(248,113,113,0.08);"><span style="color:#475569; margin-right:8px;"> 6</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-str">f"SELECT * FROM users</span></p>
+            <p style="margin:0; background:rgba(248,113,113,0.08);"><span style="color:#475569; margin-right:8px;"> 7</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-str"> WHERE email='{request.email}'"</span></p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;"> 8</span>&nbsp;&nbsp;)</p>
+            <p style="margin:0; background:rgba(251,191,36,0.06);"><span style="color:#475569; margin-right:8px;"> 9</span>&nbsp;&nbsp;<span class="syn-type">if</span> user.password == request.pw:</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">10</span>&nbsp;&nbsp;&nbsp;&nbsp;token = <span class="syn-id">make_token</span>(user)</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">11</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-type">return</span> {<span class="syn-str">"token"</span>: token}</p>
+            <p style="margin:0;"><span style="color:#475569; margin-right:8px;">12</span>&nbsp;&nbsp;<span class="syn-type">return</span> {<span class="syn-str">"error"</span>: <span class="syn-str">"fail"</span>}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:32px; flex-shrink:0; width:40px; align-items:center; justify-content:center;">
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#f87171;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#fbbf24;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg width="28" height="28" viewBox="0 0 24 24" style="color:#60a5fa;transform:rotate(180deg);"><path d="M5 12h14m-7-7l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div style="width:300px; flex-shrink:0; display:flex; flex-direction:column; gap:16px; justify-content:center;">
+      <div style="border-radius:12px; border:1px solid rgba(248,113,113,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(248,113,113,0.2);border:1px solid rgba(248,113,113,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">🛡️</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#f87171; text-transform:uppercase; letter-spacing:0.05em;">Security Agent</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(248,113,113,0.6); margin:0;">"SQL injection on L6-7. Use parameterized queries. Hash passwords, never compare plaintext."</p>
+      </div>
+      <div style="border-radius:12px; border:1px solid rgba(251,191,36,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(251,191,36,0.2);border:1px solid rgba(251,191,36,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">🧪</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#fbbf24; text-transform:uppercase; letter-spacing:0.05em;">QA Agent</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(251,191,36,0.6); margin:0;">"No tests. Missing error handling for null user. Generic error message leaks nothing, good."</p>
+      </div>
+      <div style="border-radius:12px; border:1px solid rgba(96,165,250,0.3); background:rgba(15,23,42,0.95); padding:14px;">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+          <div style="width:24px;height:24px;border-radius:8px;background:rgba(96,165,250,0.2);border:1px solid rgba(96,165,250,0.3);display:flex;align-items:center;justify-content:center;">
+            <span style="font-size:11px;">📐</span>
+          </div>
+          <span style="font-size:11px; font-weight:700; color:#60a5fa; text-transform:uppercase; letter-spacing:0.05em;">Best Practices</span>
+        </div>
+        <p class="vis-mono" style="font-size:11px; color:#cbd5e1; background:rgba(30,41,59,0.6); border-radius:6px; padding:8px; border-left:2px solid rgba(96,165,250,0.6); margin:0;">"Use repository pattern per CLAUDE.md. Add type hints. Return proper HTTP status codes."</p>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}

@@ -41,20 +41,20 @@ In your `presentations/<slug>/<slug>_modern_content.j2`:
 ] %}
 
 {# ── Theme + chrome (include once, near the top) ─────────────── #}
-{% include "modules/sans-cloud-security/theme.html.j2" %}
-{% include "modules/sans-cloud-security/header.html.j2" %}
+{% include "modules/branding/sans-cloud/theme.html.j2" %}
+{% include "modules/branding/sans-cloud/header.html.j2" %}
 
 {# ── Intro slides ────────────────────────────────────────────── #}
-{% include "modules/sans-cloud-security/title-slide.html.j2" %}
-{% include "modules/sans-cloud-security/speaker-slide.html.j2" %}
-{% include "modules/sans-cloud-security/series-overview-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/title-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/speaker-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/series-overview-slide.html.j2" %}
 
 {# ── Your event-specific content slides go here ──────────────── #}
 <section class="vis-slide" data-label="…">…</section>
 
 {# ── Outro slides ────────────────────────────────────────────── #}
-{% include "modules/sans-cloud-security/takeaways-slide.html.j2" %}
-{% include "modules/sans-cloud-security/end-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/takeaways-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/end-slide.html.j2" %}
 ```
 
 ## Files

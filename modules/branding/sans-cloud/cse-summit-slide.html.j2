@@ -1,13 +1,13 @@
 {# SANS Cloud Security Exchange Summit promo slide — full-bleed image + URL.
    Vars (all optional, with sensible defaults for the current promo year):
      sans_cse_image — path to the promo image
-                      (default: modules/sans-cloud-security/img/cse-summit-2026.jpg)
+                      (default: modules/branding/sans-cloud/img/cse-summit-2026.jpg)
      sans_cse_alt   — image alt text
                       (default: "SANS Cloud Security Exchange Summit 2026")
      sans_cse_url   — link text + href target (without the protocol)
                       (default: "go.sans.org/cloud-exchange-summit")
 #}
-{%- set _cse_image = sans_cse_image | default("modules/sans-cloud-security/img/cse-summit-2026.jpg") -%}
+{%- set _cse_image = sans_cse_image | default("modules/branding/sans-cloud/img/cse-summit-2026.jpg") -%}
 {%- set _cse_alt   = sans_cse_alt   | default("SANS Cloud Security Exchange Summit 2026") -%}
 {%- set _cse_url   = sans_cse_url   | default("go.sans.org/cloud-exchange-summit") -%}
 <section class="sans-slide" data-label="CSE Summit" style="background:#000 !important; justify-content:center; align-items:center; padding:44px 0 0 0;">

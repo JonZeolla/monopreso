@@ -1,0 +1,95 @@
+{# ================================================================
+   Guardrails for Coding Agents
+   Modern engine. Brand pack is selected by `branding` (supplied by
+   start.sh from the BRANDING env var / --branding flag; default brand
+   for this deck is set in the local Taskfile.yml). See AGENTS.md.
+
+   All content slides live in modules/shared/slides/ — they can be
+   re-used by other decks. The currently-extracted set still emits
+   sans-cloud-flavored HTML (vis-* classes), so this deck pins to the
+   sans-cloud brand for now. Once shared slides are refactored to use
+   brand-pack primitives, the same content will render under any brand.
+   ================================================================ #}
+
+{# ── Brand pack theme ─────────────────────────────────────────────── #}
+{% include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+
+{# ── Shared slide content ─────────────────────────────────────────── #}
+{%- from "modules/shared/slides/context-files.j2"            import mockup            as context_files_mockup,
+                                                                    tradeoffs         as context_files_tradeoffs %}
+{%- from "modules/shared/slides/context-window.j2"           import interactive       as context_window_interactive %}
+{%- from "modules/shared/slides/context-degradation.j2"      import quality_drop      as context_degradation_quality_drop %}
+{%- from "modules/shared/slides/layered-defense.j2"          import layered_defense %}
+{%- from "modules/shared/slides/deterministic-guardrails.j2" import pci_example       as deterministic_pci_example %}
+{%- from "modules/shared/slides/hooks.j2"                    import when_x_then_y     as hooks_when_x_then_y,
+                                                                    in_action         as hooks_in_action %}
+{%- from "modules/shared/slides/cicd-enforcement.j2"         import enforcement_window as cicd_enforcement_window %}
+{%- from "modules/shared/slides/server-side-review.j2"       import wiring            as server_side_wiring %}
+{%- from "modules/shared/slides/agent-review.j2"             import layered_ai_review %}
+{%- from "modules/shared/slides/outro.j2"                    import questions, thank_you %}
+
+
+<!-- ================================================================
+     TITLE
+     ================================================================ -->
+<section class="vis-slide" data-label="Title" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    <div class="vis-label" style="text-align:center;">Jon Zeolla</div>
+    <h1 class="vis-title" style="font-size:64px; margin-bottom:18px;">Guardrails for Coding Agents</h1>
+  </div>
+</section>
+
+
+<!-- ================================================================
+     SECTION 1 — CONTEXT
+     ================================================================ -->
+<section class="sans-slide sans-section-divider" data-label="Section: Context">
+  <h2>1 · Context</h2>
+</section>
+
+{{ context_window_interactive() }}
+{{ context_degradation_quality_drop() }}
+{{ context_files_mockup() }}
+{{ context_files_tradeoffs() }}
+
+
+<!-- ================================================================
+     SECTION 2 — GUARDRAILS
+     ================================================================ -->
+<section class="sans-slide sans-section-divider" data-label="Section: Guardrails">
+  <h2>2 · Guardrails</h2>
+</section>
+
+{{ layered_defense() }}
+{{ deterministic_pci_example() }}
+
+
+<!-- ================================================================
+     SECTION 3 — HOOKS
+     ================================================================ -->
+<section class="sans-slide sans-section-divider" data-label="Section: Hooks">
+  <h2>3 · Hooks</h2>
+</section>
+
+{{ hooks_when_x_then_y() }}
+{{ hooks_in_action() }}
+
+
+<!-- ================================================================
+     SECTION 4 — FEEDBACK LOOPS
+     ================================================================ -->
+<section class="sans-slide sans-section-divider" data-label="Section: Feedback Loops">
+  <h2>4 · Feedback Loops</h2>
+</section>
+
+{{ cicd_enforcement_window() }}
+{{ server_side_wiring() }}
+{{ layered_ai_review() }}
+
+
+<!-- ================================================================
+     OUTRO
+     ================================================================ -->
+{{ questions() }}
+{{ thank_you(name="Jon Zeolla",
+             linkedin_url="linkedin.com/in/jonzeolla") }}

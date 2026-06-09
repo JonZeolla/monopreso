@@ -1,0 +1,66 @@
+{# ================================================================
+   Unbranded brand-pack theme
+   ----------------------------------------------------------------
+   A neutral, non-corporate look. System fonts, monochrome surface,
+   semantic accents (success/warning/danger/info) from a restrained
+   tailwind-compatible palette. Use when a presentation should carry
+   no employer / sponsor branding.
+
+   The modern engine loads Tailwind (modules/shared/css/modern.css)
+   ahead of this file, so all Tailwind utility classes are available.
+   This sheet only adds what semantic primitives need.
+   ================================================================ #}
+
+<style>
+:root {
+  --unb-bg:           #0b1120;
+  --unb-surface:      rgba(30,41,59,0.55);
+  --unb-surface-strong: rgba(30,41,59,0.85);
+  --unb-border:       rgba(100,116,139,0.35);
+  --unb-text:         #e2e8f0;
+  --unb-text-muted:   #94a3b8;
+  --unb-text-dim:     #64748b;
+  --unb-primary:      #38bdf8;  /* sky-400 */
+  --unb-success:      #22c55e;
+  --unb-warning:      #f59e0b;
+  --unb-danger:       #ef4444;
+  --unb-info:         #60a5fa;
+}
+
+.unb-slide {
+  min-height: 100vh;
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  color: var(--unb-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.unb-label    { font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+                text-transform: uppercase; color: var(--unb-text-dim); margin-bottom: 8px; }
+.unb-title    { font-size: 42px; font-weight: 700; line-height: 1.15;
+                color: var(--unb-text); margin-bottom: 8px; }
+.unb-subtitle { font-size: 18px; color: var(--unb-text-muted); margin-bottom: 24px; }
+
+.unb-callout  { padding: 14px 18px; border-radius: 10px; border: 1px solid var(--unb-border);
+                background: var(--unb-surface); color: var(--unb-text); }
+
+.unb-card     { padding: 14px 16px; border-radius: 12px;
+                background: var(--unb-surface); border: 1px solid var(--unb-border); }
+.unb-card-title { font-size: 14px; font-weight: 600; color: var(--unb-text); margin: 0; }
+.unb-card-body  { font-size: 12px; color: var(--unb-text-muted); margin: 4px 0 0 0; }
+
+.unb-pill     { font-family: ui-monospace,SFMono-Regular,Menlo,monospace;
+                font-size: 13px; padding: 6px 12px; border-radius: 6px;
+                background: var(--unb-surface); border: 1px solid var(--unb-border);
+                color: var(--unb-text-muted); }
+
+/* Semantic accents — used as border + faint tint on cards */
+.unb-accent-primary { border-color: color-mix(in srgb, var(--unb-primary) 35%, transparent); }
+.unb-accent-success { border-color: color-mix(in srgb, var(--unb-success) 35%, transparent);
+                      background: color-mix(in srgb, var(--unb-success) 6%, var(--unb-surface)); }
+.unb-accent-warning { border-color: color-mix(in srgb, var(--unb-warning) 35%, transparent);
+                      background: color-mix(in srgb, var(--unb-warning) 6%, var(--unb-surface)); }
+.unb-accent-danger  { border-color: color-mix(in srgb, var(--unb-danger) 35%, transparent);
+                      background: color-mix(in srgb, var(--unb-danger) 6%, var(--unb-surface)); }
+.unb-accent-info    { border-color: color-mix(in srgb, var(--unb-info) 35%, transparent); }
+</style>

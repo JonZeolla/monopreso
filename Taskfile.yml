@@ -13,7 +13,7 @@ silent: true
 vars:
   PRESENTATION:
     sh: |
-      rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+      rel="${USER_WORKING_DIR#"{{.TASKFILE_DIR}}"}"
       rel="${rel#/}"        # drop any leading slash
       rel="${rel#*/}"       # drop "presentations/" or "modules/"
       printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
@@ -81,13 +81,13 @@ tasks:
           if [ -n "{{.PRESENTATION}}" ] && [ "{{.PRESENTATION}}" != "<no value>" ]; then
             echo "{{.PRESENTATION}}"
           else
-            rel="${USER_WORKING_DIR#"{{.ROOT_DIR}}"}"
+            rel="${USER_WORKING_DIR#"{{.TASKFILE_DIR}}"}"
             rel="${rel#/}"        # drop any leading slash
             rel="${rel#*/}"       # drop "presentations/" or "modules/"
             printf '%s\n' "${rel%%/*}"   # keep up to next slash → foo/bar
           fi
     cmds:
-      - '{{.ROOT_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
+      - '{{.TASKFILE_DIR}}/start.sh --preso={{.PRESENTATION}} {{.CLI_ARGS}}'
 
   generate-pdfs:
     desc: Generate all of the PDFs
@@ -149,19 +149,19 @@ tasks:
                presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
       - rm -rf presentations/2025-07-BSides-PGH/demo/bsidespgh25 2>/dev/null || true
       - cd reveal.js && git restore package-lock.json
-      - find {{.ROOT_DIR}} -type d -name '*.egg-info' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type f -name '.coverage' -delete
-      - find {{.ROOT_DIR}} -type d -name 'htmlcov' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name 'build' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name '__pycache__' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name '.mypy_cache' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type d -name '.pytest_cache' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type f -name '*.pyc' -delete
-      - find {{.ROOT_DIR}} -type f -name '*.whl' -delete
-      - find {{.ROOT_DIR}} -type d -name '.ruff_cache' -exec rm -rf {} +
-      - find {{.ROOT_DIR}} -type f -name '.DS_Store' -delete
-      - find {{.ROOT_DIR}} -type f -name '.Thumbs.db' -delete
-      - find {{.ROOT_DIR}} -type d -name '.task' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name '*.egg-info' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type f -name '.coverage' -delete
+      - find {{.TASKFILE_DIR}} -type d -name 'htmlcov' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name 'build' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name '__pycache__' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name '.mypy_cache' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type d -name '.pytest_cache' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type f -name '*.pyc' -delete
+      - find {{.TASKFILE_DIR}} -type f -name '*.whl' -delete
+      - find {{.TASKFILE_DIR}} -type d -name '.ruff_cache' -exec rm -rf {} +
+      - find {{.TASKFILE_DIR}} -type f -name '.DS_Store' -delete
+      - find {{.TASKFILE_DIR}} -type f -name '.Thumbs.db' -delete
+      - find {{.TASKFILE_DIR}} -type d -name '.task' -exec rm -rf {} +
       - '{{if eq .CLI_ARGS "all"}}echo "WARNING: Running a clean all in {{.TASKFILE}}"{{end}}'
-      - '{{if eq .CLI_ARGS "all"}}find {{.ROOT_DIR}} -type d -name ".venv" -exec rm -rf {} +{{end}}'
+      - '{{if eq .CLI_ARGS "all"}}find {{.TASKFILE_DIR}} -type d -name ".venv" -exec rm -rf {} +{{end}}'

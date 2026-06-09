@@ -1,0 +1,150 @@
+{# ================================================================
+   SANS Cloud Security — Brand-pack primitives
+   ----------------------------------------------------------------
+   Implements the primitive macro contract used by shared slides in
+   modules/shared/slides/*. Visuals come from the vis-* CSS classes
+   defined in this pack's theme.html.j2.
+
+   See AGENTS.md (repo root) for the full contract and accent vocab.
+   ================================================================ #}
+
+
+{# ── internal helpers ─────────────────────────────────────────── #}
+
+{%- macro _accent_card_class(name) -%}
+{%- set m = {
+  "primary":  "vis-teal-card",
+  "secondary":"vis-purple-card",
+  "success":  "vis-green-card",
+  "warning":  "vis-amber-card",
+  "danger":   "vis-red-card",
+  "info":     "vis-blue-card",
+  "neutral":  "vis-card",
+} -%}
+{{- m.get(name, "vis-card") -}}
+{%- endmacro -%}
+
+{%- macro _accent_callout_class(name) -%}
+{%- set m = {
+  "primary":"vis-callout-teal",
+  "success":"vis-callout-green",
+  "warning":"vis-callout-amber",
+  "info":   "vis-callout-teal",
+  "neutral":"vis-callout-teal",
+} -%}
+{{- m.get(name, "vis-callout-teal") -}}
+{%- endmacro -%}
+
+{%- macro _pill_border(name) -%}
+{%- set m = {
+  "primary":"rgba(45,212,191,0.4)",
+  "info":   "rgba(96,165,250,0.4)",
+  "neutral":"rgba(100,116,139,0.4)",
+} -%}{{- m.get(name, "rgba(100,116,139,0.4)") -}}
+{%- endmacro -%}
+
+{%- macro _pill_text(name) -%}
+{%- set m = {
+  "primary":"#2dd4bf",
+  "info":   "#60a5fa",
+  "neutral":"#94a3b8",
+} -%}{{- m.get(name, "#94a3b8") -}}
+{%- endmacro -%}
+
+
+{# ── structural primitives ────────────────────────────────────── #}
+
+{%- macro title_slide(title, subtitle="", kicker="") -%}
+<section class="vis-slide" data-label="Title" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    {%- if kicker %}<div class="vis-label" style="text-align:center;">{{ kicker }}</div>{% endif %}
+    <h1 class="vis-title" style="font-size:64px; margin-bottom:18px;">{{ title }}</h1>
+    {%- if subtitle %}<p class="vis-subtitle" style="font-size:22px;">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro section_divider(num, title, subtitle="") -%}
+<section class="sans-slide sans-section-divider" data-label="Section: {{ title }}">
+  <h2>{% if num %}{{ num }} · {% endif %}{{ title }}</h2>
+  {%- if subtitle %}<p>{{ subtitle|safe }}</p>{% endif %}
+</section>
+{%- endmacro -%}
+
+{%- macro slide_heading(label, title, subtitle="") -%}
+<div class="vis-label">{{ label }}</div>
+<div class="vis-title">{{ title }}</div>
+{%- if subtitle %}<div class="vis-subtitle">{{ subtitle|safe }}</div>{% endif %}
+{%- endmacro -%}
+
+
+{# ── content primitives ───────────────────────────────────────── #}
+
+{%- macro callout(text, accent="primary") -%}
+<div class="vis-callout {{ _accent_callout_class(accent) }}" style="text-align:center;">{{ text|safe }}</div>
+{%- endmacro -%}
+
+{%- macro pros_cons(benefits, shortcomings, ben_label="Benefits", short_label="Shortcomings") -%}
+<div class="vis-grid-2" style="flex:1; gap:32px;">
+  <div>
+    <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:0 0 14px 0;">{{ ben_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {%- for item in benefits %}
+      <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+        <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">{{ item.title }}</p>
+        {%- if item.detail %}<p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+  <div>
+    <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f87171; margin:0 0 14px 0;">{{ short_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {%- for item in shortcomings %}
+      <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+        <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">{{ item.title }}</p>
+        {%- if item.detail %}<p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro pill_row(items, justify="center") -%}
+<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:{{ justify }}; margin:10px 0 22px 0;">
+  {%- for item in items %}
+    {%- set a = item.accent | default("neutral") %}
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid {{ _pill_border(a) }}; color:{{ _pill_text(a) }};">{{ item.label }}</span>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro card(title, body, accent="neutral") -%}
+<div class="{{ _accent_card_class(accent) }}" style="padding:14px;">
+  {%- if title %}<p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 6px 0;">{{ title }}</p>{% endif %}
+  <p style="font-size:12px; color:#94a3b8; margin:0;">{{ body|safe }}</p>
+</div>
+{%- endmacro -%}
+
+{%- macro card_grid(items, cols=3) -%}
+<div style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
+  {%- for item in items %}
+    {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{# ────────────────────────────────────────────────────────────────
+   NOT YET IMPLEMENTED — declared in AGENTS.md contract. Implement
+   on demand when extracting the shared slide that needs them:
+
+     code_block(filename, lines)
+     step_flow(steps)
+     pipe(stages)
+     ide_mockup(filename, sidebar, code_lines, chat_panel=None)
+
+   Implementations should preserve the look-and-feel that already
+   exists in 2026-03 / 2026-05 deck content.
+   ──────────────────────────────────────────────────────────────── #}

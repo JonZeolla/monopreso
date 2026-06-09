@@ -19,7 +19,10 @@ function help() {
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
 		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--no-open] [--no-cleanup]
-		--branding     Use the specified branding i.e. --branding=seiso or --branding=zenable (revealjs engine only)
+		--branding     Override the brand. For modern engine: any directory under modules/branding/
+		               (default: "unbranded"). For revealjs engine: seiso or zenable.
+		               Also honoured via the BRANDING env var (set per-presentation in a
+		               local Taskfile.yml); CLI flag wins over env.
 		--engine       Presentation engine: modern (default) or revealjs
 		--list         List the available presentations
 		--preso        The presentation name i.e. --preso=dev_tls
@@ -81,7 +84,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION="current.html"
-BRANDING="False"
+BRANDING="${BRANDING:-False}"  # respect env; CLI --branding overrides below
 ENGINE="modern"
 NO_CLEANUP="False"
 NO_OPEN="False"
@@ -187,15 +190,23 @@ else
   fi
 fi
 
-# Branding is optional, but must be in the allowlist if specified
+# Branding resolution — engine-aware
 echo -n "."
-if [[ "${BRANDING}" != "False" ]]; then
-  if [[ "${BRANDING,,}" != "seiso" ]] && [[ "${BRANDING,,}" != "zenable" ]]; then
-    feedback ERROR "${BRANDING} is not a valid branding option"
+if [[ "${ENGINE,,}" == "modern" ]]; then
+  # Default for modern is the unbranded pack
+  if [[ "${BRANDING}" == "False" || -z "${BRANDING}" ]]; then
+    BRANDING="unbranded"
   fi
-  if [[ "${ENGINE,,}" != "revealjs" ]]; then
-    feedback WARNING "--branding is only used with --engine=revealjs, ignoring"
-    BRANDING="False"
+  # Validate brand pack exists on disk
+  if [[ ! -d "modules/branding/${BRANDING}" ]]; then
+    feedback ERROR "Brand '${BRANDING}' not found. Expected modules/branding/${BRANDING}/ to exist."
+  fi
+else
+  # Revealjs: legacy allowlist
+  if [[ "${BRANDING}" != "False" ]]; then
+    if [[ "${BRANDING,,}" != "seiso" ]] && [[ "${BRANDING,,}" != "zenable" ]]; then
+      feedback ERROR "${BRANDING} is not a valid revealjs branding (expected: seiso, zenable)"
+    fi
   fi
 fi
 
@@ -220,7 +231,7 @@ env = Environment(loader=FileSystemLoader(['.', 'modules/shared/', 'modules/shar
 # Render the content file (which may import macros)
 content_src = open('${PRESENTATION_CONTENT_FILE}').read()
 content_tmpl = env.from_string(content_src)
-rendered_content = content_tmpl.render()
+rendered_content = content_tmpl.render(branding='${BRANDING}')
 
 # Render the main template with the content
 main = env.get_template('modern_template.j2')

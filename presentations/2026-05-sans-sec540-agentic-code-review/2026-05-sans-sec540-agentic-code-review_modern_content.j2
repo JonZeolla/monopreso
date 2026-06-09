@@ -5,7 +5,7 @@
    Theme: SANS Cloud Security (shared module)
    ================================================================ #}
 
-{# ── Shared SANS variables (consumed by modules/sans-cloud-security/*) ── #}
+{# ── Shared SANS variables (consumed by modules/branding/sans-cloud/*) ── #}
 {% set sans_title    = "AI-Driven DevSecOps" %}
 {% set sans_subtitle = "Agentic Code Review in GitLab & GitHub" %}
 {% set sans_speaker  = "Jon Zeolla" %}
@@ -51,21 +51,21 @@
 ] %}
 
 {# ── Theme + header bar (shared) ─────────────────────────────────────── #}
-{% include "modules/sans-cloud-security/theme.html.j2" %}
-{% include "modules/sans-cloud-security/header.html.j2" %}
+{% include "modules/branding/sans-cloud/theme.html.j2" %}
+{% include "modules/branding/sans-cloud/header.html.j2" %}
 
 {# ================================================================
    SLIDES
    ================================================================ #}
 
 <!-- 1. Title Slide -->
-{% include "modules/sans-cloud-security/title-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/title-slide.html.j2" %}
 
 <!-- 2. Speaker -->
-{% include "modules/sans-cloud-security/speaker-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/speaker-slide.html.j2" %}
 
 <!-- 3. Webcast Series Overview -->
-{% include "modules/sans-cloud-security/series-overview-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/series-overview-slide.html.j2" %}
 
 <!-- 4. Agentic coding -->
 <section class="vis-slide" data-label="Agentic coding">
@@ -702,10 +702,10 @@
 </section>
 
 <!-- 16. Key Takeaways -->
-{% include "modules/sans-cloud-security/takeaways-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/takeaways-slide.html.j2" %}
 
 <!-- 17. CSE Summit Promo -->
-{% include "modules/sans-cloud-security/cse-summit-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/cse-summit-slide.html.j2" %}
 
 <!-- 18. End Slide -->
-{% include "modules/sans-cloud-security/end-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/end-slide.html.j2" %}

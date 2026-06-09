@@ -1,0 +1,141 @@
+{# ================================================================
+   Zenable — Brand-pack primitives
+   ----------------------------------------------------------------
+   Implements the primitive macro contract using Tailwind + the
+   `zenable.*` color tokens from modules/shared/tailwind.config.js.
+
+   Delegates to the long-standing Zenable-flavored macros in
+   modules/shared/components/modern_macros.j2 where signatures
+   already match.
+
+   See AGENTS.md (repo root) for the full contract and accent vocab.
+   ================================================================ #}
+
+{%- from "modules/shared/components/modern_macros.j2" import
+    card as _legacy_card,
+    card_grid as _legacy_card_grid,
+    section_label as _legacy_section_label,
+    flow_steps as _legacy_flow_steps,
+    pill as _legacy_pill
+-%}
+
+
+{# ── internal helpers ─────────────────────────────────────────── #}
+
+{%- macro _accent_to_zen(name) -%}
+{# Map semantic accent → Zenable Tailwind token #}
+{%- set m = {
+  "primary":  "teal",
+  "secondary":"blue",
+  "success":  "teal",
+  "warning":  "amber",
+  "danger":   "red",
+  "info":     "blue",
+  "neutral":  "slate",
+} -%}{{- m.get(name, "slate") -}}
+{%- endmacro -%}
+
+
+{# ── structural primitives ────────────────────────────────────── #}
+
+{%- macro title_slide(title, subtitle="", kicker="") -%}
+<section class="slide flex items-center justify-center p-8" data-label="Title">
+  <div class="text-center fade-in">
+    <h1 class="text-7xl font-bold mb-4 tracking-tight text-white">{{ title }}</h1>
+    {%- if subtitle %}<p class="text-2xl font-medium mb-8 italic gradient-text">{{ subtitle|safe }}</p>{% endif %}
+    {%- if kicker %}<p class="text-sm text-slate-400">{{ kicker|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro section_divider(num, title, subtitle="") -%}
+<section class="slide flex items-center justify-center p-8" data-label="Section: {{ title }}">
+  <div class="max-w-5xl mx-auto w-full text-center fade-in">
+    {%- if num %}<p class="text-sm uppercase tracking-[0.2em] text-zenable-teal mb-4">Part {{ num }}</p>{% endif %}
+    <h2 class="text-6xl font-bold text-white mb-4 tracking-tight">{{ title }}</h2>
+    {%- if subtitle %}<p class="text-xl text-slate-400">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro slide_heading(label, title, subtitle="") -%}
+{{ _legacy_section_label(label) }}
+<h3 class="text-4xl font-bold text-white mb-2">{{ title }}</h3>
+{%- if subtitle %}<p class="text-lg text-slate-400 italic mb-8">{{ subtitle|safe }}</p>{% endif %}
+{%- endmacro -%}
+
+
+{# ── content primitives ───────────────────────────────────────── #}
+
+{%- macro callout(text, accent="primary") -%}
+{%- set color = _accent_to_zen(accent) -%}
+<div class="mt-6 p-4 rounded-xl border bg-zenable-bg-light/40 border-zenable-{{ color }}/30 text-center text-slate-300">
+  {{ text|safe }}
+</div>
+{%- endmacro -%}
+
+{%- macro pros_cons(benefits, shortcomings, ben_label="Benefits", short_label="Shortcomings") -%}
+<div class="grid grid-cols-2 gap-8 w-full">
+  <div>
+    <p class="text-xs font-bold tracking-[0.2em] uppercase text-emerald-400 mb-4">{{ ben_label }}</p>
+    <div class="space-y-3">
+      {%- for item in benefits %}
+      <div class="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+        <p class="font-semibold text-white">{{ item.title }}</p>
+        {%- if item.detail %}<p class="text-sm text-slate-400 mt-1">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+  <div>
+    <p class="text-xs font-bold tracking-[0.2em] uppercase text-rose-400 mb-4">{{ short_label }}</p>
+    <div class="space-y-3">
+      {%- for item in shortcomings %}
+      <div class="p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
+        <p class="font-semibold text-white">{{ item.title }}</p>
+        {%- if item.detail %}<p class="text-sm text-slate-400 mt-1">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro pill_row(items, justify="center") -%}
+<div class="flex flex-wrap gap-2 justify-{{ justify }} my-4">
+  {%- for item in items %}
+    {{ _legacy_pill(item.label, _accent_to_zen(item.accent | default("neutral"))) }}
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro card(title, body, accent="neutral") -%}
+{{ _legacy_card(title, body, _accent_to_zen(accent)) }}
+{%- endmacro -%}
+
+{%- macro card_grid(items, cols=3) -%}
+{# Convert primitive item shape to legacy card_grid shape: {title, desc, accent} #}
+{%- set legacy_items = [] -%}
+{%- for it in items -%}
+  {%- set _ = legacy_items.append({
+    "title": it.title,
+    "desc":  it.body | default(it.detail | default("")),
+    "accent": _accent_to_zen(it.accent | default("neutral")),
+  }) -%}
+{%- endfor -%}
+{{ _legacy_card_grid(legacy_items, cols) }}
+{%- endmacro -%}
+
+
+{# ────────────────────────────────────────────────────────────────
+   NOT YET IMPLEMENTED — declared in AGENTS.md contract.
+   When extracting the shared slide that needs them, either:
+     - delegate to a matching macro in
+       modules/shared/components/modern_macros.j2, or
+     - implement fresh here following the contract.
+
+     code_block(filename, lines)
+     step_flow(steps)         # candidate: wrap _legacy_flow_steps
+     pipe(stages)
+     ide_mockup(filename, sidebar, code_lines, chat_panel=None)
+   ──────────────────────────────────────────────────────────────── #}
