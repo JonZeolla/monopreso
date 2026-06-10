@@ -1,0 +1,127 @@
+{#- modules/context/context-files.j2
+    Shared slide content extracted from 2026-06-coding-guardrails.
+    Currently emits sans-cloud-flavored HTML (vis-* classes); valid under
+    branding="sans-cloud". Future work: replace inline markup with brand-pack
+    primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro mockup() -%}
+<section class="vis-slide" data-label="Context Files">
+  <div class="vis-label">LLM Steering</div>
+  <div class="vis-title">Context Files &amp; Rules</div>
+  <div style="display:flex; gap:32px; flex:1;">
+    <div style="flex:1;">
+      <div class="vis-card">
+        <div class="vis-card-header">
+          <div class="vis-card-dots"><span class="dot-red"></span><span class="dot-yellow"></span><span class="dot-green"></span></div>
+          <span class="vis-card-filename">CLAUDE.md</span>
+        </div>
+        <div class="vis-card-body vis-mono" style="font-size:13px; line-height:1.9; color:#cbd5e1; max-height:52vh; overflow:hidden; position:relative;">
+          <p style="color:#2dd4bf; font-weight:700; font-size:15px; margin:0 0 12px 0;"># Project Rules</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Architecture</p>
+          <p style="margin:0 0 4px 0;">- Use the <span class="syn-id">repository pattern</span> for all data access</p>
+          <p style="margin:0 0 4px 0;">- All API endpoints <span class="syn-id">must validate input</span> with Pydantic</p>
+          <p style="margin:0 0 4px 0;">- Use dependency injection for services</p>
+          <p style="margin:0 0 16px 0;">- Never call the database directly from route handlers</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Security Requirements</p>
+          <p style="margin:0 0 4px 0;">- <span style="color:#f87171;">Never</span> commit secrets or API keys</p>
+          <p style="margin:0 0 4px 0;">- All user input must be <span class="syn-id">sanitized</span></p>
+          <p style="margin:0 0 4px 0;">- Use parameterized queries for database access</p>
+          <p style="margin:0 0 16px 0;">- Enable CORS only for approved origins</p>
+          <p style="color:#64748b; margin:0 0 10px 0;">## Code Standards</p>
+          <p style="margin:0 0 4px 0;">- Follow PEP 8 conventions</p>
+          <p style="margin:0 0 4px 0;">- All public functions require docstrings</p>
+          <p style="margin:0 0 4px 0;">- Minimum 80% test coverage for new code</p>
+          <p style="margin:0 0 0 0;">- Use type hints on all function signatures</p>
+          <div style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(transparent, rgba(30,41,59,0.95));"></div>
+        </div>
+      </div>
+    </div>
+    <div style="width:280px; flex-shrink:0; display:flex; flex-direction:column; gap:12px;">
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 8px 0;">Works with</p>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#2dd4bf; margin:0 0 4px 0;">CLAUDE.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Anthropic / Claude Code</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#2dd4bf; margin:0 0 4px 0;">AGENTS.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Open standard, dozens of IDEs</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#60a5fa; margin:0 0 4px 0;">copilot-instructions.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">GitHub Copilot</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5);">
+        <p class="vis-mono" style="font-size:14px; color:#60a5fa; margin:0 0 4px 0;">GEMINI.md</p>
+        <p style="font-size:12px; color:#64748b; margin:0;">Google / Antigravity</p>
+      </div>
+      <div style="padding:14px; border-radius:8px; background:rgba(30,41,59,0.4); border:1px solid rgba(51,65,85,0.5); text-align:center;">
+        <p class="vis-mono" style="font-size:13px; color:#64748b; margin:0;">... and dozens more</p>
+      </div>
+    </div>
+  </div>
+  <div class="vis-callout-teal vis-callout" style="margin-top:16px; text-align:center;">
+    <span style="font-weight:600;">Low barrier to entry.</span> Just a markdown file in your repo. Version controlled, reviewable, easy to start.
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro tradeoffs() -%}
+<section class="vis-slide" data-label="Context Files: tradeoffs">
+  <div class="vis-label">Steering coding agents</div>
+  <div class="vis-title">Context files</div>
+
+  <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:10px 0 22px 0;">
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">CLAUDE.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">AGENTS.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">.github/copilot-instructions.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">GEMINI.md</span>
+    <span class="vis-mono" style="font-size:13px; padding:6px 12px; border-radius:6px; background:rgba(30,41,59,0.6); border:1px solid rgba(100,116,139,0.4); color:#94a3b8;">…and more</span>
+  </div>
+
+  <div class="vis-grid-2" style="flex:1; gap:32px;">
+    <div>
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#22c55e; margin:0 0 14px 0;">Benefits</p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Very little cost</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Just a markdown file — though it does add tokens to every session.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Version-controlled</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Reviewed and merged like any other code change.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Works everywhere the agent runs</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">One file, picked up by IDE agents, CLI agents, and CI reviewers alike.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(34,197,94,0.05); border:1px solid rgba(34,197,94,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Reduces variability</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Across developers and agents — "we do it this way here."</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:#f87171; margin:0 0 14px 0;">Shortcomings</p>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Doesn't scale</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">One file per repo — hundreds of files to update for one policy change.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Hard to maintain</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">Projects evolve and files become stale misinformation.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">Best-effort instructions</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">The agent may downweight or disregard them. No real enforcement.</p>
+        </div>
+        <div style="padding:14px 16px; border-radius:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2);">
+          <p style="font-size:14px; font-weight:600; color:#fff; margin:0;">No audit trail</p>
+          <p style="font-size:12px; color:#94a3b8; margin:4px 0 0 0;">No evidence of which rule applied where — bad for compliance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}

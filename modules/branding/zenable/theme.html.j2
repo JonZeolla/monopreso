@@ -1,0 +1,99 @@
+{# ================================================================
+   Zenable brand-pack theme
+   ----------------------------------------------------------------
+   Strategy (Phase 2, interim):
+   The shared slide modules under modules/<topic>/ currently emit
+   sans-cloud-flavored HTML (vis-* CSS class names + sans-section-divider
+   for breaks). To render that same markup under the Zenable brand, we
+   pull in the sans-cloud CSS framework — providing the vis-* layout
+   primitives — and then override the brand-coloured CSS variables and
+   font stack so the result reads as Zenable, not SANS.
+
+   Long-term: extract the brand-agnostic vis-* base into
+   modules/shared/css/ and have each brand pack `include` it directly,
+   skipping the SANS-specific bits (header, section-divider chrome,
+   font-sans resets). For now this layered-override approach is the
+   smallest change that lets `task start` produce a Zenable-looking deck.
+   ================================================================ #}
+
+{# 1. Pull in the vis-* CSS framework + SANS variable defaults #}
+{% include "modules/branding/sans-cloud/theme.html.j2" %}
+
+{# 2. Zenable colour + typography overrides
+   Brand tokens follow ui_frontend/AGENTS.md → "Slide Deck Design":
+     --zenable-teal:        #00BAAE  canonical brand teal (structural)
+     --zenable-teal-bright: #14E0CC  bright variant for small text (kickers,
+                                      gradient endpoints — better contrast
+                                      against #0c0c1d at small sizes)
+     --zenable-blue:        #0071DA  canonical brand blue
+     --zenable-blue-bright: #4AA3F0  bright variant; the canonical blue's
+                                      contrast on dark bg is only ~4.5:1,
+                                      borderline AA for body text — use
+                                      bright for anything sub-headline
+   When to use which:
+     - Large headlines, structural lines, brand-moment SVGs → canonical
+     - Kicker labels, body copy accents, gradient endpoints     → bright
+   Layout:
+     - body bg #0c0c1d (same as sans-cloud default)
+     - title: bold, white
+     - subtitle: italic gradient (bright teal → bright blue) on title +
+                section dividers
+     - section dividers: NO horizontal rule above the headline #}
+<style>
+:root {
+  --zenable-teal:        #00BAAE;
+  --zenable-teal-bright: #14E0CC;
+  --zenable-blue:        #0071DA;
+  --zenable-blue-bright: #4AA3F0;
+
+  /* Re-tint --sans-* brand accents to Zenable canonical */
+  --sans-orange:   var(--zenable-teal);
+  --sans-teal:     var(--zenable-blue);
+  --sans-blue:     var(--zenable-blue);
+  --sans-link:     var(--zenable-teal);
+}
+
+/* Typography — Zenable decks use Inter (loaded by modern_template) */
+body,
+body.font-sans,
+.vis-slide,
+.sans-slide {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, sans-serif !important;
+}
+.vis-mono,
+code, pre,
+[class*="syn-"] {
+  font-family: 'Fira Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+/* Kicker labels (vis-label) → bright teal (small text, better contrast) */
+.vis-slide .vis-label {
+  color: var(--zenable-teal-bright) !important;
+}
+
+/* Section divider: clean — no rule above the title.
+   The kicker + gradient-text subtitle carry the visual weight. */
+.sans-section-divider {
+  background: #0c0c1d !important;
+}
+.sans-section-divider h2 {
+  color: #FFFFFF !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* Italic gradient subtitle — bright variants for legibility at small size.
+   Targets the Title slide's subtitle + every section divider's <p>. */
+section[data-label="Title"] .vis-subtitle,
+.sans-section-divider p {
+  background: linear-gradient(90deg, var(--zenable-teal-bright), var(--zenable-blue-bright));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Suppress the SANS header bar if a deck accidentally still includes it */
+.sans-header { display: none !important; }
+</style>

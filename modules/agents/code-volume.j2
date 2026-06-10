@@ -1,0 +1,175 @@
+{#- modules/agents/code-volume.j2
+    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
+    valid under branding="sans-cloud". Future work: replace inline markup with
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro ten_years_github() -%}
+<section class="vis-slide" data-label="10 years of code">
+  <div class="vis-label">The data</div>
+  <div class="vis-title">Ten years of public GitHub</div>
+  <div class="vis-subtitle">Commits and pull requests opened — all public repositories, 2015 – 2024.</div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:10px;">
+
+    <!-- Legend -->
+    <div style="display:flex; justify-content:center; gap:28px; font-size:13px;">
+      <span style="display:inline-flex; align-items:center; gap:8px; color:#e2e8f0;">
+        <span style="display:inline-block; width:24px; height:3px; background:#2dd4bf; border-radius:2px;"></span>
+        Commits (billions, left axis)
+      </span>
+      <span style="display:inline-flex; align-items:center; gap:8px; color:#e2e8f0;">
+        <span style="display:inline-block; width:24px; height:3px; background:#fbbf24; border-radius:2px;"></span>
+        Pull requests opened (millions, right axis)
+      </span>
+    </div>
+
+    <!-- SVG chart -->
+    <div style="flex:1; display:flex; justify-content:center; align-items:center;">
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid meet" style="width:100%; max-height:54vh;" aria-label="Public GitHub commits and pull requests opened, 2015 to 2024">
+        <!-- Plot area background -->
+        <rect x="60" y="30" width="880" height="320" fill="rgba(15,23,42,0.35)" stroke="rgba(51,65,85,0.5)" stroke-width="1" rx="6"/>
+
+        <!-- Horizontal grid lines (5 ticks: 0/1/2/3/4B commits, also 0/25/50/75/100M PRs) -->
+        <g stroke="rgba(51,65,85,0.45)" stroke-width="1" stroke-dasharray="3 4">
+          <line x1="60" y1="350" x2="940" y2="350"/>
+          <line x1="60" y1="286" x2="940" y2="286"/>
+          <line x1="60" y1="222" x2="940" y2="222"/>
+          <line x1="60" y1="158" x2="940" y2="158"/>
+          <line x1="60" y1="94"  x2="940" y2="94"/>
+          <line x1="60" y1="30"  x2="940" y2="30"/>
+        </g>
+
+        <!-- Left Y axis labels (commits, billions) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="end">
+          <text x="54" y="354">0</text>
+          <text x="54" y="290">1B</text>
+          <text x="54" y="226">2B</text>
+          <text x="54" y="162">3B</text>
+          <text x="54" y="98">4B</text>
+          <text x="54" y="34">5B</text>
+        </g>
+
+        <!-- Right Y axis labels (PRs, millions) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11" fill="#94a3b8" text-anchor="start">
+          <text x="946" y="354">0</text>
+          <text x="946" y="290">20M</text>
+          <text x="946" y="226">40M</text>
+          <text x="946" y="162">60M</text>
+          <text x="946" y="98">80M</text>
+          <text x="946" y="34">100M</text>
+        </g>
+
+        <!-- X axis labels (years; data points at x = 110, 198, 286, 374, 462, 550, 638, 726, 814, 902) -->
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12" fill="#cbd5e1" text-anchor="middle">
+          <text x="110" y="372">2015</text>
+          <text x="198" y="372">2016</text>
+          <text x="286" y="372">2017</text>
+          <text x="374" y="372">2018</text>
+          <text x="462" y="372">2019</text>
+          <text x="550" y="372">2020</text>
+          <text x="638" y="372">2021</text>
+          <text x="726" y="372">2022</text>
+          <text x="814" y="372">2023</text>
+          <text x="902" y="372">2024</text>
+        </g>
+
+        <!-- Commits line (teal #2dd4bf) — scale: 5B fills 320px, y = 350 - (commits_M / 5000) * 320 -->
+        <polyline fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+          points="110,324.85 198,316.34 286,307.25 374,301.55 462,285.62 550,263.79 638,235.06 726,144.05 814,95.34 902,75.06"/>
+        <!-- Commits area fill -->
+        <polygon fill="url(#tealFade)" opacity="0.18"
+          points="110,324.85 198,316.34 286,307.25 374,301.55 462,285.62 550,263.79 638,235.06 726,144.05 814,95.34 902,75.06 902,350 110,350"/>
+
+        <!-- Commits points + labels -->
+        <g fill="#2dd4bf">
+          <circle cx="110" cy="324.85" r="4"/>
+          <circle cx="198" cy="316.34" r="4"/>
+          <circle cx="286" cy="307.25" r="4"/>
+          <circle cx="374" cy="301.55" r="4"/>
+          <circle cx="462" cy="285.62" r="4"/>
+          <circle cx="550" cy="263.79" r="4"/>
+          <circle cx="638" cy="235.06" r="4"/>
+          <circle cx="726" cy="144.05" r="4"/>
+          <circle cx="814" cy="95.34"  r="4"/>
+          <circle cx="902" cy="75.06"  r="5"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#5eead4" text-anchor="middle">
+          <text x="110" y="316">0.39B</text>
+          <text x="462" y="277">1.01B</text>
+          <text x="726" y="136">3.22B</text>
+          <text x="902" y="64">4.30B</text>
+        </g>
+
+        <!-- PRs line (amber #fbbf24) — scale: 100M fills 320px, y = 350 - (prs_M / 100) * 320 -->
+        <polyline fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="0"
+          points="110,332.4 198,320.56 286,312.24 374,304.24 462,270.96 550,189.36 638,146.48 726,109.68 814,170.16 902,166.64"/>
+        <g fill="#fbbf24">
+          <circle cx="110" cy="332.4"  r="4"/>
+          <circle cx="198" cy="320.56" r="4"/>
+          <circle cx="286" cy="312.24" r="4"/>
+          <circle cx="374" cy="304.24" r="4"/>
+          <circle cx="462" cy="270.96" r="4"/>
+          <circle cx="550" cy="189.36" r="4"/>
+          <circle cx="638" cy="146.48" r="4"/>
+          <circle cx="726" cy="109.68" r="4"/>
+          <circle cx="814" cy="170.16" r="4"/>
+          <circle cx="902" cy="166.64" r="4"/>
+        </g>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#fcd34d" text-anchor="middle">
+          <text x="110" y="346">5.5M</text>
+          <text x="550" y="183">50M</text>
+          <text x="726" y="103">75M</text>
+          <text x="902" y="184">57M</text>
+        </g>
+
+        <!-- Copilot launch annotation (June 2021, technical preview Oct 2021 — anchor between 2021 & 2022) -->
+        <g>
+          <line x1="638" y1="30" x2="638" y2="350" stroke="rgba(148,163,184,0.35)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="644" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#cbd5e1">Copilot preview · Jun 2021</text>
+        </g>
+        <!-- ChatGPT / GPT-4 era marker (between 2022 and 2023) -->
+        <g>
+          <line x1="770" y1="30" x2="770" y2="350" stroke="rgba(148,163,184,0.35)" stroke-width="1" stroke-dasharray="4 4"/>
+          <text x="776" y="58" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10" fill="#cbd5e1">ChatGPT · Nov 2022</text>
+        </g>
+
+        <defs>
+          <linearGradient id="tealFade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2dd4bf" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="#2dd4bf" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <!-- Caption -->
+    <div class="vis-callout vis-callout-teal" style="text-align:center;">
+      <span style="font-weight:700;">11× more public commits in 2024 than 2015.</span>
+      The reviewer pool didn't grow 11×.
+    </div>
+
+    <p style="text-align:center; font-size:10.5px; color:#64748b; margin:0; line-height:1.5;">
+      Source: <a href="https://www.gharchive.org/" style="color:#94a3b8;">GH Archive</a> · public events only (private repos excluded; bot accounts not filtered).
+      Commits = sum of <span class="vis-mono">PushEvent.payload.distinct_size</span>; PRs = <span class="vis-mono">PullRequestEvent</span> with <span class="vis-mono">action="opened"</span>.
+      Queried via the public <span class="vis-mono">github_events</span> table on <a href="https://play.clickhouse.com/" style="color:#94a3b8;">ClickHouse Playground</a> on 2026-05-17.
+    </p>
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro late_2025_inflection() -%}
+<section class="vis-slide" data-label="Record acceleration">
+  <div class="vis-label">Inflection</div>
+  <div class="vis-title">…and then late 2025 happened</div>
+  <div class="vis-subtitle">GitHub's own record-acceleration chart from the April 2026 availability post.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
+    <img src="modules/agents/img/github-record-acceleration.png"
+         alt="GitHub record acceleration: pull requests merged, commits, and new repositories per month, late 2024 through early 2026 — sharp upward inflection beginning H2 2025."
+         class="plain"
+         style="max-width:90%; max-height:62vh; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.3);"/>
+    <p style="text-align:center; font-size:11px; color:#64748b; margin:0; line-height:1.5;">
+      Image source: GitHub — <a href="https://github.blog/news-insights/company-news/an-update-on-github-availability/" style="color:#94a3b8;">github.blog/news-insights/company-news/an-update-on-github-availability/</a>
+    </p>
+  </div>
+</section>
+{%- endmacro -%}

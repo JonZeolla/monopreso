@@ -1,0 +1,148 @@
+{#- modules/guardrails/refined-rules.j2
+    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
+    valid under branding="sans-cloud". Future work: replace inline markup with
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro refined_rules() -%}
+<section class="vis-slide" data-label="Refined Rules">
+  <div class="vis-title">Continuously improving static analysis</div>
+
+  <div style="position:relative; flex:1; display:flex; justify-content:center; align-items:center;">
+    <style>
+      .rr-win {
+        position:absolute;
+        width:380px;
+        background:rgba(15,23,42,0.97);
+        border:1px solid rgba(51,65,85,0.7);
+        border-radius:10px;
+        box-shadow:0 14px 40px rgba(0,0,0,0.55);
+        overflow:hidden;
+        font-family:'Fira Mono','SFMono-Regular',ui-monospace,Menlo,monospace;
+      }
+      .rr-win-hdr {
+        display:flex; align-items:center; gap:8px;
+        padding:8px 12px;
+        background:rgba(30,41,59,0.85);
+        border-bottom:1px solid rgba(51,65,85,0.6);
+        font-family:'Fira Sans',sans-serif;
+      }
+      .rr-win-hdr .dot { width:9px; height:9px; border-radius:50%; }
+      .rr-win-hdr .dot.r { background:#ef4444; } .rr-win-hdr .dot.y { background:#fbbf24; } .rr-win-hdr .dot.g { background:#22c55e; }
+      .rr-win-hdr .file { font-size:11px; color:#cbd5e1; margin-left:6px; }
+      .rr-win-hdr .tag  {
+        margin-left:auto;
+        font-size:9.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+        padding:2px 8px; border-radius:999px;
+      }
+      .rr-win-body { padding:12px 14px; font-size:11.5px; line-height:1.55; color:#cbd5e1; }
+      .rr-win-body .k { color:#c084fc; }  /* keyword */
+      .rr-win-body .s { color:#86efac; }  /* string */
+      .rr-win-body .c { color:#64748b; font-style:italic; }  /* comment */
+      .rr-win-body .n { color:#fbbf24; }  /* name / identifier */
+      .rr-win-body .o { color:#94a3b8; }  /* operator / punctuation */
+    </style>
+
+    <!-- Centered policy summary (small, top) — gives the tree a root -->
+    <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%); padding:6px 14px; background:rgba(45,212,191,0.10); border:1px solid rgba(45,212,191,0.55); border-radius:999px; font-size:11.5px; color:#5eead4; font-weight:600; white-space:nowrap;">
+      §3.4.1 · CloudWatch Alarms → unencrypted SNS topic with documented exception
+    </div>
+
+    <!-- ── Window 1: Semgrep YAML — back -->
+    <div class="rr-win" style="top:48px; left:6%; transform:rotate(-3deg); z-index:1;">
+      <div class="rr-win-hdr">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="file">cloudwatch-sns-cmk.yml</span>
+        <span class="tag" style="background:rgba(45,212,191,0.18); color:#5eead4;">Semgrep</span>
+      </div>
+      <div class="rr-win-body">
+        <span class="k">rules:</span><br>
+        &nbsp;- <span class="n">id</span><span class="o">:</span> <span class="s">aws-cloudwatch-alarm-sns-cmk</span><br>
+        &nbsp;&nbsp;&nbsp;<span class="n">languages</span><span class="o">:</span> [<span class="s">terraform</span>]<br>
+        &nbsp;&nbsp;&nbsp;<span class="n">severity</span><span class="o">:</span> <span class="s">WARNING</span><br>
+        &nbsp;&nbsp;&nbsp;<span class="n">pattern</span><span class="o">:</span> <span class="o">|</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">resource</span> <span class="s">"aws_sns_topic"</span> $T {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">kms_master_key_id</span> = ...<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;<span class="n">message</span><span class="o">:</span> <span class="s">"CW Alarm targets cannot use CMK-encrypted SNS"</span>
+      </div>
+    </div>
+
+    <!-- ── Window 2: CodeQL — middle-back -->
+    <div class="rr-win" style="top:86px; left:30%; transform:rotate(2deg); z-index:2;">
+      <div class="rr-win-hdr">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="file">cw-sns-cmk.ql</span>
+        <span class="tag" style="background:rgba(192,132,252,0.18); color:#d8b4fe;">CodeQL</span>
+      </div>
+      <div class="rr-win-body">
+        <span class="c">/** @id aws/cw-alarm-cmk-sns */</span><br>
+        <span class="k">import</span> aws<br>
+        <span class="k">from</span> <span class="n">CloudWatchAlarm</span> a, <span class="n">SnsTopic</span> t<br>
+        <span class="k">where</span> a.<span class="n">getAction</span>() = t<br>
+        &nbsp;&nbsp;<span class="k">and</span> t.<span class="n">hasCmk</span>()<br>
+        &nbsp;&nbsp;<span class="k">and</span> <span class="k">not</span> <span class="n">documentedException</span>(a)<br>
+        <span class="k">select</span> a, <span class="s">"Alarm targets CMK SNS — no exception."</span>
+      </div>
+    </div>
+
+    <!-- ── Window 3: Snyk policy — right-back -->
+    <div class="rr-win" style="top:60px; right:6%; transform:rotate(4deg); z-index:1;">
+      <div class="rr-win-hdr">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="file">.snyk</span>
+        <span class="tag" style="background:rgba(248,113,113,0.18); color:#fca5a5;">Snyk IaC</span>
+      </div>
+      <div class="rr-win-body">
+        <span class="n">version</span><span class="o">:</span> <span class="s">v1.25.0</span><br>
+        <span class="n">custom-rules</span><span class="o">:</span><br>
+        &nbsp;&nbsp;- <span class="n">id</span><span class="o">:</span> <span class="s">CUSTOM-AWS-014</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="n">resource</span><span class="o">:</span> <span class="s">aws_cloudwatch_metric_alarm</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="n">when</span><span class="o">:</span> <span class="s">alarm_actions[*]</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="n">forbid</span><span class="o">:</span> <span class="s">sns.kms_master_key_id</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="n">unless</span><span class="o">:</span> <span class="s">tags.exception_ticket</span>
+      </div>
+    </div>
+
+    <!-- ── Window 4: SonarQube rule — center-front -->
+    <div class="rr-win" style="bottom:56px; left:18%; transform:rotate(-2deg); z-index:3;">
+      <div class="rr-win-hdr">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="file">CwAlarmCmkSnsCheck.java</span>
+        <span class="tag" style="background:rgba(96,165,250,0.18); color:#93c5fd;">SonarQube</span>
+      </div>
+      <div class="rr-win-body">
+        <span class="k">@Rule</span>(<span class="n">key</span> = <span class="s">"S7041"</span>)<br>
+        <span class="k">public class</span> <span class="n">CwAlarmCmkSns</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">extends</span> <span class="n">IacCheck</span> {<br>
+        &nbsp;<span class="k">void</span> <span class="n">initialize</span>(<span class="n">InitContext</span> ctx) {<br>
+        &nbsp;&nbsp;&nbsp;ctx.<span class="n">register</span>(<span class="s">"aws_sns_topic.kms_master_key_id"</span>,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">this</span><span class="o">::</span><span class="n">checkAlarmTargets</span>);<br>
+        &nbsp;}<br>
+        }
+      </div>
+    </div>
+
+    <!-- ── Window 5: Custom linter (TypeScript) — center-front -->
+    <div class="rr-win" style="bottom:36px; right:14%; transform:rotate(3deg); z-index:4;">
+      <div class="rr-win-hdr">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="file">no-cmk-sns-from-alarm.ts</span>
+        <span class="tag" style="background:rgba(251,191,36,0.18); color:#fcd34d;">ESLint plugin</span>
+      </div>
+      <div class="rr-win-body">
+        <span class="k">export const</span> <span class="n">rule</span><span class="o">:</span> <span class="n">Rule.RuleModule</span> = {<br>
+        &nbsp;<span class="n">meta</span><span class="o">:</span> { <span class="n">type</span><span class="o">:</span> <span class="s">"problem"</span> },<br>
+        &nbsp;<span class="n">create</span>(ctx) {<br>
+        &nbsp;&nbsp;<span class="k">return</span> {<br>
+        &nbsp;&nbsp;&nbsp;<span class="s">"CallExpression[callee.name='Alarm']"</span>(n) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="k">if</span> (<span class="n">topicHasCmk</span>(n)) ctx.<span class="n">report</span>(n,<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="s">"CMK SNS incompatible with CW Alarm."</span>);<br>
+        &nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;};<br>
+        &nbsp;}<br>
+        };
+      </div>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}

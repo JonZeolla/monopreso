@@ -1,0 +1,36 @@
+---
+# Per-presentation Taskfile. Picked up automatically when `task start` runs
+# from this directory. Sets this deck's default brand pack; the root Taskfile
+# is included so all other tasks (stop, clean, generate-pdf, …) still work.
+#
+# Override the brand:
+#   BRANDING=sans-cloud task start         # via env
+#   task start -- --branding=sans-cloud    # via CLI flag (wins over env)
+
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  # Default brand for this presentation. Shell env wins if already set.
+  BRANDING:
+    sh: echo "${BRANDING:-zenable}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start this presentation (default brand: zenable)"
+    cmds:
+      - task: root:start

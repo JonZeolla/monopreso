@@ -3,7 +3,7 @@
    Theme: SANS Cloud Security (shared module)
    ================================================================ #}
 
-{# ── Shared SANS variables (consumed by modules/sans-cloud-security/*) ── #}
+{# ── Shared SANS variables (consumed by modules/branding/sans-cloud/*) ── #}
 {% set sans_title    = "AI-Driven DevSecOps" %}
 {% set sans_subtitle = "Securing Coding Agents with Model Context Protocol (MCP)" %}
 {% set sans_speaker  = "Jon Zeolla" %}
@@ -47,8 +47,12 @@
 ] %}
 
 {# ── Theme + header bar (shared) ─────────────────────────────────────── #}
-{% include "modules/sans-cloud-security/theme.html.j2" %}
-{% include "modules/sans-cloud-security/header.html.j2" %}
+{% include "modules/branding/sans-cloud/theme.html.j2" %}
+{% include "modules/branding/sans-cloud/header.html.j2" %}
+
+{# ── Shared slide content ─────────────────────────────────────────── #}
+{%- from "modules/context/context-degradation.j2"        import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/agents/coding-agent-evolution.j2"      import evolution    as coding_agent_evolution %}
 
 
 <!-- ================================================================
@@ -56,27 +60,19 @@
      ================================================================ -->
 
 <!-- 1. Title Slide -->
-{% include "modules/sans-cloud-security/title-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/title-slide.html.j2" %}
 
 
 <!-- 2. Speaker -->
-{% include "modules/sans-cloud-security/speaker-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/speaker-slide.html.j2" %}
 
 
 <!-- 3. Webcast Series Overview -->
-{% include "modules/sans-cloud-security/series-overview-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/series-overview-slide.html.j2" %}
 
 
 <!-- The Evolution of AI Coding Agents -->
-<section class="vis-slide" data-label="AI Coding Agents" style="justify-content:center; align-items:center;">
-  <div class="vis-title" style="text-align:center; margin-bottom:20px;">The Evolution of AI Coding Agents</div>
-  <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/coding-agent-evolution.webp"
-       alt="Figure 1-8: The evolution of AI coding agents from autocomplete to fully autonomous agents"
-       style="max-width:85%; max-height:65vh; border-radius:8px;" class="plain">
-  <p style="font-size:11px; color:#64748b; margin-top:16px; text-align:center;">
-    Source: <a href="https://www.dolthub.com/blog/2026-01-15-a-day-in-gas-town/" style="color:#64748b;">dolthub.com/blog/2026-01-15-a-day-in-gas-town</a>
-  </p>
-</section>
+{{ coding_agent_evolution() }}
 
 <!-- Context Files & Rules -->
 <section class="vis-slide" data-label="Context Files">
@@ -501,71 +497,7 @@
 </section>
 
 <!-- Context Length Degrades Quality -->
-<section class="vis-slide" data-label="Context Degradation">
-  <div class="vis-label">Why This Matters</div>
-  <div class="vis-title">More Context = Worse Performance</div>
-  <div class="vis-subtitle">Semantic Relation Extraction (T2) — accuracy drops dramatically as context length increases.</div>
-  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-    <table style="width:90%; max-width:800px; border-collapse:separate; border-spacing:4px; font-family:'Fira Mono',monospace; font-size:14px; text-align:center;">
-      <thead>
-        <tr>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">0–8K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">8–16K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">16–32K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">32–64K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">64–128K</th>
-        </tr>
-      </thead>
-      <tbody style="color:#fff;">
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.55);">43.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.0</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.62);">48.7</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.40);">34.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.18);">16.9</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.68);">53.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.58);">45.6</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">25.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.25);">22.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.07);">6.8</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.92);">70.9</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.78);">60.5</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.48);">38.1</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.2</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.91);">70.4</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.75);">58.1</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.33);">28.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.37);">31.2</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.4</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.95);">73.5</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.76);">58.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.46);">36.7</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.34);">29.6</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-size:12px; color:#64748b; font-style:italic; margin-top:20px;">
-      <a href="https://arxiv.org/abs/2307.03172" style="color:#64748b;">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024
-    </p>
-  </div>
-</section>
+{{ context_degradation_quality_drop() }}
 
 <!-- 8. Skills: Description-Only Loading (Interactive) -->
 <section class="vis-slide" data-label="Skills">
@@ -1213,11 +1145,11 @@
 </section>
 
 <!-- 16. Key Takeaways -->
-{% include "modules/sans-cloud-security/takeaways-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/takeaways-slide.html.j2" %}
 
 
 <!-- 17. CSE Summit Promo -->
-{% include "modules/sans-cloud-security/cse-summit-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/cse-summit-slide.html.j2" %}
 
 <!-- Emergency Webcast: TeamPCP Supply Chain Attack -->
 <section class="vis-slide" data-label="Emergency Webcast" style="justify-content:center;">
@@ -1241,4 +1173,4 @@
 </section>
 
 <!-- 18. End Slide -->
-{% include "modules/sans-cloud-security/end-slide.html.j2" %}
+{% include "modules/branding/sans-cloud/end-slide.html.j2" %}

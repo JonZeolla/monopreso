@@ -1,0 +1,72 @@
+{#- modules/context/context-degradation.j2
+    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
+    valid under branding="sans-cloud". Future work: replace inline markup with
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro quality_drop() -%}
+<section class="vis-slide" data-label="Context Degradation">
+  <div class="vis-label">Why This Matters</div>
+  <div class="vis-title">More Context = Worse Performance</div>
+  <div class="vis-subtitle">Semantic Relation Extraction (T2) — accuracy drops dramatically as context length increases.</div>
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+    <table style="width:90%; max-width:800px; border-collapse:separate; border-spacing:4px; font-family:'Fira Mono',monospace; font-size:14px; text-align:center;">
+      <thead>
+        <tr>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">0–8K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">8–16K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">16–32K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">32–64K</th>
+          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">64–128K</th>
+        </tr>
+      </thead>
+      <tbody style="color:#fff;">
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.55);">43.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.0</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.62);">48.7</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.40);">34.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.18);">16.9</td>
+          <td style="padding:8px; color:#475569;">–</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.68);">53.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.58);">45.6</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">25.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.25);">22.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.07);">6.8</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.92);">70.9</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.78);">60.5</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.48);">38.1</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.2</td>
+          <td style="padding:8px; color:#475569;">–</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.91);">70.4</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.75);">58.1</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.33);">28.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.37);">31.2</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.4</td>
+        </tr>
+        <tr>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.95);">73.5</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.76);">58.8</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.0</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.46);">36.7</td>
+          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.34);">29.6</td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px; color:#64748b; font-style:italic; margin-top:20px;">
+      <a href="https://arxiv.org/abs/2307.03172" style="color:#64748b;">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024
+    </p>
+  </div>
+</section>
+{%- endmacro -%}

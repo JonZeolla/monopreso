@@ -1,0 +1,179 @@
+{#- modules/hooks/hooks.j2
+    Shared slide content extracted from 2026-06-coding-guardrails.
+    Currently emits sans-cloud-flavored HTML (vis-* classes); valid under
+    branding="sans-cloud". Future work: replace inline markup with brand-pack
+    primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro when_x_then_y() -%}
+<section class="vis-slide" data-label="Hooks">
+  <div class="vis-label">Deterministic Enforcement</div>
+  <div class="vis-title">Hooks: When X, Then Y</div>
+  <div class="vis-subtitle">Hooks are deterministic shell commands that run at specific lifecycle events — not AI suggestions, but guaranteed execution.</div>
+  <div class="vis-grid-2" style="flex:1;">
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 14px 0;">How it works</p>
+      <div style="display:flex; flex-direction:column; gap:14px;">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(96,165,250,0.2); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">1</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">AI triggers a lifecycle event (e.g. about to write a file)</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(168,85,247,0.2); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">2</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Claude Code checks settings.json for matching hooks</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(45,212,191,0.2); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf;">3</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Hook script runs with event data piped as JSON to stdin</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(251,191,36,0.2); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">4</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">Exit code determines outcome: 0 = allow, 2 = block</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="vis-step" style="background:rgba(248,113,113,0.2); border:1px solid rgba(248,113,113,0.3); color:#f87171;">5</div>
+          <p style="font-size:13px; color:#e2e8f0; margin:0;">stdout/stderr fed back to AI as context or error message</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.15em; color:#64748b; margin:0 0 14px 0;">Configuration</p>
+      <div class="vis-card">
+        <div class="vis-card-header">
+          <span class="vis-card-filename">.claude/settings.json</span>
+        </div>
+        <div class="vis-card-body vis-code" style="font-size:13px; line-height:1.8;">
+          <p style="margin:0;">{</p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-key">"hooks"</span>: {</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-type">"PreToolUse"</span>: [{</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"matcher"</span>: <span class="syn-str">"Write"</span>,</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"hooks"</span>: [{</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"type"</span>: <span class="syn-str">"command"</span>,</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="syn-id">"command"</span>: <span class="syn-str">"./check.sh"</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]</p>
+          <p style="margin:0;">&nbsp;&nbsp;&nbsp;&nbsp;}]</p>
+          <p style="margin:0;">&nbsp;&nbsp;}</p>
+          <p style="margin:0;">}</p>
+        </div>
+      </div>
+      <div class="vis-callout-teal vis-callout" style="margin-top:14px;">
+        <span style="font-weight:600;">Key insight:</span> Hooks run your code, not AI code. They are deterministic, auditable, and cannot be bypassed by the model.
+      </div>
+    </div>
+  </div>
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;">
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PreToolUse</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PostToolUse</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">UserPromptSubmit</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">Stop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SessionStart</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SessionEnd</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">Notification</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#64748b;">SubagentStop</span>
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro in_action() -%}
+<section class="vis-slide" data-label="Hooks in Action">
+  <div class="vis-label">Real-World Hooks</div>
+  <div class="vis-title">Hooks in Action</div>
+  <div class="vis-subtitle">Deterministic code that runs at specific points in the AI coding lifecycle</div>
+  <div style="display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap;">
+    <span class="vis-badge" style="background:rgba(96,165,250,0.1); border:1px solid rgba(96,165,250,0.3); color:#60a5fa;">SessionStart</span>
+    <span class="vis-badge" style="background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); color:#c084fc;">UserPromptSubmit</span>
+    <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf; font-weight:700;">PreToolUse</span>
+    <span class="vis-badge" style="background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); color:#fbbf24;">PostToolUse</span>
+    <span class="vis-badge" style="background:rgba(248,113,113,0.1); border:1px solid rgba(248,113,113,0.3); color:#f87171;">Stop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">Notification</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">SubagentStop</span>
+    <span class="vis-badge" style="background:rgba(100,116,139,0.1); border:1px solid rgba(100,116,139,0.3); color:#94a3b8;">SessionEnd</span>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:16px; flex:1;">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#2dd4bf; margin:0;">PreToolUse</p>
+          <p style="font-size:10px; color:#64748b; margin:4px 0 0 0;">matcher: <span style="color:#94a3b8;">Write</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">FILE=$(<span class="syn-id">jq</span> -r '.tool_input.file_path')</p>
+          <p style="margin:0;"><span class="syn-type">if</span> [[ <span class="syn-str">"$FILE"</span> == *.tfstate* ]]; <span class="syn-type">then</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-type">echo</span> <span class="syn-str">"Protected file"</span> &gt;&amp;2; <span class="syn-type">exit</span> 2</p>
+          <p style="margin:0;"><span class="syn-type">fi</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(127,29,29,0.3); border:1px solid rgba(239,68,68,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">🚫</span>
+            <span style="font-size:11px; font-weight:700; color:#f87171; text-transform:uppercase;">Blocked</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(248,113,113,0.7); margin:0;">"You are not allowed to modify .tfstate files"</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(251,191,36,0.1); border:1px solid rgba(251,191,36,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#fbbf24; margin:0;">PostToolUse</p>
+          <p style="font-size:10px; color:#64748b; margin:4px 0 0 0;">matcher: <span style="color:#94a3b8;">Edit|Write</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">FILE=$(<span class="syn-id">jq</span> -r '.tool_input.file_path')</p>
+          <p style="margin:0;">RESULT=$(<span class="syn-id">semgrep</span> --config=policy/ <span class="syn-str">"$FILE"</span>)</p>
+          <p style="margin:0;"><span class="syn-type">if</span> [ $? -ne 0 ]; <span class="syn-type">then</span></p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-type">echo</span> <span class="syn-str">"$RESULT"</span> &gt;&amp;2; <span class="syn-type">exit</span> 2</p>
+          <p style="margin:0;"><span class="syn-type">fi</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(120,53,15,0.3); border:1px solid rgba(251,191,36,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">⚠️</span>
+            <span style="font-size:11px; font-weight:700; color:#fbbf24; text-transform:uppercase;">Feedback to AI</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(252,211,77,0.7); margin:0;">"Policy violation: SQL string interpolation. Use parameterized queries."</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(168,85,247,0.1); border:1px solid rgba(168,85,247,0.3); padding:12px; text-align:center;">
+          <p class="vis-mono" style="font-size:12px; font-weight:700; color:#c084fc; margin:0;">UserPromptSubmit</p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1.5; min-width:0;">
+        <div style="border-radius:8px; background:#11111b; border:1px solid rgba(51,65,85,0.5); padding:12px;" class="vis-mono vis-code">
+          <p style="margin:0; color:#475569;">#!/bin/bash</p>
+          <p style="margin:0;">PROMPT=$(<span class="syn-id">jq</span> -r '.prompt')</p>
+          <p style="margin:0;">CONTEXT=$(<span class="syn-id">psql</span> -t -c \</p>
+          <p style="margin:0;">&nbsp;&nbsp;<span class="syn-str">"SELECT owner, tier FROM services"</span>)</p>
+          <p style="margin:0;"><span class="syn-type">echo</span> <span class="syn-str">"$CONTEXT"</span></p>
+        </div>
+      </div>
+      <svg width="28" height="16" viewBox="0 0 28 16" style="flex-shrink:0;"><path d="M0 8h22m-5-4l5 4-5 4" stroke="#475569" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <div style="flex:1; min-width:0;">
+        <div style="border-radius:8px; background:rgba(5,46,22,0.3); border:1px solid rgba(34,197,94,0.3); padding:12px;">
+          <div style="display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span style="font-size:12px;">✅</span>
+            <span style="font-size:11px; font-weight:700; color:#4ade80; text-transform:uppercase;">Context Added</span>
+          </div>
+          <p class="vis-mono" style="font-size:10px; color:rgba(134,239,172,0.7); margin:0;">"Adding context: service owner, data tier, deployment environment"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- endmacro -%}

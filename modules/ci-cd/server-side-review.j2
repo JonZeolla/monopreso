@@ -1,0 +1,59 @@
+{#- modules/ci-cd/server-side-review.j2
+    Shared slide content extracted from 2026-06-coding-guardrails.
+    Currently emits sans-cloud-flavored HTML (vis-* classes); valid under
+    branding="sans-cloud". Future work: replace inline markup with brand-pack
+    primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro wiring() -%}
+<section class="vis-slide" data-label="Server Wiring">
+  <div class="vis-label">The substrate</div>
+  <div class="vis-title">Branch protection + webhooks + APIs</div>
+  <div class="vis-subtitle">How the server-side tier actually fires. Same shape on GitLab and GitHub.</div>
+
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; gap:24px; padding:12px 0;">
+
+    <div style="display:flex; align-items:stretch; gap:12px;">
+      <div class="vis-card" style="flex:1; padding:16px;">
+        <p style="font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0 0 6px 0;">① Gate</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 6px 0;">Branch protection</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">No direct push to <span class="vis-mono" style="color:#fbbf24;">main</span>. Every change must come via MR/PR.</p>
+      </div>
+      <div style="align-self:center; color:#475569; font-size:24px;">→</div>
+      <div class="vis-card" style="flex:1; padding:16px;">
+        <p style="font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#c084fc; margin:0 0 6px 0;">② Trigger</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 6px 0;">Webhook fires</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">MR opened / pushed / commented → reviewer service receives the event.</p>
+      </div>
+      <div style="align-self:center; color:#475569; font-size:24px;">→</div>
+      <div class="vis-card" style="flex:1; padding:16px;">
+        <p style="font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#fbbf24; margin:0 0 6px 0;">③ Review</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 6px 0;">Agent + SAST run</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">Agent fetches diff + context, applies tools, generates findings.</p>
+      </div>
+      <div style="align-self:center; color:#475569; font-size:24px;">→</div>
+      <div class="vis-card" style="flex:1; padding:16px;">
+        <p style="font-size:10px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#4ade80; margin:0 0 6px 0;">④ Respond</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 6px 0;">POST back via API</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">Inline comments + status checks land on the MR/PR.</p>
+      </div>
+    </div>
+
+    <div class="vis-grid-2" style="gap:16px;">
+      <div class="vis-card" style="padding:14px;">
+        <p style="font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#fb923c; margin:0 0 10px 0;">GitLab</p>
+        <p class="vis-mono" style="font-size:12px; color:#cbd5e1; margin:0 0 4px 0;">webhook event: <span style="color:#2dd4bf;">merge_request</span></p>
+        <p class="vis-mono" style="font-size:12px; color:#cbd5e1; margin:0;">post-back: Notes API · Discussions API</p>
+      </div>
+      <div class="vis-card" style="padding:14px;">
+        <p style="font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#94a3b8; margin:0 0 10px 0;">GitHub</p>
+        <p class="vis-mono" style="font-size:12px; color:#cbd5e1; margin:0 0 4px 0;">webhook event: <span style="color:#2dd4bf;">pull_request</span></p>
+        <p class="vis-mono" style="font-size:12px; color:#cbd5e1; margin:0;">post-back: Reviews API · Comments API</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    Branch protection makes review <strong>mandatory</strong>. Webhooks make it <strong>automatic</strong>. APIs make it <strong>actionable</strong>.
+  </div>
+</section>
+{%- endmacro -%}

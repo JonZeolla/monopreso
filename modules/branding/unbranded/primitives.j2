@@ -1,0 +1,119 @@
+{# ================================================================
+   Unbranded — Brand-pack primitives
+   ----------------------------------------------------------------
+   Neutral implementation of the primitive macro contract.
+   Uses .unb-* CSS classes defined in this pack's theme.html.j2.
+
+   See AGENTS.md (repo root) for the full contract and accent vocab.
+   ================================================================ #}
+
+
+{# ── internal helpers ─────────────────────────────────────────── #}
+
+{%- macro _accent_class(name) -%}
+{%- set m = {
+  "primary":"unb-accent-primary",
+  "success":"unb-accent-success",
+  "warning":"unb-accent-warning",
+  "danger": "unb-accent-danger",
+  "info":   "unb-accent-info",
+  "neutral":"",
+} -%}{{- m.get(name, "") -}}
+{%- endmacro -%}
+
+
+{# ── structural primitives ────────────────────────────────────── #}
+
+{%- macro title_slide(title, subtitle="", kicker="") -%}
+<section class="unb-slide" data-label="Title" style="justify-content:center; align-items:center; text-align:center;">
+  <div style="max-width:880px;">
+    {%- if kicker %}<div class="unb-label" style="text-align:center;">{{ kicker }}</div>{% endif %}
+    <h1 class="unb-title" style="font-size:56px;">{{ title }}</h1>
+    {%- if subtitle %}<p class="unb-subtitle" style="font-size:20px;">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro section_divider(num, title, subtitle="") -%}
+<section class="unb-slide" data-label="Section: {{ title }}" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    {%- if num %}<div class="unb-label">Part {{ num }}</div>{% endif %}
+    <h2 class="unb-title" style="font-size:54px;">{{ title }}</h2>
+    {%- if subtitle %}<p class="unb-subtitle">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro slide_heading(label, title, subtitle="") -%}
+<div class="unb-label">{{ label }}</div>
+<div class="unb-title">{{ title }}</div>
+{%- if subtitle %}<div class="unb-subtitle">{{ subtitle|safe }}</div>{% endif %}
+{%- endmacro -%}
+
+
+{# ── content primitives ───────────────────────────────────────── #}
+
+{%- macro callout(text, accent="primary") -%}
+<div class="unb-callout {{ _accent_class(accent) }}" style="text-align:center;">{{ text|safe }}</div>
+{%- endmacro -%}
+
+{%- macro pros_cons(benefits, shortcomings, ben_label="Benefits", short_label="Shortcomings") -%}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; flex:1;">
+  <div>
+    <p class="unb-label" style="color:var(--unb-success);">{{ ben_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {%- for item in benefits %}
+      <div class="unb-card unb-accent-success">
+        <p class="unb-card-title">{{ item.title }}</p>
+        {%- if item.detail %}<p class="unb-card-body">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+  <div>
+    <p class="unb-label" style="color:var(--unb-danger);">{{ short_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:10px;">
+      {%- for item in shortcomings %}
+      <div class="unb-card unb-accent-danger">
+        <p class="unb-card-title">{{ item.title }}</p>
+        {%- if item.detail %}<p class="unb-card-body">{{ item.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro pill_row(items, justify="center") -%}
+<div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:{{ justify }}; margin:10px 0 22px 0;">
+  {%- for item in items %}
+    <span class="unb-pill {{ _accent_class(item.accent | default('neutral')) }}">{{ item.label }}</span>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro card(title, body, accent="neutral") -%}
+<div class="unb-card {{ _accent_class(accent) }}">
+  {%- if title %}<p class="unb-card-title" style="margin-bottom:4px;">{{ title }}</p>{% endif %}
+  <p class="unb-card-body">{{ body|safe }}</p>
+</div>
+{%- endmacro -%}
+
+{%- macro card_grid(items, cols=3) -%}
+<div style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
+  {%- for item in items %}
+    {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{# ────────────────────────────────────────────────────────────────
+   NOT YET IMPLEMENTED — declared in AGENTS.md contract.
+   Implement on demand when extracting the consuming shared slide.
+
+     code_block(filename, lines)
+     step_flow(steps)
+     pipe(stages)
+     ide_mockup(filename, sidebar, code_lines, chat_panel=None)
+   ──────────────────────────────────────────────────────────────── #}

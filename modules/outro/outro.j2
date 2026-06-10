@@ -1,0 +1,44 @@
+{#- modules/outro/outro.j2
+    Standard outro slides for the modern engine. Replaces the revealjs-era
+    modules/shared/wrap-up.html. Renders under any brand pack whose theme
+    defines the .vis-* primitives.
+
+    Usage:
+      {%- from "modules/outro/outro.j2" import questions, thank_you %}
+      {{ questions() }}
+      {{ thank_you(name="Jon Zeolla",
+                   linkedin_url="linkedin.com/in/jonzeolla") }}
+
+    The default QR PNG is the one that already lives at
+    modules/shared/img/jon_zeolla_linkedin_qr.png — other speakers should pass
+    their own via the qr_image argument.
+-#}
+
+{%- macro questions() -%}
+<section class="vis-slide" data-label="Questions" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    <h1 class="vis-title" style="font-size:96px; margin:0;">Questions?</h1>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro thank_you(name="Jon Zeolla",
+                    linkedin_url="linkedin.com/in/jonzeolla",
+                    qr_image="modules/shared/img/jon_zeolla_linkedin_qr.png",
+                    qr_label="Scan to connect on LinkedIn") -%}
+<section class="vis-slide" data-label="Thank you" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    <h1 class="vis-title" style="font-size:72px; margin:0 0 28px 0;">Thank you!</h1>
+    {%- if name %}
+    <p class="vis-subtitle" style="font-size:22px; margin:0 0 32px 0;">{{ name }}</p>
+    {%- endif %}
+    <img src="{{ qr_image }}"
+         alt="{{ qr_label }}"
+         style="width:240px; height:240px; margin:0 auto 20px auto; display:block; border-radius:12px; background:#ffffff; padding:12px;">
+    {%- if linkedin_url %}
+    <p class="vis-mono" style="font-size:18px; color:#94a3b8; margin:0;">{{ linkedin_url }}</p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
