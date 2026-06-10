@@ -51,7 +51,8 @@
 {% include "modules/branding/sans-cloud/header.html.j2" %}
 
 {# ── Shared slide content ─────────────────────────────────────────── #}
-{%- from "modules/shared/slides/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/context/context-degradation.j2"        import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/agents/coding-agent-evolution.j2"      import evolution    as coding_agent_evolution %}
 
 
 <!-- ================================================================
@@ -71,15 +72,7 @@
 
 
 <!-- The Evolution of AI Coding Agents -->
-<section class="vis-slide" data-label="AI Coding Agents" style="justify-content:center; align-items:center;">
-  <div class="vis-title" style="text-align:center; margin-bottom:20px;">The Evolution of AI Coding Agents</div>
-  <img src="presentations/2026-03-sans-sec540-ai-driven-devsecops/img/coding-agent-evolution.webp"
-       alt="Figure 1-8: The evolution of AI coding agents from autocomplete to fully autonomous agents"
-       style="max-width:85%; max-height:65vh; border-radius:8px;" class="plain">
-  <p style="font-size:11px; color:#64748b; margin-top:16px; text-align:center;">
-    Source: <a href="https://www.dolthub.com/blog/2026-01-15-a-day-in-gas-town/" style="color:#64748b;">dolthub.com/blog/2026-01-15-a-day-in-gas-town</a>
-  </p>
-</section>
+{{ coding_agent_evolution() }}
 
 <!-- Context Files & Rules -->
 <section class="vis-slide" data-label="Context Files">

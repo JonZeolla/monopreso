@@ -4,8 +4,8 @@
    start.sh from the BRANDING env var / --branding flag; default brand
    for this deck is set in the local Taskfile.yml). See AGENTS.md.
 
-   All content slides live in modules/shared/slides/ — they can be
-   re-used by other decks. The currently-extracted set still emits
+   All content slides live in topic-grouped subdirs under modules/ — they
+   can be re-used by other decks. The currently-extracted set still emits
    sans-cloud-flavored HTML (vis-* classes), so this deck pins to the
    sans-cloud brand for now. Once shared slides are refactored to use
    brand-pack primitives, the same content will render under any brand.
@@ -15,18 +15,20 @@
 {% include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
 
 {# ── Shared slide content ─────────────────────────────────────────── #}
-{%- from "modules/shared/slides/context-files.j2"            import mockup            as context_files_mockup,
-                                                                    tradeoffs         as context_files_tradeoffs %}
-{%- from "modules/shared/slides/context-window.j2"           import interactive       as context_window_interactive %}
-{%- from "modules/shared/slides/context-degradation.j2"      import quality_drop      as context_degradation_quality_drop %}
-{%- from "modules/shared/slides/layered-defense.j2"          import layered_defense %}
-{%- from "modules/shared/slides/deterministic-guardrails.j2" import pci_example       as deterministic_pci_example %}
-{%- from "modules/shared/slides/hooks.j2"                    import when_x_then_y     as hooks_when_x_then_y,
-                                                                    in_action         as hooks_in_action %}
-{%- from "modules/shared/slides/cicd-enforcement.j2"         import enforcement_window as cicd_enforcement_window %}
-{%- from "modules/shared/slides/server-side-review.j2"       import wiring            as server_side_wiring %}
-{%- from "modules/shared/slides/agent-review.j2"             import layered_ai_review %}
-{%- from "modules/shared/slides/outro.j2"                    import questions, thank_you %}
+{%- from "modules/agents/coding-agent-evolution.j2"     import evolution          as coding_agent_evolution %}
+{%- from "modules/context/context-files.j2"            import mockup             as context_files_mockup,
+                                                              tradeoffs          as context_files_tradeoffs %}
+{%- from "modules/context/context-window.j2"           import interactive        as context_window_interactive %}
+{%- from "modules/context/context-degradation.j2"      import quality_drop       as context_degradation_quality_drop %}
+{%- from "modules/guardrails/layered-defense.j2"       import layered_defense %}
+{%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example     as deterministic_pci_example %}
+{%- from "modules/guardrails/policy-feedback.j2"       import policy_feedback %}
+{%- from "modules/guardrails/refined-rules.j2"         import refined_rules %}
+{%- from "modules/hooks/hooks.j2"                      import when_x_then_y      as hooks_when_x_then_y,
+                                                              in_action          as hooks_in_action %}
+{%- from "modules/agents/agent-review.j2"              import layered_ai_review %}
+{%- from "modules/agents/agent-feedback-loop.j2"       import feedback_loop      as agent_feedback_loop %}
+{%- from "modules/outro/outro.j2"                      import questions, thank_you %}
 
 
 <!-- ================================================================
@@ -38,6 +40,8 @@
     <h1 class="vis-title" style="font-size:64px; margin-bottom:18px;">Guardrails for Coding Agents</h1>
   </div>
 </section>
+
+{{ coding_agent_evolution() }}
 
 
 <!-- ================================================================
@@ -78,13 +82,102 @@
 <!-- ================================================================
      SECTION 4 — FEEDBACK LOOPS
      ================================================================ -->
-<section class="sans-slide sans-section-divider" data-label="Section: Feedback Loops">
-  <h2>4 · Feedback Loops</h2>
+<section class="sans-slide sans-section-divider" data-label="Section: Feedback Loops" id="fb-section">
+  <style>
+    #fb-section { position:relative; overflow:hidden; }
+    #fb-section .fb-popper {
+      display:inline-block;
+      font-size:1.1em;
+      transform-origin:70% 70%;
+      transform:rotate(-12deg) scale(0.4);
+      opacity:0;
+      transition:transform 0.55s cubic-bezier(.2,1.4,.4,1), opacity 0.4s;
+    }
+    #fb-section.fb-go .fb-popper {
+      transform:rotate(0deg) scale(1.15);
+      opacity:1;
+    }
+    #fb-section .fb-confetti {
+      position:absolute;
+      /* top/left set per-piece — each piece spawns at one of the four emitters around the heading */
+      width:10px;
+      height:14px;
+      border-radius:2px;
+      opacity:0;
+      pointer-events:none;
+      will-change:transform, opacity;
+    }
+    #fb-section.fb-go .fb-confetti {
+      animation: fb-burst 1500ms cubic-bezier(.18,.7,.3,1) forwards;
+    }
+    @keyframes fb-burst {
+      0%   { transform:translate(-50%, -50%) rotate(0deg);                       opacity:0;   }
+      10%  { opacity:1; }
+      100% { transform:translate(var(--fb-dx), var(--fb-dy)) rotate(var(--fb-rot)); opacity:0; }
+    }
+  </style>
+  <h2>4 · <span class="fb-popper">🎉</span> Feedback Loops</h2>
+  <script>
+  (function(){
+    var slide = document.getElementById('fb-section');
+    if(!slide) return;
+
+    var colors = ['#fbbf24','#2dd4bf','#60a5fa','#c084fc','#f87171','#22c55e','#f59e0b'];
+    // Four emitters flanking the heading — above, below, left, right
+    var emitters = [
+      { top:'18%', left:'50%' },
+      { top:'82%', left:'50%' },
+      { top:'50%', left:'18%' },
+      { top:'50%', left:'82%' }
+    ];
+    var perEmitter = 36;
+    var total = emitters.length * perEmitter;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < total; i++) {
+      var span = document.createElement('span');
+      span.className = 'fb-confetti';
+      var origin = emitters[i % emitters.length];
+      span.style.top  = origin.top;
+      span.style.left = origin.left;
+      var angle = (i / perEmitter) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+      var dist  = 200 + Math.random() * 280;
+      var dx    = Math.cos(angle) * dist;
+      var dy    = Math.sin(angle) * dist + 100; // slight gravity drift downward
+      span.style.setProperty('--fb-dx',  dx.toFixed(1) + 'px');
+      span.style.setProperty('--fb-dy',  dy.toFixed(1) + 'px');
+      span.style.setProperty('--fb-rot', (Math.random() * 720 - 360).toFixed(0) + 'deg');
+      span.style.background    = colors[i % colors.length];
+      span.style.animationDelay = (Math.random() * 160).toFixed(0) + 'ms';
+      if (i % 3 === 0) { span.style.width = '6px';  span.style.height = '6px';  span.style.borderRadius = '50%'; }
+      if (i % 5 === 0) { span.style.width = '14px'; span.style.height = '4px'; }
+      frag.appendChild(span);
+    }
+    slide.appendChild(frag);
+
+    var fire = function(){
+      slide.classList.remove('fb-go');
+      void slide.offsetWidth;       // restart CSS animations
+      slide.classList.add('fb-go');
+    };
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting && e.intersectionRatio > 0.55) fire();
+          else slide.classList.remove('fb-go');
+        });
+      }, { threshold:[0, 0.55, 0.9] });
+      io.observe(slide);
+    } else {
+      fire();
+    }
+  })();
+  </script>
 </section>
 
-{{ cicd_enforcement_window() }}
-{{ server_side_wiring() }}
 {{ layered_ai_review() }}
+{{ agent_feedback_loop() }}
+{{ policy_feedback() }}
+{{ refined_rules() }}
 
 
 <!-- ================================================================

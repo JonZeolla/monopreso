@@ -1,0 +1,78 @@
+{#- modules/guardrails/policy-feedback.j2
+    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
+    valid under branding="sans-cloud". Future work: replace inline markup with
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro policy_feedback() -%}
+<section class="vis-slide" data-label="Policy Feedback">
+  <div class="vis-label">Governance feedback</div>
+  <div class="vis-title">Make your governance suck less</div>
+
+  <div style="position:relative; flex:1; display:flex; justify-content:center; align-items:center;">
+
+    <!-- ── Centered Word-doc-style policy ────────────────────────────── -->
+    <div style="position:relative; width:520px; max-width:46%; background:#f8f5ee; color:#1f2937; border-radius:3px; box-shadow:0 18px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(15,23,42,0.4); padding:34px 46px 30px 46px; font-family:Georgia,'Times New Roman',serif;">
+      <!-- Faux Word ribbon -->
+      <div style="position:absolute; top:0; left:0; right:0; height:8px; background:linear-gradient(to right, #2b579a 0%, #2b579a 38%, #d1d5db 38%, #d1d5db 100%); border-radius:3px 3px 0 0;"></div>
+
+      <p style="font-size:10px; color:#6b7280; text-transform:uppercase; letter-spacing:0.18em; margin:6px 0 4px 0;">Information Security Policy · v3.4</p>
+      <h3 style="font-size:24px; color:#111827; font-weight:700; margin:0 0 4px 0; letter-spacing:-0.01em;">Encryption at Rest</h3>
+      <hr style="border:none; border-top:1px solid #d1d5db; margin:16px 0 18px 0;">
+      <p style="font-size:15px; line-height:1.7; color:#1f2937; margin:0 0 14px 0;">
+        <strong>§3.4.1</strong> &nbsp; All data shall be encrypted at rest using
+        <span style="background:rgba(251,191,36,0.45); padding:0 2px;">customer-managed keys</span>.
+        No exceptions.
+      </p>
+      <p style="font-size:12.5px; line-height:1.65; color:#4b5563; margin:0; font-style:italic;">
+        Approved: CISO · 2026-02-14
+      </p>
+    </div>
+
+    <!-- ── Feedback bubbles ──────────────────────────────────────────── -->
+
+    <!-- 👍 top-left — compliance baseline -->
+    <div style="position:absolute; top:6%; left:2%; width:260px; padding:14px 16px; border-radius:14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.45); backdrop-filter:blur(2px);">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:22px; line-height:1;">👍</span>
+        <span style="font-size:10.5px; font-weight:700; color:#4ade80; text-transform:uppercase; letter-spacing:0.08em;">Compliance baseline</span>
+      </div>
+      <p style="font-size:12.5px; color:#cbd5e1; margin:0; line-height:1.55;">
+        SOC 2 expects this control already. Auditors will look for it on day one.
+      </p>
+    </div>
+
+    <!-- 👎 top-right — security theatre -->
+    <div style="position:absolute; top:6%; right:2%; width:300px; padding:14px 16px; border-radius:14px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.5); backdrop-filter:blur(2px);">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:22px; line-height:1;">👎</span>
+        <span style="font-size:10.5px; font-weight:700; color:#fca5a5; text-transform:uppercase; letter-spacing:0.08em;">Security theatre</span>
+      </div>
+      <p style="font-size:12.5px; color:#cbd5e1; margin:0; line-height:1.55;">
+        Public marketing copy ships in the HTML. Encrypting it at rest in the browser and decrypting with JS adds zero protection.
+      </p>
+    </div>
+
+    <!-- 👍 bottom-left — defense in depth -->
+    <div style="position:absolute; bottom:6%; left:2%; width:280px; padding:14px 16px; border-radius:14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.45); backdrop-filter:blur(2px);">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:22px; line-height:1;">👍</span>
+        <span style="font-size:10.5px; font-weight:700; color:#4ade80; text-transform:uppercase; letter-spacing:0.08em;">Defense in depth</span>
+      </div>
+      <p style="font-size:12.5px; color:#cbd5e1; margin:0; line-height:1.55;">
+        Customer-data tables and snapshot exports — exactly where CMKs earn their keep.
+      </p>
+    </div>
+
+    <!-- 👎 bottom-right — incompatible AWS primitive -->
+    <div style="position:absolute; bottom:6%; right:2%; width:300px; padding:14px 16px; border-radius:14px; background:rgba(248,113,113,0.08); border:1px solid rgba(248,113,113,0.5); backdrop-filter:blur(2px);">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <span style="font-size:22px; line-height:1;">👎</span>
+        <span style="font-size:10.5px; font-weight:700; color:#fca5a5; text-transform:uppercase; letter-spacing:0.08em;">Service can't</span>
+      </div>
+      <p style="font-size:12.5px; color:#cbd5e1; margin:0; line-height:1.55;">
+        CloudWatch Alarms cannot publish to SNS topics encrypted with CMK. Engineering has to carve a documented exception.
+      </p>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}

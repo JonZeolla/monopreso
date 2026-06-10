@@ -1,0 +1,119 @@
+{#- modules/agents/agent-feedback-loop.j2
+    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
+    valid under branding="sans-cloud". Future work: replace inline markup with
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+
+{%- macro feedback_loop() -%}
+<section class="vis-slide" data-label="Feedback Loop">
+  <div class="vis-label">Closing the loop</div>
+  <div class="vis-title">Coding Agents feedback loop</div>
+
+  <div style="flex:1; display:flex; justify-content:center; align-items:center;">
+    <svg viewBox="0 0 1400 720" preserveAspectRatio="xMidYMid meet"
+         style="width:100%; max-height:78vh;"
+         aria-label="Oval feedback loop: IDE → Feedback Agent → Knowledge DB → Review Agents (Security, QA, Best Practices) → IDE">
+
+      <defs>
+        <marker id="afl-arrow-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#2dd4bf"/>
+        </marker>
+        <marker id="afl-arrow-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#fbbf24"/>
+        </marker>
+        <marker id="afl-arrow-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#c084fc"/>
+        </marker>
+        <marker id="afl-arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+          <path d="M0,0 L10,5 L0,10 z" fill="#60a5fa"/>
+        </marker>
+      </defs>
+
+      <!-- ── 12 o'clock: IDE (centered at 700,90; 260x150) ─────────── -->
+      <g>
+        <rect x="570" y="15" width="260" height="150" rx="10"
+              fill="rgba(15,23,42,0.85)" stroke="rgba(96,165,250,0.6)" stroke-width="1.5"/>
+        <rect x="570" y="15" width="260" height="24" rx="10" fill="rgba(51,65,85,0.7)"/>
+        <rect x="570" y="29" width="260" height="10" fill="rgba(51,65,85,0.7)"/>
+        <circle cx="590" cy="27" r="4" fill="#ef4444"/>
+        <circle cx="604" cy="27" r="4" fill="#fbbf24"/>
+        <circle cx="618" cy="27" r="4" fill="#22c55e"/>
+        <text x="700" y="33" font-size="11" fill="#94a3b8" text-anchor="middle"
+              font-family="ui-monospace,SFMono-Regular,Menlo,monospace">auth_service.py</text>
+        <text x="700" y="80"  font-size="22" fill="#e2e8f0" font-weight="700" text-anchor="middle">IDE</text>
+        <text x="700" y="108" font-size="13" fill="#94a3b8" text-anchor="middle">edits · accepts · rejects</text>
+        <text x="700" y="148" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">
+          "this is the way we do it"
+        </text>
+      </g>
+
+      <!-- ── 3 o'clock: Feedback Agent (centered at 1240,350; 240x130) ─ -->
+      <g>
+        <rect x="1120" y="285" width="240" height="130" rx="10"
+              fill="rgba(45,212,191,0.10)" stroke="rgba(45,212,191,0.55)" stroke-width="1.5"/>
+        <text x="1240" y="330" font-size="17" fill="#5eead4" font-weight="700" text-anchor="middle">Feedback Agent</text>
+        <text x="1240" y="362" font-size="13" fill="#94a3b8" text-anchor="middle">distills signals into</text>
+        <text x="1240" y="381" font-size="13" fill="#94a3b8" text-anchor="middle">durable rules</text>
+      </g>
+
+      <!-- ── 6 o'clock: Knowledge DB (centered at 700,610; 260x150 cylinder) ── -->
+      <g>
+        <rect    x="570" y="535" width="260" height="150" rx="4"
+                 fill="rgba(251,191,36,0.10)" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+        <ellipse cx="700" cy="535" rx="130" ry="16"
+                 fill="rgba(251,191,36,0.18)" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+        <ellipse cx="700" cy="685" rx="130" ry="16"
+                 fill="rgba(251,191,36,0.18)" stroke="rgba(251,191,36,0.55)" stroke-width="1.5"/>
+        <text x="700" y="582" font-size="17" fill="#fcd34d" font-weight="700" text-anchor="middle">Knowledge DB</text>
+        <text x="700" y="608" font-size="13" fill="#94a3b8" text-anchor="middle">policies · patterns</text>
+        <text x="700" y="626" font-size="13" fill="#94a3b8" text-anchor="middle">examples · exceptions</text>
+        <text x="700" y="662" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">grows over time</text>
+      </g>
+
+      <!-- ── 9 o'clock: Review Agents (centered at 160,350; 280x240) ── -->
+      <g>
+        <rect x="20" y="230" width="280" height="240" rx="12"
+              fill="rgba(168,85,247,0.07)" stroke="rgba(192,132,252,0.55)" stroke-width="1.5"/>
+        <text x="160" y="262" font-size="13" fill="#c084fc" font-weight="700" text-anchor="middle"
+              letter-spacing="0.12em">REVIEW AGENTS</text>
+
+        <line x1="40" y1="278" x2="280" y2="278" stroke="rgba(192,132,252,0.3)" stroke-width="1"/>
+
+        <text x="160" y="306" font-size="15" fill="#e2e8f0" font-weight="700" text-anchor="middle">Security</text>
+        <text x="160" y="324" font-size="11" fill="#94a3b8" text-anchor="middle">auth · secrets · SQLi</text>
+
+        <line x1="50" y1="344" x2="270" y2="344" stroke="rgba(192,132,252,0.18)" stroke-width="1" stroke-dasharray="2 3"/>
+
+        <text x="160" y="372" font-size="15" fill="#e2e8f0" font-weight="700" text-anchor="middle">QA</text>
+        <text x="160" y="390" font-size="11" fill="#94a3b8" text-anchor="middle">tests · coverage · regressions</text>
+
+        <line x1="50" y1="410" x2="270" y2="410" stroke="rgba(192,132,252,0.18)" stroke-width="1" stroke-dasharray="2 3"/>
+
+        <text x="160" y="438" font-size="15" fill="#e2e8f0" font-weight="700" text-anchor="middle">Best Practices</text>
+        <text x="160" y="456" font-size="11" fill="#94a3b8" text-anchor="middle">style · idioms · readability</text>
+      </g>
+
+      <!-- ── Loop arrows — true elliptical arcs that follow the orbit (rx=540, ry=260, cx=700, cy=350) ── -->
+
+      <!-- IDE → Feedback (upper-right arc) -->
+      <path d="M 830,97.7 A 540,260 0 0 1 1222.9,285"
+            stroke="#60a5fa" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-blue)"/>
+      <text x="1104" y="150" font-size="14" fill="#93c5fd" text-anchor="middle" font-weight="600">signals</text>
+
+      <!-- Feedback → Knowledge DB (lower-right arc) -->
+      <path d="M 1222.9,415 A 540,260 0 0 1 830,602.3"
+            stroke="#2dd4bf" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-teal)"/>
+      <text x="1104" y="558" font-size="14" fill="#5eead4" text-anchor="middle" font-weight="600">updates</text>
+
+      <!-- Knowledge DB → Review Agents (lower-left arc) -->
+      <path d="M 570,602.3 A 540,260 0 0 1 220.9,470"
+            stroke="#fbbf24" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-amber)"/>
+      <text x="296" y="558" font-size="14" fill="#fcd34d" text-anchor="middle" font-weight="600">pulls from</text>
+
+      <!-- Review Agents → IDE (upper-left arc) -->
+      <path d="M 220.9,230 A 540,260 0 0 1 570,97.7"
+            stroke="#c084fc" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-purple)"/>
+      <text x="296" y="150" font-size="14" fill="#d8b4fe" text-anchor="middle" font-weight="600">findings</text>
+    </svg>
+  </div>
+</section>
+{%- endmacro -%}

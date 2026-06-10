@@ -1,10 +1,10 @@
-{#- modules/shared/slides/outro.j2
+{#- modules/outro/outro.j2
     Standard outro slides for the modern engine. Replaces the revealjs-era
     modules/shared/wrap-up.html. Renders under any brand pack whose theme
     defines the .vis-* primitives.
 
     Usage:
-      {%- from "modules/shared/slides/outro.j2" import questions, thank_you %}
+      {%- from "modules/outro/outro.j2" import questions, thank_you %}
       {{ questions() }}
       {{ thank_you(name="Jon Zeolla",
                    linkedin_url="linkedin.com/in/jonzeolla") }}

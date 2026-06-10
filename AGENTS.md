@@ -42,7 +42,7 @@ Slide content (WHAT) and slide styling (HOW) are decoupled. A presentation choos
                             presentation picks one of each
                                 modules/branding/<brand>/theme.html.j2
                                 modules/branding/<brand>/primitives.j2
-                                modules/shared/slides/<slide>.j2
+                                modules/<topic>/<slide>.j2
 ```
 
 A presentation file is a thin orchestration layer: import the brand pack's primitives, import shared slides, call them in order. No HTML, no inline styles, no brand-specific class names.
@@ -60,11 +60,22 @@ Currently shipped:
 - `zenable/` — Tailwind-based; reuses Zenable color tokens from `modules/shared/tailwind.config.js`. Delegates several primitives to the long-standing macros in `modules/shared/components/modern_macros.j2`.
 - `unbranded/` — neutral system-font skin, no corporate colors. For talks that should carry no employer/sponsor branding.
 
-### Shared slides live in `modules/shared/slides/<topic>.j2`
+### Shared slides live in `modules/<topic>/<slide>.j2`
 
 Each file exports one or more macros. A macro takes **data** (lists, dicts, strings) and emits HTML by calling **only** primitive macros. Shared slides must not embed hex colors, brand class names, or inline styling that ties them to one look.
 
-Grouping convention: bundle macros into one module if they're the same topic and likely to evolve together (`context-files.j2` exports both `mockup()` and `tradeoffs()`); split into separate modules if they're substantially different shapes (`cicd-enforcement.j2` vs. `server-side-review.j2`).
+Topic directories currently in use:
+
+| Topic | Path | Slide modules |
+|---|---|---|
+| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2` |
+| AI / agent review | `modules/agents/` | `agent-review.j2` |
+| Hooks | `modules/hooks/` | `hooks.j2` |
+| Guardrails | `modules/guardrails/` | `deterministic-guardrails.j2`, `layered-defense.j2` |
+| CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
+| Outro | `modules/outro/` | `outro.j2` |
+
+Grouping convention: bundle macros into one module if they're the same topic and likely to evolve together (`context-files.j2` exports both `mockup()` and `tradeoffs()`); split into separate modules if they're substantially different shapes (`cicd-enforcement.j2` vs. `server-side-review.j2`). Add a new topic dir when an extracted slide doesn't fit an existing one — don't dump everything into a generic bucket.
 
 ---
 
@@ -91,7 +102,7 @@ The four "not yet implemented" primitives are stubbed in each brand pack's primi
 
 ### Accent vocabulary (semantic, not color)
 
-Every primitive that takes an `accent` parameter accepts: `primary`, `secondary`, `success`, `warning`, `danger`, `info`, `neutral`. Each brand pack maps those to its actual palette. Shared slides must use the semantic names. **No hex codes in `modules/shared/slides/`.**
+Every primitive that takes an `accent` parameter accepts: `primary`, `secondary`, `success`, `warning`, `danger`, `info`, `neutral`. Each brand pack maps those to its actual palette. Shared slides must use the semantic names. **No hex codes in `modules/<topic>/*.j2`.**
 
 ---
 
@@ -105,8 +116,8 @@ Every primitive that takes an `accent` parameter accepts: `primary`, `secondary`
    import  title_slide, section_divider, slide_heading, callout %}
 
 {# Pull in the shared slide macros you want #}
-{%- from "modules/shared/slides/context-files.j2"      import tradeoffs as context_files_tradeoffs %}
-{%- from "modules/shared/slides/hooks.j2"              import when_x_then_y, in_action %}
+{%- from "modules/context/context-files.j2"      import tradeoffs as context_files_tradeoffs %}
+{%- from "modules/hooks/hooks.j2"                import when_x_then_y, in_action %}
 
 {{ title_slide("Guardrails for Coding Agents", "Context. Guardrails. Hooks. Feedback loops.") }}
 {{ section_divider(1, "Context", "How agents see your project") }}
@@ -164,7 +175,7 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
 
 - **Not done**
-  - No `modules/shared/slides/*.j2` files exist yet. Existing decks still hold their slide content inline (HTML inside their `_modern_content.j2`). Until that changes, brand swap is mechanically wired but **visually inert** — `2026-06`'s slide HTML uses sans-cloud's `vis-*` class names directly, so under `branding=zenable` the theme loads but the slide markup degrades to bare HTML.
+  - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro) and `2026-06-coding-guardrails` is wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly, so brand swap is mechanically wired but **visually inert** — under `branding=zenable` the theme loads but the slide markup degrades to bare HTML until those slides are rewritten on top of brand-pack primitives.
   - Four primitives are stubbed only: `code_block`, `step_flow`, `pipe`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
   - `modules/shared/components/modern_macros.j2` overlaps with the Zenable pack and remains the source for legacy ISACA-DC content. Plan: as slides are extracted, fold the relevant macros into `modules/branding/zenable/primitives.j2` and shrink `modern_macros.j2`. Do not delete it pre-emptively — ISACA-DC still imports it directly.
 
@@ -172,7 +183,7 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
 
 Extract one slide end-to-end before extracting the next. The proof-of-life slice is `context-files-tradeoffs`:
 
-1. Create `modules/shared/slides/context-files.j2` with a `tradeoffs()` macro that calls `pros_cons(...)`.
+1. Create `modules/context/context-files.j2` with a `tradeoffs()` macro that calls `pros_cons(...)`.
 2. Point `2026-06-coding-guardrails` at it under `branding="sans-cloud"`. Diff visually against the lifted version — must match.
 3. Flip `branding="zenable"` and re-render. Same content, Zenable look.
 4. Only then move to the next slide.
@@ -206,7 +217,7 @@ If a slide needs a primitive that isn't implemented, implement it in **every** b
 | Tailwind tokens (Zenable colors, fonts) | `modules/shared/tailwind.config.js` |
 | Legacy Zenable-flavored macros | `modules/shared/components/modern_macros.j2` |
 | Brand packs | `modules/branding/<brand>/` |
-| Shared slide macros (when they land) | `modules/shared/slides/<topic>.j2` |
+| Shared slide macros (topic-grouped) | `modules/<topic>/<slide>.j2` — e.g. `modules/context/`, `modules/agents/`, `modules/hooks/`, `modules/guardrails/`, `modules/ci-cd/`, `modules/outro/` |
 | Per-presentation entry point | `presentations/<deck>/<deck>_modern_content.j2` |
 | Scaffold a new deck | `./create.sh presentation --folder=YYYY-MM-name --title="…"` |
 | Run the deck you're cd'd into | `task start` (from inside the deck directory) |
