@@ -1,0 +1,70 @@
+{#- modules/guardrails/ai-coding-maturity.j2
+    Shared framing and the established Coding Agents Maturity Model.
+
+    These slides intentionally use the current vis-* compatibility layer so they
+    match the modern SANS/Zenable decks while the primitive migration described
+    in AGENTS.md is still underway. -#}
+
+{%- macro why_guardrails() -%}
+<section class="vis-slide" data-label="Why guardrails">
+  <div class="vis-label">The operating reality</div>
+  <div class="vis-title">Faster delivery changes the risk equation</div>
+  <div class="vis-subtitle">Generative AI is becoming a default part of the software development lifecycle.</div>
+
+  <div class="vis-grid-2" style="flex:1; gap:30px; align-items:stretch; padding:26px 0;">
+    <div class="vis-teal-card" style="padding:28px; display:flex; flex-direction:column; justify-content:center;">
+      <p style="font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#2dd4bf; margin:0 0 18px 0;">What accelerates</p>
+      <p style="font-size:46px; font-weight:800; color:#fff; line-height:1.08; margin:0 0 18px 0;">Code volume<br>and change velocity</p>
+      <p style="font-size:16px; color:#94a3b8; line-height:1.6; margin:0;">More experiments, more pull requests, and more decisions made before a human sees the diff.</p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+      <div class="vis-red-card" style="padding:20px;">
+        <p style="font-size:28px; margin:0 0 10px 0;">🔓</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 7px 0;">Security risk</p>
+        <p style="font-size:13px; color:#94a3b8; margin:0; line-height:1.5;">Unsafe defaults and insecure patterns propagate quickly.</p>
+      </div>
+      <div class="vis-amber-card" style="padding:20px;">
+        <p style="font-size:28px; margin:0 0 10px 0;">🧱</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 7px 0;">Operational fragility</p>
+        <p style="font-size:13px; color:#94a3b8; margin:0; line-height:1.5;">Locally plausible code can violate system-wide assumptions.</p>
+      </div>
+      <div class="vis-purple-card" style="padding:20px;">
+        <p style="font-size:28px; margin:0 0 10px 0;">🔎</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 7px 0;">Review overload</p>
+        <p style="font-size:13px; color:#94a3b8; margin:0; line-height:1.5;">Human review capacity does not scale with generated code.</p>
+      </div>
+      <div class="vis-blue-card" style="padding:20px;">
+        <p style="font-size:28px; margin:0 0 10px 0;">📋</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 7px 0;">Audit gaps</p>
+        <p style="font-size:13px; color:#94a3b8; margin:0; line-height:1.5;">Intent and decision evidence disappear after the fact.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    The answer is not less AI. It is a <strong>control system that scales with AI</strong>.
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro overview(maturity_level) -%}
+{{ maturity_level("", "", "Coding Agents Maturity Model", "Crawl · Walk · Run · Fly") }}
+{%- endmacro -%}
+
+{%- macro crawl(maturity_level) -%}
+{{ maturity_level(1, "Crawl", "Basic Steering", "Set expectations through context files") }}
+{%- endmacro -%}
+
+{%- macro walk(maturity_level) -%}
+{{ maturity_level(2, "Walk", "Agent Reviewing Agents", "Multi-perspective automated review") }}
+{%- endmacro -%}
+
+{%- macro run(maturity_level) -%}
+{{ maturity_level(3, "Run", "Policy-as-Code Guardrails", "Deterministic enforcement with evidence") }}
+{%- endmacro -%}
+
+{%- macro fly(maturity_level) -%}
+{{ maturity_level(4, "Fly", "Continuous Improvement", "The feedback loop") }}
+{%- endmacro -%}

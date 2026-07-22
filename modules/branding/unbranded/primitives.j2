@@ -44,6 +44,16 @@
 </section>
 {%- endmacro -%}
 
+{%- macro maturity_level(level, stage, title, subtitle="") -%}
+<section class="unb-slide" data-label="{% if level %}Level {{ level }}: {{ stage }}{% else %}{{ title }}{% endif %}" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    {%- if level %}<div class="unb-label">Level {{ level }}: {{ stage }}</div>{% endif %}
+    <h2 class="unb-title" style="font-size:54px;">{{ title }}</h2>
+    {%- if subtitle %}<p class="unb-subtitle">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
 {%- macro slide_heading(label, title, subtitle="") -%}
 <div class="unb-label">{{ label }}</div>
 <div class="unb-title">{{ title }}</div>

@@ -1,0 +1,195 @@
+{#- modules/context/context-refinement.j2
+    Shared Level 4 slides for evaluating and improving context files and skills.
+
+    These slides use the current vis-* compatibility layer while the brand
+    primitive migration described in AGENTS.md is still underway. -#}
+
+{%- macro context_as_code() -%}
+<section class="vis-slide" data-label="Context as code">
+  <div class="vis-label">Level 4: Fly</div>
+  <div class="vis-title">Treat context like production code</div>
+  <div class="vis-subtitle">An instruction file is executable behavior expressed in natural language.</div>
+
+  <div style="flex:1; display:flex; align-items:center; gap:12px; padding:34px 0;">
+    <div class="vis-teal-card" style="flex:1; min-height:260px; padding:22px;">
+      <div class="vis-step" style="background:rgba(45,212,191,0.18); border:1px solid rgba(45,212,191,0.4); color:#2dd4bf;">1</div>
+      <p style="font-size:20px; font-weight:800; color:#fff; margin:18px 0 8px 0;">Version it</p>
+      <p style="font-size:13px; color:#94a3b8; line-height:1.55; margin:0;">Own it in Git. Review changes. Record scope, source, and intent.</p>
+    </div>
+    <div style="color:#475569; font-size:26px;">→</div>
+    <div class="vis-blue-card" style="flex:1; min-height:260px; padding:22px;">
+      <div class="vis-step" style="background:rgba(96,165,250,0.18); border:1px solid rgba(96,165,250,0.4); color:#60a5fa;">2</div>
+      <p style="font-size:20px; font-weight:800; color:#fff; margin:18px 0 8px 0;">Test it</p>
+      <p style="font-size:13px; color:#94a3b8; line-height:1.55; margin:0;">Run representative tasks with a fixed model, harness, scorer, and baseline.</p>
+    </div>
+    <div style="color:#475569; font-size:26px;">→</div>
+    <div class="vis-purple-card" style="flex:1; min-height:260px; padding:22px;">
+      <div class="vis-step" style="background:rgba(192,132,252,0.18); border:1px solid rgba(192,132,252,0.4); color:#c084fc;">3</div>
+      <p style="font-size:20px; font-weight:800; color:#fff; margin:18px 0 8px 0;">Change it carefully</p>
+      <p style="font-size:13px; color:#94a3b8; line-height:1.55; margin:0;">Prefer bounded edits that address recurring evidence, not one memorable failure.</p>
+    </div>
+    <div style="color:#475569; font-size:26px;">→</div>
+    <div class="vis-amber-card" style="flex:1; min-height:260px; padding:22px;">
+      <div class="vis-step" style="background:rgba(251,191,36,0.18); border:1px solid rgba(251,191,36,0.4); color:#fbbf24;">4</div>
+      <p style="font-size:20px; font-weight:800; color:#fff; margin:18px 0 8px 0;">Promote it</p>
+      <p style="font-size:13px; color:#94a3b8; line-height:1.55; margin:0;">Require measurable improvement, human review, and a rollback path.</p>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-amber" style="text-align:center;">
+    A context file that “sounds better” is not evidence that the agent <strong>behaves better</strong>.
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro evaluation_design() -%}
+<section class="vis-slide" data-label="Evaluation design">
+  <div class="vis-label">A defensible experiment</div>
+  <div class="vis-title">Separate learning from proving</div>
+  <div class="vis-subtitle">Use different task sets for discovering improvements, selecting updates, and reporting performance.</div>
+
+  <div style="flex:1; display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; align-items:stretch; padding:28px 0;">
+    <div class="vis-green-card" style="padding:25px; display:flex; flex-direction:column;">
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#4ade80; margin:0 0 10px 0;">Training split</p>
+      <p style="font-size:27px; font-weight:800; color:#fff; margin:0 0 14px 0;">Learn from traces</p>
+      <p style="font-size:14px; color:#94a3b8; line-height:1.6; margin:0 0 18px 0;">Run the current context against representative tasks and collect successes, failures, tool calls, findings, and verifier feedback.</p>
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(34,197,94,0.25);">
+        <p style="font-size:12px; color:#86efac; margin:0;">Used to propose changes</p>
+      </div>
+    </div>
+
+    <div class="vis-amber-card" style="padding:25px; display:flex; flex-direction:column;">
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#fbbf24; margin:0 0 10px 0;">Selection split</p>
+      <p style="font-size:27px; font-weight:800; color:#fff; margin:0 0 14px 0;">Gate every update</p>
+      <p style="font-size:14px; color:#94a3b8; line-height:1.6; margin:0 0 18px 0;">Evaluate each candidate on held-out cases. Accept only if it improves the agreed objective without breaching safety constraints.</p>
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(251,191,36,0.25);">
+        <p style="font-size:12px; color:#fcd34d; margin:0;">Used to accept or reject</p>
+      </div>
+    </div>
+
+    <div class="vis-blue-card" style="padding:25px; display:flex; flex-direction:column;">
+      <p style="font-size:11px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:#60a5fa; margin:0 0 10px 0;">Test split</p>
+      <p style="font-size:27px; font-weight:800; color:#fff; margin:0 0 14px 0;">Report honestly</p>
+      <p style="font-size:14px; color:#94a3b8; line-height:1.6; margin:0 0 18px 0;">Keep the final set locked until the iteration is complete. Use it to estimate generalization, not to choose the next edit.</p>
+      <div style="margin-top:auto; padding-top:14px; border-top:1px solid rgba(96,165,250,0.25);">
+        <p style="font-size:12px; color:#93c5fd; margin:0;">Used once for final evidence</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    Fix the <strong>target model, harness, rubric, and task splits</strong> before comparing context versions.
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro skillopt_overview(image_path) -%}
+<section class="vis-slide" data-label="SkillOpt overview" style="padding-bottom:24px;">
+  <div class="vis-label">One emerging approach</div>
+  <div class="vis-title">SkillOpt: optimize the skill, not the weights</div>
+  <div class="vis-subtitle">A frozen agent produces trajectories; a separate optimizer proposes bounded text edits; a held-out gate decides what survives.</div>
+
+  <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:16px 0 8px 0;">
+    <img src="{{ image_path }}"
+         alt="SkillOpt text-space optimization: bounded skill edits descend validation error while a held-out selection gate rejects harmful updates"
+         style="width:100%; max-height:68vh; object-fit:contain; background:#fff; border-radius:12px; border:1px solid rgba(148,163,184,0.35); box-shadow:0 18px 60px rgba(0,0,0,0.35);">
+  </div>
+  <p style="font-size:11px; color:#64748b; text-align:right; margin:0;">
+    Figure 1 from <a href="https://arxiv.org/abs/2605.23904" style="color:#94a3b8;">Yang et al., “SkillOpt: Executive Strategy for Self-Evolving Agent Skills” (2026)</a>
+  </p>
+</section>
+{%- endmacro -%}
+
+
+{%- macro research_landscape() -%}
+<section class="vis-slide" data-label="Related research">
+  <div class="vis-label">Related work</div>
+  <div class="vis-title">Context refinement is becoming a discipline</div>
+  <div class="vis-subtitle">Several research threads now treat prompts and skills as trainable, testable external state.</div>
+
+  <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:24px 0;">
+    <a href="https://arxiv.org/abs/2603.25158" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#2dd4bf; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Trajectory distillation</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">Trace2Skill</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Distills local lessons from execution trajectories into transferable agent skills.</p>
+    </a>
+    <a href="https://arxiv.org/abs/2603.02766" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#60a5fa; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Skill evolution</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">EvoSkill</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Automates skill discovery and refinement for multi-agent systems.</p>
+    </a>
+    <a href="https://arxiv.org/abs/2604.08618" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#c084fc; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Domain-specific skills</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">SkillForge</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Builds self-evolving skills for a concrete operational domain.</p>
+    </a>
+    <a href="https://arxiv.org/abs/2604.03964" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#fbbf24; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Skill libraries</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">SkillFoundry</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Builds evolving skill libraries from heterogeneous resources.</p>
+    </a>
+    <a href="https://arxiv.org/abs/2507.19457" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#4ade80; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Prompt evolution</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">GEPA</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Uses execution feedback to evolve prompts through reflective search.</p>
+    </a>
+    <a href="https://arxiv.org/abs/2406.07496" class="vis-card" style="padding:18px; text-decoration:none;">
+      <p style="font-size:11px; color:#f87171; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; margin:0 0 7px 0;">Textual gradients</p>
+      <p style="font-size:18px; font-weight:800; color:#fff; margin:0 0 8px 0;">TextGrad</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Uses natural-language feedback as an optimization signal.</p>
+    </a>
+  </div>
+
+  <div class="vis-callout vis-callout-amber" style="text-align:center;">
+    The techniques differ. The durable idea is the same: <strong>external context should improve under evidence, not vibes</strong>.
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro evaluation_scorecard() -%}
+<section class="vis-slide" data-label="Evaluation scorecard">
+  <div class="vis-label">What to measure</div>
+  <div class="vis-title">One score is never enough</div>
+  <div class="vis-subtitle">A better skill must improve task outcomes without creating a new safety, cost, or usability problem.</div>
+
+  <div style="flex:1; display:grid; grid-template-columns:repeat(3,1fr); gap:14px; padding:24px 0;">
+    <div class="vis-teal-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">✅</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">Task success</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Did the change build, pass tests, and satisfy acceptance criteria?</p>
+    </div>
+    <div class="vis-red-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">🛡️</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">Control effectiveness</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Did it prevent, detect, or repair the targeted unsafe behavior?</p>
+    </div>
+    <div class="vis-amber-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">🚨</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">False positives</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Does guidance block safe work, over-escalate, or create alert fatigue?</p>
+    </div>
+    <div class="vis-blue-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">🧰</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">Repair quality</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Are suggested fixes correct, complete, maintainable, and on the paved road?</p>
+    </div>
+    <div class="vis-purple-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">⏱️</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">Latency + cost</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Tokens, tool calls, wall time, retries, and human review minutes.</p>
+    </div>
+    <div class="vis-green-card" style="padding:20px;">
+      <p style="font-size:24px; margin:0 0 9px 0;">🌐</p>
+      <p style="font-size:16px; font-weight:800; color:#fff; margin:0 0 7px 0;">Generalization</p>
+      <p style="font-size:12px; color:#94a3b8; line-height:1.5; margin:0;">Does the improvement hold across teams, models, repositories, and novel cases?</p>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    Define <strong>hard safety thresholds</strong> first; optimize capability and efficiency inside those boundaries.
+  </div>
+</section>
+{%- endmacro -%}

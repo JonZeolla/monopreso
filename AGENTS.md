@@ -68,10 +68,10 @@ Topic directories currently in use:
 
 | Topic | Path | Slide modules |
 |---|---|---|
-| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2` |
+| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2` |
 | AI / agent review | `modules/agents/` | `agent-review.j2` |
 | Hooks | `modules/hooks/` | `hooks.j2` |
-| Guardrails | `modules/guardrails/` | `deterministic-guardrails.j2`, `layered-defense.j2` |
+| Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2` |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
 | Outro | `modules/outro/` | `outro.j2` |
 
@@ -87,6 +87,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 |---|---|
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
 | `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
+| `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub) |
 | `callout(text, accent="primary")` | Bottom emphasis band |
 | `card(title, body, accent="neutral")` | Bordered card |
@@ -163,7 +164,7 @@ A deck without a local Taskfile.yml falls back to the root Taskfile and the mode
 
 ---
 
-## Migration state (June 2026)
+## Migration state (July 2026)
 
 The "brand pack + shared slides" architecture is **scaffolded but not yet adopted**.
 
@@ -173,9 +174,10 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - `unbranded` and `zenable` ship a `theme.html.j2`. `sans-cloud`'s pre-existing `theme.html.j2` is unchanged.
   - **Brand resolution wired through `start.sh`.** Respects `BRANDING` env var → CLI `--branding=` → per-deck `Taskfile.yml` → engine default. The resolved value is passed into Jinja as `branding` and validated against `modules/branding/<name>/` existence.
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
+  - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
 
 - **Not done**
-  - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro) and `2026-06-coding-guardrails` is wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly, so brand swap is mechanically wired but **visually inert** — under `branding=zenable` the theme loads but the slide markup degrades to bare HTML until those slides are rewritten on top of brand-pack primitives.
+  - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.
   - Four primitives are stubbed only: `code_block`, `step_flow`, `pipe`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
   - `modules/shared/components/modern_macros.j2` overlaps with the Zenable pack and remains the source for legacy ISACA-DC content. Plan: as slides are extracted, fold the relevant macros into `modules/branding/zenable/primitives.j2` and shrink `modern_macros.j2`. Do not delete it pre-emptively — ISACA-DC still imports it directly.
 

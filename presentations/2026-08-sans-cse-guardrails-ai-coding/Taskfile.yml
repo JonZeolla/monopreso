@@ -1,0 +1,28 @@
+---
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  # Default to the Zenable brand; shell env and --branding still override it.
+  BRANDING:
+    sh: echo "${BRANDING:-zenable}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start Guardrails for AI Coding (default brand: zenable)"
+    cmds:
+      - task: root:start
