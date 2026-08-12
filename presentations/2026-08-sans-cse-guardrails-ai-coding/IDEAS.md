@@ -38,3 +38,25 @@ Use the SkillOpt overview figure to explain the core analogy:
 - deployed output → compact, reviewed context artifact
 
 The operational takeaway is broader than any one research system: improve external context under evidence, not intuition.
+
+## Remaining work
+
+PR #30 was merged before this deck was finished. Tracked here so the gaps are
+visible rather than rediscovered the week of the event.
+
+- [ ] **Full timed run-through.** The run of show above is planned, not
+      rehearsed. Level 4 carries the most new material and is the most likely
+      to overrun.
+- [ ] **Speaker notes.** None written. The SkillOpt analogy in particular needs
+      a scripted delivery — it is the densest idea in the talk.
+- [ ] **Migrate the reused slides onto primitives.** Every module this deck
+      imports still emits `vis-*` markup, so the deck is effectively pinned to
+      a brand. `2026-09-csa-birmingham-ai-governance` (PR #31) established the
+      primitive-native pattern; these should follow it.
+- [ ] **Confirm the abstract matches what was published** by SANS, and reconcile
+      any drift between `ABSTRACT.md` and the deck's actual content.
+- [ ] **`img/` is empty.** Either populate it or remove it — the only figure the
+      deck references lives at `modules/context/img/skillopt-overview.png`.
+- [ ] **Delete `2026-08-sans-cse-guardrails-ai-coding_title.j2`.** The modern
+      engine never reads it; `start.sh` takes the page title from the folder
+      name. It is a revealjs-era artifact carried over by habit.
