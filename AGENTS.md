@@ -71,9 +71,12 @@ Topic directories currently in use:
 | Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2` |
 | AI / agent review | `modules/agents/` | `agent-review.j2` |
 | Hooks | `modules/hooks/` | `hooks.j2` |
-| Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2` |
+| Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`† |
+| Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
 | Outro | `modules/outro/` | `outro.j2` |
+
+† Primitive-native: contains no hex colors, brand class names, or raw `<section>` markup, and renders correctly under all three packs. Use these as the model for new slides — not the older `vis-*` modules. They must be imported **`with context`** (see below).
 
 Grouping convention: bundle macros into one module if they're the same topic and likely to evolve together (`context-files.j2` exports both `mockup()` and `tradeoffs()`); split into separate modules if they're substantially different shapes (`cicd-enforcement.j2` vs. `server-side-review.j2`). Add a new topic dir when an extracted slide doesn't fit an existing one — don't dump everything into a generic bucket.
 
@@ -88,6 +91,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
 | `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
+| `content_slide(label)` | **Call-block** wrapper owning the `<section>` + `data-label` for a content slide. Use `{%- call content_slide("X") %}…{%- endcall %}` so shared slides never name a brand-specific section class |
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub) |
 | `callout(text, accent="primary")` | Bottom emphasis band |
 | `card(title, body, accent="neutral")` | Bordered card |
@@ -96,14 +100,38 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
 | `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
 | `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
-| `pipe(stages)` | Pipeline diagram with stage cards *(not yet implemented)* |
+| `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated |
 | `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented)* |
 
 The four "not yet implemented" primitives are stubbed in each brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
 
+### Importing a primitive-native slide: `with context`
+
+A shared slide that uses primitives resolves the brand path at load time:
+
+```jinja
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import pros_cons %}
+```
+
+Jinja evaluates that when the module is imported, and an imported template does **not** inherit the importer's context by default. So `branding` is undefined, the path collapses, and you get:
+
+```
+TemplateNotFound: 'modules/branding//primitives.j2'
+```
+
+The empty segment between the slashes is the tell. The fix is on the **deck's** import of the slide module:
+
+```jinja
+{%- from "modules/sdlc/lifecycle.j2" import stages with context %}
+```
+
+Any module that imports primitives must be imported `with context` by whatever imports it, all the way down the chain. Modules that emit plain markup and import nothing brand-dependent don't need it — which is why the older `vis-*` modules never hit this.
+
 ### Accent vocabulary (semantic, not color)
 
 Every primitive that takes an `accent` parameter accepts: `primary`, `secondary`, `success`, `warning`, `danger`, `info`, `neutral`. Each brand pack maps those to its actual palette. Shared slides must use the semantic names. **No hex codes in `modules/<topic>/*.j2`.**
+
+When implementing a primitive in the `zenable` pack, route the accent through `_accent_tw()`, which returns a real Tailwind color. Do **not** compose `zenable-*` class names from an accent: `tailwind.config.js` defines only `bg`, `bg-light`, `teal`, `teal-dark`, and `blue` under that namespace, and Tailwind silently emits nothing for an undefined color — so a wrong token renders an uncolored element instead of failing. (`callout` had exactly this bug for `warning`/`danger`/`neutral`; fixed.) An unrecognized accent name falls through to neutral in every pack, so a typo yields a bland slide rather than an error.
 
 ---
 
@@ -175,10 +203,12 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - **Brand resolution wired through `start.sh`.** Respects `BRANDING` env var → CLI `--branding=` → per-deck `Taskfile.yml` → engine default. The resolved value is passed into Jinja as `branding` and validated against `modules/branding/<name>/` existence.
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
   - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
+  - **First primitive-native shared slides.** `2026-09-csa-birmingham-ai-governance` ships four modules (`modules/sdlc/lifecycle.j2`, `modules/guardrails/deterministic-vs-llm.j2`, `guardrail-decisions.j2`, `structure-enables-speed.j2`) written entirely against primitives — no hex, no brand classes, no raw `<section>`. They render correctly under all three packs and are the reference example for new work. Supporting this required implementing `content_slide` and `pipe` in all three packs, adding `--unb-secondary` to the unbranded theme, and fixing zenable's `callout` accent bug.
+  - There is a `new-presentation` skill at `.claude/skills/new-presentation/` covering deck scaffolding, the primitive rules, and the render pipeline. Its `scripts/scaffold_deck.sh` creates a modern deck with the engagement facts filled in — use it rather than the repo's root `create.sh`, which scaffolds the legacy revealjs layout.
 
 - **Not done**
   - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.
-  - Four primitives are stubbed only: `code_block`, `step_flow`, `pipe`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
+  - Three primitives are stubbed only: `code_block`, `step_flow`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
   - `modules/shared/components/modern_macros.j2` overlaps with the Zenable pack and remains the source for legacy ISACA-DC content. Plan: as slides are extracted, fold the relevant macros into `modules/branding/zenable/primitives.j2` and shrink `modern_macros.j2`. Do not delete it pre-emptively — ISACA-DC still imports it directly.
 
 ### Vertical-slice migration rule

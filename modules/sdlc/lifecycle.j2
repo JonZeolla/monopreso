@@ -1,0 +1,101 @@
+{#- modules/sdlc/lifecycle.j2
+    The software delivery lifecycle, and where controls attach to it.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. The primitives import resolves through the
+    `branding` variable, so a deck must import this module WITH CONTEXT:
+
+      {%- from "modules/sdlc/lifecycle.j2" import
+          stages as sdlc_stages, stages_with_controls as sdlc_controls with context %}
+
+    The two macros deliberately share one STAGES list. Showing the same
+    diagram twice — first bare, then annotated — lets an audience learn the
+    shape before being asked to absorb what hangs off it. If the stages ever
+    drift between the two slides the effect breaks, so they are defined once.
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pipe,
+    callout
+-%}
+
+
+{#- The delivery lifecycle as a practitioner experiences it. Kept to six
+    stages: enough to be honest, few enough to read from the back of a room. -#}
+{%- set STAGES = [
+  {"label": "Plan",       "detail": "Decide what to build",        "accent": "info"},
+  {"label": "Build",      "detail": "Write and review code",       "accent": "primary"},
+  {"label": "Test",       "detail": "Prove it does what you said", "accent": "secondary"},
+  {"label": "Distribute", "detail": "Package and publish",         "accent": "warning"},
+  {"label": "Deploy",     "detail": "Put it in front of users",    "accent": "danger"},
+  {"label": "Run",        "detail": "Operate it in production",    "accent": "success"},
+] -%}
+
+{#- Controls keyed to the stage they attach to. One control per stage, chosen
+    as the most load-bearing rather than the most complete — the point of the
+    slide is that every stage has a place to intervene, not to enumerate a
+    catalogue. -#}
+{%- set CONTROLS = {
+  "Plan":       "Threat model<br>Requirements as code",
+  "Build":      "Context files<br>Hooks &amp; linters",
+  "Test":       "Policy tests<br>Agent review",
+  "Distribute": "Signing<br>SBOM &amp; provenance",
+  "Deploy":     "Admission control<br>Change approval",
+  "Run":        "Drift detection<br>Feedback to context",
+} -%}
+
+
+{%- macro stages() -%}
+{#- The lifecycle with nothing attached. Show this first: much of the room
+    has never seen their own delivery process drawn as one line. -#}
+{%- call content_slide("Delivery lifecycle") %}
+  {{ slide_heading("Before we add anything",
+                   "How software actually gets delivered",
+                   "Every team's version differs in the details. The shape is remarkably consistent.") }}
+  {{ pipe(STAGES) }}
+  {{ callout("Work moves left to right. So do mistakes — and they get more
+              expensive at every step.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro stages_with_controls() -%}
+{#- The identical diagram, now annotated. Because the stage list is shared,
+    the cards land in the same place on screen and the annotations are the
+    only thing that changed — which is the whole point. -#}
+{%- set annotated = [] -%}
+{%- for stage in STAGES -%}
+  {%- set _ = annotated.append(dict(stage, note=CONTROLS.get(stage.label, ""))) -%}
+{%- endfor -%}
+{%- call content_slide("Lifecycle with controls") %}
+  {{ slide_heading("The same picture",
+                   "Every stage is a place you can intervene",
+                   "You do not need all of these. You need to know which ones you have chosen not to have.") }}
+  {{ pipe(annotated) }}
+  {{ callout("Governance is not a gate at the end. It is a property of the
+              whole line — and the cheapest place to enforce something is
+              usually the earliest place you <strong>can</strong>.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro survey() -%}
+{#- The "what are my options" slide. Deliberately placed after the lifecycle
+    so the categories have somewhere to attach in the listener's head. -#}
+{%- call content_slide("Survey of options") %}
+  {{ slide_heading("The menu",
+                   "What is actually available to you",
+                   "Four families of control, roughly in order of how much they cost to adopt.") }}
+  {{ pipe([
+    {"label": "Steering",    "detail": "Context files, rules, instructions", "meta": "cheap · advisory", "accent": "info"},
+    {"label": "Review",      "detail": "Human and agent reviewers",          "meta": "moderate · catching", "accent": "secondary"},
+    {"label": "Enforcement", "detail": "Policy as code in PR and CI",        "meta": "higher · blocking",  "accent": "danger"},
+    {"label": "Improvement", "detail": "Evaluations and feedback loops",     "meta": "ongoing · compounding", "accent": "success"},
+  ]) }}
+  {{ callout("Advisory controls shape behaviour. Only blocking controls
+              constrain it. Most teams need both, and reach for the second
+              one far too late.", accent="warning") }}
+{%- endcall %}
+{%- endmacro -%}

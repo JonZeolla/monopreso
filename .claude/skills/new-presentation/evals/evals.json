@@ -1,0 +1,26 @@
+{
+  "skill_name": "new-presentation",
+  "evals": [
+    {
+      "id": 0,
+      "name": "scaffold-and-plan",
+      "prompt": "I got accepted to BSides Pittsburgh, November this year. 45 minute slot, topic is securing AI agents that have write access to CI/CD. Can you get the deck set up so I can start dumping ideas into it?",
+      "expected_output": "A new deck directory presentations/2026-11-*/ using the modern engine: <deck>_modern_content.j2 that imports the brand theme + primitives parametrized on `branding` and calls macros only, a Taskfile.yml with the BRANDING sh: form, and IDEAS.md with a run of show summing to 45 minutes. Must NOT use ./create.sh or produce a revealjs <deck>_content.j2, and must not hardcode a brand name in the content file.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "name": "reuse-existing-primitive",
+      "prompt": "For the agent deck I want a slide weighing up giving agents MCP servers versus just plain local CLI tools — upsides on one side, downsides on the other. Add it.",
+      "expected_output": "A macro in modules/<topic>/*.j2 (new or existing file) that calls the pros_cons primitive with benefits/shortcomings lists of {title, detail} dicts, imported from modules/branding/ ~ branding ~ /primitives.j2. No hex colors, no vis-*/unb-*/zenable-* class names in the shared module. Deck file calls the macro. Should not reimplement a two-column layout by hand.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "name": "missing-primitive-gate",
+      "prompt": "Add a slide to the agent deck that shows our code review pipeline as a left-to-right flow of stages: lint, unit tests, agent review, policy check, human approval. Should look like a pipeline diagram.",
+      "expected_output": "Recognizes that pipe() (or step_flow()) is declared in the AGENTS.md contract but unimplemented, implements it in ALL THREE brand packs (sans-cloud, zenable, unbranded) with identical signatures using each pack's own idiom and accent helper, updates the AGENTS.md primitive table and removes it from the not-implemented comment blocks, and only then writes the shared slide calling it. Must not hand-roll pipeline HTML with inline hex inside modules/<topic>/.",
+      "files": []
+    }
+  ]
+}

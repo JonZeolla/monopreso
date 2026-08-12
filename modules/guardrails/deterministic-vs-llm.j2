@@ -1,0 +1,84 @@
+{#- modules/guardrails/deterministic-vs-llm.j2
+    Deterministic controls and model-based controls: what each is good for,
+    and how they compose.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/deterministic-vs-llm.j2" import
+          two_kinds, working_together with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pros_cons,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro two_kinds() -%}
+{#- Framed as a comparison rather than a verdict. The common failure is
+    treating these as competitors when they answer different questions:
+    deterministic controls answer "is this allowed", model-based controls
+    answer "is this wise". -#}
+{%- call content_slide("Deterministic vs. model-based") %}
+  {{ slide_heading("Two kinds of guardrail",
+                   "Deterministic rules and model judgement",
+                   "They fail in opposite directions, which is exactly why you want both.") }}
+  {{ pros_cons(
+       benefits=[
+         {"title": "Deterministic: same answer every time",
+          "detail": "A regex, a policy engine, a schema check. Auditable, testable, and cheap to run on every commit."},
+         {"title": "Deterministic: defensible",
+          "detail": "You can show an auditor the rule and the run. &ldquo;The model thought it looked fine&rdquo; is not evidence."},
+         {"title": "Deterministic: no ambiguity at the gate",
+          "detail": "If it blocks, everyone can see precisely why, and fix exactly that."},
+       ],
+       shortcomings=[
+         {"title": "Model-based: handles what you did not anticipate",
+          "detail": "Catches the insecure pattern nobody wrote a rule for, and reads intent across files."},
+         {"title": "Model-based: explains itself in context",
+          "detail": "Can say why this change is risky <em>here</em>, given this service and this data."},
+         {"title": "Model-based: non-deterministic",
+          "detail": "Same input, different answer. Useful as a reviewer; dangerous as the only gate."},
+       ],
+       ben_label="Rules — narrow and certain",
+       short_label="Models — broad and probabilistic") }}
+  {{ callout("Rules cover the cases you knew about. Models cover the cases you
+              didn't. Neither list is the whole risk surface.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro working_together() -%}
+{#- The composition pattern. Ordering matters and is the actual content of
+    this slide: models propose and explain, rules decide. Inverting that —
+    letting a model be the final gate — is the mistake worth naming. -#}
+{%- call content_slide("How they compose") %}
+  {{ slide_heading("Working together",
+                   "Let the model advise. Let the rule decide.",
+                   "The order is the design. Reverse it and you have automation you cannot audit.") }}
+  {{ pipe([
+    {"label": "Model drafts",   "detail": "Agent writes the change with context in hand", "accent": "info"},
+    {"label": "Model reviews",  "detail": "A second agent argues with the first",         "accent": "secondary"},
+    {"label": "Rules decide",   "detail": "Policy as code blocks or passes, every time",  "accent": "danger"},
+    {"label": "Evidence lands", "detail": "The decision and its reason are recorded",     "accent": "success"},
+  ]) }}
+  {{ card_grid([
+    {"title": "Models where the cost of a miss is a comment",
+     "body": "Review, suggestion, explanation, triage. A wrong answer is noise, not an outage.",
+     "accent": "info"},
+    {"title": "Rules where the cost of a miss is an incident",
+     "body": "Secrets, PII handling, auth boundaries, deploy approval. These need the same answer every time.",
+     "accent": "danger"},
+    {"title": "Both, pointed at the same requirement",
+     "body": "One requirement, expressed as a rule that blocks and a prompt that teaches. Neither drifts from the other.",
+     "accent": "primary"},
+  ], cols=3) }}
+  {{ callout("If your only enforcement is a model, you do not have a control —
+              you have a <strong>strong suggestion</strong>.", accent="warning") }}
+{%- endcall %}
+{%- endmacro -%}

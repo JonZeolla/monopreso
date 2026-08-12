@@ -67,6 +67,17 @@
 </section>
 {%- endmacro -%}
 
+{%- macro content_slide(label) -%}
+{# Call-block wrapper owning the <section> + data-label, so a shared slide
+   never has to name a brand-specific section class:
+     {%- call content_slide("Lifecycle") %} ...body... {%- endcall %} #}
+<section class="slide flex flex-col justify-center p-12" data-label="{{ label }}">
+  <div class="max-w-6xl mx-auto w-full fade-in">
+    {{ caller() }}
+  </div>
+</section>
+{%- endmacro -%}
+
 {%- macro slide_heading(label, title, subtitle="") -%}
 {{ _legacy_section_label(label) }}
 <h3 class="text-4xl font-bold text-white mb-2">{{ title }}</h3>
@@ -76,9 +87,26 @@
 
 {# ── content primitives ───────────────────────────────────────── #}
 
+{%- macro _accent_tw(name) -%}
+{# Semantic accent → a Tailwind colour that actually exists.
+
+   Do not route these through `zenable-*`: tailwind.config.js defines only
+   bg / bg-light / teal / teal-dark / blue under that namespace, and Tailwind
+   silently emits nothing for an undefined colour — so `border-zenable-amber`
+   renders as no border at all rather than failing loudly. #}
+{%- set m = {
+  "primary":  "teal-400",
+  "secondary":"purple-400",
+  "success":  "emerald-400",
+  "warning":  "amber-400",
+  "danger":   "rose-400",
+  "info":     "sky-400",
+  "neutral":  "slate-400",
+} -%}{{- m.get(name, "slate-400") -}}
+{%- endmacro -%}
+
 {%- macro callout(text, accent="primary") -%}
-{%- set color = _accent_to_zen(accent) -%}
-<div class="mt-6 p-4 rounded-xl border bg-zenable-bg-light/40 border-zenable-{{ color }}/30 text-center text-slate-300">
+<div class="mt-6 p-4 rounded-xl border bg-zenable-bg-light/40 border-{{ _accent_tw(accent) }}/30 text-center text-slate-300">
   {{ text|safe }}
 </div>
 {%- endmacro -%}
@@ -136,6 +164,42 @@
 {%- endmacro -%}
 
 
+{%- macro pipe(stages) -%}
+{# Left-to-right pipeline of stage cards joined by arrows.
+   Each stage: {label, detail?, meta?, accent?, note?}
+
+   `note` renders as an annotation hanging above the stage on a dotted
+   connector, so the same stage list can be shown twice — bare, then with
+   controls annotated onto it. #}
+{%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
+<div class="flex items-stretch justify-center gap-2 my-5">
+  {%- for stage in stages %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" class="flex-none self-center text-slate-600 text-2xl leading-none">&rarr;</div>
+  {%- endif %}
+  {%- set tw = _accent_tw(stage.accent | default("neutral")) %}
+  <div class="flex-1 min-w-0 flex flex-col items-stretch">
+    {%- if has_notes %}
+    <div class="min-h-[96px] flex flex-col items-center justify-end">
+      {%- if stage.note %}
+      <div class="rounded-lg border border-{{ tw }}/40 bg-zenable-bg-light/80 px-2.5 py-2 text-center">
+        <p class="text-[11px] font-bold leading-snug text-{{ tw }} m-0">{{ stage.note|safe }}</p>
+      </div>
+      <div aria-hidden="true" class="h-3.5 border-l-2 border-dotted border-{{ tw }}/60"></div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="flex-1 rounded-xl border border-{{ tw }}/30 bg-{{ tw }}/5 px-3 py-4 text-center flex flex-col justify-center gap-1.5">
+      <p class="text-sm font-bold text-{{ tw }} m-0">{{ stage.label }}</p>
+      {%- if stage.detail %}<p class="text-[11px] leading-snug text-slate-400 m-0">{{ stage.detail|safe }}</p>{% endif %}
+      {%- if stage.meta %}<p class="font-mono text-[10px] uppercase tracking-wider text-slate-500 m-0">{{ stage.meta }}</p>{% endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract.
    When extracting the shared slide that needs them, either:
@@ -145,6 +209,5 @@
 
      code_block(filename, lines)
      step_flow(steps)         # candidate: wrap _legacy_flow_steps
-     pipe(stages)
      ide_mockup(filename, sidebar, code_lines, chat_panel=None)
    ──────────────────────────────────────────────────────────────── #}

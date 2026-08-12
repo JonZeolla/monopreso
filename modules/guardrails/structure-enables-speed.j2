@@ -1,0 +1,78 @@
+{#- modules/guardrails/structure-enables-speed.j2
+    The counter-intuitive close: structure in a repository makes an agent
+    faster, not slower.
+
+    This is the argument most likely to meet resistance in a governance room,
+    because both camps expect controls and velocity to trade off. The slides
+    therefore lead with the mechanism (an agent guesses less when the repo
+    tells it more) rather than with the claim.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/structure-enables-speed.j2" import
+          structure_is_speed, the_loop with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro structure_is_speed() -%}
+{%- call content_slide("Structure is speed") %}
+  {{ slide_heading("The part nobody expects",
+                   "Structure makes the agent faster",
+                   "Every constraint you write down is a decision the agent no longer has to guess at.") }}
+  {{ card_grid([
+    {"title": "An unstructured repo forces guessing",
+     "body": "No conventions, no tests, no types, no docs. The agent infers house style from whatever file it happened to read, and is wrong at a steady rate.",
+     "accent": "danger"},
+    {"title": "A structured repo forces nothing",
+     "body": "Conventions, typed interfaces, fast tests, a written architecture. The agent reads the constraint instead of inventing one.",
+     "accent": "success"},
+    {"title": "Guardrails are structure that answers back",
+     "body": "A failing policy check is a machine-readable statement of what &ldquo;good&rdquo; means here. The agent can act on it without asking a human.",
+     "accent": "primary"},
+  ], cols=3) }}
+  {{ callout("The teams shipping fastest with agents are not the ones with the
+              fewest rules. They are the ones whose rules are
+              <strong>written down and executable</strong>.", accent="success") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro the_loop() -%}
+{#- Closes the maturity arc: the controls built in earlier levels become the
+    training signal here. Drawn as a pipeline because the compounding only
+    happens if the last step feeds the first. -#}
+{%- call content_slide("The feedback loop") %}
+  {{ slide_heading("Compounding",
+                   "Guardrails are the feedback loop",
+                   "Each violation is a labelled example of what your organisation considers wrong.") }}
+  {{ pipe([
+    {"label": "Agent acts",     "detail": "Writes code against the context it has", "accent": "info"},
+    {"label": "Control fires",  "detail": "A rule blocks; a reviewer objects",      "accent": "danger"},
+    {"label": "Signal is kept", "detail": "What failed, where, and how often",      "accent": "warning"},
+    {"label": "Context updates","detail": "The rule becomes written guidance",      "accent": "secondary"},
+    {"label": "Agent acts",     "detail": "With one fewer way to be wrong",         "accent": "success"},
+  ]) }}
+  {{ card_grid([
+    {"title": "Fix the recurring, not the memorable",
+     "body": "Update context in response to patterns in the evidence, not to the one failure that annoyed someone senior.",
+     "accent": "warning"},
+    {"title": "Bound every edit",
+     "body": "Small, reviewed changes to instructions. A rewritten context file is an unreviewed behaviour change.",
+     "accent": "info"},
+    {"title": "Promote only what measures better",
+     "body": "Hold out a set of tasks. If the new guidance does not move them, it is prose, not an improvement.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("This is the difference between governance that ages badly and
+              governance that gets <strong>better every quarter</strong>.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

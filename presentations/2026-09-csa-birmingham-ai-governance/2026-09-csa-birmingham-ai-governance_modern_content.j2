@@ -1,0 +1,153 @@
+{# ================================================================
+   AI Governance and Guardrails for Software
+   Cloud Security Alliance (CSA) Birmingham · September 8, 2026
+   Birmingham, AL · 60 minutes · in-person
+
+   Modern-engine orchestration layer. This file chooses the brand and the
+   slide order; it contains no HTML. Every rendered slide comes from a
+   macro under modules/<topic>/ so other decks can reuse it.
+
+   Modules that resolve the brand pack themselves are imported WITH CONTEXT
+   — without it `branding` is undefined at load time and the path collapses
+   to modules/branding//primitives.j2. See AGENTS.md.
+   ================================================================ #}
+
+{# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide,
+    section_divider,
+    maturity_level %}
+
+{# ── New shared slides (primitive-native — import with context) ── #}
+{%- from "modules/sdlc/lifecycle.j2" import
+    stages               as sdlc_stages,
+    stages_with_controls as sdlc_stages_with_controls,
+    survey               as sdlc_survey with context %}
+{%- from "modules/guardrails/deterministic-vs-llm.j2" import
+    two_kinds            as guardrails_two_kinds,
+    working_together     as guardrails_working_together with context %}
+{%- from "modules/guardrails/guardrail-decisions.j2" import
+    decision_frame,
+    should_you_hooks,
+    should_you_agent_review,
+    should_you_blocking_ci with context %}
+{%- from "modules/guardrails/structure-enables-speed.j2" import
+    structure_is_speed,
+    the_loop with context %}
+
+{# ── Existing shared slides (vis-* era — no context needed) ────── #}
+{%- from "modules/agents/coding-agent-evolution.j2" import evolution as coding_agent_evolution %}
+{%- from "modules/guardrails/ai-coding-maturity.j2" import
+    why_guardrails,
+    overview as maturity_overview,
+    crawl    as maturity_crawl,
+    walk     as maturity_walk,
+    run      as maturity_run,
+    fly      as maturity_fly %}
+{%- from "modules/context/context-window.j2"      import interactive  as context_window_interactive %}
+{%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/context/context-files.j2"       import
+    mockup    as context_files_mockup,
+    tradeoffs as context_files_tradeoffs %}
+{%- from "modules/context/context-injection.j2"   import right_context_right_time %}
+{%- from "modules/agents/agent-review.j2"         import layered_ai_review %}
+{%- from "modules/guardrails/layered-defense.j2"  import layered_defense %}
+{%- from "modules/ci-cd/cicd-enforcement.j2"      import enforcement_window as cicd_enforcement %}
+{%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
+{%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
+{%- from "modules/ci-cd/server-side-review.j2"    import wiring as server_side_wiring %}
+{%- from "modules/agents/agent-feedback-loop.j2"  import feedback_loop as agent_feedback_loop %}
+{%- from "modules/guardrails/policy-feedback.j2"  import policy_feedback %}
+{%- from "modules/outro/outro.j2"                 import questions, thank_you %}
+
+
+<!-- ================================================================
+     OPENING — 0:00–0:07
+     ================================================================ -->
+{{ title_slide("AI Governance and Guardrails for Software",
+               subtitle="Cloud Security Alliance · Birmingham",
+               kicker="Jon Zeolla") }}
+{{ coding_agent_evolution() }}
+{{ why_guardrails() }}
+
+
+<!-- ================================================================
+     PART 1 — THE GROUND TRUTH — 0:07–0:18
+     Most of the room does not share a mental model of how software is
+     delivered. Build it first, then hang the controls on it.
+     ================================================================ -->
+{{ section_divider(1, "How software gets delivered",
+                   "And where you can intervene") }}
+{{ sdlc_stages() }}
+{{ sdlc_stages_with_controls() }}
+{{ sdlc_survey() }}
+
+
+<!-- ================================================================
+     PART 2 — THE MATURITY MODEL — 0:18–0:44
+     Four cumulative levels. This is the spine of the talk.
+     ================================================================ -->
+{{ section_divider(2, "Four levels of maturity",
+                   "Cumulative, not alternatives") }}
+{{ maturity_overview(maturity_level) }}
+
+{# Level 1 — Crawl: context and its limits — 0:21–0:29 #}
+{{ maturity_crawl(maturity_level) }}
+{{ context_window_interactive() }}
+{{ context_degradation_quality_drop() }}
+{{ context_files_mockup() }}
+{{ context_files_tradeoffs() }}
+
+{# Level 2 — Walk: agents reviewing agents — 0:29–0:35 #}
+{{ maturity_walk(maturity_level) }}
+{{ layered_ai_review() }}
+{{ right_context_right_time() }}
+
+{# Level 3 — Run: deterministic enforcement — 0:35–0:44 #}
+{{ maturity_run(maturity_level) }}
+{{ layered_defense() }}
+{{ deterministic_pci_example() }}
+{{ hooks_when_x_then_y() }}
+{{ cicd_enforcement() }}
+{{ server_side_wiring() }}
+
+
+<!-- ================================================================
+     PART 3 — RULES AND MODELS TOGETHER — 0:44–0:50
+     ================================================================ -->
+{{ section_divider(3, "Rules and models",
+                   "Which control answers which question") }}
+{{ guardrails_two_kinds() }}
+{{ guardrails_working_together() }}
+
+
+<!-- ================================================================
+     PART 4 — DECIDING — 0:50–0:56
+     The tradeoff slides: not "what are the options" but "should you".
+     ================================================================ -->
+{{ section_divider(4, "Should you?",
+                   "Choosing which guardrails you actually want") }}
+{{ decision_frame() }}
+{{ should_you_hooks() }}
+{{ should_you_agent_review() }}
+{{ should_you_blocking_ci() }}
+
+
+<!-- ================================================================
+     PART 5 — COMPOUNDING — 0:56–1:00
+     Level 4 lands here rather than inside Part 2, so the talk closes on
+     the optimistic argument rather than on enforcement.
+     ================================================================ -->
+{{ maturity_fly(maturity_level) }}
+{{ structure_is_speed() }}
+{{ agent_feedback_loop() }}
+{{ policy_feedback() }}
+{{ the_loop() }}
+
+
+<!-- ================================================================
+     CLOSE
+     ================================================================ -->
+{{ questions() }}
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

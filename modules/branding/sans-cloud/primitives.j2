@@ -53,6 +53,18 @@
 } -%}{{- m.get(name, "#94a3b8") -}}
 {%- endmacro -%}
 
+{%- macro _accent_text(name) -%}
+{%- set m = {
+  "primary":  "#2dd4bf",
+  "secondary":"#c084fc",
+  "success":  "#4ade80",
+  "warning":  "#fbbf24",
+  "danger":   "#f87171",
+  "info":     "#60a5fa",
+  "neutral":  "#e2e8f0",
+} -%}{{- m.get(name, "#e2e8f0") -}}
+{%- endmacro -%}
+
 
 {# ── structural primitives ────────────────────────────────────── #}
 
@@ -78,6 +90,15 @@
   {%- if level %}<p style="font-size:16px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;">Level {{ level }}: {{ stage }}</p>{% endif %}
   <h2>{{ title }}</h2>
   {%- if subtitle %}<p>{{ subtitle|safe }}</p>{% endif %}
+</section>
+{%- endmacro -%}
+
+{%- macro content_slide(label) -%}
+{# Call-block wrapper owning the <section> + data-label, so a shared slide
+   never has to name a brand-specific section class:
+     {%- call content_slide("Lifecycle") %} ...body... {%- endcall %} #}
+<section class="vis-slide" data-label="{{ label }}">
+  {{ caller() }}
 </section>
 {%- endmacro -%}
 
@@ -146,13 +167,49 @@
 {%- endmacro -%}
 
 
+{%- macro pipe(stages) -%}
+{# Left-to-right pipeline of stage cards joined by arrows.
+   Each stage: {label, detail?, meta?, accent?, note?}
+
+   `note` renders as an annotation hanging above the stage on a dotted
+   connector. That is what lets one slide be shown twice — first with bare
+   stages, then with the controls annotated onto them — from the same macro
+   and the same stage list. #}
+{%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
+<div style="display:flex; align-items:stretch; justify-content:center; gap:8px; margin:18px 0;">
+  {%- for stage in stages %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" style="flex:0 0 auto; align-self:center; color:#475569; font-size:22px; line-height:1;">&rarr;</div>
+  {%- endif %}
+  {%- set a = stage.accent | default("neutral") %}
+  <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:stretch;">
+    {%- if has_notes %}
+    <div style="min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
+      {%- if stage.note %}
+      <div style="background:rgba(15,23,42,0.85); border:1px solid {{ _accent_text(a) }}55; border-radius:8px; padding:8px 10px; text-align:center;">
+        <p style="font-size:11px; font-weight:700; color:{{ _accent_text(a) }}; margin:0; line-height:1.35;">{{ stage.note|safe }}</p>
+      </div>
+      <div aria-hidden="true" style="width:0; height:14px; border-left:2px dotted {{ _accent_text(a) }}88;"></div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="{{ _accent_card_class(a) }}" style="flex:1; padding:16px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+      <p style="font-size:14px; font-weight:700; color:{{ _accent_text(a) }}; margin:0;">{{ stage.label }}</p>
+      {%- if stage.detail %}<p style="font-size:11px; color:#94a3b8; margin:0; line-height:1.45;">{{ stage.detail|safe }}</p>{% endif %}
+      {%- if stage.meta %}<p class="vis-mono" style="font-size:10px; color:#64748b; margin:0;">{{ stage.meta }}</p>{% endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract. Implement
    on demand when extracting the shared slide that needs them:
 
      code_block(filename, lines)
      step_flow(steps)
-     pipe(stages)
      ide_mockup(filename, sidebar, code_lines, chat_panel=None)
 
    Implementations should preserve the look-and-feel that already

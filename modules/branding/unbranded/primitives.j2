@@ -12,13 +12,27 @@
 
 {%- macro _accent_class(name) -%}
 {%- set m = {
-  "primary":"unb-accent-primary",
-  "success":"unb-accent-success",
-  "warning":"unb-accent-warning",
-  "danger": "unb-accent-danger",
-  "info":   "unb-accent-info",
-  "neutral":"",
+  "primary":  "unb-accent-primary",
+  "secondary":"unb-accent-secondary",
+  "success":  "unb-accent-success",
+  "warning":  "unb-accent-warning",
+  "danger":   "unb-accent-danger",
+  "info":     "unb-accent-info",
+  "neutral":  "",
 } -%}{{- m.get(name, "") -}}
+{%- endmacro -%}
+
+{%- macro _accent_var(name) -%}
+{# CSS variable holding this accent's colour, for inline use. #}
+{%- set m = {
+  "primary":  "var(--unb-primary)",
+  "secondary":"var(--unb-secondary)",
+  "success":  "var(--unb-success)",
+  "warning":  "var(--unb-warning)",
+  "danger":   "var(--unb-danger)",
+  "info":     "var(--unb-info)",
+  "neutral":  "var(--unb-text)",
+} -%}{{- m.get(name, "var(--unb-text)") -}}
 {%- endmacro -%}
 
 
@@ -51,6 +65,15 @@
     <h2 class="unb-title" style="font-size:54px;">{{ title }}</h2>
     {%- if subtitle %}<p class="unb-subtitle">{{ subtitle|safe }}</p>{% endif %}
   </div>
+</section>
+{%- endmacro -%}
+
+{%- macro content_slide(label) -%}
+{# Call-block wrapper owning the <section> + data-label, so a shared slide
+   never has to name a brand-specific section class:
+     {%- call content_slide("Lifecycle") %} ...body... {%- endcall %} #}
+<section class="unb-slide" data-label="{{ label }}">
+  {{ caller() }}
 </section>
 {%- endmacro -%}
 
@@ -118,12 +141,47 @@
 {%- endmacro -%}
 
 
+{%- macro pipe(stages) -%}
+{# Left-to-right pipeline of stage cards joined by arrows.
+   Each stage: {label, detail?, meta?, accent?, note?}
+
+   `note` renders as an annotation hanging above the stage on a dotted
+   connector, so the same stage list can be shown twice — bare, then with
+   controls annotated onto it. #}
+{%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
+<div style="display:flex; align-items:stretch; justify-content:center; gap:8px; margin:18px 0;">
+  {%- for stage in stages %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" style="flex:0 0 auto; align-self:center; color:var(--unb-text-dim); font-size:22px; line-height:1;">&rarr;</div>
+  {%- endif %}
+  {%- set a = stage.accent | default("neutral") %}
+  <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:stretch;">
+    {%- if has_notes %}
+    <div style="min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
+      {%- if stage.note %}
+      <div style="background:var(--unb-surface-strong); border:1px solid {{ _accent_var(a) }}; border-radius:8px; padding:8px 10px; text-align:center;">
+        <p style="font-size:11px; font-weight:700; color:{{ _accent_var(a) }}; margin:0; line-height:1.35;">{{ stage.note|safe }}</p>
+      </div>
+      <div aria-hidden="true" style="width:0; height:14px; border-left:2px dotted {{ _accent_var(a) }};"></div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="unb-card {{ _accent_class(a) }}" style="flex:1; padding:16px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+      <p class="unb-card-title" style="margin:0; color:{{ _accent_var(a) }};">{{ stage.label }}</p>
+      {%- if stage.detail %}<p class="unb-card-body" style="margin:0;">{{ stage.detail|safe }}</p>{% endif %}
+      {%- if stage.meta %}<p style="margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--unb-text-dim);">{{ stage.meta }}</p>{% endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract.
    Implement on demand when extracting the consuming shared slide.
 
      code_block(filename, lines)
      step_flow(steps)
-     pipe(stages)
      ide_mockup(filename, sidebar, code_lines, chat_panel=None)
    ──────────────────────────────────────────────────────────────── #}
