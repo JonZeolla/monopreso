@@ -41,9 +41,9 @@
 {%- macro title_slide(title, subtitle="", kicker="") -%}
 <section class="slide flex items-center justify-center p-8" data-label="Title">
   <div class="text-center fade-in">
-    <h1 class="text-7xl font-bold mb-4 tracking-tight text-white">{{ title }}</h1>
-    {%- if subtitle %}<p class="text-2xl font-medium mb-8 italic gradient-text">{{ subtitle|safe }}</p>{% endif %}
-    {%- if kicker %}<p class="text-sm text-slate-400">{{ kicker|safe }}</p>{% endif %}
+    {%- if kicker %}<p class="text-xs font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-3">{{ kicker|safe }}</p>{% endif %}
+    <h1 class="text-[64px] font-bold mb-[18px] tracking-tight text-white">{{ title }}</h1>
+    {%- if subtitle %}<p class="text-2xl font-medium italic gradient-text">{{ subtitle|safe }}</p>{% endif %}
   </div>
 </section>
 {%- endmacro -%}
@@ -51,9 +51,18 @@
 {%- macro section_divider(num, title, subtitle="") -%}
 <section class="slide flex items-center justify-center p-8" data-label="Section: {{ title }}">
   <div class="max-w-5xl mx-auto w-full text-center fade-in">
-    {%- if num %}<p class="text-sm uppercase tracking-[0.2em] text-zenable-teal mb-4">Part {{ num }}</p>{% endif %}
-    <h2 class="text-6xl font-bold text-white mb-4 tracking-tight">{{ title }}</h2>
+    <h2 class="text-6xl font-bold text-white mb-4 tracking-tight">{% if num %}{{ num }} · {% endif %}{{ title }}</h2>
     {%- if subtitle %}<p class="text-xl text-slate-400">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro maturity_level(level, stage, title, subtitle="") -%}
+<section class="slide flex items-center justify-center p-8" data-label="{% if level %}Level {{ level }}: {{ stage }}{% else %}{{ title }}{% endif %}">
+  <div class="max-w-5xl mx-auto w-full text-center fade-in">
+    {%- if level %}<p class="text-[10px] font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-3">Level {{ level }}: {{ stage }}</p>{% endif %}
+    <h2 class="text-5xl font-bold gradient-text pb-2">{{ title }}</h2>
+    {%- if subtitle %}<p class="text-xl text-slate-400 mt-4">{{ subtitle|safe }}</p>{% endif %}
   </div>
 </section>
 {%- endmacro -%}

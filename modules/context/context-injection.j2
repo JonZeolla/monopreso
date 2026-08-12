@@ -1,0 +1,126 @@
+{#- modules/context/context-injection.j2
+    Shared Level 2 slides for situational context delivery.
+
+    These slides use the current vis-* compatibility layer while the brand
+    primitive migration described in AGENTS.md is still underway. -#}
+
+{%- macro right_context_right_time() -%}
+<section class="vis-slide" data-label="Context injection">
+  <div class="vis-label">Level 2: Walk</div>
+  <div class="vis-title">The right context, at the right time</div>
+  <div class="vis-subtitle">Static project rules establish the baseline. Context agents specialize it for the work in front of you.</div>
+
+  <div style="flex:1; display:grid; grid-template-columns:1fr 0.8fr 1fr; gap:24px; align-items:center; padding:20px 0;">
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="vis-teal-card" style="padding:18px;">
+        <p style="font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#2dd4bf; margin:0 0 7px 0;">What changed?</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 6px 0;">Files, services, data, dependencies</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">A payment handler needs different guidance than a marketing page.</p>
+      </div>
+      <div class="vis-blue-card" style="padding:18px;">
+        <p style="font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#60a5fa; margin:0 0 7px 0;">What kind of work?</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 6px 0;">Feature, migration, incident, refactor</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">The same repository has different constraints under different intents.</p>
+      </div>
+      <div class="vis-purple-card" style="padding:18px;">
+        <p style="font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:#c084fc; margin:0 0 7px 0;">Where in the workflow?</p>
+        <p style="font-size:16px; font-weight:700; color:#fff; margin:0 0 6px 0;">Plan, implement, test, review, deploy</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">Good planning guidance is usually bad post-deploy guidance.</p>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;">
+      <div style="font-size:30px; color:#475569;">→</div>
+      <div style="width:220px; height:220px; border-radius:50%; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; background:radial-gradient(circle, rgba(45,212,191,0.2), rgba(15,23,42,0.9)); border:2px solid rgba(45,212,191,0.55); box-shadow:0 0 50px rgba(45,212,191,0.08);">
+        <p style="font-size:42px; margin:0 0 10px 0;">🧭</p>
+        <p style="font-size:20px; font-weight:800; color:#fff; margin:0;">Context agent</p>
+        <p style="font-size:12px; color:#94a3b8; margin:8px 20px 0 20px; line-height:1.45;">selects, composes, and delivers</p>
+      </div>
+      <div style="font-size:30px; color:#475569;">→</div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <div class="vis-card" style="padding:18px;">
+        <p style="font-size:15px; font-weight:700; color:#5eead4; margin:0 0 6px 0;">Relevant requirements</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">Data classification, regulatory scope, threat model, service SLOs.</p>
+      </div>
+      <div class="vis-card" style="padding:18px;">
+        <p style="font-size:15px; font-weight:700; color:#93c5fd; margin:0 0 6px 0;">Approved patterns</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">Reference implementations, paved roads, libraries, and secure examples.</p>
+      </div>
+      <div class="vis-card" style="padding:18px;">
+        <p style="font-size:15px; font-weight:700; color:#d8b4fe; margin:0 0 6px 0;">Explicit constraints</p>
+        <p style="font-size:12px; color:#94a3b8; margin:0;">What must happen, what must never happen, and when to escalate.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    Level 2 turns <strong>“read all of our documentation”</strong> into <strong>“here is what matters for this decision.”</strong>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro delivery_pipeline() -%}
+<section class="vis-slide" data-label="Context delivery">
+  <div class="vis-label">Progressive disclosure</div>
+  <div class="vis-title">Retrieve broadly. Inject narrowly.</div>
+  <div class="vis-subtitle">Keep the agent's working context focused without disconnecting it from organizational knowledge.</div>
+
+  <div style="flex:1; display:flex; align-items:center; gap:16px; padding:30px 0;">
+    <div style="flex:1.15; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div class="vis-card" style="padding:16px;">
+        <p style="font-size:23px; margin:0 0 8px 0;">📚</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 5px 0;">Standards &amp; policy</p>
+        <p style="font-size:11px; color:#94a3b8; margin:0;">Security, privacy, compliance</p>
+      </div>
+      <div class="vis-card" style="padding:16px;">
+        <p style="font-size:23px; margin:0 0 8px 0;">🏗️</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 5px 0;">Architecture</p>
+        <p style="font-size:11px; color:#94a3b8; margin:0;">ADRs, service maps, ownership</p>
+      </div>
+      <div class="vis-card" style="padding:16px;">
+        <p style="font-size:23px; margin:0 0 8px 0;">🛣️</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 5px 0;">Paved roads</p>
+        <p style="font-size:11px; color:#94a3b8; margin:0;">Templates, libraries, examples</p>
+      </div>
+      <div class="vis-card" style="padding:16px;">
+        <p style="font-size:23px; margin:0 0 8px 0;">🧾</p>
+        <p style="font-size:14px; font-weight:700; color:#fff; margin:0 0 5px 0;">Live metadata</p>
+        <p style="font-size:11px; color:#94a3b8; margin:0;">Owners, data tier, environment</p>
+      </div>
+    </div>
+
+    <div style="color:#475569; font-size:30px;">→</div>
+
+    <div class="vis-teal-card" style="flex:0.9; padding:24px; text-align:center;">
+      <p style="font-size:42px; margin:0 0 12px 0;">🎛️</p>
+      <p style="font-size:21px; font-weight:800; color:#fff; margin:0 0 10px 0;">Select + rank + compose</p>
+      <p style="font-size:13px; color:#94a3b8; line-height:1.55; margin:0 0 16px 0;">Policy filters first. Relevance ranking second. Token budget always.</p>
+      <span class="vis-badge" style="background:rgba(45,212,191,0.1); border:1px solid rgba(45,212,191,0.3); color:#2dd4bf;">traceable sources</span>
+    </div>
+
+    <div style="color:#475569; font-size:30px;">→</div>
+
+    <div style="flex:1.15; display:flex; flex-direction:column; gap:10px;">
+      <div class="vis-blue-card" style="padding:17px; display:flex; align-items:center; gap:14px;">
+        <span style="font-size:24px;">📝</span>
+        <div><p style="font-size:14px; font-weight:700; color:#fff; margin:0;">Plan guidance</p><p style="font-size:11px; color:#94a3b8; margin:3px 0 0 0;">constraints before implementation</p></div>
+      </div>
+      <div class="vis-purple-card" style="padding:17px; display:flex; align-items:center; gap:14px;">
+        <span style="font-size:24px;">💻</span>
+        <div><p style="font-size:14px; font-weight:700; color:#fff; margin:0;">Tool-time guidance</p><p style="font-size:11px; color:#94a3b8; margin:3px 0 0 0;">examples at the moment of change</p></div>
+      </div>
+      <div class="vis-amber-card" style="padding:17px; display:flex; align-items:center; gap:14px;">
+        <span style="font-size:24px;">🔍</span>
+        <div><p style="font-size:14px; font-weight:700; color:#fff; margin:0;">Review context</p><p style="font-size:11px; color:#94a3b8; margin:3px 0 0 0;">requirements alongside the diff</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vis-callout vis-callout-teal" style="text-align:center;">
+    Context injection should be <strong>observable</strong>: record what was selected, why, and which version shaped the outcome.
+  </div>
+</section>
+{%- endmacro -%}

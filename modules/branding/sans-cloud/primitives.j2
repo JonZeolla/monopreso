@@ -73,6 +73,14 @@
 </section>
 {%- endmacro -%}
 
+{%- macro maturity_level(level, stage, title, subtitle="") -%}
+<section class="sans-slide sans-section-divider" data-label="{% if level %}Level {{ level }}: {{ stage }}{% else %}{{ title }}{% endif %}">
+  {%- if level %}<p style="font-size:16px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;">Level {{ level }}: {{ stage }}</p>{% endif %}
+  <h2>{{ title }}</h2>
+  {%- if subtitle %}<p>{{ subtitle|safe }}</p>{% endif %}
+</section>
+{%- endmacro -%}
+
 {%- macro slide_heading(label, title, subtitle="") -%}
 <div class="vis-label">{{ label }}</div>
 <div class="vis-title">{{ title }}</div>

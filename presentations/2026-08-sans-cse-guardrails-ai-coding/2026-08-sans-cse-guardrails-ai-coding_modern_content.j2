@@ -1,0 +1,107 @@
+{# ================================================================
+   Guardrails for AI Coding
+   SANS@Night · Cloud Security Exchange 2026 · August 20, 2026
+
+   Modern-engine orchestration layer. Every rendered slide is imported
+   from modules/**; this file only chooses the brand and slide order.
+   ================================================================ #}
+
+{# ── Brand pack selected by start.sh / the local Taskfile ─────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide,
+    maturity_level %}
+
+{# ── Shared slide content ─────────────────────────────────────── #}
+{%- from "modules/agents/coding-agent-evolution.j2" import evolution as coding_agent_evolution %}
+{%- from "modules/guardrails/ai-coding-maturity.j2" import
+    why_guardrails,
+    overview as maturity_overview,
+    crawl as maturity_crawl,
+    walk as maturity_walk,
+    run as maturity_run,
+    fly as maturity_fly %}
+{%- from "modules/context/context-window.j2" import interactive as context_window_interactive %}
+{%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/context/context-files.j2" import
+    mockup as context_files_mockup,
+    tradeoffs as context_files_tradeoffs %}
+{%- from "modules/context/context-injection.j2" import
+    right_context_right_time,
+    delivery_pipeline as context_delivery_pipeline %}
+{%- from "modules/guardrails/layered-defense.j2" import layered_defense %}
+{%- from "modules/ci-cd/cicd-enforcement.j2" import enforcement_window as cicd_enforcement %}
+{%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
+{%- from "modules/hooks/hooks.j2" import when_x_then_y as hooks_when_x_then_y %}
+{%- from "modules/ci-cd/server-side-review.j2" import wiring as server_side_wiring %}
+{%- from "modules/agents/agent-review.j2" import layered_ai_review %}
+{%- from "modules/agents/agent-feedback-loop.j2" import feedback_loop as agent_feedback_loop %}
+{%- from "modules/guardrails/policy-feedback.j2" import policy_feedback %}
+{%- from "modules/guardrails/refined-rules.j2" import refined_rules %}
+{%- from "modules/context/context-refinement.j2" import
+    context_as_code,
+    evaluation_design,
+    skillopt_overview,
+    research_landscape,
+    evaluation_scorecard %}
+{%- from "modules/outro/outro.j2" import questions, thank_you %}
+
+
+<!-- ================================================================
+     OPENING
+     ================================================================ -->
+{{ title_slide("Guardrails for AI Coding", kicker="Jon Zeolla") }}
+{{ coding_agent_evolution() }}
+{{ why_guardrails() }}
+{{ maturity_overview(maturity_level) }}
+
+
+<!-- ================================================================
+     LEVEL 1 — CRAWL
+     ================================================================ -->
+{{ maturity_crawl(maturity_level) }}
+{{ context_window_interactive() }}
+{{ context_degradation_quality_drop() }}
+{{ context_files_mockup() }}
+{{ context_files_tradeoffs() }}
+
+
+<!-- ================================================================
+     LEVEL 2 — WALK
+     ================================================================ -->
+{{ maturity_walk(maturity_level) }}
+{{ layered_ai_review() }}
+{{ right_context_right_time() }}
+{{ context_delivery_pipeline() }}
+
+
+<!-- ================================================================
+     LEVEL 3 — RUN
+     ================================================================ -->
+{{ maturity_run(maturity_level) }}
+{{ layered_defense() }}
+{{ cicd_enforcement() }}
+{{ deterministic_pci_example() }}
+{{ hooks_when_x_then_y() }}
+{{ server_side_wiring() }}
+
+
+<!-- ================================================================
+     LEVEL 4 — FLY
+     ================================================================ -->
+{{ maturity_fly(maturity_level) }}
+{{ agent_feedback_loop() }}
+{{ context_as_code() }}
+{{ evaluation_design() }}
+{{ skillopt_overview("modules/context/img/skillopt-overview.png") }}
+{{ research_landscape() }}
+{{ evaluation_scorecard() }}
+{{ policy_feedback() }}
+{{ refined_rules() }}
+
+
+<!-- ================================================================
+     CLOSE
+     ================================================================ -->
+{{ questions() }}
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
