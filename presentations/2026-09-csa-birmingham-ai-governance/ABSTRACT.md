@@ -10,4 +10,4 @@ Jon Zeolla is an AI startup founder, Agentic AI Foundation Ambassador, and SANS 
 
 Most guardrail advice starts with a tool list. This talk focuses on the workflow, and where controls can attach at each stage. In practice that means getting observability and governance into your agents, using verifiers to check their work, and using context engineering to help engineers move faster while keeping security part of the job.
 
-Walk away with pro tips, the pros and cons of each approach, and a clear enough view of the tradeoffs to decide what your team should take on next.
+Walk away with pro tips, implementation details for each approach, and a clear enough view of the tradeoffs to decide what your team should take on next.
