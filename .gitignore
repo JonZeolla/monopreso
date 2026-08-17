@@ -57,3 +57,6 @@ tags
 [._]*.un~
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,vim
+
+# Claude Code agent worktrees (scratch space, never committed)
+.claude/worktrees/

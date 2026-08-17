@@ -1,0 +1,75 @@
+{#- modules/verifiers/self-improvement.j2
+    Verifier Self-Improvement: the closing argument. Verifier output is not
+    just a gate verdict — it is labelled evidence about where the paved road
+    is failing, and feeding it back is what makes the whole system improve.
+
+    Deliberately not framed as a maturity level (no "Level 4", no "Fly"):
+    this deck skips the maturity-model spine, so the close stands on its own.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/verifiers/self-improvement.j2" import
+          verifier_self_improvement, improvement_gates with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro verifier_self_improvement() -%}
+{%- call content_slide("Verifier self-improvement") %}
+  {{ slide_heading("Closing the loop",
+                   "Verifier self-improvement",
+                   "Every verifier verdict is a labelled example of what your organisation considers wrong — free training data you are probably discarding.") }}
+  {{ pipe([
+    {"label": "Agent acts",
+     "detail": "Generates code on the paved road it was given",
+     "accent": "info"},
+    {"label": "Verifiers check",
+     "detail": "The ensemble votes — rules, judges, humans",
+     "accent": "warning"},
+    {"label": "Evidence lands",
+     "detail": "What failed, where, how often — recorded, not just blocked",
+     "accent": "danger"},
+    {"label": "Paved road updates",
+     "detail": "Recurring failures become context, rules, and policy",
+     "accent": "secondary"},
+    {"label": "Agent acts",
+     "detail": "With one fewer way to be wrong",
+     "accent": "success"},
+  ]) }}
+  {{ callout("The guardrail is not just the gate.
+              <strong>It is the training signal.</strong>", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro improvement_gates() -%}
+{#- Discipline for the loop: without these three constraints, "the system
+    improves itself" degrades into unreviewed behaviour drift. -#}
+{%- call content_slide("Improvement gates") %}
+  {{ slide_heading("Keeping the loop honest",
+                   "Self-improvement needs its own guardrails",
+                   "An unsupervised feedback loop is just drift with good branding.") }}
+  {{ card_grid([
+    {"title": "Update on patterns, not anecdotes",
+     "body": "Change the paved road when the evidence shows a recurring failure — not because one memorable incident annoyed someone senior.",
+     "accent": "warning"},
+    {"title": "Bound every change",
+     "body": "Small, reviewed edits to context and policy. A wholesale rewrite of your rules is an unreviewed change to every future agent action.",
+     "accent": "info"},
+    {"title": "Promote only what measures better",
+     "body": "Hold out a set of real tasks. If the updated guidance doesn't move them, it is prose, not an improvement.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("Models keep getting better on their own. Paved roads start them
+              right. Verifiers keep them right — and a governed feedback loop
+              means the whole system is <strong>better every quarter</strong>.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

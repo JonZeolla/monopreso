@@ -1,40 +1,13 @@
-# AI Governance and Guardrails for Software
+# AI Governance and Guardrails
 
 **Cloud Security Alliance (CSA) Birmingham** · September 8, 2026 · Birmingham, AL
 
-> DRAFT — not yet submitted. Replace with the published abstract once the
-> chapter confirms wording.
+--
 
-Generative AI is becoming a default part of how software gets built. That
-changes delivery speed, and it changes the risk equation underneath it: more
-code, more change, and more decisions made before any human reads the diff.
+Everyone is getting more done with AI. Nobody wants to be the person who slows that down — so how do we protect it without grinding it to a halt? It all comes down to tradeoffs.
 
-This session is a practical survey of what you can actually do about it. We
-start by drawing the software delivery lifecycle — plan, build, test,
-distribute, deploy, run — and showing that every stage of it is a place a
-control can attach. From there we walk four cumulative levels of maturity for
-agentic coding controls:
+Jon Zeolla is an AI startup founder, Agentic AI Foundation Ambassador, and SANS Instructor with over 15 years of experience in infosec working on securing cloud native platforms and software companies.
 
-1. **Crawl — basic steering.** Project context files, rules, and instructions,
-   and the limits of what they can carry.
-2. **Walk — agents reviewing agents.** Specialised review agents, and
-   delivering the right context for the change in front of you.
-3. **Run — policy as code.** Deterministic security and compliance controls
-   enforced in pull requests and CI, producing audit-ready evidence.
-4. **Fly — continuous improvement.** Feedback loops that turn every guardrail
-   violation into better guidance.
+Most guardrail advice starts with a tool list. This talk focuses on the workflow, and where controls can attach at each stage. In practice that means getting observability and governance into your agents, using verifiers to check their work, and using context engineering to help engineers move faster while keeping security part of the job.
 
-Along the way we look at where deterministic rules beat model judgement and
-where they do not, and how the two compose — models advise, rules decide. We
-close on the argument that matters most to anyone being asked to choose between
-governance and velocity: structure in a repository makes agents faster, because
-every constraint you write down is a decision the agent no longer has to guess
-at.
-
-Attendees should leave able to decide *which* guardrails their team should adopt
-next, and which ones they are better off skipping for now.
-
----
-
-Treat this as a specification: every claim made here needs a slide behind it,
-and deck material that serves none of these claims is a candidate to cut.
+Walk away with pro tips, the pros and cons of each approach, and a clear enough view of the tradeoffs to decide what your team should take on next.

@@ -1,0 +1,40 @@
+{#- modules/context/context-rules-intro.j2
+    Transition slide: from paved roads into the context-engineering material.
+    Introduces context files and rules as the paved road's written form,
+    ahead of the context-window / degradation / context-files slides.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/context/context-rules-intro.j2" import
+          context_files_rules with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    callout
+-%}
+
+
+{%- macro context_files_rules() -%}
+{%- call content_slide("Context files and rules") %}
+  {{ slide_heading("Paving the road",
+                   "Context Files &amp; Rules",
+                   "The paved road has to be written down where the agent actually reads it.") }}
+  {{ card_grid([
+    {"title": "What they are",
+     "body": "CLAUDE.md, AGENTS.md, cursor rules, system instructions — project files the agent loads before it writes a line.",
+     "accent": "primary"},
+    {"title": "What belongs in them",
+     "body": "Conventions, constraints, architecture decisions, approved patterns — the decisions you never want re-litigated per prompt.",
+     "accent": "success"},
+    {"title": "What limits them",
+     "body": "They spend context-window budget, and their influence degrades as the window fills — which is exactly where we're headed next.",
+     "accent": "warning"},
+  ], cols=3) }}
+  {{ callout("Every constraint written here is a decision the agent no longer
+              has to guess at.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}

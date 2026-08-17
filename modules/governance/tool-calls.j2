@@ -1,0 +1,132 @@
+{#- modules/governance/tool-calls.j2
+    Governing the agent itself: every capability an agent has is exercised
+    through a tool call, which makes the tool-call boundary the one place to
+    monitor, gate, and contain agent activity.
+
+    Sandboxing slides cover nono (nolabs) — kernel-enforced, per-tool-call
+    sandboxing. Sources: nono.sh · github.com/nolabs-ai/nono (see deck
+    SOURCES.md).
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/governance/tool-calls.j2" import
+          everything_is_a_tool_call, monitor_allow_deny,
+          sandboxing_nono, nono_scoped_call with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    pill_row,
+    callout
+-%}
+
+
+{%- macro everything_is_a_tool_call() -%}
+{%- call content_slide("Everything is a tool call") %}
+  {{ slide_heading("Governing the agent itself",
+                   "Everything the agent does is a tool call",
+                   "The model only ever proposes. The harness executes. That seam is where governance lives.") }}
+  {{ card_grid([
+    {"title": "Built-in tools",
+     "body": "Shell commands, file reads and edits, web fetches. The bread-and-butter actions every coding agent ships with.",
+     "accent": "primary"},
+    {"title": "MCP tools",
+     "body": "Every MCP server integration — Slack, GitHub, your internal APIs — surfaces as more tools in the very same interface.",
+     "accent": "info"},
+    {"title": "Skills &amp; subagents",
+     "body": "Higher-level workflows are invoked through tool calls too, and everything they do bottoms out in more tool calls.",
+     "accent": "secondary"},
+  ], cols=3) }}
+  {{ callout("One interface for every action means <strong>one chokepoint for
+              every control</strong>: observe it, gate it, contain it.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro monitor_allow_deny() -%}
+{%- call content_slide("Monitor, allow, deny") %}
+  {{ slide_heading("The tool-call boundary",
+                   "Monitor · allow · deny · sandbox",
+                   "Every proposed action passes one gate. Instrument the gate, and you have governed the agent.") }}
+  {{ pipe([
+    {"label": "Proposed",
+     "detail": "The model emits a structured tool call",
+     "accent": "neutral"},
+    {"label": "Observed",
+     "detail": "Logged before anything runs — who, what, with which arguments",
+     "accent": "info"},
+    {"label": "Decided",
+     "detail": "Policy allows, denies, or escalates to a human prompt",
+     "accent": "warning",
+     "note": "This is a PEP asking a PDP — the policy architecture from earlier, applied to a single tool call"},
+    {"label": "Contained",
+     "detail": "Runs inside a sandbox scoped to exactly this call",
+     "accent": "danger"},
+    {"label": "Recorded",
+     "detail": "Result and verdict land in the audit trail",
+     "accent": "success"},
+  ]) }}
+  {{ callout("&ldquo;What did the agent do last Tuesday?&rdquo; should be a
+              query, not an investigation.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro sandboxing_nono() -%}
+{%- call content_slide("Sandboxing: nono") %}
+  {{ slide_heading("Containment",
+                   "Sandboxing agents at the kernel: nono",
+                   "Open source, from nolabs — deny by default, no container, no VM, no daemon.") }}
+  {{ card_grid([
+    {"title": "Kernel-enforced",
+     "body": "Wraps the agent's process in the host kernel's own isolation primitives. Not a wrapper the model can talk its way out of.",
+     "accent": "primary"},
+    {"title": "Zero infrastructure",
+     "body": "Runs directly on the developer's machine — macOS, Linux, WSL2. No image to build, no cluster to operate.",
+     "accent": "info"},
+    {"title": "Least privilege by default",
+     "body": "File access, network reach, and credentials start at nothing and are granted per task, not per install.",
+     "accent": "success"},
+    {"title": "Scoped per tool call",
+     "body": "Each tool call gets its own authority — and that authority expires the moment the call finishes.",
+     "accent": "warning"},
+  ], cols=4) }}
+  {{ callout("nono.sh · github.com/nolabs-ai/nono — sandbox the agent
+              <strong>without breaking its loop</strong>.", accent="neutral") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro nono_scoped_call() -%}
+{#- The mechanism slide: one tool call's journey through the nono
+    supervisor. The phantom-credential trick is the memorable part. -#}
+{%- call content_slide("A sandboxed tool call") %}
+  {{ slide_heading("How it works",
+                   "One tool call, one micro-sandbox",
+                   "The supervisor holds the real authority. The tool only ever sees a stand-in.") }}
+  {{ pipe([
+    {"label": "Tool call",
+     "detail": "Agent asks to run a tool",
+     "accent": "neutral"},
+    {"label": "Verify",
+     "detail": "Supervisor resolves the executable and checks the arguments against policy",
+     "accent": "info"},
+    {"label": "Scope",
+     "detail": "A fresh micro-sandbox gets only the files and endpoints this task needs",
+     "accent": "warning",
+     "note": "Secrets stay with the supervisor — the sandbox receives a phantom credential; the real one never enters the child process"},
+    {"label": "Run",
+     "detail": "The tool executes inside its box",
+     "accent": "primary"},
+    {"label": "Expire",
+     "detail": "The call returns and its authority evaporates with it",
+     "accent": "success"},
+  ]) }}
+  {{ callout("A leaked credential that was never in the process is a breach
+              that <strong>cannot happen</strong>.", accent="success") }}
+{%- endcall %}
+{%- endmacro -%}

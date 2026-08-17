@@ -7,6 +7,12 @@
    slide order; it contains no HTML. Every rendered slide comes from a
    macro under modules/<topic>/ so other decks can reuse it.
 
+   Restructured 2026-08-16 (see NOTES.md): the maturity-model spine is
+   gone. The talk now runs lifecycle → guardrail spectrum → policy-as-code
+   history → paved roads → context → verifiers → rules+models (Weaver) →
+   tool-call governance → deciding → Verifier Self-Improvement. No section
+   divider slides.
+
    Modules that resolve the brand pack themselves are imported WITH CONTEXT
    — without it `branding` is undefined at load time and the path collapses
    to modules/branding//primitives.j2. See AGENTS.md.
@@ -15,36 +21,48 @@
 {# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
 {%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    title_slide,
-    section_divider,
-    maturity_level %}
+    title_slide %}
 
-{# ── New shared slides (primitive-native — import with context) ── #}
+{# ── Shared slides (primitive-native — import with context) ────── #}
 {%- from "modules/sdlc/lifecycle.j2" import
     stages               as sdlc_stages,
     stages_with_controls as sdlc_stages_with_controls,
     survey               as sdlc_survey with context %}
+{%- from "modules/guardrails/guardrail-spectrum.j2" import
+    highway_vs_monorail,
+    the_balance,
+    paved_roads with context %}
+{%- from "modules/guardrails/policy-as-code.j2" import
+    pac_history,
+    policy_architecture,
+    policy_architecture_today with context %}
+{%- from "modules/context/context-rules-intro.j2" import
+    context_files_rules with context %}
+{%- from "modules/verifiers/verifiers.j2" import
+    verifiers_are_guardrails,
+    ensembling_fast_verifiers,
+    weaver_evidence with context %}
 {%- from "modules/guardrails/deterministic-vs-llm.j2" import
     two_kinds            as guardrails_two_kinds,
     working_together     as guardrails_working_together with context %}
+{%- from "modules/governance/tool-calls.j2" import
+    everything_is_a_tool_call,
+    monitor_allow_deny,
+    sandboxing_nono,
+    nono_scoped_call with context %}
 {%- from "modules/guardrails/guardrail-decisions.j2" import
-    decision_frame,
-    should_you_hooks,
-    should_you_agent_review,
-    should_you_blocking_ci with context %}
+    decision_frame with context %}
 {%- from "modules/guardrails/structure-enables-speed.j2" import
-    structure_is_speed,
-    the_loop with context %}
+    structure_is_speed with context %}
+{%- from "modules/verifiers/self-improvement.j2" import
+    verifier_self_improvement,
+    improvement_gates with context %}
 
 {# ── Existing shared slides (vis-* era — no context needed) ────── #}
 {%- from "modules/agents/coding-agent-evolution.j2" import evolution as coding_agent_evolution %}
-{%- from "modules/guardrails/ai-coding-maturity.j2" import
-    why_guardrails,
-    overview as maturity_overview,
-    crawl    as maturity_crawl,
-    walk     as maturity_walk,
-    run      as maturity_run,
-    fly      as maturity_fly %}
+{%- from "modules/agents/code-volume.j2"          import
+    ten_years_github     as code_volume_ten_years,
+    late_2025_inflection as code_volume_inflection %}
 {%- from "modules/context/context-window.j2"      import interactive  as context_window_interactive %}
 {%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
 {%- from "modules/context/context-files.j2"       import
@@ -53,97 +71,125 @@
 {%- from "modules/context/context-injection.j2"   import right_context_right_time %}
 {%- from "modules/agents/agent-review.j2"         import layered_ai_review %}
 {%- from "modules/guardrails/layered-defense.j2"  import layered_defense %}
-{%- from "modules/ci-cd/cicd-enforcement.j2"      import enforcement_window as cicd_enforcement %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
 {%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
-{%- from "modules/ci-cd/server-side-review.j2"    import wiring as server_side_wiring %}
 {%- from "modules/agents/agent-feedback-loop.j2"  import feedback_loop as agent_feedback_loop %}
 {%- from "modules/guardrails/policy-feedback.j2"  import policy_feedback %}
 {%- from "modules/outro/outro.j2"                 import questions, thank_you %}
 
 
 <!-- ================================================================
-     OPENING — 0:00–0:07
+     OPENING
+     How we got here, and the velocity data that changes the risk
+     equation. GH Archive chart + GitHub's own record-acceleration
+     figure replace the old "faster delivery" summary slide.
      ================================================================ -->
 {{ title_slide("AI Governance and Guardrails for Software",
                subtitle="Cloud Security Alliance · Birmingham",
                kicker="Jon Zeolla") }}
 {{ coding_agent_evolution() }}
-{{ why_guardrails() }}
+{{ code_volume_ten_years() }}
+{{ code_volume_inflection() }}
 
 
 <!-- ================================================================
-     PART 1 — THE GROUND TRUTH — 0:07–0:18
-     Most of the room does not share a mental model of how software is
-     delivered. Build it first, then hang the controls on it.
+     THE GROUND TRUTH
+     The delivery lifecycle bare, annotated, then the control survey.
+     No divider slide — straight in.
      ================================================================ -->
-{{ section_divider(1, "How software gets delivered",
-                   "And where you can intervene") }}
 {{ sdlc_stages() }}
 {{ sdlc_stages_with_controls() }}
 {{ sdlc_survey() }}
 
 
 <!-- ================================================================
-     PART 2 — THE MATURITY MODEL — 0:18–0:44
-     Four cumulative levels. This is the spine of the talk.
+     GUARDRAILS
+     The spectrum: highway → monorail, the creativity tradeoff, and
+     why structure buys speed.
      ================================================================ -->
-{{ section_divider(2, "Four levels of maturity",
-                   "Cumulative, not alternatives") }}
-{{ maturity_overview(maturity_level) }}
+{{ highway_vs_monorail() }}
+{{ the_balance() }}
 
-{# Level 1 — Crawl: context and its limits — 0:21–0:29 #}
-{{ maturity_crawl(maturity_level) }}
+
+<!-- ================================================================
+     POLICY AS CODE
+     The history: PDFs → XACML (PAP/PDP/PIP/PEP) → cloud native →
+     policy as code → agent guardrails. CNCF K8s Policy Management
+     whitepaper architecture, then remapped onto the agent pipeline.
+     ================================================================ -->
+{{ pac_history() }}
+{{ policy_architecture() }}
+{{ policy_architecture_today() }}
+
+
+<!-- ================================================================
+     PAVED ROADS → CONTEXT
+     The organizational middle path, then its written form: context
+     files and rules, and what limits them.
+     ================================================================ -->
+{{ paved_roads() }}
+{{ context_files_rules() }}
 {{ context_window_interactive() }}
 {{ context_degradation_quality_drop() }}
 {{ context_files_mockup() }}
 {{ context_files_tradeoffs() }}
-
-{# Level 2 — Walk: agents reviewing agents — 0:29–0:35 #}
-{{ maturity_walk(maturity_level) }}
-{{ layered_ai_review() }}
 {{ right_context_right_time() }}
 
-{# Level 3 — Run: deterministic enforcement — 0:35–0:44 #}
-{{ maturity_run(maturity_level) }}
+
+<!-- ================================================================
+     VERIFIERS
+     Verifiers as guardrails (humans included), then the concrete
+     layers: agent review, layered defense, a deterministic example,
+     hooks.
+     ================================================================ -->
+{{ verifiers_are_guardrails() }}
+{{ layered_ai_review() }}
 {{ layered_defense() }}
 {{ deterministic_pci_example() }}
 {{ hooks_when_x_then_y() }}
-{{ cicd_enforcement() }}
-{{ server_side_wiring() }}
 
 
 <!-- ================================================================
-     PART 3 — RULES AND MODELS TOGETHER — 0:44–0:50
+     RULES AND MODELS
+     The segue from verifiers: which control answers which question,
+     how they compose, and the Weaver evidence for ensembling many
+     fast verifiers.
      ================================================================ -->
-{{ section_divider(3, "Rules and models",
-                   "Which control answers which question") }}
 {{ guardrails_two_kinds() }}
 {{ guardrails_working_together() }}
+{{ ensembling_fast_verifiers() }}
+{{ weaver_evidence() }}
 
 
 <!-- ================================================================
-     PART 4 — DECIDING — 0:50–0:56
-     The tradeoff slides: not "what are the options" but "should you".
+     GOVERNANCE: THE TOOL-CALL BOUNDARY
+     Everything the agent does is a tool call; monitor / allow / deny
+     / sandbox at that boundary. nono for kernel-level containment.
      ================================================================ -->
-{{ section_divider(4, "Should you?",
-                   "Choosing which guardrails you actually want") }}
+{{ everything_is_a_tool_call() }}
+{{ monitor_allow_deny() }}
+{{ sandboxing_nono() }}
+{{ nono_scoped_call() }}
+
+
+<!-- ================================================================
+     DECIDING
+     The decision frame survives from the old Part 4; the per-control
+     verdict slides are cut.
+     ================================================================ -->
 {{ decision_frame() }}
-{{ should_you_hooks() }}
-{{ should_you_agent_review() }}
-{{ should_you_blocking_ci() }}
 
 
 <!-- ================================================================
-     PART 5 — COMPOUNDING — 0:56–1:00
-     Level 4 lands here rather than inside Part 2, so the talk closes on
-     the optimistic argument rather than on enforcement.
+     VERIFIER SELF-IMPROVEMENT
+     The close: the feedback loop, its guardrails, and the compounding
+     argument. Structure-is-speed lands here as the payoff.
      ================================================================ -->
-{{ maturity_fly(maturity_level) }}
 {{ structure_is_speed() }}
+{{ verifier_self_improvement() }}
 {{ agent_feedback_loop() }}
 {{ policy_feedback() }}
-{{ the_loop() }}
+{{ improvement_gates() }}
 
 
 <!-- ================================================================

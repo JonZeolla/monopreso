@@ -1,0 +1,102 @@
+{#- modules/verifiers/verifiers.j2
+    Verifiers: what they are, why humans are one, and why an ensemble of
+    fast, diverse, independent verifiers beats a single oracle.
+
+    Research anchor: Saad-Falcon et al., "Shrinking the Generation-
+    Verification Gap with Weak Verifiers" (Weaver), arXiv:2506.18203.
+    Evidence figure: modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/verifiers/verifiers.j2" import
+          verifiers_are_guardrails, ensembling_fast_verifiers,
+          weaver_evidence with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pros_cons,
+    callout
+-%}
+
+
+{%- macro verifiers_are_guardrails() -%}
+{%- call content_slide("Verifiers") %}
+  {{ slide_heading("The other half",
+                   "Verifiers are guardrails that answer back",
+                   "A verifier is anything that checks work it did not produce — and can say no.") }}
+  {{ card_grid([
+    {"title": "Deterministic verifiers",
+     "body": "Tests, linters, type checkers, schema validators, policy engines. Fast, cheap, narrow — the same verdict every time.",
+     "accent": "primary"},
+    {"title": "Model-based verifiers",
+     "body": "Review agents and LLM judges. Broad, contextual, probabilistic — they catch what nobody wrote a rule for.",
+     "accent": "info"},
+    {"title": "Human verifiers",
+     "body": "The highest-judgement verifier you have, and the least scalable. Spend them where the machines are least certain.",
+     "accent": "warning"},
+  ], cols=3) }}
+  {{ callout("Paved roads start the agent on the right path.
+              <strong>Verifiers are how you know it stayed there.</strong>", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro ensembling_fast_verifiers() -%}
+{#- The Weaver argument. The load-bearing assumption — verifiers must
+    capture different, independent aspects of correctness — is stated on the
+    slide, not left to the speaker notes, because without it the takeaway
+    degrades to "add more cheap checks". -#}
+{%- call content_slide("Ensembling verifiers") %}
+  {{ slide_heading("What the research says",
+                   "Ensembling multiple fast verifiers",
+                   "Many small verifiers, each doing one thing very well, combined — beats waiting for one perfect judge.") }}
+  {{ pros_cons(
+       benefits=[
+         {"title": "Fast, so they run everywhere",
+          "detail": "Cheap enough for every commit, every tool call, every candidate answer."},
+         {"title": "Naive, so they compose",
+          "detail": "Each one checks a narrow slice extremely well. Narrowness is what makes combining them work."},
+         {"title": "Diverse, so mistakes don't line up",
+          "detail": "The ensemble's power assumes each verifier captures a different, independent aspect of correctness. Redundant verifiers add nothing."},
+       ],
+       shortcomings=[
+         {"title": "Oracle verifiers are perfect — and unavailable",
+          "detail": "A verifier with perfect accuracy either doesn't scale (humans) or only covers a narrow domain (formal tools)."},
+         {"title": "One big judge is a single point of failure",
+          "detail": "Its blind spots are systematic. There is no second opinion to disagree with it."},
+         {"title": "Bigger is slower and more expensive",
+          "detail": "A verifier too costly to run on every change verifies a sample, not your delivery pipeline."},
+       ],
+       ben_label="Ensemble of fast, weak verifiers",
+       short_label="One big oracle verifier") }}
+  {{ callout("Weight the ensemble by each verifier's accuracy and the gap to a
+              perfect verifier mostly closes — <strong>no oracle
+              required</strong>.", accent="success") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro weaver_evidence() -%}
+{%- call content_slide("The evidence") %}
+  {{ slide_heading("The evidence",
+                   "Weighted verifier ensembles outperform naive ones",
+                   "Weaver: weighted ensembles of weak verifiers, evaluated across four reasoning benchmarks.") }}
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
+    <img src="modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png"
+         alt="Bar chart: improvement over a naive verifier ensemble on MATH500, GPQA Diamond, MMLU, and MMLU Pro. Supervised weighted ensembles (Naive Bayes, Logistic Regression) consistently beat oracle unweighted ensembles of top-1, top-5, and top-10 verifiers."
+         class="plain"
+         style="max-width:88%; max-height:52vh; border-radius:8px;"/>
+    <p style="text-align:center; font-size:11px; opacity:0.65; margin:0; line-height:1.5;">
+      Saad-Falcon et al., &ldquo;Shrinking the Generation-Verification Gap with
+      Weak Verifiers&rdquo; — <a href="https://arxiv.org/abs/2506.18203">arxiv.org/abs/2506.18203</a>
+    </p>
+  </div>
+  {{ callout("An ensemble of small verifiers lifted a 70B open model to
+              o3-mini-level accuracy — a jump that otherwise took a
+              <strong>generation of post-training</strong>.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
