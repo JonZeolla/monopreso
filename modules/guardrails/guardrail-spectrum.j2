@@ -26,9 +26,9 @@
 {#- One slide, three vehicles. The spectrum is drawn as a pipe so the
     audience reads it left-to-right as increasing constraint. -#}
 {%- call content_slide("The guardrail spectrum") %}
-  {{ slide_heading("What a guardrail is",
+  {{ slide_heading("",
                    "From the highway to the monorail",
-                   "Constraint and speed are not opposites. Constraint is how the fast systems go fast.") }}
+                   "Constraint is how fast systems go fast.") }}
   {{ pipe([
     {"label": "Open field",
      "detail": "No road at all. Go anywhere, slowly, and get lost often.",
@@ -43,9 +43,8 @@
      "meta": "total constraint",
      "accent": "danger"},
   ]) }}
-  {{ callout("Every constraint you add trades discretion for speed along one
-              path. The question is never &ldquo;guardrails or not&rdquo; —
-              it is <strong>how much track to lay</strong>.", accent="primary") }}
+  {{ callout("Every constraint trades discretion for speed along one path.
+              The question is <strong>how much track to lay</strong>.", accent="primary") }}
 {%- endcall %}
 {%- endmacro -%}
 
@@ -54,7 +53,7 @@
 {#- The counterpoint, stated before anyone in the audience objects: the
     monorail end of the spectrum spends the model's best property. -#}
 {%- call content_slide("The balance") %}
-  {{ slide_heading("The catch",
+  {{ slide_heading("",
                    "Too much track kills the reason you came",
                    "A model's creativity and problem-solving are features. Constrain everything and you own a very expensive template engine.") }}
   {{ card_grid([
@@ -78,9 +77,9 @@
 {#- The organizational answer to the balance problem. A paved road is
     direction supplied up front, not a wall hit at the end. -#}
 {%- call content_slide("Paved roads") %}
-  {{ slide_heading("The middle path",
+  {{ slide_heading("",
                    "Paved roads",
-                   "Not a wall you hit at review time — a road you were already on when you started.") }}
+                   "A road you were already on when you started.") }}
   {{ card_grid([
     {"title": "Examples, up front",
      "body": "Golden paths, reference implementations, approved patterns. The agent imitates what it can see, so show it the good version first.",

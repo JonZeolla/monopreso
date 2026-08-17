@@ -27,7 +27,7 @@
 
 {%- macro pac_history() -%}
 {%- call content_slide("Policy as code: history") %}
-  {{ slide_heading("A short history",
+  {{ slide_heading("",
                    "Policy, before and after it became code",
                    "The idea is older than the tooling. Each generation moved enforcement closer to the change.") }}
   {{ pipe([
@@ -63,9 +63,9 @@
 {#- The XACML reference architecture, drawn as a request's journey. The
     PDP's side-channels to PAP and PIP ride as annotations on the pipe. -#}
 {%- call content_slide("Policy architecture") %}
-  {{ slide_heading("The vocabulary",
+  {{ slide_heading("",
                    "PAP · PDP · PIP · PEP",
-                   "From the CNCF Kubernetes Policy Management whitepaper — the XACML reference architecture, still the blueprint for every policy engine you use.") }}
+                   "The XACML reference architecture, from the CNCF Kubernetes Policy Management whitepaper. Still the blueprint for every policy engine you use.") }}
   {{ pipe([
     {"label": "Request",
      "detail": "A user or system tries to do something",
@@ -103,7 +103,7 @@
 {#- The payoff for teaching 2003 vocabulary in 2026: the agentic pipeline
     is the same diagram with the boxes renamed. -#}
 {%- call content_slide("Same architecture, new actors") %}
-  {{ slide_heading("Why the history matters",
+  {{ slide_heading("",
                    "Your agent pipeline is the same diagram",
                    "Rename the boxes and the twenty-year-old architecture describes this year's tooling.") }}
   {{ pipe([
@@ -121,8 +121,7 @@
      "detail": "Merge, block, or escalate to a human — with the reason recorded",
      "accent": "success"},
   ]) }}
-  {{ callout("Nothing about governing AI-written code required inventing a new
-              architecture. It required <strong>pointing the old one at a new
-              requester</strong>.", accent="primary") }}
+  {{ callout("The architecture is twenty years old.
+              <strong>Only the requester is new.</strong>", accent="primary") }}
 {%- endcall %}
 {%- endmacro -%}

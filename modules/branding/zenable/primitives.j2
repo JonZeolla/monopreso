@@ -79,7 +79,7 @@
 {%- endmacro -%}
 
 {%- macro slide_heading(label, title, subtitle="") -%}
-{{ _legacy_section_label(label) }}
+{%- if label %}{{ _legacy_section_label(label) }}{% endif %}
 <h3 class="text-4xl font-bold text-white mb-2">{{ title }}</h3>
 {%- if subtitle %}<p class="text-lg text-slate-400 italic mb-8">{{ subtitle|safe }}</p>{% endif %}
 {%- endmacro -%}
@@ -196,6 +196,47 @@
     </div>
   </div>
   {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro matrix(headers, rows, caption="") -%}
+{# Comparison matrix. Columns are the things compared, rows are the
+   dimensions they are compared on.
+
+     headers: [{label, sub?}]
+     rows:    [{label, cells}]  where cells: [{level, text?}]
+     level:   strong | partial | weak
+
+   Read down a column for one option's profile; read across a row to see
+   which options cover that dimension. That second reading is the point:
+   it shows gaps being filled. #}
+{%- set _lvl = {"strong": "success", "partial": "warning", "weak": "danger"} %}
+{%- set _sym = {"strong": "●", "partial": "◐", "weak": "○"} %}
+<div class="my-4">
+  <div class="grid gap-1.5 items-stretch" style="grid-template-columns:minmax(140px,1.25fr) repeat({{ headers|length }}, 1fr);">
+    <div></div>
+    {%- for h in headers %}
+    <div class="text-center p-1">
+      <p class="text-[13px] font-bold text-slate-200 m-0">{{ h.label }}</p>
+      {%- if h.sub %}<p class="text-[10px] text-slate-500 m-0">{{ h.sub }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- for row in rows %}
+    <div class="flex items-center px-2 py-1">
+      <p class="text-xs font-semibold leading-snug text-slate-200 m-0">{{ row.label|safe }}</p>
+    </div>
+    {%- for cell in row.cells %}
+    {%- set tw = _accent_tw(_lvl.get(cell.level, "neutral")) %}
+    <div class="rounded-lg border border-{{ tw }}/30 bg-{{ tw }}/5 px-1.5 py-2 text-center flex flex-col items-center justify-center gap-0.5"
+         aria-label="{{ cell.level | default('unrated') }}">
+      <span aria-hidden="true" class="text-[15px] leading-none text-{{ tw }}">{{ _sym.get(cell.level, "○") }}</span>
+      {%- if cell.text %}<p class="text-[10px] leading-tight text-slate-400 m-0">{{ cell.text|safe }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+  {%- if caption %}<p class="mt-2.5 text-center text-[11px] text-slate-500 m-0">{{ caption|safe }}</p>{% endif %}
 </div>
 {%- endmacro -%}
 

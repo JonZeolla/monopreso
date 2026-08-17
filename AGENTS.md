@@ -96,12 +96,13 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
 | `content_slide(label)` | **Call-block** wrapper owning the `<section>` + `data-label` for a content slide. Use `{%- call content_slide("X") %}…{%- endcall %}` so shared slides never name a brand-specific section class |
-| `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub) |
+| `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub). Pass `""` for `label` to omit the kicker entirely — newer slides do this, since an editorial kicker above a headline is usually filler |
 | `callout(text, accent="primary")` | Bottom emphasis band |
 | `card(title, body, accent="neutral")` | Bordered card |
 | `card_grid(items, cols=3)` | Grid of cards. Each item: `{title, body, accent}` |
 | `pros_cons(benefits, shortcomings, ben_label, short_label)` | Two-column ✓ / ✗ list. Each item: `{title, detail}` |
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
+| `matrix(headers, rows, caption="")` | Comparison matrix. `headers`: `{label, sub}`; `rows`: `{label, cells}` where each cell is `{level, text}` and `level` is `strong`/`partial`/`weak`. Levels map to success/warning/danger accents plus a ●/◐/○ glyph. Reading across a row shows which columns cover a dimension — that is what makes gaps visible |
 | `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
 | `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
 | `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated |

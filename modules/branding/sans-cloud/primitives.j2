@@ -103,7 +103,7 @@
 {%- endmacro -%}
 
 {%- macro slide_heading(label, title, subtitle="") -%}
-<div class="vis-label">{{ label }}</div>
+{%- if label %}<div class="vis-label">{{ label }}</div>{% endif %}
 <div class="vis-title">{{ title }}</div>
 {%- if subtitle %}<div class="vis-subtitle">{{ subtitle|safe }}</div>{% endif %}
 {%- endmacro -%}
@@ -200,6 +200,47 @@
     </div>
   </div>
   {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro matrix(headers, rows, caption="") -%}
+{# Comparison matrix. Columns are the things compared, rows are the
+   dimensions they are compared on.
+
+     headers: [{label, sub?}]
+     rows:    [{label, cells}]  where cells: [{level, text?}]
+     level:   strong | partial | weak
+
+   Read down a column for one option's profile; read across a row to see
+   which options cover that dimension. That second reading is the point:
+   it shows gaps being filled. #}
+{%- set _lvl = {"strong": "success", "partial": "warning", "weak": "danger"} %}
+{%- set _sym = {"strong": "●", "partial": "◐", "weak": "○"} %}
+<div style="margin:14px 0;">
+  <div style="display:grid; grid-template-columns:minmax(140px,1.25fr) repeat({{ headers|length }}, 1fr); gap:6px; align-items:stretch;">
+    <div></div>
+    {%- for h in headers %}
+    <div style="text-align:center; padding:4px;">
+      <p style="margin:0; font-size:13px; font-weight:700; color:#e2e8f0;">{{ h.label }}</p>
+      {%- if h.sub %}<p style="margin:0; font-size:10px; color:#64748b;">{{ h.sub }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- for row in rows %}
+    <div style="display:flex; align-items:center; padding:4px 8px;">
+      <p style="margin:0; font-size:12px; font-weight:600; line-height:1.3; color:#e2e8f0;">{{ row.label|safe }}</p>
+    </div>
+    {%- for cell in row.cells %}
+    {%- set a = _lvl.get(cell.level, "neutral") %}
+    <div class="{{ _accent_card_class(a) }}" aria-label="{{ cell.level | default('unrated') }}"
+         style="padding:8px 6px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;">
+      <span aria-hidden="true" style="font-size:15px; line-height:1; color:{{ _accent_text(a) }};">{{ _sym.get(cell.level, "○") }}</span>
+      {%- if cell.text %}<p style="margin:0; font-size:10px; line-height:1.3; color:#94a3b8;">{{ cell.text|safe }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+  {%- if caption %}<p style="margin:10px 0 0 0; text-align:center; font-size:11px; color:#64748b;">{{ caption|safe }}</p>{% endif %}
 </div>
 {%- endmacro -%}
 

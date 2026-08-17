@@ -27,9 +27,9 @@
 
 {%- macro everything_is_a_tool_call() -%}
 {%- call content_slide("Everything is a tool call") %}
-  {{ slide_heading("Governing the agent itself",
+  {{ slide_heading("",
                    "Everything the agent does is a tool call",
-                   "The model only ever proposes. The harness executes. That seam is where governance lives.") }}
+                   "The model proposes. The harness executes. That seam is where governance lives.") }}
   {{ card_grid([
     {"title": "Built-in tools",
      "body": "Shell commands, file reads and edits, web fetches. The bread-and-butter actions every coding agent ships with.",
@@ -49,7 +49,7 @@
 
 {%- macro monitor_allow_deny() -%}
 {%- call content_slide("Monitor, allow, deny") %}
-  {{ slide_heading("The tool-call boundary",
+  {{ slide_heading("",
                    "Monitor · allow · deny · sandbox",
                    "Every proposed action passes one gate. Instrument the gate, and you have governed the agent.") }}
   {{ pipe([
@@ -78,12 +78,12 @@
 
 {%- macro sandboxing_nono() -%}
 {%- call content_slide("Sandboxing: nono") %}
-  {{ slide_heading("Containment",
+  {{ slide_heading("",
                    "Sandboxing agents at the kernel: nono",
-                   "Open source, from nolabs — deny by default, no container, no VM, no daemon.") }}
+                   "Open source, from nolabs. Deny by default, no container, no VM, no daemon.") }}
   {{ card_grid([
     {"title": "Kernel-enforced",
-     "body": "Wraps the agent's process in the host kernel's own isolation primitives. Not a wrapper the model can talk its way out of.",
+     "body": "Wraps the agent's process in the host kernel's own isolation primitives. The kernel enforces it, not the agent's cooperation.",
      "accent": "primary"},
     {"title": "Zero infrastructure",
      "body": "Runs directly on the developer's machine — macOS, Linux, WSL2. No image to build, no cluster to operate.",
@@ -105,9 +105,9 @@
 {#- The mechanism slide: one tool call's journey through the nono
     supervisor. The phantom-credential trick is the memorable part. -#}
 {%- call content_slide("A sandboxed tool call") %}
-  {{ slide_heading("How it works",
+  {{ slide_heading("",
                    "One tool call, one micro-sandbox",
-                   "The supervisor holds the real authority. The tool only ever sees a stand-in.") }}
+                   "The supervisor holds the real authority. The tool sees a stand-in.") }}
   {{ pipe([
     {"label": "Tool call",
      "detail": "Agent asks to run a tool",
@@ -126,7 +126,7 @@
      "detail": "The call returns and its authority evaporates with it",
      "accent": "success"},
   ]) }}
-  {{ callout("A leaked credential that was never in the process is a breach
-              that <strong>cannot happen</strong>.", accent="success") }}
+  {{ callout("The real credential <strong>never enters the process</strong>,
+              so it cannot leak from it.", accent="success") }}
 {%- endcall %}
 {%- endmacro -%}

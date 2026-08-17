@@ -40,11 +40,11 @@
     context_files_rules with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     verifiers_are_guardrails,
+    four_kinds,
+    coverage,
+    complementarity,
     ensembling_fast_verifiers,
     weaver_evidence with context %}
-{%- from "modules/guardrails/deterministic-vs-llm.j2" import
-    two_kinds            as guardrails_two_kinds,
-    working_together     as guardrails_working_together with context %}
 {%- from "modules/governance/tool-calls.j2" import
     everything_is_a_tool_call,
     monitor_allow_deny,
@@ -137,26 +137,40 @@
 
 
 <!-- ================================================================
-     VERIFIERS
-     Verifiers as guardrails (humans included), then the concrete
-     layers: agent review, layered defense, a deterministic example,
-     hooks.
+     VERIFIERS — THE FOUR KINDS
+     "Guardrail" is the word this room knows; "verifier" is the word
+     the rest of the talk needs, so the bridge is built explicitly
+     first. Then the taxonomy: software, ML, LLM judge, human —
+     ordered by increasing judgement and decreasing scale.
+
+     The coverage matrix is the centrepiece. Four kinds that fail in
+     four different ways IS the independence assumption Weaver
+     requires, so the taxonomy earns the research rather than merely
+     preceding it.
      ================================================================ -->
 {{ verifiers_are_guardrails() }}
-{{ layered_ai_review() }}
-{{ layered_defense() }}
-{{ deterministic_pci_example() }}
-{{ hooks_when_x_then_y() }}
+{{ four_kinds() }}
+{{ coverage() }}
+{{ complementarity() }}
 
 
 <!-- ================================================================
-     RULES AND MODELS
-     The segue from verifiers: which control answers which question,
-     how they compose, and the Weaver evidence for ensembling many
-     fast verifiers.
+     THE KINDS IN PRACTICE
+     Deep dives, ordered to follow the taxonomy: the software-side
+     examples first, then the LLM-judge one. Candidates to trim once
+     the taxonomy slides are carrying the argument.
      ================================================================ -->
-{{ guardrails_two_kinds() }}
-{{ guardrails_working_together() }}
+{{ layered_defense() }}
+{{ deterministic_pci_example() }}
+{{ hooks_when_x_then_y() }}
+{{ layered_ai_review() }}
+
+
+<!-- ================================================================
+     ENSEMBLING
+     The payoff: independent failure modes are what make an ensemble
+     of fast, weak verifiers beat one oracle.
+     ================================================================ -->
 {{ ensembling_fast_verifiers() }}
 {{ weaver_evidence() }}
 

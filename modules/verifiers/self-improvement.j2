@@ -24,7 +24,7 @@
 
 {%- macro verifier_self_improvement() -%}
 {%- call content_slide("Verifier self-improvement") %}
-  {{ slide_heading("Closing the loop",
+  {{ slide_heading("",
                    "Verifier self-improvement",
                    "Every verifier verdict is a labelled example of what your organisation considers wrong — free training data you are probably discarding.") }}
   {{ pipe([
@@ -54,9 +54,9 @@
 {#- Discipline for the loop: without these three constraints, "the system
     improves itself" degrades into unreviewed behaviour drift. -#}
 {%- call content_slide("Improvement gates") %}
-  {{ slide_heading("Keeping the loop honest",
+  {{ slide_heading("",
                    "Self-improvement needs its own guardrails",
-                   "An unsupervised feedback loop is just drift with good branding.") }}
+                   "An unsupervised feedback loop is drift with good branding.") }}
   {{ card_grid([
     {"title": "Update on patterns, not anecdotes",
      "body": "Change the paved road when the evidence shows a recurring failure — not because one memorable incident annoyed someone senior.",

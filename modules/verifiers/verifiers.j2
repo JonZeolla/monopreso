@@ -1,6 +1,12 @@
 {#- modules/verifiers/verifiers.j2
-    Verifiers: what they are, why humans are one, and why an ensemble of
-    fast, diverse, independent verifiers beats a single oracle.
+    Verifiers: what they are, the four kinds, how their gaps cover each
+    other, and why an ensemble of fast, diverse verifiers beats one oracle.
+
+    The four-type taxonomy (software / machine learning / LLM-as-judge /
+    human) replaces the older two-type "rules vs. models" split. Four is
+    the better frame here because each type fails in a *different* way,
+    which is precisely the independence the Weaver result requires — so
+    the taxonomy earns the research slide rather than merely preceding it.
 
     Research anchor: Saad-Falcon et al., "Shrinking the Generation-
     Verification Gap with Weak Verifiers" (Weaver), arXiv:2506.18203.
@@ -10,7 +16,8 @@
     colors, no brand class names. Import WITH CONTEXT:
 
       {%- from "modules/verifiers/verifiers.j2" import
-          verifiers_are_guardrails, ensembling_fast_verifiers,
+          verifiers_are_guardrails, four_kinds, coverage,
+          complementarity, ensembling_fast_verifiers,
           weaver_evidence with context %}
 -#}
 
@@ -19,28 +26,160 @@
     slide_heading,
     card_grid,
     pros_cons,
+    matrix,
+    pipe,
     callout
 -%}
 
 
 {%- macro verifiers_are_guardrails() -%}
+{#- Definitional slide, and it has to stay. This room arrives knowing the
+    word "guardrail" and not the word "verifier"; everything downstream
+    depends on that bridge being built explicitly. -#}
 {%- call content_slide("Verifiers") %}
-  {{ slide_heading("The other half",
-                   "Verifiers are guardrails that answer back",
-                   "A verifier is anything that checks work it did not produce — and can say no.") }}
+  {{ slide_heading("",
+                   "A guardrail is made of verifiers",
+                   "A verifier checks work it did not produce, and can say no.") }}
   {{ card_grid([
-    {"title": "Deterministic verifiers",
-     "body": "Tests, linters, type checkers, schema validators, policy engines. Fast, cheap, narrow — the same verdict every time.",
-     "accent": "primary"},
-    {"title": "Model-based verifiers",
-     "body": "Review agents and LLM judges. Broad, contextual, probabilistic — they catch what nobody wrote a rule for.",
+    {"title": "The guardrail is the policy",
+     "body": "&ldquo;Secrets never land in a repository.&rdquo; That is the rule you want true. It does not check anything by itself.",
      "accent": "info"},
-    {"title": "Human verifiers",
-     "body": "The highest-judgement verifier you have, and the least scalable. Spend them where the machines are least certain.",
-     "accent": "warning"},
+    {"title": "The verifier is what checks",
+     "body": "The scanner that reads the diff and answers yes or no. Swap it for a better one and the guardrail is unchanged.",
+     "accent": "primary"},
+    {"title": "Why it matters",
+     "body": "You have far fewer policies than you have ways to check them. Most disagreements about guardrails are really disagreements about verifiers.",
+     "accent": "success"},
   ], cols=3) }}
   {{ callout("Paved roads start the agent on the right path.
               <strong>Verifiers are how you know it stayed there.</strong>", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro four_kinds() -%}
+{#- Ordered by increasing judgement and decreasing scale. Starting at
+    software (most familiar, most deterministic) and ending at humans sets
+    up the close: you cannot scale your best verifier, so you ensemble the
+    ones you can. -#}
+{%- call content_slide("Four kinds of verifier") %}
+  {{ slide_heading("",
+                   "Four kinds of verifier",
+                   "Ordered by how much judgement they exercise, and how badly they scale.") }}
+  {{ pipe([
+    {"label": "Software",
+     "detail": "Tests, linters, type checkers, schema validation, policy engines",
+     "meta": "deterministic",
+     "accent": "primary"},
+    {"label": "Machine learning",
+     "detail": "Classifiers, clustering, anomaly detection — trained, not prompted",
+     "meta": "probabilistic",
+     "accent": "info"},
+    {"label": "LLM as judge",
+     "detail": "A model reading the change and arguing about it",
+     "meta": "generative",
+     "accent": "secondary"},
+    {"label": "Human",
+     "detail": "A reviewer who understands why the system exists",
+     "meta": "judgement",
+     "accent": "warning"},
+  ]) }}
+  {{ callout("Each one is wrong in a <strong>different way</strong>. That turns
+              out to matter more than any of them being right.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro coverage() -%}
+{#- The centrepiece. A matrix rather than parallel pros/cons lists because
+    complementarity is a relationship *between* columns, and lists have no
+    way to express one. Read down a column: every kind has dark cells. Read
+    across a row: every row has a bright one. -#}
+{%- call content_slide("Coverage") %}
+  {{ slide_heading("",
+                   "Everything is a tradeoff") }}
+  {{ matrix(
+       headers=[
+         {"label": "Software",         "sub": "deterministic"},
+         {"label": "Machine learning", "sub": "probabilistic"},
+         {"label": "LLM as judge",     "sub": "generative"},
+         {"label": "Human",            "sub": "judgement"},
+       ],
+       rows=[
+         {"label": "Catches what nobody anticipated",
+          "cells": [
+            {"level": "weak",    "text": "only what you wrote"},
+            {"level": "partial", "text": "statistical outliers"},
+            {"level": "strong",  "text": "unseen patterns"},
+            {"level": "strong",  "text": "the truly novel"},
+          ]},
+         {"label": "Same verdict every time",
+          "cells": [
+            {"level": "strong",  "text": "by construction"},
+            {"level": "partial", "text": "threshold &amp; drift"},
+            {"level": "weak",    "text": "varies per run"},
+            {"level": "weak",    "text": "varies per mood"},
+          ]},
+         {"label": "Cheap enough for every change",
+          "cells": [
+            {"level": "strong",  "text": "milliseconds"},
+            {"level": "strong",  "text": "milliseconds"},
+            {"level": "partial", "text": "seconds, per call"},
+            {"level": "weak",    "text": "the scarce one"},
+          ]},
+         {"label": "Produces auditable evidence",
+          "cells": [
+            {"level": "strong",  "text": "the rule and the run"},
+            {"level": "weak",    "text": "&ldquo;scored 0.87&rdquo;"},
+            {"level": "partial", "text": "explains, may confabulate"},
+            {"level": "strong",  "text": "a named approver"},
+          ]},
+         {"label": "Reads intent across context",
+          "cells": [
+            {"level": "weak",    "text": "no notion of why"},
+            {"level": "weak",    "text": "features, not meaning"},
+            {"level": "strong",  "text": "spans files"},
+            {"level": "strong",  "text": "knows the business"},
+          ]},
+       ],
+       caption="● strong &nbsp;·&nbsp; ◐ partial &nbsp;·&nbsp; ○ weak") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro complementarity() -%}
+{#- Names the offsetting pairs out loud, then converts the observation into
+    the design rule. This replaces the old two-type "models advise, rules
+    decide" slide: with four kinds the question is no longer which of two
+    wins, but which one is allowed to hold the gate. -#}
+{%- call content_slide("How they cover each other") %}
+  {{ slide_heading("",
+                   "Each kind covers another&rsquo;s blind spot",
+                   "Which is the argument for running more than one.") }}
+  {{ card_grid([
+    {"title": "Software ↔ LLM judge",
+     "body": "Near-perfect inverses. Software cannot see what you did not anticipate; the judge cannot promise the same answer twice. Each one&rsquo;s blind spot is the other&rsquo;s strength.",
+     "accent": "primary"},
+    {"title": "Machine learning ↔ LLM judge",
+     "body": "Both find the unanticipated, differently: ML flags what is <em>unusual</em>, the judge flags what is <em>unwise</em>. A change can be one and not the other.",
+     "accent": "info"},
+    {"title": "Human ↔ everything else",
+     "body": "The only verifier that knows why the system exists, and the only one you cannot buy more of. Spend it where the machines disagree.",
+     "accent": "warning"},
+  ], cols=3) }}
+  {{ card_grid([
+    {"title": "The deterministic one holds the gate",
+     "body": "Blocking belongs to the verifier that returns the same verdict every time and can show its work to an auditor.",
+     "accent": "success"},
+    {"title": "The probabilistic ones advise",
+     "body": "ML and LLM judges are excellent at raising a hand and terrible as the final word. A wrong comment is noise; a wrong block is an outage.",
+     "accent": "secondary"},
+    {"title": "Disagreement routes to a human",
+     "body": "When the cheap verifiers disagree with each other, that is the signal worth a person&rsquo;s attention, rather than a fixed sampling rate.",
+     "accent": "danger"},
+  ], cols=3) }}
+  {{ callout("If your only enforcement is a model, you do not have a control —
+              you have a <strong>strong suggestion</strong>.", accent="warning") }}
 {%- endcall %}
 {%- endmacro -%}
 
@@ -49,23 +188,24 @@
 {#- The Weaver argument. The load-bearing assumption — verifiers must
     capture different, independent aspects of correctness — is stated on the
     slide, not left to the speaker notes, because without it the takeaway
-    degrades to "add more cheap checks". -#}
+    degrades to "add more cheap checks". The four kinds just demonstrated
+    that independence concretely. -#}
 {%- call content_slide("Ensembling verifiers") %}
-  {{ slide_heading("What the research says",
+  {{ slide_heading("",
                    "Ensembling multiple fast verifiers",
-                   "Many small verifiers, each doing one thing very well, combined — beats waiting for one perfect judge.") }}
+                   "Many small verifiers, each doing one thing well, beat one perfect judge.") }}
   {{ pros_cons(
        benefits=[
          {"title": "Fast, so they run everywhere",
           "detail": "Cheap enough for every commit, every tool call, every candidate answer."},
          {"title": "Naive, so they compose",
           "detail": "Each one checks a narrow slice extremely well. Narrowness is what makes combining them work."},
-         {"title": "Diverse, so mistakes don't line up",
-          "detail": "The ensemble's power assumes each verifier captures a different, independent aspect of correctness. Redundant verifiers add nothing."},
+         {"title": "Diverse, so mistakes don&rsquo;t line up",
+          "detail": "The gains assume each verifier captures a different, independent aspect of correctness — which is exactly what four kinds buys you. Redundant verifiers add nothing."},
        ],
        shortcomings=[
          {"title": "Oracle verifiers are perfect — and unavailable",
-          "detail": "A verifier with perfect accuracy either doesn't scale (humans) or only covers a narrow domain (formal tools)."},
+          "detail": "A verifier with perfect accuracy either doesn&rsquo;t scale (humans) or only covers a narrow domain (formal tools)."},
          {"title": "One big judge is a single point of failure",
           "detail": "Its blind spots are systematic. There is no second opinion to disagree with it."},
          {"title": "Bigger is slower and more expensive",
@@ -73,7 +213,7 @@
        ],
        ben_label="Ensemble of fast, weak verifiers",
        short_label="One big oracle verifier") }}
-  {{ callout("Weight the ensemble by each verifier's accuracy and the gap to a
+  {{ callout("Weight the ensemble by each verifier&rsquo;s accuracy and the gap to a
               perfect verifier mostly closes — <strong>no oracle
               required</strong>.", accent="success") }}
 {%- endcall %}
@@ -82,9 +222,9 @@
 
 {%- macro weaver_evidence() -%}
 {%- call content_slide("The evidence") %}
-  {{ slide_heading("The evidence",
-                   "Weighted verifier ensembles outperform naive ones",
-                   "Weaver: weighted ensembles of weak verifiers, evaluated across four reasoning benchmarks.") }}
+  {{ slide_heading("",
+                   "Weighted ensembles outperform naive ones",
+                   "Weaver, across four reasoning benchmarks.") }}
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
     <img src="modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png"
          alt="Bar chart: improvement over a naive verifier ensemble on MATH500, GPQA Diamond, MMLU, and MMLU Pro. Supervised weighted ensembles (Naive Bayes, Logistic Regression) consistently beat oracle unweighted ensembles of top-1, top-5, and top-10 verifiers."
