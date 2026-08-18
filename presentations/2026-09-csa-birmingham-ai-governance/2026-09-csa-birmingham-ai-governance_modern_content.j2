@@ -27,10 +27,12 @@
     survey               as sdlc_survey with context %}
 {%- from "modules/agents/good-fast-cheap.j2" import
     pick_two,
-    agent_loops with context %}
+    agent_loops,
+    loops_require_verifiers with context %}
 {%- from "modules/guardrails/guardrail-spectrum.j2" import
     paved_roads with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
+    do_it_statically,
     policy_architecture,
     policy_architecture_today with context %}
 {%- from "modules/context/context-rules-intro.j2" import
@@ -96,6 +98,7 @@
      ================================================================ -->
 {{ pick_two() }}
 {{ agent_loops() }}
+{{ loops_require_verifiers() }}
 
 
 <!-- ================================================================
@@ -111,6 +114,7 @@
      The PAP/PDP/PIP/PEP architecture, the same diagram remapped onto
      the agent pipeline, then the two concrete enforcement examples.
      ================================================================ -->
+{{ do_it_statically() }}
 {{ policy_architecture() }}
 {{ policy_architecture_today() }}
 {{ deterministic_pci_example() }}

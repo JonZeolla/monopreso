@@ -18,6 +18,7 @@
     content_slide,
     slide_heading,
     tradeoff_triangle,
+    statement,
     card_grid,
     callout
 -%}
@@ -60,4 +61,16 @@
      "accent": "success"},
   ], cols=3) }}
 {%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro loops_require_verifiers() -%}
+{#- The thesis, stated flat. The triangle slide deliberately never claims
+    "all three"; this does not claim it either. It names the condition the
+    rest of the talk spends its time on. -#}
+{{ statement([
+  {"text": "Agent Loops"},
+  {"text": "require", "muted": true},
+  {"text": "Verifiers"},
+]) }}
 {%- endmacro -%}

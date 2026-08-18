@@ -17,6 +17,12 @@ you add it. Reconstructing attribution later is far harder than capturing it now
 - Tariq Shaukat (CEO, Sonar), ["In the Land of AI Agents, the Verifiers Are King"](https://youtu.be/VrpEyglYgeU)
   — keynote at the AI Engineer World's Fair, 2026. Quoted as the epigraph
   opening the verifiers section.
+- Dex Horthy, Geoff Huntley, Ian Livingstone, and Greg Pstrucha,
+  ["The Great Loops Debate"](https://youtu.be/c35YoMdnI78) — panel at the AI
+  Engineer World's Fair, 2026, hosted by Allie Howe. Quoted as the epigraph
+  opening the policy-as-code section. Attributed to the panel rather than an
+  individual speaker: the line asserts consensus and the specific speaker is
+  not identifiable from the recording.
 - [nono](https://nono.sh/) — kernel-level AI-agent sandboxing by nolabs
   ([github.com/nolabs-ai/nono](https://github.com/nolabs-ai/nono)), covered in
   `modules/governance/tool-calls.j2`. Open source; per-tool-call scoped

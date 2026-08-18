@@ -200,6 +200,25 @@
 {%- endmacro -%}
 
 
+{%- macro statement(lines) -%}
+{# Full-slide declarative statement. No quote marks, no attribution — this
+   is the deck asserting something, not citing someone.
+   `lines`: [{text, muted?}] — one per rendered line. Muted lines render
+   smaller and dimmer, so connective words recede and the nouns carry. #}
+<section class="slide flex items-center justify-center p-8" data-label="Statement">
+  <div class="text-center fade-in">
+    {%- for line in lines %}
+    {%- if line.muted %}
+    <p class="text-3xl font-normal leading-tight text-slate-500 m-0">{{ line.text|safe }}</p>
+    {%- else %}
+    <p class="text-[64px] font-extrabold leading-none tracking-tight text-white m-0">{{ line.text|safe }}</p>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
 {%- macro quote(text, attribution, source="", url="") -%}
 {# Full-slide pull quote. `attribution` is the speaker; `source` is where
    they said it; `url` makes the source a link. #}

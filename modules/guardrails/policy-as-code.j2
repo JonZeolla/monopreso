@@ -19,6 +19,7 @@
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
     content_slide,
     slide_heading,
+    quote,
     card_grid,
     pipe,
     callout
@@ -56,6 +57,20 @@
               cheapest place to enforce anything is the
               <strong>earliest place you can</strong>.", accent="info") }}
 {%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro do_it_statically() -%}
+{#- Epigraph opening the policy-as-code section. Practitioners who
+    disagree about nearly everything else agreeing on this one point is a
+    stronger argument for deterministic checks than the speaker asserting
+    it. Attributed to the panel rather than an individual: the line claims
+    consensus, and the specific speaker is not identifiable from the
+    recording. -#}
+{{ quote("Everyone here agrees as much as we can do statically we should do statically",
+         "Dex Horthy &middot; Geoff Huntley &middot; Ian Livingstone &middot; Greg Pstrucha",
+         source="The Great Loops Debate &mdash; AI Engineer World&rsquo;s Fair, 2026",
+         url="https://youtu.be/c35YoMdnI78") }}
 {%- endmacro -%}
 
 
