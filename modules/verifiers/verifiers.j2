@@ -27,7 +27,6 @@
     card_grid,
     pros_cons,
     matrix,
-    pipe,
     callout
 -%}
 
@@ -38,7 +37,7 @@
     depends on that bridge being built explicitly. -#}
 {%- call content_slide("Verifiers") %}
   {{ slide_heading("",
-                   "A guardrail is made of verifiers",
+                   "What is a guardrail?",
                    "A verifier checks work it did not produce, and can say no.") }}
   {{ card_grid([
     {"title": "The guardrail is the policy",
@@ -58,34 +57,26 @@
 
 
 {%- macro four_kinds() -%}
-{#- Ordered by increasing judgement and decreasing scale. Starting at
-    software (most familiar, most deterministic) and ending at humans sets
-    up the close: you cannot scale your best verifier, so you ensemble the
-    ones you can. -#}
+{#- A 2x2 of four distinct things, not a sequence. An arrow-joined pipe
+    implied a progression from software to humans, which is wrong: these
+    are four different kinds, and the point of the next slide is that no
+    ordering among them exists. -#}
 {%- call content_slide("Four kinds of verifier") %}
-  {{ slide_heading("",
-                   "Four kinds of verifier",
-                   "Ordered by how much judgement they exercise, and how badly they scale.") }}
-  {{ pipe([
-    {"label": "Software",
-     "detail": "Tests, linters, type checkers, schema validation, policy engines",
-     "meta": "deterministic",
+  {{ slide_heading("", "Four kinds of verifier") }}
+  {{ card_grid([
+    {"title": "Software",
+     "body": "Tests, linters, type checkers, schema validation, policy engines. Deterministic.",
      "accent": "primary"},
-    {"label": "Machine learning",
-     "detail": "Classifiers, clustering, anomaly detection — trained, not prompted",
-     "meta": "probabilistic",
+    {"title": "Machine learning",
+     "body": "Classifiers, clustering, anomaly detection. Trained, not prompted.",
      "accent": "info"},
-    {"label": "LLM as judge",
-     "detail": "A model reading the change and arguing about it",
-     "meta": "generative",
+    {"title": "LLM as judge",
+     "body": "A model reading the change and arguing about it.",
      "accent": "secondary"},
-    {"label": "Human",
-     "detail": "A reviewer who understands why the system exists",
-     "meta": "judgement",
+    {"title": "Human",
+     "body": "A reviewer who understands why the system exists.",
      "accent": "warning"},
-  ]) }}
-  {{ callout("Each one is wrong in a <strong>different way</strong>. That turns
-              out to matter more than any of them being right.", accent="info") }}
+  ], cols=2) }}
 {%- endcall %}
 {%- endmacro -%}
 
@@ -230,9 +221,8 @@
          alt="Bar chart: improvement over a naive verifier ensemble on MATH500, GPQA Diamond, MMLU, and MMLU Pro. Supervised weighted ensembles (Naive Bayes, Logistic Regression) consistently beat oracle unweighted ensembles of top-1, top-5, and top-10 verifiers."
          class="plain"
          style="max-width:88%; max-height:52vh; border-radius:8px;"/>
-    <p style="text-align:center; font-size:11px; opacity:0.65; margin:0; line-height:1.5;">
-      Saad-Falcon et al., &ldquo;Shrinking the Generation-Verification Gap with
-      Weak Verifiers&rdquo; — <a href="https://arxiv.org/abs/2506.18203">arxiv.org/abs/2506.18203</a>
+    <p style="width:100%; text-align:right; font-size:11px; opacity:0.6; margin:0;">
+      Figure from <a href="https://arxiv.org/abs/2506.18203">Saad-Falcon et al., &ldquo;Shrinking the Generation-Verification Gap with Weak Verifiers&rdquo; (2025)</a>
     </p>
   </div>
   {{ callout("An ensemble of small verifiers lifted a 70B open model to

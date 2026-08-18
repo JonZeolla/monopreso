@@ -59,34 +59,29 @@
 {%- endmacro -%}
 
 
-{%- macro policy_architecture() -%}
-{#- The XACML reference architecture, drawn as a request's journey. The
-    PDP's side-channels to PAP and PIP ride as annotations on the pipe. -#}
+{%- macro policy_architecture(image_path="modules/guardrails/img/xacml-policy-architecture.png") -%}
+{#- The XACML reference architecture, shown as the whitepaper draws it.
+    The figure is black-on-white, so it sits on a light plate — that is a
+    legibility requirement of the source image, not a brand colour. -#}
 {%- call content_slide("Policy architecture") %}
   {{ slide_heading("",
                    "PAP · PDP · PIP · PEP",
-                   "The XACML reference architecture, from the CNCF Kubernetes Policy Management whitepaper. Still the blueprint for every policy engine you use.") }}
-  {{ pipe([
-    {"label": "Request",
-     "detail": "A user or system tries to do something",
-     "accent": "neutral"},
-    {"label": "PEP",
-     "detail": "Policy Enforcement Point — intercepts the request and asks for a verdict",
-     "accent": "warning"},
-    {"label": "PDP",
-     "detail": "Policy Decision Point — evaluates the configured policies and decides",
-     "accent": "primary",
-     "note": "Enriched with attributes from the PIP (Policy Information Point); policies authored and distributed by the PAP (Policy Administration Point)"},
-    {"label": "Allow / deny",
-     "detail": "The PDP instructs the PEP how to proceed",
-     "accent": "success"},
-  ]) }}
+                   "The XACML reference architecture. Still the blueprint for every policy engine you use.") }}
+  <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:8px 0;">
+    <img src="{{ image_path }}"
+         alt="XACML policy architecture: users or systems call the Policy Enforcement Point, which reaches resources and consults the Policy Decision Point; the PDP draws attributes from the Policy Information Point and policies authored by the Policy Administration Point."
+         class="plain"
+         style="width:100%; max-width:1000px; max-height:44vh; object-fit:contain; background:white; border-radius:12px; padding:12px;">
+  </div>
+  <p style="text-align:right; font-size:11px; opacity:0.6; margin:0 0 10px 0;">
+    Figure from <a href="https://github.com/kubernetes/sig-security/blob/main/sig-security-docs/papers/policy/CNCF_Kubernetes_Policy_Management_WhitePaper_v1.pdf">CNCF &amp; Kubernetes SIG-Security, &ldquo;Kubernetes Policy Management&rdquo; white paper v1 (p.&nbsp;6)</a>
+  </p>
   {{ card_grid([
     {"title": "PAP — administration",
      "body": "Where policy is authored, versioned, and distributed. Managing it with version control and testing is what &ldquo;policy as code&rdquo; literally means.",
      "accent": "info"},
     {"title": "PDP — decision",
-     "body": "The engine. Same policy in, same verdict out — which is exactly what makes it auditable.",
+     "body": "The engine. Same policy in, same verdict out, which is what makes it auditable.",
      "accent": "primary"},
     {"title": "PIP — information",
      "body": "The context a decision needs: labels, metadata, current state. Decisions are only as good as what the PIP can see.",

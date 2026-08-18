@@ -5,9 +5,10 @@ you add it. Reconstructing attribution later is far harder than capturing it now
 
 - Event: Cloud Security Alliance (CSA) Birmingham — TODO (link)
 - CNCF / Kubernetes SIG-Security, [Kubernetes Policy Management whitepaper v1](https://github.com/kubernetes/sig-security/blob/main/sig-security-docs/papers/policy/CNCF_Kubernetes_Policy_Management_WhitePaper_v1.pdf)
-  — source of the XACML PAP/PDP/PIP/PEP architecture (p.6) taught in
-  `modules/guardrails/policy-as-code.j2`. The deck redraws the architecture
-  with brand primitives rather than embedding the paper's figure.
+  — source of the XACML PAP/PDP/PIP/PEP architecture taught in
+  `modules/guardrails/policy-as-code.j2`.
+  `modules/guardrails/img/xacml-policy-architecture.png` is the figure from
+  p. 6 of that paper, captured 2026-08-18.
 - Jon Saad-Falcon et al., [“Shrinking the Generation-Verification Gap with Weak Verifiers”](https://arxiv.org/abs/2506.18203)
   (Weaver), arXiv:2506.18203 — basis for `modules/verifiers/verifiers.j2`.
   `modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png` is a

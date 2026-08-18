@@ -29,11 +29,8 @@
     pick_two,
     agent_loops with context %}
 {%- from "modules/guardrails/guardrail-spectrum.j2" import
-    highway_vs_monorail,
-    the_balance,
     paved_roads with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
-    pac_history,
     policy_architecture,
     policy_architecture_today with context %}
 {%- from "modules/context/context-rules-intro.j2" import
@@ -64,7 +61,6 @@
 {%- from "modules/context/context-files.j2"       import
     mockup    as context_files_mockup,
     tradeoffs as context_files_tradeoffs %}
-{%- from "modules/context/context-injection.j2"   import right_context_right_time %}
 {%- from "modules/guardrails/layered-defense.j2"  import layered_defense %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
 {%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
@@ -103,21 +99,17 @@
 
 <!-- ================================================================
      GUARDRAILS — HOW YOU DO IT
-     The constraint spectrum, the creativity cost of over-constraining,
-     then the survey of control families.
+     The survey of control families: what you can actually attach, and
+     where.
      ================================================================ -->
-{{ highway_vs_monorail() }}
-{{ the_balance() }}
 {{ sdlc_survey() }}
 
 
 <!-- ================================================================
      POLICY AS CODE
-     History, the PAP/PDP/PIP/PEP architecture, the same diagram
-     remapped onto the agent pipeline — then the two concrete
-     enforcement examples that used to sit in the deep-dive block.
+     The PAP/PDP/PIP/PEP architecture, the same diagram remapped onto
+     the agent pipeline, then the two concrete enforcement examples.
      ================================================================ -->
-{{ pac_history() }}
 {{ policy_architecture() }}
 {{ policy_architecture_today() }}
 {{ deterministic_pci_example() }}
@@ -131,8 +123,8 @@
      ensemble.
      ================================================================ -->
 {{ layered_defense() }}
-{{ ensembling_fast_verifiers() }}
 {{ weaver_evidence() }}
+{{ ensembling_fast_verifiers() }}
 
 
 <!-- ================================================================
@@ -146,7 +138,6 @@
 {{ context_degradation_quality_drop() }}
 {{ context_files_mockup() }}
 {{ context_files_tradeoffs() }}
-{{ right_context_right_time() }}
 
 
 <!-- ================================================================
