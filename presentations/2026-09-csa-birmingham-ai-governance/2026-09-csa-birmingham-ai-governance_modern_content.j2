@@ -1,5 +1,5 @@
 {# ================================================================
-   AI Governance and Guardrails for Software
+   AI Governance and Guardrails
    Cloud Security Alliance (CSA) Birmingham · September 8, 2026
    Birmingham, AL · 60 minutes · in-person
 
@@ -7,11 +7,9 @@
    slide order; it contains no HTML. Every rendered slide comes from a
    macro under modules/<topic>/ so other decks can reuse it.
 
-   Restructured 2026-08-16 (see NOTES.md): the maturity-model spine is
-   gone. The talk now runs lifecycle → guardrail spectrum → policy-as-code
-   history → paved roads → context → verifiers → rules+models (Weaver) →
-   tool-call governance → deciding → Verifier Self-Improvement. No section
-   divider slides.
+   Order (set 2026-08-18): opening → the claim → guardrails → policy as
+   code → ensembling → paved roads → verifiers → governance →
+   self-improvement → close. No section-divider slides.
 
    Modules that resolve the brand pack themselves are imported WITH CONTEXT
    — without it `branding` is undefined at load time and the path collapses
@@ -26,8 +24,10 @@
 {# ── Shared slides (primitive-native — import with context) ────── #}
 {%- from "modules/sdlc/lifecycle.j2" import
     stages               as sdlc_stages,
-    stages_with_controls as sdlc_stages_with_controls,
     survey               as sdlc_survey with context %}
+{%- from "modules/agents/good-fast-cheap.j2" import
+    pick_two,
+    agent_loops with context %}
 {%- from "modules/guardrails/guardrail-spectrum.j2" import
     highway_vs_monorail,
     the_balance,
@@ -50,10 +50,6 @@
     monitor_allow_deny,
     sandboxing_nono,
     nono_scoped_call with context %}
-{%- from "modules/guardrails/guardrail-decisions.j2" import
-    decision_frame with context %}
-{%- from "modules/guardrails/structure-enables-speed.j2" import
-    structure_is_speed with context %}
 {%- from "modules/verifiers/self-improvement.j2" import
     verifier_self_improvement,
     improvement_gates with context %}
@@ -69,7 +65,6 @@
     mockup    as context_files_mockup,
     tradeoffs as context_files_tradeoffs %}
 {%- from "modules/context/context-injection.j2"   import right_context_right_time %}
-{%- from "modules/agents/agent-review.j2"         import layered_ai_review %}
 {%- from "modules/guardrails/layered-defense.j2"  import layered_defense %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
 {%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
@@ -80,46 +75,64 @@
 
 <!-- ================================================================
      OPENING
-     How we got here, and the velocity data that changes the risk
-     equation. GH Archive chart + GitHub's own record-acceleration
-     figure replace the old "faster delivery" summary slide.
+     How agents got here, the velocity data, and the delivery
+     lifecycle everyone half-knows — grouped together as the shared
+     ground the rest of the talk stands on.
      ================================================================ -->
-{{ title_slide("AI Governance and Guardrails for Software",
+{{ title_slide("AI Governance and Guardrails",
                subtitle="Cloud Security Alliance · Birmingham",
                kicker="Jon Zeolla") }}
 {{ coding_agent_evolution() }}
 {{ code_volume_ten_years() }}
 {{ code_volume_inflection() }}
+{{ sdlc_stages() }}
 
 
 <!-- ================================================================
-     THE GROUND TRUTH
-     The delivery lifecycle bare, annotated, then the control survey.
-     No divider slide — straight in.
+     THE CLAIM
+     The classic triangle, then the same triangle under an agent loop.
+     The second slide never states the claim; the filled shape and the
+     generate/verify/repeat cards let the audience make it.
+
+     Placed here rather than after the Weaver evidence, so it frames
+     the talk as a promise the rest of the hour pays off.
      ================================================================ -->
-{{ sdlc_stages() }}
-{{ sdlc_stages_with_controls() }}
+{{ pick_two() }}
+{{ agent_loops() }}
+
+
+<!-- ================================================================
+     GUARDRAILS — HOW YOU DO IT
+     The constraint spectrum, the creativity cost of over-constraining,
+     then the survey of control families.
+     ================================================================ -->
+{{ highway_vs_monorail() }}
+{{ the_balance() }}
 {{ sdlc_survey() }}
 
 
 <!-- ================================================================
-     GUARDRAILS
-     The spectrum: highway → monorail, the creativity tradeoff, and
-     why structure buys speed.
-     ================================================================ -->
-{{ highway_vs_monorail() }}
-{{ the_balance() }}
-
-
-<!-- ================================================================
      POLICY AS CODE
-     The history: PDFs → XACML (PAP/PDP/PIP/PEP) → cloud native →
-     policy as code → agent guardrails. CNCF K8s Policy Management
-     whitepaper architecture, then remapped onto the agent pipeline.
+     History, the PAP/PDP/PIP/PEP architecture, the same diagram
+     remapped onto the agent pipeline — then the two concrete
+     enforcement examples that used to sit in the deep-dive block.
      ================================================================ -->
 {{ pac_history() }}
 {{ policy_architecture() }}
 {{ policy_architecture_today() }}
+{{ deterministic_pci_example() }}
+{{ hooks_when_x_then_y() }}
+
+
+<!-- ================================================================
+     ENSEMBLING
+     Many cheap checks beat one perfect one, and the Weaver evidence
+     for it. Layered defense sits here as the practical shape of an
+     ensemble.
+     ================================================================ -->
+{{ layered_defense() }}
+{{ ensembling_fast_verifiers() }}
+{{ weaver_evidence() }}
 
 
 <!-- ================================================================
@@ -137,16 +150,9 @@
 
 
 <!-- ================================================================
-     VERIFIERS — THE FOUR KINDS
-     "Guardrail" is the word this room knows; "verifier" is the word
-     the rest of the talk needs, so the bridge is built explicitly
-     first. Then the taxonomy: software, ML, LLM judge, human —
-     ordered by increasing judgement and decreasing scale.
-
-     The coverage matrix is the centrepiece. Four kinds that fail in
-     four different ways IS the independence assumption Weaver
-     requires, so the taxonomy earns the research rather than merely
-     preceding it.
+     VERIFIERS
+     The word this room does not have yet, then the four kinds and
+     how their gaps cover each other.
      ================================================================ -->
 {{ verifiers_are_guardrails() }}
 {{ four_kinds() }}
@@ -155,30 +161,9 @@
 
 
 <!-- ================================================================
-     THE KINDS IN PRACTICE
-     Deep dives, ordered to follow the taxonomy: the software-side
-     examples first, then the LLM-judge one. Candidates to trim once
-     the taxonomy slides are carrying the argument.
-     ================================================================ -->
-{{ layered_defense() }}
-{{ deterministic_pci_example() }}
-{{ hooks_when_x_then_y() }}
-{{ layered_ai_review() }}
-
-
-<!-- ================================================================
-     ENSEMBLING
-     The payoff: independent failure modes are what make an ensemble
-     of fast, weak verifiers beat one oracle.
-     ================================================================ -->
-{{ ensembling_fast_verifiers() }}
-{{ weaver_evidence() }}
-
-
-<!-- ================================================================
      GOVERNANCE: THE TOOL-CALL BOUNDARY
-     Everything the agent does is a tool call; monitor / allow / deny
-     / sandbox at that boundary. nono for kernel-level containment.
+     Everything the agent does is a tool call, so that boundary is
+     where monitoring and enforcement attach. nono for containment.
      ================================================================ -->
 {{ everything_is_a_tool_call() }}
 {{ monitor_allow_deny() }}
@@ -187,19 +172,11 @@
 
 
 <!-- ================================================================
-     DECIDING
-     The decision frame survives from the old Part 4; the per-control
-     verdict slides are cut.
-     ================================================================ -->
-{{ decision_frame() }}
-
-
-<!-- ================================================================
      VERIFIER SELF-IMPROVEMENT
-     The close: the feedback loop, its guardrails, and the compounding
-     argument. Structure-is-speed lands here as the payoff.
+     The close. structure-is-speed is folded into the first slide
+     here rather than standing alone — the loop visualization carries
+     the argument better than a second card grid did.
      ================================================================ -->
-{{ structure_is_speed() }}
 {{ verifier_self_improvement() }}
 {{ agent_feedback_loop() }}
 {{ policy_feedback() }}

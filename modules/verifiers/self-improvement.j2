@@ -44,8 +44,20 @@
      "detail": "With one fewer way to be wrong",
      "accent": "success"},
   ]) }}
-  {{ callout("The guardrail is not just the gate.
-              <strong>It is the training signal.</strong>", accent="primary") }}
+  {{ card_grid([
+    {"title": "An unstructured repo forces guessing",
+     "body": "No conventions, no tests, no types. The agent infers house style from whatever file it happened to read, and is wrong at a steady rate.",
+     "accent": "danger"},
+    {"title": "A structured repo answers instead",
+     "body": "Conventions, typed interfaces, fast tests, written architecture. The agent reads the constraint rather than inventing one.",
+     "accent": "info"},
+    {"title": "A failing check is the clearest answer of all",
+     "body": "It states what &ldquo;good&rdquo; means here in a form the agent can act on without asking a human.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("The guardrail is not just the gate. <strong>It is the training
+              signal</strong> — which is why every constraint you write down
+              makes the next attempt faster.", accent="primary") }}
 {%- endcall %}
 {%- endmacro -%}
 

@@ -218,6 +218,41 @@
 {%- endmacro -%}
 
 
+{%- macro tradeoff_triangle(corners, note="", filled=false) -%}
+{# Good / fast / cheap style triangle. `corners` is exactly three
+   {label, accent}. `note` renders inside the shape. `filled` lights the
+   whole triangle instead of leaving it an outline.
+
+   Colours ride on `currentColor` so the SVG works in every pack. #}
+{%- set X = [230, 420, 40] %}
+{%- set Y = [46, 366, 366] %}
+<div style="display:flex; justify-content:center; align-items:center; margin:10px 0;">
+  <svg viewBox="0 0 460 385" role="img" aria-label="{% for c in corners %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}{% if note %} — {{ note }}{% endif %}"
+       style="width:min(520px,60%); height:auto; max-height:46vh;">
+    <g style="color:{% if filled %}{{ _accent_var("success") }}{% else %}{{ _accent_var("neutral") }}{% endif %};">
+      <polygon points="230,74 420,334 40,334"
+               fill="currentColor" fill-opacity="{% if filled %}0.16{% else %}0{% endif %}"
+               stroke="currentColor" stroke-width="{% if filled %}4{% else %}2.5{% endif %}"
+               stroke-linejoin="round"/>
+    </g>
+    {%- for c in corners %}
+    <g style="color:{{ _accent_var(c.accent | default("neutral")) }};">
+      <text x="{{ X[loop.index0] }}" y="{{ Y[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="25" font-weight="700"
+            font-family="inherit">{{ c.label }}</text>
+    </g>
+    {%- endfor %}
+    {%- if note %}
+    <g style="color:var(--unb-text-dim);">
+      <text x="230" y="268" text-anchor="middle" fill="currentColor"
+            font-size="22" font-weight="600" font-family="inherit">{{ note }}</text>
+    </g>
+    {%- endif %}
+  </svg>
+</div>
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract.
    Implement on demand when extracting the consuming shared slide.

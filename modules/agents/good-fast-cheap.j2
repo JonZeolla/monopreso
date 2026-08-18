@@ -1,0 +1,63 @@
+{#- modules/agents/good-fast-cheap.j2
+    The framing pair for the whole talk: the classic delivery triangle,
+    then the same triangle under an agent loop.
+
+    The second slide never says "you get all three" out loud. It shows the
+    whole triangle lit and names the loop; the claim is the picture. Saying
+    it in words turns an argument the audience makes for themselves into a
+    boast they can dismiss.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/agents/good-fast-cheap.j2" import
+          pick_two, agent_loops with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    tradeoff_triangle,
+    card_grid,
+    callout
+-%}
+
+
+{%- macro pick_two() -%}
+{#- Deliberately bare. Everyone in the room already knows this triangle;
+    the slide's whole job is to put it on the wall so the next one can
+    move it. Any explanation here is filler. -#}
+{%- call content_slide("Pick two") %}
+  {{ slide_heading("", "Good, fast, cheap") }}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "accent": "primary"},
+    {"label": "Cheap", "accent": "warning"},
+    {"label": "Fast",  "accent": "info"},
+  ], note="pick two") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro agent_loops() -%}
+{#- The same triangle, filled. The three cards say what changed about each
+    corner without ever claiming the win — the audience closes the loop. -#}
+{%- call content_slide("Agent loops") %}
+  {{ slide_heading("", "Agent loops") }}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "accent": "success"},
+    {"label": "Cheap", "accent": "success"},
+    {"label": "Fast",  "accent": "success"},
+  ], filled=true) }}
+  {{ card_grid([
+    {"title": "Generate",
+     "body": "A draft costs cents and arrives in seconds.",
+     "accent": "success"},
+    {"title": "Verify",
+     "body": "Checks run on every attempt, not on a sample of them.",
+     "accent": "success"},
+    {"title": "Repeat",
+     "body": "Failed attempts are cheap, so quality comes from iteration instead of from care.",
+     "accent": "success"},
+  ], cols=3) }}
+{%- endcall %}
+{%- endmacro -%}

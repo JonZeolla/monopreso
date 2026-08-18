@@ -106,9 +106,10 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
 | `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
 | `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated |
+| `tradeoff_triangle(corners, note="", filled=false)` | Three-corner tradeoff triangle (good/fast/cheap). `corners`: exactly three `{label, accent}`. `note` renders inside the shape; `filled` lights the whole triangle rather than leaving an outline. SVG, coloured via `currentColor` so it works in every pack |
 | `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented)* |
 
-The four "not yet implemented" primitives are stubbed in each brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
+The three "not yet implemented" primitives are stubbed in each brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
 
 ### Importing a primitive-native slide: `with context`
 
