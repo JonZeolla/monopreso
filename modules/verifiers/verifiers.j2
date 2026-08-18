@@ -27,8 +27,21 @@
     card_grid,
     pros_cons,
     matrix,
+    quote,
     callout
 -%}
+
+
+{%- macro verifiers_are_king() -%}
+{#- Epigraph for the verifiers section. Someone else making the claim
+    lands better than the speaker making it, and it names the shift the
+    rest of the section explains: the hard part moved from generation to
+    verification. -#}
+{{ quote("In the Land of AI Agents, the Verifiers Are King",
+         "Tariq Shaukat, CEO of Sonar",
+         source="AI Engineer World&rsquo;s Fair, 2026",
+         url="https://youtu.be/VrpEyglYgeU") }}
+{%- endmacro -%}
 
 
 {%- macro verifiers_are_guardrails() -%}

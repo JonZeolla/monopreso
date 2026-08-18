@@ -204,6 +204,23 @@
 {%- endmacro -%}
 
 
+{%- macro quote(text, attribution, source="", url="") -%}
+{# Full-slide pull quote. `attribution` is the speaker; `source` is where
+   they said it; `url` makes the source a link. #}
+<section class="vis-slide" data-label="Quote" style="justify-content:center; align-items:center; text-align:center;">
+  <div style="max-width:900px;">
+    <p style="font-size:46px; font-weight:800; line-height:1.2; color:#fff; margin:0 0 28px 0;">&ldquo;{{ text|safe }}&rdquo;</p>
+    <p style="font-size:18px; font-weight:700; color:#2dd4bf; margin:0;">{{ attribution }}</p>
+    {%- if source %}
+    <p style="font-size:13px; color:#64748b; margin:6px 0 0 0;">
+      {% if url %}<a href="{{ url }}" style="color:#94a3b8;">{{ source }}</a>{% else %}{{ source }}{% endif %}
+    </p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
 {%- macro matrix(headers, rows, caption="") -%}
 {# Comparison matrix. Columns are the things compared, rows are the
    dimensions they are compared on.

@@ -14,6 +14,9 @@ you add it. Reconstructing attribution later is far harder than capturing it now
   `modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png` is a
   screenshot of the paper's "Weighted Verifier Ensembles Outperform Naive
   Verifier Ensembles" figure, captured from the paper 2026-08-16.
+- Tariq Shaukat (CEO, Sonar), ["In the Land of AI Agents, the Verifiers Are King"](https://youtu.be/VrpEyglYgeU)
+  — keynote at the AI Engineer World's Fair, 2026. Quoted as the epigraph
+  opening the verifiers section.
 - [nono](https://nono.sh/) — kernel-level AI-agent sandboxing by nolabs
   ([github.com/nolabs-ai/nono](https://github.com/nolabs-ai/nono)), covered in
   `modules/governance/tool-calls.j2`. Open source; per-tool-call scoped

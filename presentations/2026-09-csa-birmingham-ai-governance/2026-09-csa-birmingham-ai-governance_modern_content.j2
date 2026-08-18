@@ -36,6 +36,7 @@
 {%- from "modules/context/context-rules-intro.j2" import
     context_files_rules with context %}
 {%- from "modules/verifiers/verifiers.j2" import
+    verifiers_are_king,
     verifiers_are_guardrails,
     four_kinds,
     coverage,
@@ -145,6 +146,7 @@
      The word this room does not have yet, then the four kinds and
      how their gaps cover each other.
      ================================================================ -->
+{{ verifiers_are_king() }}
 {{ verifiers_are_guardrails() }}
 {{ four_kinds() }}
 {{ coverage() }}

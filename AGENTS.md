@@ -95,6 +95,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
 | `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
+| `quote(text, attribution, source="", url="")` | Full-slide pull quote. Owns its own `<section>`. `attribution` is the speaker, `source` is where they said it, `url` makes the source a link |
 | `content_slide(label)` | **Call-block** wrapper owning the `<section>` + `data-label` for a content slide. Use `{%- call content_slide("X") %}…{%- endcall %}` so shared slides never name a brand-specific section class |
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub). Pass `""` for `label` to omit the kicker entirely — newer slides do this, since an editorial kicker above a headline is usually filler |
 | `callout(text, accent="primary")` | Bottom emphasis band |
