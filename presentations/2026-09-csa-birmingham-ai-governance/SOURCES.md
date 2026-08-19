@@ -23,6 +23,12 @@ you add it. Reconstructing attribution later is far harder than capturing it now
   opening the policy-as-code section. Attributed to the panel rather than an
   individual speaker: the line asserts consensus and the specific speaker is
   not identifiable from the recording.
+- Yifan Yang et al., ["SkillOpt: Executive Strategy for Self-Evolving Agent
+  Skills"](https://arxiv.org/abs/2605.23904), arXiv:2605.23904 (Microsoft,
+  Shanghai Jiao Tong, Tongji, Fudan). Figure 1 shown on the "Context and
+  Skills" slide. The image is `modules/context/img/skillopt-overview.png`,
+  already vendored from `skillopt-assets/teaser-1.png` in the MIT-licensed
+  [microsoft/SkillOpt](https://github.com/microsoft/SkillOpt) repository.
 - [nono](https://nono.sh/) — kernel-level AI-agent sandboxing by nolabs
   ([github.com/nolabs-ai/nono](https://github.com/nolabs-ai/nono)), covered in
   `modules/governance/tool-calls.j2`. Open source; per-tool-call scoped

@@ -1,0 +1,46 @@
+{#- modules/context/skill-optimization.j2
+    Context and skills as things you can optimize deliberately, using the
+    mechanics of model training applied to text rather than weights.
+
+    Anchored on SkillOpt (Yang et al., arXiv:2605.23904). The figure is the
+    paper's own, already vendored at modules/context/img/skillopt-overview.png
+    from the MIT-licensed microsoft/SkillOpt repository.
+
+    Note this is a *different* module from context-refinement.j2, which
+    carries the older vis-* markup for the same paper. This one is written
+    against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/context/skill-optimization.j2" import
+          context_and_skills with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    callout
+-%}
+
+
+{%- macro context_and_skills(image_path="modules/context/img/skillopt-overview.png") -%}
+{#- The figure is black-on-white, so it sits on a light plate. That is a
+    legibility requirement of the source image, not a brand colour. -#}
+{%- call content_slide("Context and skills") %}
+  {{ slide_heading("",
+                   "Context and Skills",
+                   "Research applying the machinery of model training — gradients, learning rates, validation — to the documents you write for an agent.") }}
+  <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:8px 0;">
+    <img src="{{ image_path }}"
+         alt="SkillOpt figure: descent across a skill space toward lower validation error. Bounded skill edits and a held-out selection gate produce stable optimization, while ad hoc updates make large semantic jumps to a suboptimal skill. A table maps training concepts onto text: parameter to skill document, gradient direction to trajectory-derived edit direction, learning rate to edit budget, validation check to held-out selection gate."
+         class="plain"
+         style="width:100%; max-width:1100px; max-height:46vh; object-fit:contain; background:white; border-radius:12px; padding:12px;">
+  </div>
+  <p style="text-align:right; font-size:11px; opacity:0.6; margin:0 0 10px 0;">
+    Figure 1 from <a href="https://arxiv.org/abs/2605.23904">Yang et al., &ldquo;SkillOpt: Executive Strategy for Self-Evolving Agent Skills&rdquo; (2026)</a>
+  </p>
+  {{ callout("The skill document is the parameter. Bound the edit, hold out a
+              validation set, and keep only what measures better — you are
+              <strong>training your context</strong>, whether or not you call
+              it that.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

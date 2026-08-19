@@ -68,7 +68,7 @@ Topic directories currently in use:
 
 | Topic | Path | Slide modules |
 |---|---|---|
-| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2` |
+| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2`, `context-rules-intro.j2`†, `skill-optimization.j2`† |
 | AI / agent review | `modules/agents/` | `agent-review.j2` |
 | Hooks | `modules/hooks/` | `hooks.j2` |
 | Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`† |
@@ -78,7 +78,6 @@ Topic directories currently in use:
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
 | Outro | `modules/outro/` | `outro.j2` |
 
-Note: `modules/context/context-rules-intro.j2`† is also primitive-native.
 
 † Primitive-native: contains no hex colors, brand class names, or raw `<section>` markup, and renders correctly under all three packs. Use these as the model for new slides — not the older `vis-*` modules. They must be imported **`with context`** (see below).
 

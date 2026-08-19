@@ -37,6 +37,8 @@
     policy_architecture_today with context %}
 {%- from "modules/context/context-rules-intro.j2" import
     context_files_rules with context %}
+{%- from "modules/context/skill-optimization.j2" import
+    context_and_skills with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     verifiers_are_king,
     verifiers_are_guardrails,
@@ -143,6 +145,7 @@
 {{ context_degradation_quality_drop() }}
 {{ context_files_mockup() }}
 {{ context_files_tradeoffs() }}
+{{ context_and_skills() }}
 
 
 <!-- ================================================================
