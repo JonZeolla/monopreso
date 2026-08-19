@@ -484,4 +484,10 @@ body.light-mode .zenable-logo-dark  { display: none; }
   * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   * { box-shadow: none !important; }
 }
+
+  /* Citation and source links. Underlined so a reference reads as
+     clickable; muted so it never competes with slide content. */
+  .vis-slide a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px;
+                 text-underline-offset: 2px; text-decoration-color: rgba(148,163,184,0.55); }
+  .vis-slide a:hover { text-decoration-color: currentColor; }
 </style>

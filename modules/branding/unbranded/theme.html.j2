@@ -66,4 +66,10 @@
 .unb-accent-danger  { border-color: color-mix(in srgb, var(--unb-danger) 35%, transparent);
                       background: color-mix(in srgb, var(--unb-danger) 6%, var(--unb-surface)); }
 .unb-accent-info    { border-color: color-mix(in srgb, var(--unb-info) 35%, transparent); }
+
+  /* Citation and source links. Underlined so a reference reads as
+     clickable; muted so it never competes with slide content. */
+  .unb-slide a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px;
+                 text-underline-offset: 2px; text-decoration-color: var(--unb-text-dim); }
+  .unb-slide a:hover { text-decoration-color: currentColor; }
 </style>

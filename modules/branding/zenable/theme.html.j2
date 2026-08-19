@@ -100,4 +100,10 @@ section[data-label="Title"] .vis-subtitle,
 
 /* Suppress the SANS header bar if a deck accidentally still includes it */
 .sans-header { display: none !important; }
+
+  /* Citation and source links. Underlined so a reference reads as
+     clickable; muted so it never competes with slide content. */
+  .slide a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px;
+             text-underline-offset: 2px; text-decoration-color: rgba(148,163,184,0.5); }
+  .slide a:hover { text-decoration-color: currentColor; }
 </style>
