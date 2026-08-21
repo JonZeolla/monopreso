@@ -24,7 +24,6 @@
 
 {# ── Shared slides (primitive-native — import with context) ────── #}
 {%- from "modules/sdlc/lifecycle.j2" import
-    stages               as sdlc_stages,
     survey               as sdlc_survey with context %}
 {%- from "modules/agents/good-fast-cheap.j2" import
     pick_two,
@@ -45,16 +44,9 @@
     verifiers_are_guardrails,
     four_kinds,
     coverage,
-    complementarity,
     ensembling_fast_verifiers,
     weaver_evidence with context %}
-{%- from "modules/governance/tool-calls.j2" import
-    everything_is_a_tool_call,
-    monitor_allow_deny,
-    sandboxing_nono,
     nono_scoped_call with context %}
-{%- from "modules/verifiers/self-improvement.j2" import
-    verifier_self_improvement,
     improvement_gates with context %}
 
 {# ── Existing shared slides (vis-* era — no context needed) ────── #}
@@ -84,20 +76,22 @@
 {{ title_slide("Guardrails for AI Coding",
                subtitle="SANS@Night · Cloud Security Exchange Summit",
                kicker="Jon Zeolla") }}
-{{ coding_agent_evolution() }}
+
+
+<!-- ================================================================
+     OPENING — THE SHIFT
+     The volume data, then how agents got here.
+     ================================================================ -->
 {{ code_volume_ten_years() }}
 {{ code_volume_inflection() }}
-{{ sdlc_stages() }}
+{{ coding_agent_evolution() }}
 
 
 <!-- ================================================================
      THE CLAIM
-     The classic triangle, then the same triangle under an agent loop.
-     The second slide never states the claim; the filled shape and the
-     generate/verify/repeat cards let the audience make it.
-
-     Placed here rather than after the Weaver evidence, so it frames
-     the talk as a promise the rest of the hour pays off.
+     The classic triangle, the same triangle under an agent loop, then
+     the thesis stated flat. The triangle never claims "all three"; the
+     statement names the condition the rest of the talk pays off.
      ================================================================ -->
 {{ pick_two() }}
 {{ agent_loops() }}
@@ -105,41 +99,33 @@
 
 
 <!-- ================================================================
-     GUARDRAILS — HOW YOU DO IT
-     The survey of control families: what you can actually attach, and
-     where.
+     VERIFIERS
+     Practitioners agreeing on static analysis, then the four kinds and
+     the coverage matrix.
      ================================================================ -->
-{{ sdlc_survey() }}
+{{ do_it_statically() }}
+{{ four_kinds() }}
+{{ coverage() }}
 
 
 <!-- ================================================================
-     POLICY AS CODE
-     The PAP/PDP/PIP/PEP architecture, the same diagram remapped onto
-     the agent pipeline, then the two concrete enforcement examples.
+     THE LOOP AND THE GOVERNANCE PAYOFF
      ================================================================ -->
-{{ do_it_statically() }}
+{{ agent_feedback_loop() }}
+{{ policy_feedback() }}
+
+
+<!-- ================================================================
+     REMAINDER — kept in prior relative order, to be re-sequenced next.
+     ================================================================ -->
+{{ sdlc_survey() }}
 {{ policy_architecture() }}
 {{ policy_architecture_today() }}
 {{ deterministic_pci_example() }}
 {{ hooks_when_x_then_y() }}
-
-
-<!-- ================================================================
-     ENSEMBLING
-     Many cheap checks beat one perfect one, and the Weaver evidence
-     for it. Layered defense sits here as the practical shape of an
-     ensemble.
-     ================================================================ -->
 {{ layered_defense() }}
 {{ weaver_evidence() }}
 {{ ensembling_fast_verifiers() }}
-
-
-<!-- ================================================================
-     PAVED ROADS → CONTEXT
-     The organizational middle path, then its written form: context
-     files and rules, and what limits them.
-     ================================================================ -->
 {{ paved_roads() }}
 {{ context_files_rules() }}
 {{ context_window_interactive() }}
@@ -147,41 +133,8 @@
 {{ context_files_mockup() }}
 {{ context_files_tradeoffs() }}
 {{ context_and_skills() }}
-
-
-<!-- ================================================================
-     VERIFIERS
-     The word this room does not have yet, then the four kinds and
-     how their gaps cover each other.
-     ================================================================ -->
 {{ verifiers_are_king() }}
 {{ verifiers_are_guardrails() }}
-{{ four_kinds() }}
-{{ coverage() }}
-{{ complementarity() }}
-
-
-<!-- ================================================================
-     GOVERNANCE: THE TOOL-CALL BOUNDARY
-     Everything the agent does is a tool call, so that boundary is
-     where monitoring and enforcement attach. nono for containment.
-     ================================================================ -->
-{{ everything_is_a_tool_call() }}
-{{ monitor_allow_deny() }}
-{{ sandboxing_nono() }}
-{{ nono_scoped_call() }}
-
-
-<!-- ================================================================
-     VERIFIER SELF-IMPROVEMENT
-     The close. structure-is-speed is folded into the first slide
-     here rather than standing alone — the loop visualization carries
-     the argument better than a second card grid did.
-     ================================================================ -->
-{{ verifier_self_improvement() }}
-{{ agent_feedback_loop() }}
-{{ policy_feedback() }}
-{{ improvement_gates() }}
 
 
 <!-- ================================================================
