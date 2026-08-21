@@ -26,12 +26,12 @@
 {%- from "modules/agents/good-fast-cheap.j2" import
     pick_two,
     agent_loops,
+    agents_validators_recap,
     loops_require_verifiers with context %}
 {%- from "modules/guardrails/guardrail-spectrum.j2" import
     paved_roads with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
-    do_it_statically,
-    policy_architecture with context %}
+    do_it_statically with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 {%- from "modules/verifiers/verifiers.j2" import
@@ -39,8 +39,6 @@
     four_kinds,
     coverage,
     weaver_evidence with context %}
-    nono_scoped_call with context %}
-    improvement_gates with context %}
 
 {# ── Existing shared slides (vis-* era — no context needed) ────── #}
 {%- from "modules/agents/coding-agent-evolution.j2" import evolution as coding_agent_evolution %}
@@ -120,7 +118,6 @@
 <!-- ================================================================
      REMAINDER — kept in prior relative order, to be re-sequenced next.
      ================================================================ -->
-{{ policy_architecture() }}
 {{ deterministic_pci_example() }}
 {{ hooks_when_x_then_y() }}
 {{ paved_roads() }}
@@ -131,5 +128,6 @@
 <!-- ================================================================
      CLOSE
      ================================================================ -->
+{{ agents_validators_recap() }}
 {{ questions() }}
 {{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

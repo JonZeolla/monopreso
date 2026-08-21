@@ -46,7 +46,7 @@
     {"label": "Good",  "accent": "success"},
     {"label": "Cheap", "accent": "success"},
     {"label": "Fast",  "accent": "success"},
-  ], filled=true) }}
+  ], note="Coding Agents", filled=true) }}
 {%- endcall %}
 {%- endmacro -%}
 
@@ -60,4 +60,19 @@
   {"text": "require", "muted": true},
   {"text": "Verifiers"},
 ]) }}
+{%- endmacro -%}
+
+
+{%- macro agents_validators_recap() -%}
+{#- Callback to the "Agents & Validators" triangle, now with each corner
+    naming what actually buys it. Same shape as the earlier slide, so the
+    audience recognises it; the sub-labels are the payoff. -#}
+{%- call content_slide("Agents and Validators: recap") %}
+  {{ slide_heading("", "Agents &amp; Validators") }}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "sub": "(Verifiers pass)",          "accent": "success"},
+    {"label": "Cheap", "sub": "(No tokens required)",      "accent": "success"},
+    {"label": "Fast",  "sub": "(Parallel, simple reviews)","accent": "success"},
+  ], note="Coding Agents", filled=true) }}
+{%- endcall %}
 {%- endmacro -%}

@@ -289,9 +289,10 @@
 
    Colours ride on `currentColor` so the SVG works in every pack. #}
 {%- set X = [230, 420, 40] %}
-{%- set Y = [46, 366, 366] %}
+{%- set Y = [40, 362, 362] %}
+{%- set SUBY = [62, 384, 384] %}
 <div style="display:flex; justify-content:center; align-items:center; margin:10px 0;">
-  <svg viewBox="0 0 460 385" role="img" aria-label="{% for c in corners %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}{% if note %} — {{ note }}{% endif %}"
+  <svg viewBox="-75 0 610 400" role="img" aria-label="{% for c in corners %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}{% if note %} — {{ note }}{% endif %}"
        style="width:min(520px,60%); height:auto; max-height:46vh;">
     <g style="color:{% if filled %}{{ _accent_text("success") }}{% else %}#475569{% endif %};">
       <polygon points="230,74 420,334 40,334"
@@ -304,6 +305,11 @@
       <text x="{{ X[loop.index0] }}" y="{{ Y[loop.index0] }}" text-anchor="middle"
             fill="currentColor" font-size="25" font-weight="700"
             font-family="inherit">{{ c.label }}</text>
+      {%- if c.sub %}
+      <text x="{{ X[loop.index0] }}" y="{{ SUBY[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="15" font-weight="500" opacity="0.75"
+            font-family="inherit">{{ c.sub }}</text>
+      {%- endif %}
     </g>
     {%- endfor %}
     {%- if note %}
