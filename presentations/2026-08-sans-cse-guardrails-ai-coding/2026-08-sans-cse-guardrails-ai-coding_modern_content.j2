@@ -28,8 +28,6 @@
     agent_loops,
     agents_validators_recap,
     loops_require_verifiers with context %}
-{%- from "modules/guardrails/guardrail-spectrum.j2" import
-    paved_roads with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
     do_it_statically with context %}
 {%- from "modules/context/skill-optimization.j2" import
@@ -94,6 +92,7 @@
 {{ context_files_mockup() }}
 {{ context_window_interactive() }}
 {{ context_degradation_quality_drop() }}
+{{ context_and_skills() }}
 {{ loops_require_verifiers() }}
 
 
@@ -120,8 +119,6 @@
      ================================================================ -->
 {{ deterministic_pci_example() }}
 {{ hooks_when_x_then_y() }}
-{{ paved_roads() }}
-{{ context_and_skills() }}
 {{ verifiers_are_king() }}
 
 
