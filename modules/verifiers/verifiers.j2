@@ -226,7 +226,7 @@
 
 {%- macro weaver_evidence() -%}
 {%- call content_slide("The evidence") %}
-  {{ slide_heading("", "Weighted ensembles outperform naive ones") }}
+  {{ slide_heading("", "Groups of small verifiers perform best") }}
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
     <img src="modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png"
          alt="Bar chart: improvement over a naive verifier ensemble on MATH500, GPQA Diamond, MMLU, and MMLU Pro. Supervised weighted ensembles (Naive Bayes, Logistic Regression) consistently beat oracle unweighted ensembles of top-1, top-5, and top-10 verifiers."
