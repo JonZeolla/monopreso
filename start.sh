@@ -104,10 +104,12 @@ function cleanup() {
     rm -f ".container_id.${PORT}"
   fi
   rm -f "${RENDERED_PRESENTATION}"
-  if [[ "$(others_running)" -eq 0 ]]; then
+  local remaining
+  remaining="$(others_running)"
+  if [[ "${remaining}" -eq 0 ]]; then
     task clean
   else
-    feedback INFO "$(others_running) other presentation(s) still running; leaving shared assets in place"
+    feedback INFO "${remaining} other presentation(s) still running; leaving shared assets in place"
   fi
   feedback INFO "Cleanup complete"
 }
@@ -264,10 +266,11 @@ fi
 # Start from a clean slate, but only when nothing else is being served: a full
 # clean removes current-*.html and the shared modern.css, which other running
 # presentations are still using.
-if [[ "$(others_running)" -eq 0 ]]; then
+OTHERS_RUNNING="$(others_running)"
+if [[ "${OTHERS_RUNNING}" -eq 0 ]]; then
   task clean
 else
-  feedback INFO "$(others_running) other presentation(s) running; skipping clean"
+  feedback INFO "${OTHERS_RUNNING} other presentation(s) running; skipping clean"
   rm -f "${RENDERED_PRESENTATION}"
 fi
 
