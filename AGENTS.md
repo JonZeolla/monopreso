@@ -100,7 +100,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub). Pass `""` for `label` to omit the kicker entirely — newer slides do this, since an editorial kicker above a headline is usually filler |
 | `callout(text, accent="primary")` | Bottom emphasis band |
 | `card(title, body, accent="neutral")` | Bordered card |
-| `card_grid(items, cols=3)` | Grid of cards. Each item: `{title, body, accent}` |
+| `card_grid(items, cols=3, size="md")` | Grid of cards. Each item: `{title, body, accent}`. `size="lg"` enlarges title and body type via a `.cards-lg` wrapper, for slides where the grid *is* the slide |
 | `pros_cons(benefits, shortcomings, ben_label, short_label)` | Two-column ✓ / ✗ list. Each item: `{title, detail}` |
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
 | `matrix(headers, rows, caption="")` | Comparison matrix. `headers`: `{label, sub}`; `rows`: `{label, cells}` where each cell is `{level, text}` and `level` is `strong`/`partial`/`weak`. Levels map to success/warning/danger accents plus a ●/◐/○ glyph. Reading across a row shows which columns cover a dimension — that is what makes gaps visible |

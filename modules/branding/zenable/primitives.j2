@@ -150,7 +150,8 @@
 {{ _legacy_card(title, body, _accent_to_zen(accent)) }}
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3) -%}
+{%- macro card_grid(items, cols=3, size="md") -%}
+{# size="lg" bumps title/body type for slides where the grid IS the slide. #}
 {# Convert primitive item shape to legacy card_grid shape: {title, desc, accent} #}
 {%- set legacy_items = [] -%}
 {%- for it in items -%}
@@ -160,7 +161,7 @@
     "accent": _accent_to_zen(it.accent | default("neutral")),
   }) -%}
 {%- endfor -%}
-{{ _legacy_card_grid(legacy_items, cols) }}
+{% if size == "lg" %}<div class="cards-lg">{% endif %}{{ _legacy_card_grid(legacy_items, cols) }}{% if size == "lg" %}</div>{% endif %}
 {%- endmacro -%}
 
 

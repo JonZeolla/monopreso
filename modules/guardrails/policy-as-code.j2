@@ -79,9 +79,7 @@
     The figure is black-on-white, so it sits on a light plate — that is a
     legibility requirement of the source image, not a brand colour. -#}
 {%- call content_slide("Policy architecture") %}
-  {{ slide_heading("",
-                   "PAP · PDP · PIP · PEP",
-                   "The XACML reference architecture. Still the blueprint for every policy engine you use.") }}
+  {{ slide_heading("", "Policy as Code") }}
   <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:8px 0;">
     <img src="{{ image_path }}"
          alt="XACML policy architecture: users or systems call the Policy Enforcement Point, which reaches resources and consults the Policy Decision Point; the PDP draws attributes from the Policy Information Point and policies authored by the Policy Administration Point."
@@ -91,20 +89,6 @@
   <p style="text-align:right; font-size:11px; opacity:0.6; margin:0 0 10px 0;">
     Figure from <a href="https://github.com/kubernetes/sig-security/blob/main/sig-security-docs/papers/policy/CNCF_Kubernetes_Policy_Management_WhitePaper_v1.pdf">CNCF &amp; Kubernetes SIG-Security, &ldquo;Kubernetes Policy Management&rdquo; white paper v1 (p.&nbsp;6)</a>
   </p>
-  {{ card_grid([
-    {"title": "PAP — administration",
-     "body": "Where policy is authored, versioned, and distributed. Managing it with version control and testing is what &ldquo;policy as code&rdquo; literally means.",
-     "accent": "info"},
-    {"title": "PDP — decision",
-     "body": "The engine. Same policy in, same verdict out, which is what makes it auditable.",
-     "accent": "primary"},
-    {"title": "PIP — information",
-     "body": "The context a decision needs: labels, metadata, current state. Decisions are only as good as what the PIP can see.",
-     "accent": "secondary"},
-    {"title": "PEP — enforcement",
-     "body": "The gate in the request path. Without a PEP, the rest is documentation.",
-     "accent": "warning"},
-  ], cols=4) }}
 {%- endcall %}
 {%- endmacro -%}
 

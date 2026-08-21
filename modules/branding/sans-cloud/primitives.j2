@@ -158,8 +158,9 @@
 </div>
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3) -%}
-<div style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
+{%- macro card_grid(items, cols=3, size="md") -%}
+{# size="lg" bumps title/body type for slides where the grid IS the slide. #}
+<div class="{% if size == 'lg' %}cards-lg{% endif %}" style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
   {%- for item in items %}
     {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
   {%- endfor %}

@@ -23,8 +23,6 @@
     title_slide %}
 
 {# ── Shared slides (primitive-native — import with context) ────── #}
-{%- from "modules/sdlc/lifecycle.j2" import
-    survey               as sdlc_survey with context %}
 {%- from "modules/agents/good-fast-cheap.j2" import
     pick_two,
     agent_loops,
@@ -33,18 +31,13 @@
     paved_roads with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
     do_it_statically,
-    policy_architecture,
-    policy_architecture_today with context %}
-{%- from "modules/context/context-rules-intro.j2" import
-    context_files_rules with context %}
+    policy_architecture with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     verifiers_are_king,
-    verifiers_are_guardrails,
     four_kinds,
     coverage,
-    ensembling_fast_verifiers,
     weaver_evidence with context %}
     nono_scoped_call with context %}
     improvement_gates with context %}
@@ -57,9 +50,7 @@
 {%- from "modules/context/context-window.j2"      import interactive  as context_window_interactive %}
 {%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
 {%- from "modules/context/context-files.j2"       import
-    mockup    as context_files_mockup,
-    tradeoffs as context_files_tradeoffs %}
-{%- from "modules/guardrails/layered-defense.j2"  import layered_defense %}
+    mockup as context_files_mockup %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
 {%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
 {%- from "modules/agents/agent-feedback-loop.j2"  import feedback_loop as agent_feedback_loop %}
@@ -118,23 +109,16 @@
 <!-- ================================================================
      REMAINDER — kept in prior relative order, to be re-sequenced next.
      ================================================================ -->
-{{ sdlc_survey() }}
 {{ policy_architecture() }}
-{{ policy_architecture_today() }}
 {{ deterministic_pci_example() }}
 {{ hooks_when_x_then_y() }}
-{{ layered_defense() }}
 {{ weaver_evidence() }}
-{{ ensembling_fast_verifiers() }}
 {{ paved_roads() }}
-{{ context_files_rules() }}
 {{ context_window_interactive() }}
 {{ context_degradation_quality_drop() }}
 {{ context_files_mockup() }}
-{{ context_files_tradeoffs() }}
 {{ context_and_skills() }}
 {{ verifiers_are_king() }}
-{{ verifiers_are_guardrails() }}
 
 
 <!-- ================================================================

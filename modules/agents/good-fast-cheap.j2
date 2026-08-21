@@ -18,18 +18,15 @@
     content_slide,
     slide_heading,
     tradeoff_triangle,
-    statement,
-    card_grid,
-    callout
+    statement
 -%}
 
 
 {%- macro pick_two() -%}
-{#- Deliberately bare. Everyone in the room already knows this triangle;
-    the slide's whole job is to put it on the wall so the next one can
-    move it. Any explanation here is filler. -#}
+{#- Deliberately bare — no heading at all. Everyone in the room already
+    knows this triangle; the slide's whole job is to put it on the wall so
+    the next one can move it. Any words here are filler. -#}
 {%- call content_slide("Pick two") %}
-  {{ slide_heading("", "Good, fast, cheap") }}
   {{ tradeoff_triangle([
     {"label": "Good",  "accent": "primary"},
     {"label": "Cheap", "accent": "warning"},
@@ -40,26 +37,16 @@
 
 
 {%- macro agent_loops() -%}
-{#- The same triangle, filled. The three cards say what changed about each
-    corner without ever claiming the win — the audience closes the loop. -#}
-{%- call content_slide("Agent loops") %}
-  {{ slide_heading("", "Agent loops") }}
+{#- The same triangle, filled. Nothing explains it: the shape changing
+    between the two slides is the whole argument, and the audience closes
+    it themselves. -#}
+{%- call content_slide("Agents and Validators") %}
+  {{ slide_heading("", "Agents &amp; Validators") }}
   {{ tradeoff_triangle([
     {"label": "Good",  "accent": "success"},
     {"label": "Cheap", "accent": "success"},
     {"label": "Fast",  "accent": "success"},
   ], filled=true) }}
-  {{ card_grid([
-    {"title": "Generate",
-     "body": "A draft costs cents and arrives in seconds.",
-     "accent": "success"},
-    {"title": "Verify",
-     "body": "Checks run on every attempt, not on a sample of them.",
-     "accent": "success"},
-    {"title": "Repeat",
-     "body": "Failed attempts are cheap, so quality comes from iteration instead of from care.",
-     "accent": "success"},
-  ], cols=3) }}
 {%- endcall %}
 {%- endmacro -%}
 

@@ -490,4 +490,9 @@ body.light-mode .zenable-logo-dark  { display: none; }
   .vis-slide a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px;
                  text-underline-offset: 2px; text-decoration-color: rgba(148,163,184,0.55); }
   .vis-slide a:hover { text-decoration-color: currentColor; }
+
+  /* card_grid(size="lg"): for slides where the grid is the whole slide.
+     The card macro sets font-size inline, so these need !important. */
+  .cards-lg p:first-of-type { font-size: 26px !important; line-height: 1.2; }
+  .cards-lg p + p           { font-size: 16px !important; line-height: 1.5; }
 </style>
