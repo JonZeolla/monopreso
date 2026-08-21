@@ -1,0 +1,29 @@
+---
+# Reference deck of slides cut from the SANS CSE / CSA Birmingham talk.
+# Not a talk; there is no narrative order.
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  BRANDING:
+    sh: echo "${BRANDING:-zenable}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start the cutting-room-floor reference deck (default brand: zenable)"
+    cmds:
+      - task: root:start
