@@ -226,9 +226,7 @@
 
 {%- macro weaver_evidence() -%}
 {%- call content_slide("The evidence") %}
-  {{ slide_heading("",
-                   "Weighted ensembles outperform naive ones",
-                   "Weaver, across four reasoning benchmarks.") }}
+  {{ slide_heading("", "Weighted ensembles outperform naive ones") }}
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
     <img src="modules/verifiers/img/weaver-weighted-vs-naive-ensembles.png"
          alt="Bar chart: improvement over a naive verifier ensemble on MATH500, GPQA Diamond, MMLU, and MMLU Pro. Supervised weighted ensembles (Naive Bayes, Logistic Regression) consistently beat oracle unweighted ensembles of top-1, top-5, and top-10 verifiers."
@@ -238,8 +236,5 @@
       Figure from <a href="https://arxiv.org/abs/2506.18203">Saad-Falcon et al., &ldquo;Shrinking the Generation-Verification Gap with Weak Verifiers&rdquo; (2025)</a>
     </p>
   </div>
-  {{ callout("An ensemble of small verifiers lifted a 70B open model to
-              o3-mini-level accuracy — a jump that otherwise took a
-              <strong>generation of post-training</strong>.", accent="info") }}
 {%- endcall %}
 {%- endmacro -%}
