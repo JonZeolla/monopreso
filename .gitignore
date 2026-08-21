@@ -60,3 +60,8 @@ tags
 
 # Claude Code agent worktrees (scratch space, never committed)
 .claude/worktrees/
+
+# Per-run presentation artifacts (see start.sh)
+current-*.html
+.container_id
+.container_id.*

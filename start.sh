@@ -18,7 +18,7 @@ function help() {
   exitCode="${1:-0}"
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
-		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--no-open] [--no-cleanup]
+		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--port=PORT] [--no-open] [--no-cleanup]
 		--branding     Override the brand. For modern engine: any directory under modules/branding/
 		               (default: "unbranded"). For revealjs engine: seiso or zenable.
 		               Also honoured via the BRANDING env var (set per-presentation in a
@@ -27,6 +27,7 @@ function help() {
 		--list         List the available presentations
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
+		--port         Serve on this port instead of auto-selecting a free one
 		--no-cleanup   Disable the cleanup prompt at the end
 		-h|--help      Usage details
 	HEREDOC
@@ -67,9 +68,47 @@ function run_quiet() {
   return "${_rc}"
 }
 
+function find_free_port() {
+  # First free TCP port at or above $1. Several presentations can run at once,
+  # so the default is a starting point rather than a fixed address.
+  local port="${1}"
+  local limit=$(( port + 50 ))
+  while (( port < limit )); do
+    if ! nc -z 127.0.0.1 "${port}" >/dev/null 2>&1; then
+      printf '%s\n' "${port}"
+      return 0
+    fi
+    port=$(( port + 1 ))
+  done
+  feedback ERROR "No free port found between ${1} and ${limit}"
+}
+
+function others_running() {
+  # Number of *other* presentations currently served from this repo.
+  local count=0 f
+  for f in .container_id.*; do
+    [[ -e "${f}" ]] || continue
+    [[ "${f}" == ".container_id.${PORT}" ]] && continue
+    count=$(( count + 1 ))
+  done
+  printf '%s\n' "${count}"
+}
+
 function cleanup() {
+  # Stop only this run. A full `task clean` would delete current-*.html and the
+  # shared modern.css out from under any presentation still running, so it is
+  # deferred until this is the last one.
   feedback INFO "Cleaning up..."
-  task stop clean
+  if [[ -r ".container_id.${PORT}" ]]; then
+    docker kill "$(cat ".container_id.${PORT}")" >/dev/null 2>&1 || true
+    rm -f ".container_id.${PORT}"
+  fi
+  rm -f "${RENDERED_PRESENTATION}"
+  if [[ "$(others_running)" -eq 0 ]]; then
+    task clean
+  else
+    feedback INFO "$(others_running) other presentation(s) still running; leaving shared assets in place"
+  fi
   feedback INFO "Cleanup complete"
 }
 
@@ -83,7 +122,9 @@ LIST_PRESENTATIONS="False"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
-RENDERED_PRESENTATION="current.html"
+RENDERED_PRESENTATION=  # set once the presentation name is known
+PORT=
+DEFAULT_PORT=8000
 BRANDING="${BRANDING:-False}"  # respect env; CLI --branding overrides below
 ENGINE="modern"
 NO_CLEANUP="False"
@@ -111,6 +152,9 @@ while getopts "${OPTSPEC}" optchar; do
         list)
           LIST_PRESENTATIONS="True" ;;
 
+        port)
+          PORT="${OPTARG#*=}"
+          ;;
         no-cleanup)
           NO_CLEANUP="True" ;;
 
@@ -169,6 +213,12 @@ if [[ -z "${PRESENTATION}" ]]; then
   feedback ERROR "--preso is required"
 fi
 
+# Per-run artifacts. Each presentation renders to its own file and gets its own
+# port, so several can run side by side for comparison.
+echo -n "."
+RENDERED_PRESENTATION="current-${PRESENTATION}.html"
+PORT="${PORT:-$(find_free_port "${DEFAULT_PORT}")}"
+
 # Content file resolution based on engine
 echo -n "."
 if [[ "${ENGINE,,}" == "modern" ]]; then
@@ -211,8 +261,15 @@ else
 fi
 
 ## Environment setup
-# Start with a clean slate
-task clean
+# Start from a clean slate, but only when nothing else is being served: a full
+# clean removes current-*.html and the shared modern.css, which other running
+# presentations are still using.
+if [[ "$(others_running)" -eq 0 ]]; then
+  task clean
+else
+  feedback INFO "$(others_running) other presentation(s) running; skipping clean"
+  rm -f "${RENDERED_PRESENTATION}"
+fi
 
 if [[ "${ENGINE,,}" == "modern" ]]; then
   ##############################################################################
@@ -256,14 +313,14 @@ PYEOF
   echo -n "."
   docker buildx build --quiet --load -f Dockerfile.modern -t monopreso-modern:latest . >/dev/null 2>&1 || true
   echo -n "."
-  container_id="$(docker run --rm -d -p 8000:8000 -v .:/srv -w /srv monopreso-modern:latest)"
+  container_id="$(docker run --rm -d -p "${PORT}":8000 -v .:/srv -w /srv monopreso-modern:latest)"
 
   # 4. Wait for server
-  until curl --fail -s http://localhost:8000/current.html >/dev/null; do
+  until curl --fail -s "http://localhost:${PORT}/${RENDERED_PRESENTATION}" >/dev/null; do
     echo -n "."
     sleep .4
   done
-  url="http://localhost:8000/current.html"
+  url="http://localhost:${PORT}/${RENDERED_PRESENTATION}"
 
 else
   ##############################################################################
@@ -356,23 +413,24 @@ EOF
   echo -n "."
   docker buildx build --quiet --load -t monopreso:latest . >/dev/null 2>&1 || true # Continue regardless; assume it failed due to no internet but we have an old version available
   echo -n "."
-  container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
-  until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
+  livereload_port="$(find_free_port 35729)"
+  container_id="$(docker run --rm -d -p "${livereload_port}":35729 -p "${PORT}":8000 -v .:/usr/src/app monopreso:latest)"
+  until curl --fail -s -X GET "http://localhost:${PORT}" >/dev/null; do
     echo -n "."
     sleep .4
   done
-  url="http://localhost:8000/"
+  url="http://localhost:${PORT}/"
 
 fi
 
 ## Common post-startup
 echo -e "\n\nYour presentation is now running at ${url}"
-echo "${container_id}" > .container_id
+echo "${container_id}" > ".container_id.${PORT}"
 if [[ "${NO_OPEN}" == "False" ]]; then
   open /Applications/Google\ Chrome.app "${url}"
 fi
 if [[ "${NO_CLEANUP}" == "True" ]]; then
-  echo -e "\n\nWhen you are done presenting, run task stop clean to stop the presentation and cleanup"
+  echo -e "\n\nWhen you are done presenting, run task stop clean to stop everything, or task stop -- ${PORT} to stop just this one"
 else
   answer="N"
   until [[ "${answer}" =~ ^[Yy]$ ]]; do

@@ -121,9 +121,29 @@ tasks:
       - rm -f *.pdf
 
   stop:
-    desc: Shut down any running containers
+    desc: >
+      Shut down running presentations. With no args, stops all of them;
+      pass a port (task stop -- 8001) to stop just that one.
     cmds:
-      - if [[ -r .container_id ]]; then docker kill "$(cat .container_id)" && rm -f .container_id; fi
+      - |
+        shopt -s nullglob
+        args="{{.CLI_ARGS}}"
+        if [ -n "${args}" ]; then
+          files=""
+          for port in ${args}; do files="${files} .container_id.${port}"; done
+        else
+          files=".container_id .container_id.*"
+        fi
+        found=0
+        for f in ${files}; do
+          [ -r "${f}" ] || continue
+          found=1
+          docker kill "$(cat "${f}")" >/dev/null 2>&1 || true
+          rm -f "${f}"
+          port="${f#.container_id}"; port="${port#.}"
+          echo "Stopped presentation${port:+ on port ${port}}"
+        done
+        [ "${found}" -eq 1 ] || echo "No running presentations found"
 
   clean:
     desc: Clean up build artifacts, cache files/directories, temp files, etc.
@@ -131,6 +151,7 @@ tasks:
       - mv -f reveal.js/index.html.bkp reveal.js/index.html 2>/dev/null || true
       - rm -f modules/current.html
               current.html
+              current-*.html
               modules/shared/css/modern.css
               reveal.js/modules 2>/dev/null || true
       - rm -f reveal.js/dist/theme/fonts/bitter
