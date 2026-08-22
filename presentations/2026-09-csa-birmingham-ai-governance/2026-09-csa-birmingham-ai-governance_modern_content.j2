@@ -24,6 +24,8 @@
 {# ── Shared slides (primitive-native — import with context) ────── #}
 {%- from "modules/sdlc/lifecycle.j2" import
     sdlc, adlc with context %}
+{%- from "modules/agents/running-loops.j2" import
+    how_i_run_loops with context %}
 {%- from "modules/guardrails/maturity-model.j2" import
     maturity_overview with context %}
 {%- from "modules/guardrails/structure-enables-speed.j2" import
@@ -123,6 +125,7 @@
      THE LOOP AND THE GOVERNANCE PAYOFF
      ================================================================ -->
 {{ agent_feedback_loop() }}
+{{ how_i_run_loops() }}
 {{ policy_feedback() }}
 {{ improvement_gates() }}
 
