@@ -85,7 +85,7 @@
   {%- for st in STAGES %}
     {%- set _ = agentic.append({
       "label":  st.label,
-      "detail": "&#129302;<br>&#9989; " ~ AGENTIC[st.label],
+      "below":  "&#129302;<br>&#9989; " ~ AGENTIC[st.label],
       "accent": st.accent,
     }) %}
   {%- endfor %}

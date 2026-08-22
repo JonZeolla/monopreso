@@ -170,7 +170,7 @@
 
 {%- macro pipe(stages) -%}
 {# Left-to-right pipeline of stage cards joined by arrows.
-   Each stage: {label, detail?, meta?, accent?, note?}
+   Each stage: {label, detail?, meta?, accent?, note?, below?}
 
    `note` renders as an annotation hanging above the stage on a dotted
    connector. That is what lets one slide be shown twice — first with bare
@@ -199,6 +199,9 @@
       {%- if stage.detail %}<p style="font-size:11px; color:#94a3b8; margin:0; line-height:1.45;">{{ stage.detail|safe }}</p>{% endif %}
       {%- if stage.meta %}<p class="vis-mono" style="font-size:10px; color:#64748b; margin:0;">{{ stage.meta }}</p>{% endif %}
     </div>
+    {%- if stage.below %}
+    <p style="margin:8px 0 0 0; text-align:center; font-size:13px; line-height:1.45; color:#94a3b8;">{{ stage.below|safe }}</p>
+    {%- endif %}
   </div>
   {%- endfor %}
 </div>

@@ -167,7 +167,7 @@
 
 {%- macro pipe(stages) -%}
 {# Left-to-right pipeline of stage cards joined by arrows.
-   Each stage: {label, detail?, meta?, accent?, note?}
+   Each stage: {label, detail?, meta?, accent?, note?, below?}
 
    `note` renders as an annotation hanging above the stage on a dotted
    connector, so the same stage list can be shown twice — bare, then with
@@ -195,6 +195,9 @@
       {%- if stage.detail %}<p class="text-[11px] leading-snug text-slate-400 m-0">{{ stage.detail|safe }}</p>{% endif %}
       {%- if stage.meta %}<p class="font-mono text-[10px] uppercase tracking-wider text-slate-500 m-0">{{ stage.meta }}</p>{% endif %}
     </div>
+    {%- if stage.below %}
+    <p class="mt-2 text-center text-[13px] leading-snug text-slate-400 m-0">{{ stage.below|safe }}</p>
+    {%- endif %}
   </div>
   {%- endfor %}
 </div>
