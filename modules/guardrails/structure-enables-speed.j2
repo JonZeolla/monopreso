@@ -24,24 +24,21 @@
 
 
 {%- macro structure_is_speed() -%}
+{#- Three concrete pieces of structure, each framed by the guessing it
+    removes. The argument is the title; the cards are the evidence. -#}
 {%- call content_slide("Structure is speed") %}
-  {{ slide_heading("The part nobody expects",
-                   "Structure makes the agent faster",
-                   "Every constraint you write down is a decision the agent no longer has to guess at.") }}
+  {{ slide_heading("", "Structure = Speed") }}
   {{ card_grid([
-    {"title": "An unstructured repo forces guessing",
-     "body": "No conventions, no tests, no types, no docs. The agent infers house style from whatever file it happened to read, and is wrong at a steady rate.",
-     "accent": "danger"},
-    {"title": "A structured repo forces nothing",
-     "body": "Conventions, typed interfaces, fast tests, a written architecture. The agent reads the constraint instead of inventing one.",
-     "accent": "success"},
-    {"title": "Guardrails are structure that answers back",
-     "body": "A failing policy check is a machine-readable statement of what &ldquo;good&rdquo; means here. The agent can act on it without asking a human.",
+    {"title": "Context files",
+     "body": "Conventions, architecture, and approved patterns written where the agent reads them. It stops inferring house style from whatever file it happened to open.",
      "accent": "primary"},
+    {"title": "Hooks",
+     "body": "Checks that fire inside the loop, while the agent still has the change in hand. It fixes its own mistake instead of waiting on a human to find it.",
+     "accent": "info"},
+    {"title": "Reviewers",
+     "body": "Agent and human review catch what no rule was written for, and every correction becomes something the next attempt already knows.",
+     "accent": "success"},
   ], cols=3) }}
-  {{ callout("The teams shipping fastest with agents are not the ones with the
-              fewest rules. They are the ones whose rules are
-              <strong>written down and executable</strong>.", accent="success") }}
 {%- endcall %}
 {%- endmacro -%}
 

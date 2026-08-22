@@ -63,25 +63,21 @@
 
 
 {%- macro improvement_gates() -%}
-{#- Discipline for the loop: without these three constraints, "the system
-    improves itself" degrades into unreviewed behaviour drift. -#}
+{#- The loop changes your rules, so the thresholds for changing them are
+    themselves a control. Left unstated, one annoyed reviewer and one bad
+    run are enough to rewrite how every future agent behaves. -#}
 {%- call content_slide("Improvement gates") %}
-  {{ slide_heading("",
-                   "Self-improvement needs its own guardrails",
-                   "An unsupervised feedback loop is drift with good branding.") }}
+  {{ slide_heading("", "Self-improvement needs its own guardrails") }}
   {{ card_grid([
-    {"title": "Update on patterns, not anecdotes",
-     "body": "Change the paved road when the evidence shows a recurring failure — not because one memorable incident annoyed someone senior.",
+    {"title": "One failure is not a pattern",
+     "body": "It broke for one user, on one model, once. Do you change the rule? Decide that in advance, not while someone is waiting.",
      "accent": "warning"},
-    {"title": "Bound every change",
-     "body": "Small, reviewed edits to context and policy. A wholesale rewrite of your rules is an unreviewed change to every future agent action.",
+    {"title": "Name the threshold",
+     "body": "Multiple people? Multiple models? A quarter of runs? Pick the bar that promotes a signal into a rule change, and write it down.",
      "accent": "info"},
-    {"title": "Promote only what measures better",
-     "body": "Hold out a set of real tasks. If the updated guidance doesn't move them, it is prose, not an improvement.",
+    {"title": "Data driven decision making",
+     "body": "Change it only when you can measure that it got better. If the new guidance does not move a held-out set of real tasks, it is prose.",
      "accent": "success"},
   ], cols=3) }}
-  {{ callout("Models keep getting better on their own. Paved roads start them
-              right. Verifiers keep them right — and a governed feedback loop
-              means the whole system is <strong>better every quarter</strong>.", accent="primary") }}
 {%- endcall %}
 {%- endmacro -%}

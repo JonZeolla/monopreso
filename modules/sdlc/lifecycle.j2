@@ -47,6 +47,53 @@
 } -%}
 
 
+{#- The four families of control, mapped onto the stage where they first
+    earn their keep. One per stage, deliberately coarse: the slide is a
+    map, not a catalogue. -#}
+{%- set AGENTIC = {
+  "Plan":       "Steering Files",
+  "Build":      "Steering Files",
+  "Test":       "Agent Review",
+  "Distribute": "Policy as Code",
+  "Deploy":     "Policy as Code",
+  "Run":        "Feedback Loops",
+} -%}
+
+
+{%- macro sdlc() -%}
+{#- The lifecycle, bare. No kicker, no subtitle, no per-stage detail — the
+    six words are the slide, so the next one can redraw them with agents
+    attached and the change is the only thing that moved. -#}
+{%- call content_slide("SDLC") %}
+  {{ slide_heading("", "The Software Development Lifecycle (SDLC)") }}
+  {%- set bare = [] %}
+  {%- for st in STAGES %}
+    {%- set _ = bare.append({"label": st.label, "accent": st.accent}) %}
+  {%- endfor %}
+  {{ pipe(bare) }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro adlc() -%}
+{#- The same six stages with an agent in each, and the control family that
+    covers it. Same shape as sdlc() on purpose: what changed is what the
+    audience should notice. -#}
+{%- call content_slide("ADLC") %}
+  {{ slide_heading("", "The Agentic Development Lifecycle (ADLC)") }}
+  {%- set agentic = [] %}
+  {%- for st in STAGES %}
+    {%- set _ = agentic.append({
+      "label":  st.label,
+      "detail": "&#129302;<br>&#9989; " ~ AGENTIC[st.label],
+      "accent": st.accent,
+    }) %}
+  {%- endfor %}
+  {{ pipe(agentic) }}
+{%- endcall %}
+{%- endmacro -%}
+
+
 {%- macro stages() -%}
 {#- The lifecycle with nothing attached. Show this first: much of the room
     has never seen their own delivery process drawn as one line. -#}
