@@ -1,0 +1,201 @@
+{# ================================================================
+   Agentic AI Foundation (AAIF) — Brand-pack primitives
+   ----------------------------------------------------------------
+   Implements the primitive macro contract using the .aaif-* CSS
+   classes defined in this pack's theme.html.j2. See AGENTS.md (repo
+   root) for the contract and the accent vocabulary.
+
+   Two things are specific to this pack and worth knowing before you
+   use it:
+
+   1. It is a LIGHT pack. Slides are white with a gradient rule; the
+      section dividers invert to a full-bleed gradient. Content
+      written for the dark packs will need its own colours checked.
+
+   2. It does NOT ship the sans-cloud `vis-*` compatibility layer the
+      Zenable pack carries. Shared slides that still emit raw `vis-*`
+      markup (most of modules/<topic>/) will render unstyled here.
+      Only slides written against these primitives work.
+
+   Slide chrome (gradient rule, corner decoration, footer lockup,
+   page number) is emitted by the chrome() helper, so every slide
+   variant carries it identically. Page numbers come from a CSS
+   counter on .aaif-slide — there is nothing to pass in and nothing
+   to keep in sync when slides are reordered.
+   ================================================================ #}
+
+
+{# ── internal helpers ─────────────────────────────────────────── #}
+
+{%- macro _accent(name) -%}
+{%- set m = {
+  "primary":  "aaif-accent-primary",
+  "secondary":"aaif-accent-secondary",
+  "success":  "aaif-accent-success",
+  "warning":  "aaif-accent-warning",
+  "danger":   "aaif-accent-danger",
+  "info":     "aaif-accent-info",
+  "neutral":  "aaif-accent-neutral",
+} -%}{{- m.get(name, "aaif-accent-neutral") -}}
+{%- endmacro -%}
+
+{# Decoration + footer lockup + page number. `deco` is suppressed on
+   layouts where the circle would collide with slide content. #}
+{%- macro chrome(deco=True, page=True, logo=True) -%}
+{%- if deco %}<div class="aaif-deco"></div>{% endif %}
+{%- if logo %}<svg class="aaif-footer-logo" aria-label="Agentic AI Foundation"><use href="#aaif-logo"/></svg>{% endif %}
+{%- if page %}<div class="aaif-page-num"></div>{% endif %}
+{%- endmacro -%}
+
+{# The oversized top-left lockup used on cover slides. #}
+{%- macro cover_logo() -%}
+<svg class="aaif-cover-logo" aria-label="Agentic AI Foundation"><use href="#aaif-logo"/></svg>
+{%- endmacro -%}
+
+
+{# ── structural primitives ────────────────────────────────────── #}
+
+{# Cover slide. `gradient=True` gives the full-bleed gradient variant
+   (deck slide 2); the default is the white variant (deck slide 1). #}
+{%- macro title_slide(title, subtitle="", kicker="", gradient=False) -%}
+<section class="slide aaif-slide aaif-slide--cover {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}" data-label="Title">
+  {{ chrome(deco=not gradient, page=False, logo=False) }}
+  {{ cover_logo() }}
+  <div class="aaif-body" style="justify-content:center;">
+    {%- if kicker %}<div class="aaif-label">{{ kicker }}</div>{% endif %}
+    <h1 class="aaif-title aaif-title--hero">{{ title }}</h1>
+    {%- if subtitle %}<p class="aaif-subtitle" style="font-size:var(--aaif-fs-h5); line-height:var(--aaif-lh-h5);">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{# Section break. Full-bleed gradient with centred white type — this
+   is the deck's signature divider. #}
+{%- macro section_divider(num, title, subtitle="") -%}
+<section class="slide aaif-slide aaif-slide--gradient" data-label="Section: {{ title }}">
+  {{ chrome(deco=False) }}
+  <div class="aaif-body" style="align-items:center; text-align:center;">
+    {%- if num %}<div class="aaif-label" style="color:rgba(255,255,255,0.85);">Part {{ num }}</div>{% endif %}
+    <h2 class="aaif-title aaif-title--display">{{ title }}</h2>
+    {%- if subtitle %}<p class="aaif-subtitle" style="text-align:center;">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{# Maturity-model break. Same gradient shell as section_divider, but
+   labelled "Level N: Stage" so a deck can tell the two apart in the
+   nav rail. #}
+{%- macro maturity_level(level, stage, title, subtitle="") -%}
+<section class="slide aaif-slide aaif-slide--gradient" data-label="{% if level %}Level {{ level }}: {{ stage }}{% else %}{{ title }}{% endif %}">
+  {{ chrome(deco=False) }}
+  <div class="aaif-body" style="align-items:center; text-align:center;">
+    {%- if level %}<div class="aaif-label" style="color:rgba(255,255,255,0.85);">Level {{ level }}: {{ stage }}</div>{% endif %}
+    <h2 class="aaif-title aaif-title--display">{{ title }}</h2>
+    {%- if subtitle %}<p class="aaif-subtitle" style="text-align:center;">{{ subtitle|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+{# Heading block for a content slide. Unlike the slide-emitting
+   macros above this returns a fragment — callers wrap it in their
+   own <section>, usually via content_slide() from slides.j2. #}
+{%- macro slide_heading(label, title, subtitle="") -%}
+{%- if label %}<div class="aaif-label">{{ label }}</div>{% endif %}
+<div class="aaif-title">{{ title }}</div>
+{%- if subtitle %}<div class="aaif-subtitle">{{ subtitle|safe }}</div>{% endif %}
+{%- endmacro -%}
+
+
+{# ── content primitives ───────────────────────────────────────── #}
+
+{%- macro callout(text, accent="primary") -%}
+<div class="aaif-callout {{ _accent(accent) }}">{{ text|safe }}</div>
+{%- endmacro -%}
+
+{%- macro card(title, body, accent="neutral") -%}
+<div class="aaif-card {{ _accent(accent) }}">
+  {%- if title %}<p class="aaif-card-title">{{ title }}</p>{% endif %}
+  {%- if body %}<p class="aaif-card-body">{{ body|safe }}</p>{% endif %}
+</div>
+{%- endmacro -%}
+
+{%- macro card_grid(items, cols=3) -%}
+<div style="display:grid; grid-template-columns:repeat({{ cols }},minmax(0,1fr)); gap:16px;">
+  {%- for item in items %}
+    {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro pros_cons(benefits, shortcomings, ben_label="Benefits", short_label="Shortcomings") -%}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:34px;">
+  <div>
+    <p class="aaif-label" style="color:var(--aaif-a-success);">{{ ben_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      {%- for item in benefits %}
+      {{ card(item.title, item.detail | default(item.body | default("")), "success") }}
+      {%- endfor %}
+    </div>
+  </div>
+  <div>
+    <p class="aaif-label" style="color:var(--aaif-a-danger);">{{ short_label }}</p>
+    <div style="display:flex; flex-direction:column; gap:12px;">
+      {%- for item in shortcomings %}
+      {{ card(item.title, item.detail | default(item.body | default("")), "danger") }}
+      {%- endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro pill_row(items, justify="center") -%}
+<div style="display:flex; flex-wrap:wrap; gap:10px; justify-content:{{ justify }}; margin:10px 0 24px;">
+  {%- for item in items %}
+    <span class="aaif-pill {{ _accent(item.accent | default('neutral')) }}">{{ item.label }}</span>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{# Mac-window code card. `lines` is a list of strings; they are
+   escaped, so pass plain source rather than pre-highlighted markup. #}
+{%- macro code_block(filename, lines) -%}
+<div class="aaif-code">
+  <div class="aaif-code-bar">
+    <span class="aaif-code-dot" style="background:#ff5f57;"></span>
+    <span class="aaif-code-dot" style="background:#febc2e;"></span>
+    <span class="aaif-code-dot" style="background:#28c840;"></span>
+    {%- if filename %}<span class="aaif-code-name">{{ filename }}</span>{% endif %}
+  </div>
+  <pre><code>{% for line in lines %}{{ line }}{{ "\n" if not loop.last }}{% endfor %}</code></pre>
+</div>
+{%- endmacro -%}
+
+{# Horizontal numbered steps. Each step: {title, detail}. #}
+{%- macro step_flow(steps) -%}
+<div style="display:grid; grid-template-columns:repeat({{ steps|length }},minmax(0,1fr)); gap:16px; align-items:stretch;">
+  {%- for step in steps %}
+  <div class="aaif-card aaif-accent-primary" style="display:flex; gap:13px; align-items:flex-start;">
+    <div class="aaif-step-num">{{ loop.index }}</div>
+    <div>
+      <p class="aaif-card-title">{{ step.title }}</p>
+      {%- if step.detail %}<p class="aaif-card-body">{{ step.detail|safe }}</p>{% endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{# ────────────────────────────────────────────────────────────────
+   NOT YET IMPLEMENTED — declared in the AGENTS.md contract.
+   Implement on demand when extracting the consuming shared slide.
+
+     pipe(stages)
+     ide_mockup(filename, sidebar, code_lines, chat_panel=None)
+
+   Note: code_block() and step_flow() above ARE implemented here but
+   are still stubs in the sans-cloud, zenable, and unbranded packs.
+   Until those catch up, use them only from AAIF-specific slides —
+   a shared slide under modules/<topic>/ that calls them would break
+   the "same content, swap brand" guarantee.
+   ──────────────────────────────────────────────────────────────── #}

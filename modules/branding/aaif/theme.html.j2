@@ -1,0 +1,446 @@
+{# ================================================================
+   Agentic AI Foundation (AAIF) brand-pack theme
+   ----------------------------------------------------------------
+   A LIGHT brand pack. Everything else in this repo is dark, so this
+   file has to actively undo the dark defaults that
+   modules/shared/modern_template.j2 bakes into <body> and into the
+   print stylesheet. Those overrides are grouped under "engine
+   overrides" at the bottom — they are not brand design, they are the
+   cost of the wrapper not being brand-neutral yet.
+
+   Design tokens are lifted from two authoritative sources:
+
+     1. aaif.io   — the live site's CSS custom properties. Coral and
+                    neutral ramps, the type scale, radii, and the
+                    Instrument Sans font stack all come from there
+                    verbatim.
+     2. The "AAIF Presentation Template" Google Slides deck — the
+                    signature #5765FF -> #FF702D gradient, and every
+                    layout offset in the "geometry" block below.
+
+   Geometry note: the Slides deck is authored in EMU on a
+   365760 x 205740 canvas (16:9). Each offset below is that EMU value
+   divided by the canvas dimension, so the proportions match the
+   source deck exactly rather than being eyeballed. Horizontal
+   measures resolve against slide width, vertical against slide
+   height; the corner decoration must stay square, so it is sized in
+   vw on both axes.
+   ================================================================ #}
+
+{%- include "modules/branding/aaif/logo-sprite.html.j2" %}
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
+
+:root {
+  /* ── Brand ──────────────────────────────────────────────────── */
+  --aaif-indigo:        #5765FF;   /* gradient start; the deck's blue     */
+  --aaif-coral:         #FF702D;   /* gradient end; site --color-coral    */
+  --aaif-gradient:      linear-gradient(90deg, var(--aaif-indigo) 0%, var(--aaif-coral) 100%);
+
+  /* Coral ramp — aaif.io --color-coral-* */
+  --aaif-coral-50:      #ffe2d5;
+  --aaif-coral-100:     #ffcfb9;
+  --aaif-coral-200:     #ffb896;
+  --aaif-coral-300:     #ffa073;
+  --aaif-coral-500:     #ff7d2d;
+  --aaif-coral-600:     #d65d26;
+  --aaif-coral-700:     #aa4e1e;
+
+  /* Neutral ramp — aaif.io --color-neutral-* */
+  --aaif-n-50:          #f3f3f3;
+  --aaif-n-100:         #f3f4f6;
+  --aaif-n-200:         #e5e7eb;
+  --aaif-n-300:         #d1d5db;
+  --aaif-n-400:         #9ca3af;
+  --aaif-n-600:         #4b5563;
+  --aaif-n-700:         #374151;
+  --aaif-n-800:         #1f2937;
+  --aaif-n-900:         #111827;
+
+  /* Semantic surface + ink. aaif.io sets --color-text: #4a4a4a and
+     --color-primary: #000; headings are near-black, body is grey. */
+  --aaif-bg:            #ffffff;
+  --aaif-surface:       #ffffff;
+  --aaif-surface-alt:   var(--aaif-n-50);
+  --aaif-border:        var(--aaif-n-200);
+  --aaif-ink:           #000000;
+  --aaif-text:          #4a4a4a;
+  --aaif-muted:         var(--aaif-n-400);
+
+  /* Accent vocabulary — see AGENTS.md. Green/amber/red have no
+     aaif.io equivalent, so they use restrained neighbours that sit
+     alongside coral without fighting it. */
+  --aaif-a-primary:     var(--aaif-indigo);
+  --aaif-a-secondary:   var(--aaif-coral);
+  --aaif-a-success:     #16a34a;
+  --aaif-a-warning:     #d97706;
+  --aaif-a-danger:      #dc2626;
+  --aaif-a-info:        var(--aaif-indigo);
+  --aaif-a-neutral:     var(--aaif-n-300);
+
+  /* ── Type — aaif.io --font-size-* ───────────────────────────── */
+  --aaif-font:          'Instrument Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --aaif-font-mono:     ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --aaif-fs-hero:       64px;   --aaif-lh-hero:    106%;
+  --aaif-fs-display:    52px;   --aaif-lh-display: 56px;
+  --aaif-fs-h1:         40px;   --aaif-lh-h1:      56px;
+  --aaif-fs-h2:         36px;   --aaif-lh-h2:      44px;
+  --aaif-fs-h3:         32px;   --aaif-lh-h3:      40px;
+  --aaif-fs-h4:         28px;   --aaif-lh-h4:      36px;
+  --aaif-fs-h5:         24px;   --aaif-lh-h5:      32px;
+  --aaif-fs-h6:         20px;   --aaif-lh-h6:      28px;
+  --aaif-fs-lg:         18px;   --aaif-lh-lg:      28px;
+  --aaif-fs-md:         16px;   --aaif-lh-md:      24px;
+  --aaif-fs-sm:         14px;   --aaif-lh-sm:      20px;
+  --aaif-fs-xs:         12px;   --aaif-lh-xs:      20px;
+
+  /* ── Radii — aaif.io --radius-* ─────────────────────────────── */
+  --aaif-r-sm:          0.25rem;
+  --aaif-r-md:          0.375rem;
+  --aaif-r-lg:          0.5rem;
+  --aaif-r-xl:          0.75rem;
+  --aaif-r-2xl:         1rem;
+
+  /* ── Geometry, derived from the source deck's EMU canvas ────── */
+  --aaif-bar-h:         1.785%;   /*   3672 / 205740 — gradient rule     */
+  --aaif-pad-x:         5.285%;   /*  19331 / 365760 — content gutter    */
+  --aaif-pad-y:         8.375%;   /*  17249 / 205740 — cover logo top    */
+  --aaif-logo-w-cover:  28.62%;   /* 104672 / 365760 — cover lockup      */
+  --aaif-logo-w-foot:   9.43%;    /*  34509 / 365760 — footer lockup     */
+  --aaif-foot-x:        2.55%;    /*   9329 / 365760 — footer lockup x   */
+  --aaif-foot-y:        4.10%;    /* slide height - 185930/205740        */
+  --aaif-deco-size:     20.39vw;  /*  74561 / 365760, kept square        */
+  --aaif-deco-top:      1.82%;    /*   3753 / 205740                     */
+}
+
+/* ================================================================
+   Slide shells
+   ================================================================ */
+
+.aaif-slide {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: calc(var(--aaif-bar-h) + 6.5%) var(--aaif-pad-x) 11%;
+  background: var(--aaif-bg);
+  color: var(--aaif-text);
+  font-family: var(--aaif-font);
+  counter-increment: aaif-page;
+}
+
+/* Full-bleed gradient variant — used for dividers and cover B. */
+.aaif-slide--gradient {
+  background: var(--aaif-gradient);
+  color: #fff;
+  padding-top: 6.5%;
+}
+.aaif-slide--gradient .aaif-title,
+.aaif-slide--gradient .aaif-label { color: #fff; }
+.aaif-slide--gradient .aaif-subtitle { color: rgba(255,255,255,0.88); }
+
+/* Cover variants put the lockup top-left at full size and centre the
+   type block, so they drop the standard vertical rhythm. */
+.aaif-slide--cover { justify-content: center; }
+
+/* ── Chrome: gradient rule along the top edge ─────────────────────
+   The closing slide drops it (--nobar) to match slide 18 of the
+   source deck, where the lockup stands alone on plain white. */
+.aaif-slide--light::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0;
+  height: var(--aaif-bar-h);
+  background: var(--aaif-gradient);
+}
+.aaif-slide--nobar::before { display: none; }
+
+/* ── Chrome: the pale indigo circle + corner square ─────────────
+   In the source deck this is a flat #5765FF PNG dropped to a low
+   opacity over white. Reproduced here as an SVG data URI so it
+   scales cleanly and carries no binary asset. Geometry (circle at
+   39.5%/60.3% r 39.2%, square from 78.6% across the top) is measured
+   off that PNG.                                                    */
+.aaif-deco {
+  position: absolute;
+  top: var(--aaif-deco-top);
+  right: 0;
+  width: var(--aaif-deco-size);
+  height: var(--aaif-deco-size);
+  pointer-events: none;
+  opacity: 0.09;
+  z-index: 0;   /* behind slide content — it must never wash over media */
+  background: no-repeat center / contain
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1083 1083'%3E%3Ccircle cx='428' cy='653' r='425' fill='%235765FF'/%3E%3Crect x='851' y='0' width='232' height='234' fill='%235765FF'/%3E%3C/svg%3E");
+}
+.aaif-slide--gradient .aaif-deco { display: none; }
+
+/* ── Chrome: footer lockup + page number ────────────────────────── */
+.aaif-footer-logo {
+  position: absolute;
+  left: var(--aaif-foot-x);
+  bottom: var(--aaif-foot-y);
+  width: var(--aaif-logo-w-foot);
+  min-width: 132px;
+  aspect-ratio: 838 / 203;
+  color: var(--aaif-ink);
+}
+.aaif-slide--gradient .aaif-footer-logo { color: #fff; }
+
+/* Mirrors the footer lockup's inset, so the two sit symmetrically on
+   the bottom edge — as they do in the source deck. */
+.aaif-page-num {
+  position: absolute;
+  right: var(--aaif-foot-x);
+  bottom: calc(var(--aaif-foot-y) + 0.6%);
+  font-size: var(--aaif-fs-sm);
+  color: var(--aaif-muted);
+  font-variant-numeric: tabular-nums;
+}
+.aaif-page-num::after { content: counter(aaif-page); }
+.aaif-slide--gradient .aaif-page-num { color: rgba(255,255,255,0.75); }
+
+/* Cover lockup — top-left, large. */
+.aaif-cover-logo {
+  position: absolute;
+  left: var(--aaif-pad-x);
+  top: var(--aaif-pad-y);
+  width: var(--aaif-logo-w-cover);
+  min-width: 260px;
+  aspect-ratio: 838 / 203;
+  color: var(--aaif-ink);
+}
+.aaif-slide--gradient .aaif-cover-logo { color: #fff; }
+
+/* ================================================================
+   Type
+   ================================================================ */
+
+.aaif-label {
+  font-size: var(--aaif-fs-xs);
+  line-height: var(--aaif-lh-xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--aaif-coral);
+  margin-bottom: 10px;
+}
+.aaif-title {
+  font-size: var(--aaif-fs-h1);
+  line-height: var(--aaif-lh-h1);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--aaif-ink);
+  margin: 0 0 10px;
+}
+.aaif-title--hero    { font-size: var(--aaif-fs-hero);    line-height: var(--aaif-lh-hero); }
+.aaif-title--display { font-size: var(--aaif-fs-display); line-height: var(--aaif-lh-display); }
+.aaif-subtitle {
+  font-size: var(--aaif-fs-lg);
+  line-height: var(--aaif-lh-lg);
+  color: var(--aaif-text);
+  margin: 0 0 26px;
+  max-width: 62ch;
+}
+.aaif-gradient-text {
+  background: var(--aaif-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Slide body — the region between the heading and the footer chrome.
+   z-index keeps it above .aaif-deco. */
+.aaif-body { position: relative; z-index: 1; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+.aaif-label, .aaif-title, .aaif-subtitle { position: relative; z-index: 1; }
+
+/* ================================================================
+   Atoms
+   ================================================================ */
+
+.aaif-card {
+  background: var(--aaif-surface);
+  border: 1px solid var(--aaif-border);
+  border-radius: var(--aaif-r-xl);
+  padding: 18px 20px;
+  box-shadow: 0 1px 2px rgba(17,24,39,0.05);
+}
+.aaif-card-title {
+  font-size: var(--aaif-fs-h6);
+  line-height: var(--aaif-lh-h6);
+  font-weight: 600;
+  color: var(--aaif-ink);
+  margin: 0;
+}
+.aaif-card-body {
+  font-size: var(--aaif-fs-sm);
+  line-height: var(--aaif-lh-sm);
+  color: var(--aaif-text);
+  margin: 6px 0 0;
+}
+.aaif-slide--gradient .aaif-card {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(255,255,255,0.32);
+  backdrop-filter: blur(6px);
+  box-shadow: none;
+}
+.aaif-slide--gradient .aaif-card-title { color: #fff; }
+.aaif-slide--gradient .aaif-card-body  { color: rgba(255,255,255,0.85); }
+
+/* Accents colour the card's left edge — the brand reads as a rule of
+   colour against white, never as a filled block. */
+.aaif-accent-primary   { border-left: 3px solid var(--aaif-a-primary); }
+.aaif-accent-secondary { border-left: 3px solid var(--aaif-a-secondary); }
+.aaif-accent-success   { border-left: 3px solid var(--aaif-a-success); }
+.aaif-accent-warning   { border-left: 3px solid var(--aaif-a-warning); }
+.aaif-accent-danger    { border-left: 3px solid var(--aaif-a-danger); }
+.aaif-accent-info      { border-left: 3px solid var(--aaif-a-info); }
+.aaif-accent-neutral   { border-left: 3px solid var(--aaif-a-neutral); }
+
+.aaif-callout {
+  border: 1px solid var(--aaif-border);
+  border-radius: var(--aaif-r-xl);
+  background: var(--aaif-surface-alt);
+  padding: 16px 22px;
+  font-size: var(--aaif-fs-lg);
+  line-height: var(--aaif-lh-lg);
+  color: var(--aaif-ink);
+  text-align: center;
+}
+.aaif-slide--gradient .aaif-callout {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.35);
+  color: #fff;
+}
+
+.aaif-pill {
+  display: inline-block;
+  font-family: var(--aaif-font-mono);
+  font-size: var(--aaif-fs-sm);
+  line-height: var(--aaif-lh-sm);
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--aaif-border);
+  background: var(--aaif-surface);
+  color: var(--aaif-text);
+}
+.aaif-pill.aaif-accent-primary,
+.aaif-pill.aaif-accent-secondary,
+.aaif-pill.aaif-accent-success,
+.aaif-pill.aaif-accent-warning,
+.aaif-pill.aaif-accent-danger,
+.aaif-pill.aaif-accent-info,
+.aaif-pill.aaif-accent-neutral { border-left-width: 1px; }
+.aaif-pill.aaif-accent-primary   { border-color: var(--aaif-a-primary);   color: var(--aaif-a-primary); }
+.aaif-pill.aaif-accent-secondary { border-color: var(--aaif-a-secondary); color: var(--aaif-coral-700); }
+.aaif-pill.aaif-accent-success   { border-color: var(--aaif-a-success);   color: var(--aaif-a-success); }
+.aaif-pill.aaif-accent-warning   { border-color: var(--aaif-a-warning);   color: var(--aaif-a-warning); }
+.aaif-pill.aaif-accent-danger    { border-color: var(--aaif-a-danger);    color: var(--aaif-a-danger); }
+.aaif-pill.aaif-accent-info      { border-color: var(--aaif-a-info);      color: var(--aaif-a-info); }
+.aaif-slide--gradient .aaif-pill {
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(255,255,255,0.4) !important;
+  color: #fff !important;
+}
+
+/* Media frame — the rounded outline placeholder from the source deck.
+   Wraps images, screenshots, or embedded diagrams. */
+.aaif-frame {
+  border: 1px solid var(--aaif-indigo);
+  border-radius: var(--aaif-r-2xl);
+  overflow: hidden;
+  background: var(--aaif-surface);
+}
+.aaif-frame > img,
+.aaif-frame > svg { display: block; width: 100%; height: auto; }
+
+/* Numbered step chip, used by step_flow(). */
+.aaif-step-num {
+  width: 34px; height: 34px;
+  border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: var(--aaif-fs-sm);
+  font-weight: 700;
+  color: #fff;
+  background: var(--aaif-gradient);
+  flex: none;
+}
+
+/* Mac-window code card, used by code_block(). */
+.aaif-code {
+  border: 1px solid var(--aaif-border);
+  border-radius: var(--aaif-r-xl);
+  overflow: hidden;
+  background: var(--aaif-n-900);
+  text-align: left;
+}
+.aaif-code-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 14px;
+  background: #0b1220;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.aaif-code-dot { width: 10px; height: 10px; border-radius: 999px; }
+.aaif-code-name {
+  margin-left: 8px;
+  font-family: var(--aaif-font-mono);
+  font-size: var(--aaif-fs-xs);
+  color: var(--aaif-n-400);
+}
+.aaif-code pre {
+  margin: 0;
+  padding: 14px 16px;
+  font-family: var(--aaif-font-mono);
+  font-size: var(--aaif-fs-sm);
+  line-height: 1.6;
+  color: #e5e7eb;
+  overflow-x: auto;
+}
+
+/* ================================================================
+   Engine overrides
+   ----------------------------------------------------------------
+   modules/shared/modern_template.j2 assumes a dark deck: it puts
+   Zenable's dark classes on <body>, colours the nav dots teal, and
+   forces a #0B1120 page background when printing. None of that is
+   brand-neutral yet, so a light pack has to override it here. If the
+   wrapper ever grows real brand hooks, this whole block goes away.
+   ================================================================ */
+
+body.font-sans {
+  background: var(--aaif-bg) !important;
+  color: var(--aaif-text) !important;
+  font-family: var(--aaif-font) !important;
+  counter-reset: aaif-page;
+}
+.nav-dot          { background: var(--aaif-n-300) !important; }
+.nav-dot:hover    { background: var(--aaif-coral) !important; }
+.nav-dot.active   { background: var(--aaif-indigo) !important; }
+.nav-dot::before  { background: var(--aaif-n-900); border-color: var(--aaif-n-700); }
+
+/* The keyboard hint defaults to bottom-left, exactly where the footer
+   lockup goes. Bottom-centre is the only edge this brand leaves free:
+   the lockup owns bottom-left, the page number bottom-right, and the
+   corner decoration the top-right. */
+body.font-sans > .fixed.bottom-6.left-6 {
+  left: 50%; right: auto;
+  transform: translateX(-50%);
+  color: var(--aaif-n-400);
+}
+body.font-sans > .fixed.bottom-6.left-6 kbd {
+  background: var(--aaif-n-50) !important;
+  border-color: var(--aaif-n-300) !important;
+  color: var(--aaif-n-600);
+}
+
+@media print {
+  html, body { background: #ffffff !important; }
+  body.font-sans > .fixed.bottom-6.left-6 { display: none !important; }
+  .aaif-gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: var(--aaif-indigo) !important;
+    color: var(--aaif-indigo) !important;
+  }
+}
+</style>
