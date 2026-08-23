@@ -1,0 +1,39 @@
+---
+# Per-presentation Taskfile. Picked up automatically when `task start` runs
+# from this directory. Sets this deck's default brand pack; the root Taskfile
+# is included so all other tasks (stop, clean, generate-pdf, …) still work.
+#
+# This deck is the AAIF pack's reference gallery, so it pins BRANDING=aaif.
+# Unlike most decks it is NOT brand-swappable: it imports the pack's
+# AAIF-only slides.j2, so pointing it at another pack fails at import time.
+# The usual overrides still exist for decks that stick to primitives:
+#   BRANDING=unbranded task start         # via env
+#   task start -- --branding=zenable      # via CLI flag (wins over env)
+
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  # Default brand for this presentation. Shell env wins if already set.
+  BRANDING:
+    sh: echo "${BRANDING:-aaif}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start this presentation (default brand: aaif)"
+    cmds:
+      - task: root:start

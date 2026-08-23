@@ -1,0 +1,209 @@
+{# ================================================================
+   AAIF Presentation Template — reference gallery
+   ----------------------------------------------------------------
+   This deck is not a talk. It is the AAIF brand pack's living
+   reference: one slide per layout, each captioned with the macro
+   call that produced it. When you start a real AAIF deck, copy this
+   file, delete the slides you do not need, and replace the sample
+   copy.
+
+   It doubles as the pack's regression check. If a primitive breaks,
+   it breaks here first.
+
+   Run it:   cd presentations/aaif-template && task start
+
+   Every slide below goes through the brand pack — there is no raw
+   HTML and no hex code in this file.
+
+   This deck is AAIF-only, though, and deliberately so: it imports
+   slides.j2, which no other pack ships, so `BRANDING=unbranded task
+   start` fails at import rather than re-skinning. A deck that wants
+   to stay brand-swappable must import primitives.j2 and nothing
+   else. The slides marked "Primitive" below are the ones that would
+   survive that swap; the ones marked "AAIF layout" are the ones you
+   trade away for it.
+   ================================================================ #}
+
+{#- Brand pack. `branding` is injected by start.sh — never hardcode it. -#}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from   "modules/branding/" ~ branding ~ "/primitives.j2"
+   import  title_slide, section_divider, maturity_level, slide_heading,
+           callout, card, card_grid, pros_cons, pill_row,
+           code_block, step_flow %}
+{%- from   "modules/branding/" ~ branding ~ "/slides.j2"
+   import  content_slide, media_slide, split_slide, statement_slide,
+           stat_row, closing_slide %}
+
+
+{# ── 1. Cover, light ─────────────────────────────────────────────── #}
+{{ title_slide(
+     "AAIF Presentation Template",
+     "Every layout in the brand pack, with the macro that renders it.",
+     kicker="Agentic AI Foundation") }}
+
+
+{# ── 2. Cover, gradient ──────────────────────────────────────────── #}
+{{ title_slide(
+     "Same macro, inverted",
+     "title_slide(..., gradient=True) for the full-bleed variant.",
+     kicker="Cover B",
+     gradient=True) }}
+
+
+{# ── 3. Section divider ──────────────────────────────────────────── #}
+{{ section_divider(1, "Primitives",
+     "The nine macros every brand pack implements") }}
+
+
+{# ── 4. Card grid ────────────────────────────────────────────────── #}
+{% call content_slide(
+     "Card grid",
+     "card_grid(items, cols=3) — the default way to lay out three to six related points.",
+     label="Primitive") %}
+{{ card_grid([
+  {"title": "Accent: primary",   "body": "Indigo left rule. The brand's structural colour.",     "accent": "primary"},
+  {"title": "Accent: secondary", "body": "Coral left rule. Use it to mark the one thing that matters most.", "accent": "secondary"},
+  {"title": "Accent: success",   "body": "Green. Reserved for outcomes that went right.",         "accent": "success"},
+  {"title": "Accent: warning",   "body": "Amber. A caveat the audience has to carry forward.",    "accent": "warning"},
+  {"title": "Accent: danger",    "body": "Red. Something that actually breaks.",                  "accent": "danger"},
+  {"title": "Accent: neutral",   "body": "No colour. The default, and the right choice most of the time.", "accent": "neutral"},
+], cols=3) }}
+{% endcall %}
+
+
+{# ── 5. Pros and cons ────────────────────────────────────────────── #}
+{% call content_slide(
+     "Two-column tradeoffs",
+     "pros_cons(benefits, shortcomings) — a fixed shape, so the audience knows where to look.",
+     label="Primitive") %}
+{{ pros_cons(
+  [
+    {"title": "One contract",   "detail": "Nine macro signatures. A slide written once renders in any pack."},
+    {"title": "No hex codes",   "detail": "Shared slides name accents semantically; the pack resolves them."},
+    {"title": "Swap in a line", "detail": "The deck's Taskfile picks the brand. Nothing else changes."},
+  ],
+  [
+    {"title": "Contract drift", "detail": "Adding a primitive means updating every pack, not just yours."},
+    {"title": "Lowest common shape", "detail": "A layout only one brand can express does not belong in the contract."},
+  ]) }}
+{% endcall %}
+
+
+{# ── 6. Pills + callout ──────────────────────────────────────────── #}
+{% call content_slide(
+     "Pills and callouts",
+     "pill_row(items) for a vocabulary; callout(text, accent) to land the point.",
+     label="Primitive") %}
+{{ pill_row([
+  {"label": "primary",   "accent": "primary"},
+  {"label": "secondary", "accent": "secondary"},
+  {"label": "success",   "accent": "success"},
+  {"label": "warning",   "accent": "warning"},
+  {"label": "danger",    "accent": "danger"},
+  {"label": "info",      "accent": "info"},
+  {"label": "neutral",   "accent": "neutral"},
+]) }}
+{{ callout("Seven accent names. Every pack maps them to its own palette — that mapping is the whole abstraction.", "primary") }}
+{% endcall %}
+
+
+{# ── 7. Numbered steps ───────────────────────────────────────────── #}
+{% call content_slide(
+     "Step flow",
+     "step_flow(steps) — a sequence the audience has to follow in order.",
+     label="Primitive · AAIF-only") %}
+{{ step_flow([
+  {"title": "Pick a brand", "detail": "modules/branding/&lt;name&gt;/"},
+  {"title": "Import",       "detail": "theme.html.j2, then primitives.j2"},
+  {"title": "Compose",      "detail": "Call macros in slide order"},
+  {"title": "Render",       "detail": "task start"},
+]) }}
+{{ callout("step_flow() and code_block() are implemented here but still stubbed in the other three packs — keep them out of shared slides until those catch up.", "warning") }}
+{% endcall %}
+
+
+{# ── 8. Code block ───────────────────────────────────────────────── #}
+{% call content_slide(
+     "Code block",
+     "code_block(filename, lines) — a Mac-window card. Lines are escaped, so pass plain source.",
+     label="Primitive · AAIF-only") %}
+{{ code_block("presentations/my-deck/my-deck_modern_content.j2", [
+  '{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}',
+  '{%- from   "modules/branding/" ~ branding ~ "/primitives.j2"',
+  '   import  title_slide, section_divider, card_grid %}',
+  '',
+  '{{ title_slide("My Talk", "A subtitle") }}',
+  '{{ section_divider(1, "First act") }}',
+]) }}
+{% endcall %}
+
+
+{# ── 9. Maturity level ───────────────────────────────────────────── #}
+{{ maturity_level(3, "Enforced", "Guardrails run without asking",
+     "maturity_level(level, stage, title, subtitle) — the divider variant for staged models.") }}
+
+
+{# ── 10. Section divider ─────────────────────────────────────────── #}
+{{ section_divider(2, "AAIF layouts",
+     "Shapes from the source deck that live in this pack only") }}
+
+
+{# ── 11. Text + framed media ─────────────────────────────────────── #}
+{{ media_slide(
+     "Text beside media",
+     '<div style="display:flex;align-items:center;justify-content:center;height:100%;'
+     'background:var(--aaif-n-50);color:var(--aaif-n-400);font-size:14px;">'
+     'your &lt;img&gt;, &lt;svg&gt;, or &lt;iframe&gt; here</div>',
+     subtitle="media_slide(title, media, …) reproduces the rounded indigo frame from slide 3 of the source deck.",
+     label="AAIF layout",
+     body="<p>Pass <code>media</code> as raw HTML. The frame keeps its aspect ratio, "
+          "so a screenshot and a diagram sit at the same size across the deck.</p>") }}
+
+
+{# ── 12. Split ───────────────────────────────────────────────────── #}
+{{ split_slide(
+     "Split columns",
+     card("Left column", "Any HTML. Cards, a code block, or prose.", "primary"),
+     card("Right column", "The two sides are independent — this is not pros_cons().", "secondary"),
+     left_label="Before",
+     right_label="After",
+     subtitle="split_slide(title, left, right, …) for comparisons that are not a value judgement.",
+     label="AAIF layout") }}
+
+
+{# ── 13. Statement ───────────────────────────────────────────────── #}
+{{ statement_slide(
+     "A slide with one sentence on it is doing more work than a slide with six.",
+     attribution="statement_slide(text, attribution) · gradient by default") }}
+
+
+{# ── 14. Stats ───────────────────────────────────────────────────── #}
+{{ stat_row([
+     {"value": "4",  "label": "brand packs in the repo"},
+     {"value": "9",  "label": "contract primitives"},
+     {"value": "18", "label": "layouts in the source deck"},
+   ],
+   title="By the numbers",
+   subtitle="stat_row(items, title=…) — values pick up the brand gradient on light slides.",
+   label="AAIF layout") }}
+
+
+{# ── 15. Gradient content slide ──────────────────────────────────── #}
+{% call content_slide(
+     "Any layout inverts",
+     "Pass gradient=True to put a content slide on the full-bleed gradient. Cards and pills restyle themselves.",
+     label="AAIF layout",
+     gradient=True) %}
+{{ card_grid([
+  {"title": "Cards", "body": "Translucent over the gradient instead of white-on-white.", "accent": "primary"},
+  {"title": "Pills", "body": "Outlined in white rather than in the accent colour.",       "accent": "secondary"},
+  {"title": "Type",  "body": "Headings go white; body copy drops to 88% white.",          "accent": "neutral"},
+], cols=3) }}
+{% endcall %}
+
+
+{# ── 16. Closing ─────────────────────────────────────────────────── #}
+{{ closing_slide([
+  "aaif.io",
+  "modules/branding/aaif/README.md",
+]) }}

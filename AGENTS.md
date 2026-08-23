@@ -59,6 +59,9 @@ Currently shipped:
 - `sans-cloud/` — the SANS Cloud Security webcast skin (orange/teal, header bar, series-overview/CSE-summit slides). Used by `2026-03`, `2026-05`, `2026-06` decks.
 - `zenable/` — Tailwind-based; reuses Zenable color tokens from `modules/shared/tailwind.config.js`. Delegates several primitives to the long-standing macros in `modules/shared/components/modern_macros.j2`.
 - `unbranded/` — neutral system-font skin, no corporate colors. For talks that should carry no employer/sponsor branding.
+- `aaif/` — Agentic AI Foundation. The only **light** pack: white slides, `#5765FF → #FF702D` gradient dividers, Instrument Sans. Tokens are lifted verbatim from aaif.io; layout offsets are derived from the official Google Slides template's EMU canvas. Ships an extra `slides.j2` of AAIF-only layouts and a `logo-sprite.html.j2`. Reference gallery: `presentations/aaif-template`.
+
+Because `aaif` is light, it has to override the dark assumptions baked into `modules/shared/modern_template.j2` — the `<body>` classes, the teal nav dots, and the `#0B1120` print background. Those overrides are quarantined in an "engine overrides" block at the bottom of its `theme.html.j2`. If the wrapper ever grows real brand hooks, that block is what goes away.
 
 ### Shared slides live in `modules/<topic>/<slide>.j2`
 
@@ -94,12 +97,14 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `card_grid(items, cols=3)` | Grid of cards. Each item: `{title, body, accent}` |
 | `pros_cons(benefits, shortcomings, ben_label, short_label)` | Two-column ✓ / ✗ list. Each item: `{title, detail}` |
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
-| `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
-| `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
+| `code_block(filename, lines)` | Mac-window code card *(`aaif` only)* |
+| `step_flow(steps)` | Horizontal numbered steps *(`aaif` only)* |
 | `pipe(stages)` | Pipeline diagram with stage cards *(not yet implemented)* |
 | `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented)* |
 
-The four "not yet implemented" primitives are stubbed in each brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
+`pipe` and `ide_mockup` are stubbed in every brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
+
+`code_block` and `step_flow` exist **only in the `aaif` pack** and are still stubs in the other three. Call them from AAIF-specific slides if you like, but a shared slide under `modules/<topic>/` that calls them would render nothing under the other packs and break the "same content, swap brand" guarantee. Before promoting either one to shared use, implement it in `sans-cloud`, `zenable`, and `unbranded` and clear the "aaif only" note above.
 
 ### Accent vocabulary (semantic, not color)
 
@@ -175,6 +180,7 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - **Brand resolution wired through `start.sh`.** Respects `BRANDING` env var → CLI `--branding=` → per-deck `Taskfile.yml` → engine default. The resolved value is passed into Jinja as `branding` and validated against `modules/branding/<name>/` existence.
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
   - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
+  - **The `aaif` pack is the first one built primitives-first.** It ships no `vis-*` compatibility layer, so nothing renders through it except slides written against the contract. `presentations/aaif-template` is its reference gallery and doubles as a regression check on the primitives. It is the closest thing the repo has to a proof that the contract is sufficient — and it is currently the only pack for which that is true.
 
 - **Not done**
   - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.

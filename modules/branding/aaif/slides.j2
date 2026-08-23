@@ -1,0 +1,145 @@
+{# ================================================================
+   Agentic AI Foundation (AAIF) — brand-specific slide layouts
+   ----------------------------------------------------------------
+   These are the layout variants from the "AAIF Presentation
+   Template" Google Slides deck that are too specific to the brand to
+   belong in the shared primitive contract. They live here for the
+   same reason sans-cloud keeps title-slide.html.j2 and
+   cse-summit-slide.html.j2 in its own pack.
+
+   The workhorse is content_slide(), used as a Jinja call block:
+
+     {%+ call content_slide("Context", "How agents see your project") %}
+       {{ card_grid(items, cols=3) }}
+     {%+ endcall %}
+
+   Everything inside the call becomes the slide body; the heading,
+   gradient rule, corner decoration, footer lockup, and page number
+   are supplied for you. Reach for content_slide() before writing a
+   bare <section> — hand-rolled sections drift out of alignment with
+   the rest of the deck the moment a chrome offset changes.
+   ================================================================ #}
+
+{# chrome() and cover_logo() are AAIF-only helpers, not contract
+   primitives — they exist so these layouts and primitives.j2 emit
+   byte-identical slide furniture. #}
+{%- from "modules/branding/aaif/primitives.j2" import
+    slide_heading, chrome, cover_logo
+-%}
+
+
+{# ── the workhorse ────────────────────────────────────────────────
+   A standard content slide: heading block on top, caller's body
+   below. Set gradient=True to invert to the full-bleed gradient.
+   Set deco=False when the corner circle would collide with content
+   that reaches the top-right of the slide. #}
+{%- macro content_slide(title, subtitle="", label="", gradient=False, deco=True, data_label="") -%}
+<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="{{ data_label or title }}">
+  {{ chrome(deco=deco and not gradient) }}
+  {{ slide_heading(label, title, subtitle) }}
+  <div class="aaif-body">{{ caller() }}</div>
+</section>
+{%- endmacro -%}
+
+
+{# ── text + framed media ──────────────────────────────────────────
+   Deck slides 3 and 4: copy on the left, a rounded indigo-outlined
+   frame on the right. `media` is raw HTML — an <img>, an inline
+   <svg>, or an <iframe>. The corner decoration sits behind the frame
+   exactly as it does in the source deck, so it stays on. #}
+{%- macro media_slide(title, media, subtitle="", label="", body="", gradient=False, ratio="4 / 3") -%}
+<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="{{ title }}">
+  {{ chrome(deco=not gradient) }}
+  <div class="aaif-body" style="display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;">
+    <div>
+      {{ slide_heading(label, title, subtitle) }}
+      {%- if body %}<div class="aaif-card-body" style="font-size:var(--aaif-fs-md); line-height:var(--aaif-lh-md);">{{ body|safe }}</div>{% endif %}
+    </div>
+    <div class="aaif-frame" style="aspect-ratio:{{ ratio }};">{{ media|safe }}</div>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{# ── two-column split ─────────────────────────────────────────────
+   For side-by-side comparisons that are not pros/cons. Both columns
+   are raw HTML so either side can hold cards, a code block, or prose. #}
+{%- macro split_slide(title, left, right, left_label="", right_label="", subtitle="", label="", gradient=False) -%}
+<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="{{ title }}">
+  {{ chrome(deco=not gradient) }}
+  {{ slide_heading(label, title, subtitle) }}
+  <div class="aaif-body" style="display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:start;">
+    <div>
+      {%- if left_label %}<p class="aaif-label">{{ left_label }}</p>{% endif %}
+      {{ left|safe }}
+    </div>
+    <div>
+      {%- if right_label %}<p class="aaif-label">{{ right_label }}</p>{% endif %}
+      {{ right|safe }}
+    </div>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{# ── statement / pull quote ───────────────────────────────────────
+   One sentence, set large, nothing else. Use it to slow the room
+   down between dense slides. #}
+{%- macro statement_slide(text, attribution="", gradient=True) -%}
+<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="{{ text|striptags|truncate(40, True, '…') }}">
+  {{ chrome(deco=not gradient) }}
+  <div class="aaif-body" style="align-items:center; text-align:center;">
+    <p class="aaif-title aaif-title--display" style="max-width:22ch; margin:0 auto;">{{ text|safe }}</p>
+    {%- if attribution %}<p class="aaif-subtitle" style="margin:22px auto 0; text-align:center;">{{ attribution|safe }}</p>{% endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{# ── big-number row ───────────────────────────────────────────────
+   Each item: {value, label}. Values render in the brand gradient on
+   light slides and flat white on gradient slides. #}
+{%- macro stat_row(items, title="", subtitle="", label="", gradient=False) -%}
+<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="{{ title or 'By the numbers' }}">
+  {{ chrome(deco=not gradient) }}
+  {%- if title %}{{ slide_heading(label, title, subtitle) }}{% endif %}
+  <div class="aaif-body">
+    <div style="display:grid; grid-template-columns:repeat({{ items|length }},minmax(0,1fr)); gap:28px; text-align:center;">
+      {%- for item in items %}
+      <div>
+        <div class="{{ '' if gradient else 'aaif-gradient-text' }}"
+             style="font-size:var(--aaif-fs-hero); line-height:1.05; font-weight:700; letter-spacing:-0.03em;{{ ' color:#fff;' if gradient }}">{{ item.value }}</div>
+        <div class="aaif-card-body" style="margin-top:8px;">{{ item.label|safe }}</div>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{# ── closing slide ────────────────────────────────────────────────
+   Deck slide 18: the lockup centred on white, nothing else. Optional
+   contact lines sit beneath it. #}
+{%- macro closing_slide(lines=[], gradient=False) -%}
+<section class="slide aaif-slide aaif-slide--nobar {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
+         data-label="Thank you">
+  {{ chrome(deco=False, page=False, logo=False) }}
+  <div class="aaif-body" style="align-items:center; text-align:center;">
+    <svg style="width:46%; min-width:320px; aspect-ratio:838/203; color:{{ '#fff' if gradient else 'var(--aaif-ink)' }};"
+         aria-label="Agentic AI Foundation"><use href="#aaif-logo"/></svg>
+    {%- if lines %}
+    <div style="margin-top:34px; display:flex; flex-direction:column; gap:6px;">
+      {%- for line in lines %}
+      <p class="aaif-subtitle" style="margin:0; text-align:center;{{ ' color:rgba(255,255,255,0.9);' if gradient }}">{{ line|safe }}</p>
+      {%- endfor %}
+    </div>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
