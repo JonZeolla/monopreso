@@ -1,145 +1,804 @@
 {# ================================================================
    Agentic AI Foundation (AAIF) — brand-specific slide layouts
    ----------------------------------------------------------------
-   These are the layout variants from the "AAIF Presentation
-   Template" Google Slides deck that are too specific to the brand to
-   belong in the shared primitive contract. They live here for the
-   same reason sans-cloud keeps title-slide.html.j2 and
+   Every layout in the official "AAIF Presentation Template" Google
+   Slides deck, in source order. These are too specific to the brand
+   to belong in the shared primitive contract, so they live here for
+   the same reason sans-cloud keeps title-slide.html.j2 and
    cse-summit-slide.html.j2 in its own pack.
+
+   Source-deck map — reach for the layout, not a bare <section>:
+
+     p1   event_cover()      cover with host / member logo slots
+     p2   welcome_slide()    doors-open slide, speakers + host chips
+     p3   facts_slide()      prose left, big-number rail right
+     p4   stat_band()        three headline words + mono captions
+     p5   media_slide()      title, stat rail, framed media
+     p6   section_divider()  oversized numeral    (in primitives.j2)
+     p7   agenda_slide()     numbered run-of-show columns
+     p8   speakers_slide()   three speaker cards
+     p9   talk_slide()       numeral + pull-quote + speaker
+     p10  feature_slide()    full-bleed statement, any tone
+     p11  lineup_slide()     numbered rows: person + quote
+     p12  thanks_slide()     host + member wall
+     p13  join_slide()       links + QR, dark
+     p16  section_divider()  appendix opener      (in primitives.j2)
+     p17  chapter_cover()    one word, nothing else
+     p18  table_slide()      run-of-show table
+     p19  columns_slide()    two-column prose
+     p20  quote_slide()      pull quote + attribution
+     p21  stat_callouts()    three big numbers
+     p22  chart_slide()      bar chart
+     p23  timeline_slide()   four-stop event timeline
 
    The workhorse is content_slide(), used as a Jinja call block:
 
-     {%+ call content_slide("Context", "How agents see your project") %}
+     {% call content_slide("Context", "How agents see your project",
+                           label="Part 1", eyebrow="01 · CONTEXT") %}
        {{ card_grid(items, cols=3) }}
-     {%+ endcall %}
+     {% endcall %}
 
    Everything inside the call becomes the slide body; the heading,
-   gradient rule, corner decoration, footer lockup, and page number
-   are supplied for you. Reach for content_slide() before writing a
-   bare <section> — hand-rolled sections drift out of alignment with
-   the rest of the deck the moment a chrome offset changes.
+   logo, eyebrow, footer hairline, footer link, and page number are
+   supplied for you.
+
+   ── Geometry ─────────────────────────────────────────────────────
+   Layouts position content in percentages taken straight from the
+   source deck's EMU offsets, and size type as `calc(N * var(--pt))`
+   where N is the deck's point size. `--pt` is an absolute length
+   (1/720 of the stage width), so it is correct for vertical offsets
+   too. Keep both conventions when adding a layout — they are the
+   reason this pack lines up with the original.
    ================================================================ #}
 
-{# chrome() and cover_logo() are AAIF-only helpers, not contract
-   primitives — they exist so these layouts and primitives.j2 emit
-   byte-identical slide furniture. #}
+{# chrome(), cover_logo() and avatar() are AAIF-only helpers, not
+   contract primitives — they exist so these layouts and
+   primitives.j2 emit byte-identical slide furniture. #}
 {%- from "modules/branding/aaif/primitives.j2" import
-    slide_heading, chrome, cover_logo
+    slide_heading, chrome, cover_logo, avatar, card
 -%}
 
 
 {# ── the workhorse ────────────────────────────────────────────────
-   A standard content slide: heading block on top, caller's body
-   below. Set gradient=True to invert to the full-bleed gradient.
-   Set deco=False when the corner circle would collide with content
-   that reaches the top-right of the slide. #}
-{%- macro content_slide(title, subtitle="", label="", gradient=False, deco=True, data_label="") -%}
-<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="{{ data_label or title }}">
-  {{ chrome(deco=deco and not gradient) }}
-  {{ slide_heading(label, title, subtitle) }}
-  <div class="aaif-body">{{ caller() }}</div>
+   A standard content slide: heading block on its usual rows, the
+   caller's body below. `top` overrides where the body starts for
+   layouts that need more or less headroom; `tone` takes
+   "light" | "navy" | "dark" | "gradient". #}
+{%- macro content_slide(title, subtitle="", label="", eyebrow="", tone="", top="", gradient=False, data_label="", foot="aaif.io / events") -%}
+{%- set t = "gradient" if gradient else (tone or "light") -%}
+{#- a subtitle occupies the row the body would otherwise start on -#}
+{%- set body_top = top or ("38.5%" if subtitle else "33.78%") -%}
+<section class="slide aaif-slide aaif-slide--{{ t }}" data-label="{{ data_label or title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label, foot=foot) }}
+    {{ slide_heading(label, title, subtitle) }}
+    <div class="aaif-body" style="--top:{{ body_top }};">{{ caller() }}</div>
+  </div></div>
 </section>
 {%- endmacro -%}
 
 
-{# ── text + framed media ──────────────────────────────────────────
-   Deck slides 3 and 4: copy on the left, a rounded indigo-outlined
-   frame on the right. `media` is raw HTML — an <img>, an inline
-   <svg>, or an <iframe>. The corner decoration sits behind the frame
-   exactly as it does in the source deck, so it stays on. #}
-{%- macro media_slide(title, media, subtitle="", label="", body="", gradient=False, ratio="4 / 3") -%}
-<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="{{ title }}">
-  {{ chrome(deco=not gradient) }}
-  <div class="aaif-body" style="display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center;">
-    <div>
-      {{ slide_heading(label, title, subtitle) }}
-      {%- if body %}<div class="aaif-card-body" style="font-size:var(--aaif-fs-md); line-height:var(--aaif-lh-md);">{{ body|safe }}</div>{% endif %}
+{# ── p1 · event cover ─────────────────────────────────────────────
+   The deck's opening slide: big lockup, rule, kicker, hero title,
+   subtitle, date line, second rule, then a row of outlined logo
+   slots. `hosts` and `members` are lists of strings; `with_label`
+   is the small mono word between the two groups. #}
+{%- macro event_cover(title, subtitle="", kicker="", meta="", eyebrow="",
+                      hosted_label="Hosted by", hosts=[], with_label="", members=[],
+                      footer="AAIF.IO / COMMUNITY") -%}
+<section class="slide aaif-slide aaif-slide--light aaif-slide--nonumber" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ cover_logo() }}
+    {%- if eyebrow %}<div class="aaif-eyebrow" style="top:5.51%; font-size:calc(8.5 * var(--pt));">{{ eyebrow }}</div>{% endif %}
+    <div class="aaif-hairline" style="top:16.89%; left:5.5%; width:89%;"></div>
+
+    {%- if kicker %}
+    <div class="aaif-label" style="position:absolute; left:5.5%; top:calc(26.67% + 3.6 * var(--pt)); font-size:calc(10 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
+    {%- endif %}
+    <h1 class="aaif-title aaif-title--hero" style="position:absolute; left:5.1%; right:5%; top:calc(32.89% + 3.6 * var(--pt));">{{ title|safe }}</h1>
+    {%- if subtitle %}
+    <p class="aaif-title" style="position:absolute; left:5.5%; right:5%; top:calc(54.22% + 3.6 * var(--pt)); font-size:calc(20 * var(--pt)); color:var(--aaif-muted);">{{ subtitle|safe }}</p>
+    {%- endif %}
+    {%- if meta %}
+    <p class="aaif-mono" style="position:absolute; left:5.5%; right:5%; top:calc(64.36% + 3.6 * var(--pt)); font-size:calc(14 * var(--pt)); font-weight:700;">{{ meta|safe }}</p>
+    {%- endif %}
+
+    {%- if hosts or members %}
+    <div class="aaif-hairline" style="top:76.44%; left:5.5%; width:89%;"></div>
+    <div style="position:absolute; left:5.5%; right:5.5%; top:79.64%; height:7.47%;
+                display:flex; align-items:center; gap:calc(9 * var(--pt));">
+      {%- if hosted_label %}<span class="aaif-label aaif-label--sm" style="flex:0 0 15.17%;">{{ hosted_label|upper }}</span>{% endif %}
+      {%- for h in hosts %}<span class="aaif-chip" style="flex:0 0 20.79%; align-self:stretch;">{{ h }}</span>{% endfor %}
+      {%- if with_label %}<span class="aaif-label aaif-label--sm" style="flex:0 0 7.87%; padding-left:calc(6 * var(--pt));">{{ with_label|upper }}</span>{% endif %}
+      {%- for m in members %}<span class="aaif-chip" style="flex:0 0 19.1%; align-self:stretch;">{{ m }}</span>{% endfor %}
     </div>
-    <div class="aaif-frame" style="aspect-ratio:{{ ratio }};">{{ media|safe }}</div>
-  </div>
+    {%- endif %}
+
+    {%- if footer %}<div class="aaif-foot" style="right:5.5%; text-align:right; top:91.02%; font-size:calc(9 * var(--pt));">{{ footer }}</div>{% endif %}
+  </div></div>
 </section>
 {%- endmacro -%}
 
 
-{# ── two-column split ─────────────────────────────────────────────
-   For side-by-side comparisons that are not pros/cons. Both columns
-   are raw HTML so either side can hold cards, a code block, or prose. #}
-{%- macro split_slide(title, left, right, left_label="", right_label="", subtitle="", label="", gradient=False) -%}
-<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="{{ title }}">
-  {{ chrome(deco=not gradient) }}
-  {{ slide_heading(label, title, subtitle) }}
-  <div class="aaif-body" style="display:grid; grid-template-columns:1fr 1fr; gap:34px; align-items:start;">
-    <div>
-      {%- if left_label %}<p class="aaif-label">{{ left_label }}</p>{% endif %}
-      {{ left|safe }}
-    </div>
-    <div>
-      {%- if right_label %}<p class="aaif-label">{{ right_label }}</p>{% endif %}
-      {{ right|safe }}
-    </div>
-  </div>
-</section>
-{%- endmacro -%}
+{# ── p2 · welcome ─────────────────────────────────────────────────
+   Doors-open slide. `title` takes inline <em> for the italic half.
+   `people` is a list of {name, role, photo}; `chips` is the row of
+   outlined host / member slots along the bottom. #}
+{%- macro welcome_slide(title, kicker="", meta="", people=[], people_label="",
+                        chips=[], chips_label="Hosted by", eyebrow="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow) }}
+    {%- if kicker %}
+    <div class="aaif-label" style="position:absolute; left:5%; right:5%; top:calc(15.11% + 3.6 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
+    {%- endif %}
+    <h1 class="aaif-title" style="position:absolute; left:5%; right:4%; top:calc(21.33% + 3.6 * var(--pt)); font-size:calc(40 * var(--pt)); line-height:1.15;">{{ title|safe }}</h1>
+    {%- if meta %}
+    <p class="aaif-mono" style="position:absolute; left:5%; right:5%; top:calc(46.58% + 3.6 * var(--pt)); font-size:calc(10.5 * var(--pt));">{{ meta|safe }}</p>
+    {%- endif %}
 
-
-{# ── statement / pull quote ───────────────────────────────────────
-   One sentence, set large, nothing else. Use it to slow the room
-   down between dense slides. #}
-{%- macro statement_slide(text, attribution="", gradient=True) -%}
-<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="{{ text|striptags|truncate(40, True, '…') }}">
-  {{ chrome(deco=not gradient) }}
-  <div class="aaif-body" style="align-items:center; text-align:center;">
-    <p class="aaif-title aaif-title--display" style="max-width:22ch; margin:0 auto;">{{ text|safe }}</p>
-    {%- if attribution %}<p class="aaif-subtitle" style="margin:22px auto 0; text-align:center;">{{ attribution|safe }}</p>{% endif %}
-  </div>
-</section>
-{%- endmacro -%}
-
-
-{# ── big-number row ───────────────────────────────────────────────
-   Each item: {value, label}. Values render in the brand gradient on
-   light slides and flat white on gradient slides. #}
-{%- macro stat_row(items, title="", subtitle="", label="", gradient=False) -%}
-<section class="slide aaif-slide {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="{{ title or 'By the numbers' }}">
-  {{ chrome(deco=not gradient) }}
-  {%- if title %}{{ slide_heading(label, title, subtitle) }}{% endif %}
-  <div class="aaif-body">
-    <div style="display:grid; grid-template-columns:repeat({{ items|length }},minmax(0,1fr)); gap:28px; text-align:center;">
-      {%- for item in items %}
-      <div>
-        <div class="{{ '' if gradient else 'aaif-gradient-text' }}"
-             style="font-size:var(--aaif-fs-hero); line-height:1.05; font-weight:700; letter-spacing:-0.03em;{{ ' color:#fff;' if gradient }}">{{ item.value }}</div>
-        <div class="aaif-card-body" style="margin-top:8px;">{{ item.label|safe }}</div>
+    {%- if people %}
+    {%- if people_label %}
+    <div class="aaif-label aaif-label--green" style="position:absolute; left:5%; top:calc(53.69% + 3.6 * var(--pt)); height:auto; margin:0;">{{ people_label }}</div>
+    {%- endif %}
+    <div style="position:absolute; left:5%; right:5%; top:59.38%;
+                display:grid; grid-template-columns:repeat({{ people|length }},minmax(0,1fr)); gap:calc(12 * var(--pt));">
+      {%- for p in people %}
+      <div style="display:flex; align-items:center; gap:calc(12 * var(--pt));">
+        {{ avatar("calc(44.6 * var(--pt))", p.photo | default("")) }}
+        <div>
+          <p style="font-family:var(--aaif-body); font-weight:700; font-size:calc(13 * var(--pt)); margin:0; letter-spacing:-0.01em;">{{ p.name }}</p>
+          <p class="aaif-label aaif-label--sm" style="font-size:calc(7.5 * var(--pt)); margin-top:calc(4 * var(--pt));">{{ p.role|upper }}</p>
+        </div>
       </div>
       {%- endfor %}
     </div>
-  </div>
+    {%- endif %}
+
+    {%- if chips %}
+    {%- if chips_label %}
+    <div class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(75.38% + 3.6 * var(--pt));">{{ chips_label|upper }}</div>
+    {%- endif %}
+    <div style="position:absolute; left:5%; right:5%; top:80.71%; height:6.76%; display:flex; gap:calc(11 * var(--pt));">
+      {%- for c in chips %}<span class="aaif-chip" style="flex:1 1 0; font-size:calc(9 * var(--pt));">{{ c }}</span>{% endfor %}
+    </div>
+    {%- endif %}
+  </div></div>
 </section>
 {%- endmacro -%}
 
 
-{# ── closing slide ────────────────────────────────────────────────
-   Deck slide 18: the lockup centred on white, nothing else. Optional
-   contact lines sit beneath it. #}
-{%- macro closing_slide(lines=[], gradient=False) -%}
-<section class="slide aaif-slide aaif-slide--nobar {{ 'aaif-slide--gradient' if gradient else 'aaif-slide--light' }}"
-         data-label="Thank you">
-  {{ chrome(deco=False, page=False, logo=False) }}
-  <div class="aaif-body" style="align-items:center; text-align:center;">
-    <svg style="width:46%; min-width:320px; aspect-ratio:838/203; color:{{ '#fff' if gradient else 'var(--aaif-ink)' }};"
-         aria-label="Agentic AI Foundation"><use href="#aaif-logo"/></svg>
-    {%- if lines %}
-    <div style="margin-top:34px; display:flex; flex-direction:column; gap:6px;">
-      {%- for line in lines %}
-      <p class="aaif-subtitle" style="margin:0; text-align:center;{{ ' color:rgba(255,255,255,0.9);' if gradient }}">{{ line|safe }}</p>
+{# ── p3 · prose + number rail ─────────────────────────────────────
+   Body copy on the left, right-aligned headline figures on the
+   right. `facts` is a list of {value, label}. The optional
+   `highlight` block underneath is the deck's "THE PROJECTS" row. #}
+{%- macro facts_slide(title, body, facts=[], label="", eyebrow="",
+                      highlight="", highlight_label="", footnote="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title aaif-title--lg">{{ title|safe }}</div>
+    </div>
+
+    <p class="aaif-body-text" style="position:absolute; left:5%; width:71.33%; top:calc(34.67% + 3.6 * var(--pt)); line-height:1.42;">{{ body|safe }}</p>
+
+    {%- if highlight %}
+    {%- if highlight_label %}
+    <div class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(63.11% + 3.6 * var(--pt));">{{ highlight_label|upper }}</div>
+    {%- endif %}
+    <p style="position:absolute; left:5%; width:60%; top:calc(68.44% + 3.6 * var(--pt)); font-family:var(--aaif-body); font-weight:700; font-size:calc(14 * var(--pt)); margin:0; letter-spacing:-0.01em;">{{ highlight|safe }}</p>
+    {%- endif %}
+    {%- if footnote %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; width:70%; top:calc(76.44% + 3.6 * var(--pt)); font-size:calc(9 * var(--pt));">{{ footnote|upper }}</p>
+    {%- endif %}
+
+    {%- for f in facts %}
+    {%- set base = 38.22 + loop.index0 * 16.36 %}
+    <div class="aaif-stat-value aaif-stat-value--md" style="position:absolute; right:5%; width:28%; top:calc({{ base }}% + 3.6 * var(--pt)); text-align:right;">{{ f.value }}</div>
+    <div class="aaif-label aaif-label--sm" style="position:absolute; right:5%; width:28%; top:calc({{ base + 9.6 }}% + 3.6 * var(--pt)); text-align:right;">{{ f.label|upper }}</div>
+    {%- endfor %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p4 · headline band ───────────────────────────────────────────
+   Three short words set large with mono captions beneath, then an
+   optional row of people and a closing line. Fragment-free: this
+   emits a whole slide. `items` is a list of {value, label}. #}
+{%- macro stat_band(title, items, label="", eyebrow="", people=[], people_label="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title aaif-title--lg">{{ title|safe }}</div>
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:calc(36.44% + 3.6 * var(--pt));
+                display:grid; grid-template-columns:repeat({{ items|length }},minmax(0,1fr)); gap:calc(16 * var(--pt));">
+      {%- for i in items %}
+      <div>
+        <div class="aaif-stat-value aaif-stat-value--sm">{{ i.value }}</div>
+        <div class="aaif-label aaif-label--sm" style="margin-top:calc(9 * var(--pt));">{{ i.label|upper }}</div>
+      </div>
+      {%- endfor %}
+    </div>
+
+    {%- if people %}
+    {%- if people_label %}
+    <div class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(56% + 3.6 * var(--pt));">{{ people_label|upper }}</div>
+    {%- endif %}
+    <div style="position:absolute; left:5%; right:5%; top:62.22%;
+                display:grid; grid-template-columns:repeat({{ people|length }},minmax(0,1fr)); gap:calc(16 * var(--pt));">
+      {%- for p in people %}
+      <div style="display:flex; align-items:center; gap:calc(12 * var(--pt));">
+        {{ avatar("calc(44.6 * var(--pt))", p.photo | default("")) }}
+        <div>
+          <p style="font-family:var(--aaif-body); font-weight:700; font-size:calc(13 * var(--pt)); margin:0; letter-spacing:-0.01em;">{{ p.name }}</p>
+          <p class="aaif-label aaif-label--sm" style="font-size:calc(7.5 * var(--pt)); margin-top:calc(4 * var(--pt));">{{ p.role|upper }}</p>
+        </div>
+      </div>
       {%- endfor %}
     </div>
     {%- endif %}
-  </div>
+
+    {%- if note %}
+    <p class="aaif-body-text" style="position:absolute; left:5%; right:5%; top:calc(80% + 3.6 * var(--pt)); font-size:calc(11 * var(--pt));">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p5 · text + framed media ─────────────────────────────────────
+   Copy and an optional stat rail on the left, a framed visual on the
+   right. `media` is raw HTML — an <img>, an inline <svg>, or an
+   <iframe>. `facts` is a list of {value, label}. #}
+{%- macro media_slide(title, media, subtitle="", label="", eyebrow="", body="",
+                      facts=[], note="", gradient=False, tone="light", ratio="", framed=True) -%}
+{%- set t = "gradient" if gradient else tone -%}
+<section class="slide aaif-slide aaif-slide--{{ t }}" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head" style="right:62%;">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+      {%- if subtitle %}<div class="aaif-lead" style="margin-top:calc(6 * var(--pt));">{{ subtitle|safe }}</div>{% endif %}
+    </div>
+
+    {# The source deck bleeds a transparent PNG into this area. `ratio`
+       pins a fixed aspect instead; without it the panel fills the space
+       between the heading row and the footer rule, which is what a
+       screenshot or an <iframe> usually wants. #}
+    <div class="{{ 'aaif-frame' if framed else '' }}"
+         style="position:absolute; right:5.5%; top:24%; width:56%;
+                {% if ratio %}aspect-ratio:{{ ratio }};{% else %}bottom:13%;{% endif %}">{{ media|safe }}</div>
+
+    {%- for f in facts %}
+    {%- set base = 38.22 + loop.index0 * 15.11 %}
+    <div class="aaif-stat-value aaif-stat-value--md" style="position:absolute; left:5%; top:calc({{ base }}% + 3.6 * var(--pt));">{{ f.value }}</div>
+    <div class="aaif-label aaif-label--sm" style="position:absolute; left:5.2%; top:calc({{ base + 9.25 }}% + 3.6 * var(--pt));">{{ f.label|upper }}</div>
+    {%- endfor %}
+
+    {%- if body %}
+    <div class="aaif-body-text" style="position:absolute; left:5%; width:44%; top:calc(36.44% + 3.6 * var(--pt));">{{ body|safe }}</div>
+    {%- endif %}
+    {%- if note %}
+    <p class="aaif-body-text" style="position:absolute; left:5%; width:33%; top:calc(81.78% + 3.6 * var(--pt)); font-style:italic; font-size:calc(10 * var(--pt));">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p7 · agenda ──────────────────────────────────────────────────
+   Numbered outlined circles across the slide, each with a mono time
+   line, a bold title and a short body. `items` is a list of
+   {time, title, detail}. #}
+{%- macro agenda_slide(title, items, label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:36.44%;
+                display:grid; grid-template-columns:repeat({{ items|length }},minmax(0,1fr)); gap:calc(6.7 * var(--pt));">
+      {%- for i in items %}
+      <div>
+        <div class="aaif-circle" style="width:calc(30.2 * var(--pt));">{{ loop.index }}</div>
+        <p class="aaif-label aaif-label--sm" style="font-size:calc(8 * var(--pt)); margin-top:calc(13 * var(--pt)); text-transform:none;">{{ i.time }}</p>
+        <p class="aaif-card-title" style="font-size:calc(11 * var(--pt)); line-height:1.227; margin-top:calc(6 * var(--pt));">{{ i.title|safe }}</p>
+        {%- if i.detail %}<p class="aaif-card-body" style="font-size:calc(9 * var(--pt)); line-height:1.333; margin-top:calc(5 * var(--pt));">{{ i.detail|safe }}</p>{% endif %}
+      </div>
+      {%- endfor %}
+    </div>
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(83.91% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p8 · speaker cards ───────────────────────────────────────────
+   `people` is a list of {tag, name, role, quote, photo}. #}
+{%- macro speakers_slide(title, people, label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:calc(35.56% + 3.6 * var(--pt));
+                display:grid; grid-template-columns:repeat({{ people|length }},minmax(0,1fr)); gap:calc(16 * var(--pt));">
+      {%- for p in people %}
+      <div>
+        {%- if p.tag %}<p class="aaif-label aaif-label--sm">{{ p.tag|upper }}</p>{% endif %}
+        <div style="margin-top:calc(9 * var(--pt));">{{ avatar("calc(56.2 * var(--pt))", p.photo | default("")) }}</div>
+        <p class="aaif-card-title" style="font-size:calc(14 * var(--pt)); margin-top:calc(15 * var(--pt));">{{ p.name }}</p>
+        <p class="aaif-label aaif-label--sm" style="font-size:calc(8 * var(--pt)); margin-top:calc(5 * var(--pt));">{{ p.role|upper }}</p>
+        {%- if p.quote %}
+        <p class="aaif-card-body" style="font-style:italic; font-size:calc(10 * var(--pt)); line-height:1.3; margin-top:calc(12 * var(--pt));">{{ p.quote|safe }}</p>
+        {%- endif %}
+      </div>
+      {%- endfor %}
+    </div>
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(84.98% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p9 · talk opener ─────────────────────────────────────────────
+   Oversized numeral, mono slug, the talk title as a pull quote, and
+   the speaker along the bottom. #}
+{%- macro talk_slide(quote, name, role="", numeral="01", slug="", photo="", eyebrow="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ name }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or slug) }}
+    {%- if numeral %}<div class="aaif-numeral" style="font-size:calc(92 * var(--pt));">{{ numeral }}</div>{% endif %}
+    {%- if slug %}
+    <div class="aaif-label" style="position:absolute; left:5%; width:65%; top:calc(30.22% + 3.6 * var(--pt)); height:auto; margin:0;">{{ slug|upper }}</div>
+    {%- endif %}
+    <p class="aaif-title" style="position:absolute; left:5%; width:64.5%; top:calc(36.44% + 3.6 * var(--pt)); font-size:calc(26 * var(--pt)); line-height:1.231;">{{ quote|safe }}</p>
+
+    <div style="position:absolute; left:5%; right:5%; top:66.67%; display:flex; align-items:center; gap:calc(14 * var(--pt));">
+      {{ avatar("calc(61.2 * var(--pt))", photo) }}
+      <div>
+        <p class="aaif-card-title" style="font-size:calc(16 * var(--pt)); margin:0;">{{ name }}</p>
+        {%- if role %}<p class="aaif-label aaif-label--sm" style="font-size:calc(9 * var(--pt)); margin-top:calc(6 * var(--pt));">{{ role|upper }}</p>{% endif %}
+      </div>
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p10 / p14 / p15 · full-bleed statement ───────────────────────
+   One kicker, one big word or phrase, one supporting line, one mono
+   footer line. `tone` is "gradient" (p10, p15), "dark" (p14),
+   "navy", or "light". #}
+{%- macro feature_slide(title, kicker="", subtitle="", meta="", meta2="",
+                        tone="gradient", eyebrow="", size=48) -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }}" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow) }}
+    {%- if kicker %}
+    <div class="aaif-label" style="position:absolute; left:5%; right:5%; top:calc(31.11% + 3.6 * var(--pt)); font-size:calc(10 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
+    {%- endif %}
+    <h2 class="aaif-title" style="position:absolute; left:5%; right:5%; top:calc(37.33% + 3.6 * var(--pt)); font-size:calc({{ size }} * var(--pt)); line-height:1.05;">{{ title|safe }}</h2>
+    {%- if subtitle %}
+    <p class="aaif-lead" style="position:absolute; left:5%; right:9%; top:calc(57.78% + 3.6 * var(--pt)); font-size:calc(16 * var(--pt));">{{ subtitle|safe }}</p>
+    {%- endif %}
+    {%- if meta %}
+    <p class="aaif-mono" style="position:absolute; left:5%; right:5%; top:calc(68.44% + 3.6 * var(--pt)); font-size:calc(10.5 * var(--pt));">{{ meta|safe }}</p>
+    {%- endif %}
+    {%- if meta2 %}
+    <p class="aaif-mono" style="position:absolute; left:5%; right:5%; top:calc(75.56% + 3.6 * var(--pt)); font-size:calc(9.5 * var(--pt)); opacity:0.82;">{{ meta2|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p11 · numbered lineup ────────────────────────────────────────
+   `items` is a list of {name, role, quote, photo}. #}
+{%- macro lineup_slide(title, items, label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    {%- for i in items %}
+    {%- set base = 35.56 + loop.index0 * 16.36 %}
+    <div style="position:absolute; left:5%; right:1%; top:{{ base }}%; display:flex; align-items:center; gap:calc(11 * var(--pt));">
+      <span class="aaif-label aaif-label--sm" style="font-size:calc(13 * var(--pt)); width:calc(36 * var(--pt)); flex:none;">{{ "%02d"|format(loop.index) }}</span>
+      {{ avatar("calc(44.6 * var(--pt))", i.photo | default("")) }}
+      <div style="width:26%; flex:none; margin-left:calc(11 * var(--pt));">
+        <p class="aaif-card-title" style="font-size:calc(14 * var(--pt)); margin:0;">{{ i.name }}</p>
+        {%- if i.role %}<p class="aaif-label aaif-label--sm" style="font-size:calc(7.5 * var(--pt)); margin-top:calc(5 * var(--pt));">{{ i.role|upper }}</p>{% endif %}
+      </div>
+      {%- if i.quote %}
+      <p class="aaif-card-body" style="font-style:italic; font-size:calc(11.5 * var(--pt)); line-height:1.3; margin:0;">{{ i.quote|safe }}</p>
+      {%- endif %}
+    </div>
+    {%- endfor %}
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(84.98% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p12 · thank-you / member wall ────────────────────────────────
+   Two labelled blocks: the host line (bold name + italic tail) and
+   the member list. #}
+{%- macro thanks_slide(title, host="", host_label="", members="", members_label="",
+                       label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    {%- if host %}
+    {%- if host_label %}
+    <div class="aaif-label" style="position:absolute; left:5%; top:calc(41.78% + 3.6 * var(--pt)); height:auto; margin:0;">{{ host_label|upper }}</div>
+    {%- endif %}
+    <p style="position:absolute; left:5%; right:5%; top:calc(47.11% + 3.6 * var(--pt)); margin:0;
+              font-family:var(--aaif-body); font-size:calc(15 * var(--pt)); color:var(--aaif-muted);">{{ host|safe }}</p>
+    {%- endif %}
+
+    {%- if members %}
+    {%- if members_label %}
+    <div class="aaif-label" style="position:absolute; left:5%; top:calc(59.56% + 3.6 * var(--pt)); height:auto; margin:0;">{{ members_label|upper }}</div>
+    {%- endif %}
+    <p style="position:absolute; left:5%; right:5%; top:calc(64.89% + 3.6 * var(--pt)); margin:0;
+              font-family:var(--aaif-display); font-weight:700; font-size:calc(15 * var(--pt));
+              line-height:1.467; letter-spacing:-0.015em;">{{ members|safe }}</p>
+    {%- endif %}
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; right:5%; top:calc(82.13% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p13 · join / QR ──────────────────────────────────────────────
+   Dark slide: copy and mono link lines on the left, a cream QR panel
+   on the right. `qr` is raw HTML (an <img> or inline <svg>); leave
+   it empty for a placeholder box. `links` is a list of strings. #}
+{%- macro join_slide(title, kicker="", body="", links=[], qr="", qr_caption="Scan to join",
+                     tone="navy", eyebrow="") -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }}" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow) }}
+    {%- if kicker %}
+    <div class="aaif-label" style="position:absolute; left:5%; width:56%; top:calc(25.78% + 3.6 * var(--pt)); font-size:calc(10 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
+    {%- endif %}
+    <h2 class="aaif-title" style="position:absolute; left:5%; width:59%; top:calc(32% + 3.6 * var(--pt)); font-size:calc(38 * var(--pt)); line-height:1.05;">{{ title|safe }}</h2>
+    {%- if body %}
+    <p class="aaif-lead" style="position:absolute; left:5%; width:55%; top:calc(49.78% + 3.6 * var(--pt)); font-size:calc(13.5 * var(--pt)); line-height:1.407;">{{ body|safe }}</p>
+    {%- endif %}
+    {%- if links %}
+    <div class="aaif-mono" style="position:absolute; left:5%; width:55%; top:calc(66.67% + 3.6 * var(--pt)); font-size:calc(10.5 * var(--pt)); line-height:1.905;">
+      {%- for l in links %}<div>{{ l|safe }}</div>{% endfor %}
+    </div>
+    {%- endif %}
+
+    <div style="position:absolute; left:68.5%; width:26%; top:25.78%; height:46.22%;
+                background:var(--aaif-cream); display:flex; align-items:center; justify-content:center;">
+      {%- if qr %}{{ qr|safe }}
+      {%- else %}<span class="aaif-label aaif-label--sm" style="color:var(--aaif-rule-strong); font-size:calc(7.5 * var(--pt));">QR</span>{% endif %}
+    </div>
+    {%- if qr_caption %}
+    <div class="aaif-label aaif-label--sm" style="position:absolute; left:68.5%; width:26%; top:calc(74.31% + 3.6 * var(--pt)); text-align:center; font-size:calc(9 * var(--pt));">{{ qr_caption|upper }}</div>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p17 · chapter cover ──────────────────────────────────────────
+   One word, the lockup, and a mono footer. Nothing else. #}
+{%- macro chapter_cover(word, footer="AAIF.IO / COMMUNITY", tone="light") -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }} aaif-slide--nonumber" data-label="{{ word|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    <svg class="aaif-cover-mark" viewBox="0 0 203 203" style="left:5%; top:8%; width:3.4%; height:6.04%;" aria-label="Agentic AI Foundation"><use href="#aaif-mark"/></svg>
+    <div class="aaif-cover-wordmark" style="left:9.4%; top:7.64%; font-size:calc(11 * var(--pt)); line-height:1.0909;">Agentic AI
+Foundation</div>
+    <h1 class="aaif-title" style="position:absolute; left:4.6%; right:4%; top:calc(35.56% + 3.6 * var(--pt)); font-size:calc(64 * var(--pt)); line-height:1.02; letter-spacing:-0.035em;">{{ word|safe }}</h1>
+    {%- if footer %}
+    <div class="aaif-foot" style="right:5%; text-align:right; top:88%; font-size:calc(9.5 * var(--pt));">{{ footer }}</div>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p18 · table ──────────────────────────────────────────────────
+   `headers` is a list of strings, `rows` a list of lists. `widths`
+   is an optional list of CSS column widths. #}
+{%- macro table_slide(title, headers, rows, widths=[], label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+    <div class="aaif-body" style="--top:33.78%;">
+      <table class="aaif-table">
+        {%- if widths %}
+        <colgroup>{% for w in widths %}<col style="width:{{ w }};">{% endfor %}</colgroup>
+        {%- endif %}
+        <thead><tr>{% for h in headers %}<th>{{ h }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {%- for row in rows %}
+          <tr>{% for cell in row %}<td>{{ cell|safe }}</td>{% endfor %}</tr>
+          {%- endfor %}
+        </tbody>
+      </table>
+      {%- if note %}<p class="aaif-label aaif-label--sm" style="margin-top:calc(9 * var(--pt)); text-transform:none;">{{ note|safe }}</p>{% endif %}
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p19 · two columns ────────────────────────────────────────────
+   `columns` is a list of {label, body}. Two is the deck's shape;
+   three still reads, four does not. #}
+{%- macro columns_slide(title, columns, label="", eyebrow="", subtitle="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+      {%- if subtitle %}<div class="aaif-lead" style="margin-top:calc(6 * var(--pt));">{{ subtitle|safe }}</div>{% endif %}
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:calc(36.44% + 3.6 * var(--pt));
+                display:grid; grid-template-columns:repeat({{ columns|length }},minmax(0,1fr)); gap:calc(21.6 * var(--pt));">
+      {%- for c in columns %}
+      <div>
+        {%- if c.label %}<p class="aaif-label" style="height:auto; margin:0;">{{ c.label|upper }}</p>{% endif %}
+        <div class="aaif-body-text" style="color:var(--aaif-ink); margin-top:calc(22 * var(--pt));">{{ c.body|safe }}</div>
+      </div>
+      {%- endfor %}
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p20 · pull quote ─────────────────────────────────────────────
+   One sentence set large, then an attribution row. Wrap the stressed
+   word in <em> for the deck's italic emphasis. #}
+{%- macro quote_slide(text, name="", role="", label="", eyebrow="", photo="", tone="light") -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }}" data-label="{{ text|striptags|truncate(40, True, '…') }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    {%- if label %}
+    <div class="aaif-label" style="position:absolute; left:5%; right:5%; top:calc(15.11% + 3.6 * var(--pt)); height:auto; margin:0;">{{ label|upper }}</div>
+    {%- endif %}
+    <p class="aaif-title" style="position:absolute; left:5%; right:5%; top:calc(33.78% + 3.6 * var(--pt)); font-size:calc(38 * var(--pt)); line-height:1.211;">{{ text|safe }}</p>
+
+    {%- if name %}
+    <div style="position:absolute; left:5%; right:5%; top:62.22%; display:flex; align-items:center; gap:calc(13 * var(--pt));">
+      {{ avatar("calc(43.2 * var(--pt))", photo) }}
+      <div>
+        <p class="aaif-card-title" style="font-size:calc(13 * var(--pt)); margin:0;">{{ name }}</p>
+        {%- if role %}<p class="aaif-label aaif-label--sm" style="font-size:calc(8 * var(--pt)); margin-top:calc(5 * var(--pt));">{{ role|upper }}</p>{% endif %}
+      </div>
+    </div>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p21 · stat callouts ──────────────────────────────────────────
+   `items` is a list of {value, label, body}. Three is the deck's
+   shape. #}
+{%- macro stat_callouts(title, items, label="", eyebrow="", subtitle="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+      {%- if subtitle %}<div class="aaif-lead" style="margin-top:calc(6 * var(--pt));">{{ subtitle|safe }}</div>{% endif %}
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:calc(37.33% + 3.6 * var(--pt));
+                display:grid; grid-template-columns:repeat({{ items|length }},minmax(0,1fr)); gap:calc(15.8 * var(--pt));">
+      {%- for i in items %}
+      <div>
+        <div class="aaif-stat-value">{{ i.value }}</div>
+        <div class="aaif-label aaif-label--sm" style="margin-top:calc(19 * var(--pt));">{{ i.label|upper }}</div>
+        {%- if i.body %}
+        <p class="aaif-card-body" style="font-size:calc(10 * var(--pt)); line-height:1.4; margin-top:calc(14 * var(--pt)); width:94.7%;">{{ i.body|safe }}</p>
+        {%- endif %}
+      </div>
+      {%- endfor %}
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p22 · bar chart ──────────────────────────────────────────────
+   `bars` is a list of {label, value}. `max` and `step` control the
+   y-axis; both default to the source deck's 0–140 by 20. #}
+{%- macro chart_slide(title, bars, max=140, step=20, label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    <div style="position:absolute; left:5%; right:5%; top:33.5%; bottom:14.5%;">
+      <div class="aaif-chart">
+        <div class="aaif-chart-plot">
+          {%- set ticks = (max / step)|int %}
+          {%- for t in range(0, ticks + 1) %}
+          <div class="aaif-chart-grid" style="bottom:{{ (t * step / max * 100)|round(2) }}%;"></div>
+          <div class="aaif-chart-tick" style="right:100%; bottom:calc({{ (t * step / max * 100)|round(2) }}% - 0.5em); padding-right:calc(4 * var(--pt));">{{ t * step }}</div>
+          {%- endfor %}
+          {%- for b in bars %}
+          <div class="aaif-chart-bar" style="height:{{ (b.value / max * 100)|round(2) }}%;">
+            <span>{{ b.value }}</span>
+          </div>
+          {%- endfor %}
+        </div>
+        <div style="position:absolute; left:5%; right:0; bottom:0; height:calc(11 * var(--pt));
+                    display:flex; justify-content:space-around; align-items:center;">
+          {%- for b in bars %}
+          <div class="aaif-chart-xlabel" style="position:static; width:9%; text-align:center;">{{ b.label }}</div>
+          {%- endfor %}
+        </div>
+      </div>
+    </div>
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(84.98% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ── p23 · timeline ───────────────────────────────────────────────
+   `steps` is a list of {when, title, detail, accent}. Set
+   accent="success" on the stop that is "now" — the deck greens
+   exactly one dot. #}
+{%- macro timeline_slide(title, steps, label="", eyebrow="", note="") -%}
+<section class="slide aaif-slide aaif-slide--light" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    <div class="aaif-head">
+      {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+      <div class="aaif-title">{{ title|safe }}</div>
+    </div>
+
+    {# The rail stops at the last dot's centre, exactly as the deck
+       draws it — it is a connector, not an axis. #}
+    {%- set n = steps|length %}
+    {%- set pitch = 23.1 %}
+    <div style="position:absolute; left:5%; right:5%; top:41.24%; bottom:8%;">
+      <div style="position:absolute; left:{{ (1.5 / 0.9)|round(2) }}%; width:{{ ((n - 1) * pitch / 0.9)|round(2) }}%;
+                  top:calc(10.8 * var(--pt)); height:calc(1.8 * var(--pt));
+                  background:var(--aaif-rule-strong); transform:translateY(-50%);"></div>
+      {%- for s in steps %}
+      {%- set x = (loop.index0 * pitch / 0.9)|round(3) %}
+      <div style="position:absolute; left:{{ x }}%; width:{{ (21 / 0.9)|round(2) }}%;">
+        <div class="aaif-dot {{ 'aaif-dot--green' if s.accent | default('') in ('success', 'green') }}"></div>
+        <p class="aaif-label aaif-label--sm" style="font-size:calc(9 * var(--pt)); margin-top:calc(11.5 * var(--pt));">{{ s.when }}</p>
+        <p class="aaif-card-title" style="font-size:calc(14 * var(--pt)); margin-top:calc(7.3 * var(--pt));">{{ s.title|safe }}</p>
+        {%- if s.detail %}
+        <p class="aaif-card-body" style="font-size:calc(9.5 * var(--pt)); line-height:1.368; margin-top:calc(7.7 * var(--pt)); width:97.6%;">{{ s.detail|safe }}</p>
+        {%- endif %}
+      </div>
+      {%- endfor %}
+    </div>
+
+    {%- if note %}
+    <p class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(84.98% + 3.6 * var(--pt)); text-transform:none;">{{ note|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# ================================================================
+   Carried over from the pack's first iteration. These are not in
+   the source deck; they exist because decks already written against
+   this pack import them. Prefer the source-deck layouts above.
+   ================================================================ #}
+
+{# Two independent columns of raw HTML — for comparisons that are not
+   a value judgement, and so not pros_cons(). #}
+{%- macro split_slide(title, left, right, left_label="", right_label="", subtitle="", label="", eyebrow="", tone="light", gradient=False) -%}
+{%- set t = "gradient" if gradient else tone -%}
+<section class="slide aaif-slide aaif-slide--{{ t }}" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or label) }}
+    {{ slide_heading(label, title, subtitle) }}
+    <div class="aaif-body" style="--top:36.44%; display:grid; grid-template-columns:1fr 1fr; gap:calc(21.6 * var(--pt)); align-items:start;">
+      <div>
+        {%- if left_label %}<p class="aaif-label">{{ left_label|upper }}</p>{% endif %}
+        {{ left|safe }}
+      </div>
+      <div>
+        {%- if right_label %}<p class="aaif-label">{{ right_label|upper }}</p>{% endif %}
+        {{ right|safe }}
+      </div>
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+{# One sentence, set large, centred. Use it to slow the room down. #}
+{%- macro statement_slide(text, attribution="", tone="gradient", gradient=True, eyebrow="") -%}
+{%- set t = tone if tone != "gradient" else ("gradient" if gradient else "light") -%}
+<section class="slide aaif-slide aaif-slide--{{ t }}" data-label="{{ text|striptags|truncate(40, True, '…') }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow) }}
+    <div class="aaif-body aaif-body--center" style="--top:25%; bottom:25%; align-items:center; text-align:center;">
+      <p class="aaif-title aaif-title--display" style="max-width:24ch; margin:0 auto;">{{ text|safe }}</p>
+      {%- if attribution %}<p class="aaif-lead" style="margin:calc(16 * var(--pt)) auto 0; text-align:center;">{{ attribution|safe }}</p>{% endif %}
+    </div>
+  </div></div>
+</section>
+{%- endmacro -%}
+
+{# Big-number row. Kept as an alias of stat_callouts()'s shape for
+   decks written before that layout existed. #}
+{%- macro stat_row(items, title="", subtitle="", label="", eyebrow="", gradient=False) -%}
+{{ stat_callouts(title or "By the numbers", items, label=label, eyebrow=eyebrow, subtitle=subtitle) }}
+{%- endmacro -%}
+
+{# Closing slide: the lockup centred, optional contact lines under. #}
+{%- macro closing_slide(lines=[], tone="light") -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }} aaif-slide--nonumber" data-label="Thank you">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    <div style="position:absolute; inset:0; display:flex; flex-direction:column;
+                align-items:center; justify-content:center; text-align:center;">
+      <svg style="width:46%; aspect-ratio:838/203; color:currentColor;"
+           aria-label="Agentic AI Foundation"><use href="#aaif-logo"/></svg>
+      {%- if lines %}
+      <div style="margin-top:calc(24 * var(--pt)); display:flex; flex-direction:column; gap:calc(5 * var(--pt));">
+        {%- for line in lines %}
+        <p class="aaif-mono" style="font-size:calc(9.5 * var(--pt)); color:var(--aaif-muted);">{{ line|safe }}</p>
+        {%- endfor %}
+      </div>
+      {%- endif %}
+    </div>
+  </div></div>
 </section>
 {%- endmacro -%}

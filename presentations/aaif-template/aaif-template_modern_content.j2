@@ -1,81 +1,373 @@
 {# ================================================================
    AAIF Presentation Template — reference gallery
    ----------------------------------------------------------------
-   This deck is not a talk. It is the AAIF brand pack's living
-   reference: one slide per layout, each captioned with the macro
-   call that produced it. When you start a real AAIF deck, copy this
-   file, delete the slides you do not need, and replace the sample
-   copy.
+   This deck is not a talk. It is a slide-for-slide rebuild of the
+   official "AAIF Presentation Template" Google Slides deck
+   (Slides.pptx, 23 slides) using only this brand pack's macros —
+   same copy, same order, same offsets. Keeping the sample text
+   identical to the source is deliberate: it makes the two decks
+   diffable side by side, which is how the pack stays aligned.
 
-   It doubles as the pack's regression check. If a primitive breaks,
-   it breaks here first.
+   When you start a real AAIF deck, copy this file, delete the
+   slides you do not need, and replace the copy.
 
    Run it:   cd presentations/aaif-template && task start
 
    Every slide below goes through the brand pack — there is no raw
    HTML and no hex code in this file.
 
-   This deck is AAIF-only, though, and deliberately so: it imports
-   slides.j2, which no other pack ships, so `BRANDING=unbranded task
-   start` fails at import rather than re-skinning. A deck that wants
-   to stay brand-swappable must import primitives.j2 and nothing
-   else. The slides marked "Primitive" below are the ones that would
-   survive that swap; the ones marked "AAIF layout" are the ones you
-   trade away for it.
+   This deck is AAIF-only, and deliberately so: it imports slides.j2,
+   which no other pack ships, so `BRANDING=unbranded task start`
+   fails at import rather than re-skinning. A deck that wants to stay
+   brand-swappable must import primitives.j2 and nothing else.
    ================================================================ #}
 
 {#- Brand pack. `branding` is injected by start.sh — never hardcode it. -#}
 {%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
 {%- from   "modules/branding/" ~ branding ~ "/primitives.j2"
-   import  title_slide, section_divider, maturity_level, slide_heading,
+   import  section_divider, maturity_level, slide_heading,
            callout, card, card_grid, pros_cons, pill_row,
            code_block, step_flow %}
 {%- from   "modules/branding/" ~ branding ~ "/slides.j2"
-   import  content_slide, media_slide, split_slide, statement_slide,
-           stat_row, closing_slide %}
+   import  content_slide, event_cover, welcome_slide, facts_slide,
+           stat_band, media_slide, agenda_slide, speakers_slide,
+           talk_slide, feature_slide, lineup_slide, thanks_slide,
+           join_slide, chapter_cover, table_slide, columns_slide,
+           quote_slide, stat_callouts, chart_slide, timeline_slide,
+           split_slide, statement_slide, closing_slide %}
 
 
-{# ── 1. Cover, light ─────────────────────────────────────────────── #}
-{{ title_slide(
-     "AAIF Presentation Template",
-     "Every layout in the brand pack, with the macro that renders it.",
-     kicker="Agentic AI Foundation") }}
+{# ── p1 · event cover ────────────────────────────────────────────── #}
+{{ event_cover(
+     "Agentic AI Night.",
+     subtitle="Launch Series · Pittsburgh",
+     kicker="AAIF Community Events",
+     meta="TUE · JUNE 24, 2026 · 17:30 — LATE",
+     eyebrow="PITTSBURGH · CHAPTER",
+     hosted_label="Hosted by",
+     hosts=["Host Venue Co."],
+     with_label="With",
+     members=["Member logo", "Member logo"]) }}
 
 
-{# ── 2. Cover, gradient ──────────────────────────────────────────── #}
-{{ title_slide(
-     "Same macro, inverted",
-     "title_slide(..., gradient=True) for the full-bleed variant.",
-     kicker="Cover B",
-     gradient=True) }}
+{# ── p2 · welcome ────────────────────────────────────────────────── #}
+{{ welcome_slide(
+     "Agentic AI Night, <em>Launch Series.</em>",
+     kicker="Welcome · Doors open · Grab a name tag",
+     meta="TUE · JUNE 24 · 17:30 — LATE · SOUTH OF MARKET, PITTSBURGH",
+     eyebrow="PITTSBURGH CHAPTER · 2026",
+     people_label="↳ ON MIC TONIGHT",
+     people=[
+       {"name": "Maya Chen",     "role": "Staff engineer · Payments"},
+       {"name": "Diego Alvarez", "role": "Founding eng · Agent infra"},
+       {"name": "Priya Nair",    "role": "OSS · goose contributor"},
+     ],
+     chips_label="Hosted by",
+     chips=["Host Venue Co.", "AAIF · Pittsburgh", "Member logo", "Member logo"]) }}
 
 
-{# ── 3. Section divider ──────────────────────────────────────────── #}
-{{ section_divider(1, "Primitives",
-     "The nine macros every brand pack implements") }}
+{# ── p3 · prose + number rail ────────────────────────────────────── #}
+{{ facts_slide(
+     "About the Agentic AI Foundation",
+     "A neutral, open foundation advancing agentic AI in the public interest. "
+     "Built on transparency, collaboration, and standardization — hosted at the "
+     "Linux Foundation and shaped by the community that ships it.",
+     label="About the AAIF",
+     eyebrow="01 · ABOUT",
+     facts=[
+       {"value": "2025", "label": "Founded"},
+       {"value": "100%", "label": "Vendor-neutral"},
+       {"value": "OPEN", "label": "By default"},
+     ],
+     highlight_label="The projects",
+     highlight="MCP · goose · AGENTS.md · agentgateway",
+     footnote="8 founding platinum members · AWS → OpenAI") }}
 
 
-{# ── 4. Card grid ────────────────────────────────────────────────── #}
+{# ── p4 · headline band ──────────────────────────────────────────── #}
+{{ stat_band(
+     "AAIF Pittsburgh",
+     [
+       {"value": "EST. 2026", "label": "First event tonight"},
+       {"value": "MONTHLY",   "label": "Event cadence"},
+       {"value": "CURATED",   "label": "RSVP-based attendance"},
+     ],
+     label="Your local chapter",
+     eyebrow="02 · LOCAL CHAPTER",
+     people_label="Your organizers — the local champions",
+     people=[
+       {"name": "Organizer Name", "role": "The face the community knows"},
+       {"name": "Organizer Name", "role": "Holds the room, keeps the bar"},
+     ],
+     note="Part of a global network of AAIF chapters — formats and speakers travel between cities.") }}
+
+
+{# ── p5 · text + framed media ────────────────────────────────────── #}
+{{ media_slide(
+     "AAIF chapters worldwide",
+     '<div style="display:flex;align-items:center;justify-content:center;height:100%;'
+     'font-family:var(--aaif-mono);font-size:calc(8 * var(--pt));color:var(--aaif-rule-strong);">'
+     'your map, &lt;img&gt;, &lt;svg&gt;, or &lt;iframe&gt; here</div>',
+     label="The network",
+     eyebrow="02 · ONE GLOBAL CHAPTER",
+     facts=[
+       {"value": "14", "label": "Cities"},
+       {"value": "06", "label": "Time zones"},
+       {"value": "01", "label": "Standard"},
+     ],
+     note="Organizers sync monthly — formats and speakers travel between chapters.") }}
+
+
+{# ── p6 · section divider ────────────────────────────────────────── #}
+{{ section_divider(1, "Agents in production.",
+     "What's working at scale, what's breaking in ways the demos never showed, "
+     "<em>what nobody's figured out yet.</em>",
+     label="Tonight's theme",
+     eyebrow="03 · TONIGHT'S THEME",
+     footnote="STANDARDS AT WORK → MCP · AGENTS.MD · GOOSE") }}
+
+
+{# ── p7 · agenda ─────────────────────────────────────────────────── #}
+{{ agenda_slide(
+     "Tonight's agenda",
+     [
+       {"time": "17:30 · 30m", "title": "Doors &amp; networking", "detail": "Name tags, drinks, read the room."},
+       {"time": "18:00 · 5m",  "title": "Why we're here",         "detail": "Intro to the community. Tonight's theme."},
+       {"time": "18:05 · 25m", "title": "Talk One",               "detail": "Tool calling at scale — Maya Chen."},
+       {"time": "18:30 · 25m", "title": "Demos",                  "detail": "Three demos. Five minutes each."},
+       {"time": "18:55 · 5m",  "title": "Wrap up",                "detail": "Tie the context together."},
+       {"time": "19:00 · 60m", "title": "Networking",             "detail": "Open networking till late."},
+     ],
+     label="Run-of-show · Tonight",
+     eyebrow="04 · RUN-OF-SHOW",
+     note="* Times approximate.") }}
+
+
+{# ── p8 · speaker cards ──────────────────────────────────────────── #}
+{{ speakers_slide(
+     "Tonight's speakers",
+     [
+       {"tag": "01 / Talk", "name": "Maya Chen",     "role": "Staff engineer · Payments platform",
+        "quote": "“Tool calling at scale — what broke at 10M requests a day.”"},
+       {"tag": "02 / Demo", "name": "Diego Alvarez", "role": "Founding engineer · Agent infra",
+        "quote": "“AGENTS.md in a 4,000-repo monorepo. Yes, really.”"},
+       {"tag": "03 / Demo", "name": "Priya Nair",    "role": "OSS maintainer · goose contributor",
+        "quote": "“Sandboxing goose: lessons from letting agents run wild.”"},
+     ],
+     label="Agentic AI Night · On mic",
+     eyebrow="05 · ON MIC") }}
+
+
+{# ── p9 · talk opener ────────────────────────────────────────────── #}
+{{ talk_slide(
+     "“Tool calling at scale — <em>what broke at 10M requests a day.”</em>",
+     "Maya Chen",
+     role="Staff engineer · Payments platform · @mayabuilds",
+     numeral="01",
+     slug="Talk one · 18:05 · 25m",
+     eyebrow="05 · TALK ONE") }}
+
+
+{# ── p10 · full-bleed statement, gradient ────────────────────────── #}
+{{ feature_slide(
+     "Demos",
+     kicker="18:30 · Three demos · 5 minutes each",
+     subtitle="Three short demos from the community, with Q&amp;A after each.",
+     meta="UP NEXT → DIEGO ALVAREZ · PRIYA NAIR · OPEN SLOT",
+     tone="gradient",
+     eyebrow="06 · DEMOS") }}
+
+
+{# ── p11 · numbered lineup ───────────────────────────────────────── #}
+{{ lineup_slide(
+     "Demo lineup",
+     [
+       {"name": "Diego Alvarez", "role": "Agent infra",
+        "quote": "“AGENTS.md in a 4,000-repo monorepo. Yes, really.”"},
+       {"name": "Priya Nair", "role": "goose contributor",
+        "quote": "“Sandboxing goose: lessons from letting agents run wild.”"},
+       {"name": "Open slot", "role": "Grab the mic",
+        "quote": "“Your demo here — something working, or a glorious failure.”"},
+     ],
+     label="Demos · The lineup",
+     eyebrow="06 · DEMO LINEUP",
+     note="* Order may change on the night.") }}
+
+
+{# ── p12 · thank-you wall ────────────────────────────────────────── #}
+{{ thanks_slide(
+     "Thank you",
+     host_label="Tonight's host",
+     host="<strong style='color:var(--aaif-ink);'>Host Venue Co.</strong> "
+          "<em>— doors, A/V, and the food &amp; beverages.</em>",
+     members_label="AAIF founding members",
+     members="AWS · Anthropic · Block · Bloomberg · Cloudflare · Google · Microsoft · OpenAI",
+     label="Hosts &amp; members",
+     eyebrow="07 · THANK YOU",
+     note="AAIF events are vendor-neutral — no paid speaking slots.") }}
+
+
+{# ── p13 · join / QR, dark ───────────────────────────────────────── #}
+{{ join_slide(
+     "Join the chapter.",
+     kicker="Take it with you",
+     body="Recaps, demo links, decks, and the next event — "
+          "<em>straight to where the community lives.</em>",
+     links=[
+       "DISCORD → AAIF.IO / DISCORD",
+       "NEWSLETTER → AAIF.IO / COMMUNITY",
+       "NEXT EVENT → LU.MA / AAIF-PITTSBURGH",
+     ],
+     qr_caption="Scan to join",
+     tone="navy",
+     eyebrow="08 · JOIN THE CHAPTER") }}
+
+
+{# ── p14 · full-bleed statement, dark ────────────────────────────── #}
+{{ feature_slide(
+     "Networking",
+     kicker="19:00 → Late",
+     subtitle="Time to meet your fellow attendees",
+     meta="ROOM OPEN UNTIL 20:30 · WIFI → GUEST-NET / PASSWORD",
+     tone="dark",
+     eyebrow="09 · NETWORKING") }}
+
+
+{# ── p15 · full-bleed statement, gradient ────────────────────────── #}
+{{ feature_slide(
+     "“AI in Finance” <em>— July 22.</em>",
+     kicker="Next event",
+     subtitle="Next chapter event — same venue, part of the global theme series.",
+     meta="RSVP OPEN NOW → LU.MA / AAIF-PITTSBURGH",
+     meta2="AAIF.IO / COMMUNITY · @AGENTICAIFDN · DISCORD",
+     tone="gradient",
+     size=44,
+     eyebrow="NEXT UP") }}
+
+
+{# ── p16 · appendix divider ──────────────────────────────────────── #}
+{{ section_divider("A", "Template layouts",
+     "Standard slide patterns in the chapter style: table, columns, quote, stats, chart, timeline.",
+     label="Appendix",
+     eyebrow="Appendix") }}
+
+
+{# ── p17 · chapter cover ─────────────────────────────────────────── #}
+{{ chapter_cover("Pittsburgh.") }}
+
+
+{# ── p18 · table ─────────────────────────────────────────────────── #}
+{{ table_slide(
+     "Run-of-show with owners",
+     ["Time", "Segment", "Owner", "Notes"],
+     [
+       ["17:30", "Doors &amp; networking",  "Organizer", "Name tags, music on, read the room"],
+       ["18:00", "Why we're here",          "Organizer", "Community intro, tonight's theme"],
+       ["18:05", "Talk One — Maya Chen",    "Speaker",   "Slides loaded, clicker ready, mic check"],
+       ["18:30", "Demos × 3",               "Demo host", "HDMI tested, 5-minute timer visible"],
+       ["18:55", "Wrap up",                 "Organizer", "Next event plug, photo moment"],
+       ["19:00", "Social pulse",            "Everyone",  "Drinks out, speakers stay"],
+     ],
+     widths=["11.1%", "30%", "16.7%", "42.2%"],
+     label="Template · Table",
+     eyebrow="APPENDIX · TABLE") }}
+
+
+{# ── p19 · two columns ───────────────────────────────────────────── #}
+{{ columns_slide(
+     "Two-column layout",
+     [
+       {"label": "Before the event",
+        "body": "Share the ideas and the questions we're trying to answer so the "
+                "lead-up gets the right people through the door. Post the speaker "
+                "lineup, open the demo slots, and seed the theme in the community "
+                "channels a week out."},
+       {"label": "After the event",
+        "body": "Capture what happened inside and carry it to where the community "
+                "lives — recaps, attendee insights, demo links, and decks. Ship the "
+                "recap within 48 hours while the conversation is still warm."},
+     ],
+     label="Template · Two columns",
+     eyebrow="APPENDIX · COLUMNS") }}
+
+
+{# ── p20 · pull quote ────────────────────────────────────────────── #}
+{{ quote_slide(
+     "“Good ideas need <em>room</em> to grow.”",
+     name="Attribution Name",
+     role="Role · Affiliation",
+     label="Template · Quote",
+     eyebrow="APPENDIX · QUOTE") }}
+
+
+{# ── p21 · stat callouts ─────────────────────────────────────────── #}
+{{ stat_callouts(
+     "Stat callouts",
+     [
+       {"value": "120", "label": "RSVPs tonight",    "body": "Curated, not crowded — signal over volume."},
+       {"value": "87%", "label": "Return rate",      "body": "Peers you catch up with each month."},
+       {"value": "4.8", "label": "Avg. talk rating", "body": "The bar stays high, every chapter, every time."},
+     ],
+     label="Template · Stat callouts",
+     eyebrow="APPENDIX · STATS") }}
+
+
+{# ── p22 · bar chart ─────────────────────────────────────────────── #}
+{{ chart_slide(
+     "Attendance by month",
+     [
+       {"label": "1", "value": 85},
+       {"label": "2", "value": 96},
+       {"label": "3", "value": 92},
+       {"label": "4", "value": 110},
+       {"label": "5", "value": 118},
+       {"label": "6", "value": 124},
+     ],
+     max=140, step=20,
+     label="Template · Chart",
+     eyebrow="APPENDIX · CHART") }}
+
+
+{# ── p23 · timeline ──────────────────────────────────────────────── #}
+{{ timeline_slide(
+     "Event timeline",
+     [
+       {"when": "T–14D", "title": "Announce",      "detail": "Lineup live, RSVPs open, theme seeded."},
+       {"when": "T–7D",  "title": "Curate",        "detail": "Approve the room. Confirm demos and A/V."},
+       {"when": "T–0",   "title": "Run the night", "detail": "The rhythm: doors, talk, demos, social.",
+        "accent": "success"},
+       {"when": "T+2D",  "title": "Recap",         "detail": "Decks, links, photos — shipped to the chapter."},
+     ],
+     label="Template · Timeline",
+     eyebrow="APPENDIX · TIMELINE") }}
+
+
+{# ================================================================
+   Beyond the source deck — the contract primitives, so this gallery
+   doubles as the pack's regression check on them. These layouts are
+   not in the Google Slides original.
+   ================================================================ #}
+
 {% call content_slide(
      "Card grid",
-     "card_grid(items, cols=3) — the default way to lay out three to six related points.",
-     label="Primitive") %}
+     "card_grid(items, cols=3) — the contract's default way to lay out three to six related points.",
+     label="Primitive · Card grid",
+     eyebrow="CONTRACT · CARDS") %}
 {{ card_grid([
-  {"title": "Accent: primary",   "body": "Indigo left rule. The brand's structural colour.",     "accent": "primary"},
-  {"title": "Accent: secondary", "body": "Coral left rule. Use it to mark the one thing that matters most.", "accent": "secondary"},
-  {"title": "Accent: success",   "body": "Green. Reserved for outcomes that went right.",         "accent": "success"},
-  {"title": "Accent: warning",   "body": "Amber. A caveat the audience has to carry forward.",    "accent": "warning"},
-  {"title": "Accent: danger",    "body": "Red. Something that actually breaks.",                  "accent": "danger"},
-  {"title": "Accent: neutral",   "body": "No colour. The default, and the right choice most of the time.", "accent": "neutral"},
+  {"title": "Accent: primary",   "body": "Ink rule. The structural default.",                      "accent": "primary"},
+  {"title": "Accent: secondary", "body": "Chapter green. Mark the one thing that matters most.",   "accent": "secondary"},
+  {"title": "Accent: success",   "body": "Green. Reserved for outcomes that went right.",          "accent": "success"},
+  {"title": "Accent: warning",   "body": "Amber. A caveat the audience has to carry forward.",     "accent": "warning"},
+  {"title": "Accent: danger",    "body": "Red. Something that actually breaks.",                   "accent": "danger"},
+  {"title": "Accent: neutral",   "body": "Hairline grey. The right choice most of the time.",      "accent": "neutral"},
 ], cols=3) }}
 {% endcall %}
 
-
-{# ── 5. Pros and cons ────────────────────────────────────────────── #}
 {% call content_slide(
      "Two-column tradeoffs",
      "pros_cons(benefits, shortcomings) — a fixed shape, so the audience knows where to look.",
-     label="Primitive") %}
+     label="Primitive · Pros and cons",
+     eyebrow="CONTRACT · PROS/CONS") %}
 {{ pros_cons(
   [
     {"title": "One contract",   "detail": "Nine macro signatures. A slide written once renders in any pack."},
@@ -83,17 +375,17 @@
     {"title": "Swap in a line", "detail": "The deck's Taskfile picks the brand. Nothing else changes."},
   ],
   [
-    {"title": "Contract drift", "detail": "Adding a primitive means updating every pack, not just yours."},
+    {"title": "Contract drift",      "detail": "Adding a primitive means updating every pack, not just yours."},
     {"title": "Lowest common shape", "detail": "A layout only one brand can express does not belong in the contract."},
   ]) }}
 {% endcall %}
 
-
-{# ── 6. Pills + callout ──────────────────────────────────────────── #}
 {% call content_slide(
-     "Pills and callouts",
-     "pill_row(items) for a vocabulary; callout(text, accent) to land the point.",
-     label="Primitive") %}
+     "Pills, callouts, steps",
+     "pill_row(items), callout(text, accent), and step_flow(steps) — all in the deck's hairline register.",
+     label="Primitive · Atoms",
+     eyebrow="CONTRACT · ATOMS",
+     top="36%") %}
 {{ pill_row([
   {"label": "primary",   "accent": "primary"},
   {"label": "secondary", "accent": "secondary"},
@@ -103,107 +395,38 @@
   {"label": "info",      "accent": "info"},
   {"label": "neutral",   "accent": "neutral"},
 ]) }}
-{{ callout("Seven accent names. Every pack maps them to its own palette — that mapping is the whole abstraction.", "primary") }}
-{% endcall %}
-
-
-{# ── 7. Numbered steps ───────────────────────────────────────────── #}
-{% call content_slide(
-     "Step flow",
-     "step_flow(steps) — a sequence the audience has to follow in order.",
-     label="Primitive · AAIF-only") %}
+<div style="height:calc(14 * var(--pt));"></div>
 {{ step_flow([
   {"title": "Pick a brand", "detail": "modules/branding/&lt;name&gt;/"},
   {"title": "Import",       "detail": "theme.html.j2, then primitives.j2"},
   {"title": "Compose",      "detail": "Call macros in slide order"},
   {"title": "Render",       "detail": "task start"},
 ]) }}
-{{ callout("step_flow() and code_block() are implemented here but still stubbed in the other three packs — keep them out of shared slides until those catch up.", "warning") }}
+<div style="height:calc(14 * var(--pt));"></div>
+{{ callout("Seven accent names. Every pack maps them to its own palette — that mapping is the whole abstraction.", "secondary") }}
 {% endcall %}
 
-
-{# ── 8. Code block ───────────────────────────────────────────────── #}
 {% call content_slide(
      "Code block",
-     "code_block(filename, lines) — a Mac-window card. Lines are escaped, so pass plain source.",
-     label="Primitive · AAIF-only") %}
+     "code_block(filename, lines) — lines are escaped, so pass plain source.",
+     label="Primitive · Code",
+     eyebrow="CONTRACT · CODE") %}
 {{ code_block("presentations/my-deck/my-deck_modern_content.j2", [
   '{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}',
   '{%- from   "modules/branding/" ~ branding ~ "/primitives.j2"',
   '   import  title_slide, section_divider, card_grid %}',
   '',
-  '{{ title_slide("My Talk", "A subtitle") }}',
-  '{{ section_divider(1, "First act") }}',
+  '{{ section_divider(1, "First act", "A subtitle") }}',
 ]) }}
 {% endcall %}
 
-
-{# ── 9. Maturity level ───────────────────────────────────────────── #}
 {{ maturity_level(3, "Enforced", "Guardrails run without asking",
      "maturity_level(level, stage, title, subtitle) — the divider variant for staged models.") }}
 
-
-{# ── 10. Section divider ─────────────────────────────────────────── #}
-{{ section_divider(2, "AAIF layouts",
-     "Shapes from the source deck that live in this pack only") }}
-
-
-{# ── 11. Text + framed media ─────────────────────────────────────── #}
-{{ media_slide(
-     "Text beside media",
-     '<div style="display:flex;align-items:center;justify-content:center;height:100%;'
-     'background:var(--aaif-n-50);color:var(--aaif-n-400);font-size:14px;">'
-     'your &lt;img&gt;, &lt;svg&gt;, or &lt;iframe&gt; here</div>',
-     subtitle="media_slide(title, media, …) reproduces the rounded indigo frame from slide 3 of the source deck.",
-     label="AAIF layout",
-     body="<p>Pass <code>media</code> as raw HTML. The frame keeps its aspect ratio, "
-          "so a screenshot and a diagram sit at the same size across the deck.</p>") }}
-
-
-{# ── 12. Split ───────────────────────────────────────────────────── #}
-{{ split_slide(
-     "Split columns",
-     card("Left column", "Any HTML. Cards, a code block, or prose.", "primary"),
-     card("Right column", "The two sides are independent — this is not pros_cons().", "secondary"),
-     left_label="Before",
-     right_label="After",
-     subtitle="split_slide(title, left, right, …) for comparisons that are not a value judgement.",
-     label="AAIF layout") }}
-
-
-{# ── 13. Statement ───────────────────────────────────────────────── #}
 {{ statement_slide(
      "A slide with one sentence on it is doing more work than a slide with six.",
      attribution="statement_slide(text, attribution) · gradient by default") }}
 
 
-{# ── 14. Stats ───────────────────────────────────────────────────── #}
-{{ stat_row([
-     {"value": "4",  "label": "brand packs in the repo"},
-     {"value": "9",  "label": "contract primitives"},
-     {"value": "18", "label": "layouts in the source deck"},
-   ],
-   title="By the numbers",
-   subtitle="stat_row(items, title=…) — values pick up the brand gradient on light slides.",
-   label="AAIF layout") }}
-
-
-{# ── 15. Gradient content slide ──────────────────────────────────── #}
-{% call content_slide(
-     "Any layout inverts",
-     "Pass gradient=True to put a content slide on the full-bleed gradient. Cards and pills restyle themselves.",
-     label="AAIF layout",
-     gradient=True) %}
-{{ card_grid([
-  {"title": "Cards", "body": "Translucent over the gradient instead of white-on-white.", "accent": "primary"},
-  {"title": "Pills", "body": "Outlined in white rather than in the accent colour.",       "accent": "secondary"},
-  {"title": "Type",  "body": "Headings go white; body copy drops to 88% white.",          "accent": "neutral"},
-], cols=3) }}
-{% endcall %}
-
-
-{# ── 16. Closing ─────────────────────────────────────────────────── #}
-{{ closing_slide([
-  "aaif.io",
-  "modules/branding/aaif/README.md",
-]) }}
+{# ── closing ─────────────────────────────────────────────────────── #}
+{{ closing_slide(["aaif.io"]) }}
