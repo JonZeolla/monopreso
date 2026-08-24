@@ -59,7 +59,12 @@ Currently shipped:
 - `sans-cloud/` — the SANS Cloud Security webcast skin (orange/teal, header bar, series-overview/CSE-summit slides). Used by `2026-03`, `2026-05`, `2026-06` decks.
 - `zenable/` — Tailwind-based; reuses Zenable color tokens from `modules/shared/tailwind.config.js`. Delegates several primitives to the long-standing macros in `modules/shared/components/modern_macros.j2`.
 - `unbranded/` — neutral system-font skin, no corporate colors. For talks that should carry no employer/sponsor branding.
-- `aaif/` — Agentic AI Foundation. The only **light** pack: white slides, `#5765FF → #FF702D` gradient dividers, Instrument Sans. Tokens are lifted verbatim from aaif.io; layout offsets are derived from the official Google Slides template's EMU canvas. Ships an extra `slides.j2` of AAIF-only layouts and a `logo-sprite.html.j2`. Reference gallery: `presentations/aaif-template`.
+- `aaif/` — Agentic AI Foundation. The only **light** pack: cream `#F6F5F1` slides, black type, hairline rules, and one accent (`#14964A`). Space Grotesk display / Instrument Sans body / JetBrains Mono chrome. It is a slide-for-slide rebuild of the official "AAIF Presentation Template" Google Slides deck (`Slides.pptx`, 23 slides) — palette, type sizes, and every layout offset come from that file rather than from taste. Ships an extra `slides.j2` carrying all 19 source layouts and a `logo-sprite.html.j2`. Reference gallery: `presentations/aaif-template`, which reproduces all 23 source slides with the source's own copy so the two are diffable side by side.
+
+  Two conventions make that alignment reproducible, and you must keep both when you add an AAIF layout:
+
+  1. **`--pt`.** The source canvas is 720 pt × 405 pt, so a point is exactly 1/7.2 of the slide width. Type is set as `calc(N * var(--pt))` where N is the deck's own `sz` value divided by 100 — copy `sz` out of the pptx verbatim, never convert to px. `--pt` is an absolute length, so it is correct for vertical offsets too.
+  2. **The stage.** `.aaif-slide` fills the viewport and paints the background; `.aaif-stage` is a 16:9 box centred inside it; `.aaif-canvas` sits inside the stage and is where `--pt` is defined (a container query unit resolves against the nearest *ancestor* container, not the element carrying `container-type`). Positions are percentages of the stage, lifted from the source EMU offsets, plus `3.6 * var(--pt)` for the 0.05 in inset Google Slides applies inside every text box.
 
 Because `aaif` is light, it has to override the dark assumptions baked into `modules/shared/modern_template.j2` — the `<body>` classes, the teal nav dots, and the `#0B1120` print background. Those overrides are quarantined in an "engine overrides" block at the bottom of its `theme.html.j2`. If the wrapper ever grows real brand hooks, that block is what goes away.
 
@@ -89,7 +94,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | Macro | Purpose |
 |---|---|
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
-| `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
+| `section_divider(num, title, subtitle="")` | Section break between parts. Packs are free to render it their own way — `aaif` uses the source deck's oversized numeral rather than a "Part N" band, and takes optional `label` / `eyebrow` / `footnote` on top of the contract arguments. |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub) |
 | `callout(text, accent="primary")` | Bottom emphasis band |
@@ -181,6 +186,7 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
   - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
   - **The `aaif` pack is the first one built primitives-first.** It ships no `vis-*` compatibility layer, so nothing renders through it except slides written against the contract. `presentations/aaif-template` is its reference gallery and doubles as a regression check on the primitives. It is the closest thing the repo has to a proof that the contract is sufficient — and it is currently the only pack for which that is true.
+  - **`aaif` was retuned to the source Google Slides deck (August 2026).** Its first iteration was a white / indigo-coral-gradient / Instrument Sans skin that did not match the official template at all. `theme.html.j2`, `primitives.j2`, `slides.j2` and the gallery deck were rewritten against `Slides.pptx`: cream canvas, Space Grotesk + JetBrains Mono, the `--pt` unit, the 16:9 stage, and all 19 source layouts. `split_slide()`, `statement_slide()`, `stat_row()` and `closing_slide()` are kept as carry-overs for decks written against the first iteration; they are not in the source deck.
 
 - **Not done**
   - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.
