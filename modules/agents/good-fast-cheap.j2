@@ -1,0 +1,78 @@
+{#- modules/agents/good-fast-cheap.j2
+    The framing pair for the whole talk: the classic delivery triangle,
+    then the same triangle under an agent loop.
+
+    The second slide never says "you get all three" out loud. It shows the
+    whole triangle lit and names the loop; the claim is the picture. Saying
+    it in words turns an argument the audience makes for themselves into a
+    boast they can dismiss.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/agents/good-fast-cheap.j2" import
+          pick_two, agent_loops with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    tradeoff_triangle,
+    statement
+-%}
+
+
+{%- macro pick_two() -%}
+{#- Deliberately bare — no heading at all. Everyone in the room already
+    knows this triangle; the slide's whole job is to put it on the wall so
+    the next one can move it. Any words here are filler. -#}
+{%- call content_slide("Pick two") %}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "accent": "primary"},
+    {"label": "Cheap", "accent": "warning"},
+    {"label": "Fast",  "accent": "info"},
+  ], note="pick two") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro agent_loops() -%}
+{#- The same triangle, filled. Nothing explains it: the shape changing
+    between the two slides is the whole argument, and the audience closes
+    it themselves. -#}
+{%- call content_slide("Agents and Validators") %}
+  {{ slide_heading("", "Agents &amp; Validators") }}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "accent": "success"},
+    {"label": "Cheap", "accent": "success"},
+    {"label": "Fast",  "accent": "success"},
+  ], note="Coding Agents", filled=true) }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro loops_require_verifiers() -%}
+{#- The thesis, stated flat. The triangle slide deliberately never claims
+    "all three"; this does not claim it either. It names the condition the
+    rest of the talk spends its time on. -#}
+{{ statement([
+  {"text": "Agent Loops"},
+  {"text": "require", "muted": true},
+  {"text": "Verifiers"},
+]) }}
+{%- endmacro -%}
+
+
+{%- macro agents_validators_recap() -%}
+{#- Callback to the "Agents & Validators" triangle, now with each corner
+    naming what actually buys it. Same shape as the earlier slide, so the
+    audience recognises it; the sub-labels are the payoff. -#}
+{%- call content_slide("Agents and Validators: recap") %}
+  {{ slide_heading("", "Agents &amp; Validators") }}
+  {{ tradeoff_triangle([
+    {"label": "Good",  "sub": "(Verifiers pass)",          "accent": "success"},
+    {"label": "Cheap", "sub": "(No tokens required)",      "accent": "success"},
+    {"label": "Fast",  "sub": "(Parallel, simple reviews)","accent": "success"},
+  ], note="Coding Agents", filled=true) }}
+{%- endcall %}
+{%- endmacro -%}

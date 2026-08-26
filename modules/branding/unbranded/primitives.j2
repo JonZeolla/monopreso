@@ -12,13 +12,27 @@
 
 {%- macro _accent_class(name) -%}
 {%- set m = {
-  "primary":"unb-accent-primary",
-  "success":"unb-accent-success",
-  "warning":"unb-accent-warning",
-  "danger": "unb-accent-danger",
-  "info":   "unb-accent-info",
-  "neutral":"",
+  "primary":  "unb-accent-primary",
+  "secondary":"unb-accent-secondary",
+  "success":  "unb-accent-success",
+  "warning":  "unb-accent-warning",
+  "danger":   "unb-accent-danger",
+  "info":     "unb-accent-info",
+  "neutral":  "",
 } -%}{{- m.get(name, "") -}}
+{%- endmacro -%}
+
+{%- macro _accent_var(name) -%}
+{# CSS variable holding this accent's colour, for inline use. #}
+{%- set m = {
+  "primary":  "var(--unb-primary)",
+  "secondary":"var(--unb-secondary)",
+  "success":  "var(--unb-success)",
+  "warning":  "var(--unb-warning)",
+  "danger":   "var(--unb-danger)",
+  "info":     "var(--unb-info)",
+  "neutral":  "var(--unb-text)",
+} -%}{{- m.get(name, "var(--unb-text)") -}}
 {%- endmacro -%}
 
 
@@ -54,8 +68,17 @@
 </section>
 {%- endmacro -%}
 
+{%- macro content_slide(label) -%}
+{# Call-block wrapper owning the <section> + data-label, so a shared slide
+   never has to name a brand-specific section class:
+     {%- call content_slide("Lifecycle") %} ...body... {%- endcall %} #}
+<section class="unb-slide" data-label="{{ label }}">
+  {{ caller() }}
+</section>
+{%- endmacro -%}
+
 {%- macro slide_heading(label, title, subtitle="") -%}
-<div class="unb-label">{{ label }}</div>
+{%- if label %}<div class="unb-label">{{ label }}</div>{% endif %}
 <div class="unb-title">{{ title }}</div>
 {%- if subtitle %}<div class="unb-subtitle">{{ subtitle|safe }}</div>{% endif %}
 {%- endmacro -%}
@@ -109,11 +132,169 @@
 </div>
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3) -%}
-<div style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
+{%- macro card_grid(items, cols=3, size="md") -%}
+{# size="lg" bumps title/body type for slides where the grid IS the slide. #}
+<div class="{% if size == 'lg' %}cards-lg{% endif %}" style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
   {%- for item in items %}
     {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
   {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro pipe(stages) -%}
+{# Left-to-right pipeline of stage cards joined by arrows.
+   Each stage: {label, detail?, meta?, accent?, note?, below?}
+
+   `note` renders as an annotation hanging above the stage on a dotted
+   connector, so the same stage list can be shown twice — bare, then with
+   controls annotated onto it. #}
+{%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
+<div style="display:flex; align-items:stretch; justify-content:center; gap:8px; margin:18px 0;">
+  {%- for stage in stages %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" style="flex:0 0 auto; align-self:center; color:var(--unb-text-dim); font-size:22px; line-height:1;">&rarr;</div>
+  {%- endif %}
+  {%- set a = stage.accent | default("neutral") %}
+  <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:stretch;">
+    {%- if has_notes %}
+    <div style="min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
+      {%- if stage.note %}
+      <div style="background:var(--unb-surface-strong); border:1px solid {{ _accent_var(a) }}; border-radius:8px; padding:8px 10px; text-align:center;">
+        <p style="font-size:11px; font-weight:700; color:{{ _accent_var(a) }}; margin:0; line-height:1.35;">{{ stage.note|safe }}</p>
+      </div>
+      <div aria-hidden="true" style="width:0; height:14px; border-left:2px dotted {{ _accent_var(a) }};"></div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="unb-card {{ _accent_class(a) }}" style="flex:1; padding:16px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+      <p class="unb-card-title" style="margin:0; color:{{ _accent_var(a) }};">{{ stage.label }}</p>
+      {%- if stage.detail %}<p class="unb-card-body" style="margin:0;">{{ stage.detail|safe }}</p>{% endif %}
+      {%- if stage.meta %}<p style="margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--unb-text-dim);">{{ stage.meta }}</p>{% endif %}
+    </div>
+    {%- if stage.below %}
+    <p style="margin:8px 0 0 0; text-align:center; font-size:13px; line-height:1.45; color:var(--unb-text-dim);">{{ stage.below|safe }}</p>
+    {%- endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro statement(lines) -%}
+{# Full-slide declarative statement. No quote marks, no attribution — this
+   is the deck asserting something, not citing someone.
+   `lines`: [{text, muted?}] — one per rendered line. Muted lines render
+   smaller and dimmer, so connective words recede and the nouns carry. #}
+<section class="unb-slide" data-label="Statement" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    {%- for line in lines %}
+    {%- if line.muted %}
+    <p style="font-size:30px; font-weight:400; line-height:1.25; color:var(--unb-text-dim); margin:0;">{{ line.text|safe }}</p>
+    {%- else %}
+    <p style="font-size:62px; font-weight:800; line-height:1.15; color:var(--unb-text); margin:0;">{{ line.text|safe }}</p>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro quote(text, attribution, source="", url="") -%}
+{# Full-slide pull quote. `attribution` is the speaker; `source` is where
+   they said it; `url` makes the source a link. #}
+<section class="unb-slide" data-label="Quote" style="justify-content:center; align-items:center; text-align:center;">
+  <div style="max-width:900px;">
+    <p style="font-size:44px; font-weight:700; line-height:1.2; color:var(--unb-text); margin:0 0 28px 0;">&ldquo;{{ text|safe }}&rdquo;</p>
+    <p style="font-size:18px; font-weight:600; color:var(--unb-primary); margin:0;">{{ attribution }}</p>
+    {%- if source %}
+    <p style="font-size:13px; color:var(--unb-text-dim); margin:6px 0 0 0;">
+      {% if url %}<a href="{{ url }}">{{ source }}</a>{% else %}{{ source }}{% endif %}
+    </p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro matrix(headers, rows, caption="") -%}
+{# Comparison matrix. Columns are the things compared, rows are the
+   dimensions they are compared on.
+
+     headers: [{label, sub?}]
+     rows:    [{label, cells}]  where cells: [{level, text?}]
+     level:   strong | partial | weak
+
+   Read down a column for one option's profile; read across a row to see
+   which options cover that dimension. That second reading is the point:
+   it shows gaps being filled. #}
+{%- set _lvl = {"strong": "success", "partial": "warning", "weak": "danger"} %}
+{%- set _sym = {"strong": "●", "partial": "◐", "weak": "○"} %}
+<div style="margin:14px 0;">
+  <div style="display:grid; grid-template-columns:minmax(140px,1.25fr) repeat({{ headers|length }}, 1fr); gap:6px; align-items:stretch;">
+    <div></div>
+    {%- for h in headers %}
+    <div style="text-align:center; padding:4px;">
+      <p style="margin:0; font-size:13px; font-weight:700; color:var(--unb-text);">{{ h.label }}</p>
+      {%- if h.sub %}<p style="margin:0; font-size:10px; color:var(--unb-text-dim);">{{ h.sub }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- for row in rows %}
+    <div style="display:flex; align-items:center; padding:4px 8px;">
+      <p style="margin:0; font-size:12px; font-weight:600; line-height:1.3; color:var(--unb-text);">{{ row.label|safe }}</p>
+    </div>
+    {%- for cell in row.cells %}
+    {%- set a = _lvl.get(cell.level, "neutral") %}
+    <div class="unb-card {{ _accent_class(a) }}" aria-label="{{ cell.level | default('unrated') }}"
+         style="padding:8px 6px; text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;">
+      <span aria-hidden="true" style="font-size:15px; line-height:1; color:{{ _accent_var(a) }};">{{ _sym.get(cell.level, "○") }}</span>
+      {%- if cell.text %}<p style="margin:0; font-size:10px; line-height:1.3; color:var(--unb-text-dim);">{{ cell.text|safe }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+  {%- if caption %}<p style="margin:10px 0 0 0; text-align:center; font-size:11px; color:var(--unb-text-dim);">{{ caption|safe }}</p>{% endif %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro tradeoff_triangle(corners, note="", filled=false) -%}
+{# Good / fast / cheap style triangle. `corners` is exactly three
+   {label, accent}. `note` renders inside the shape. `filled` lights the
+   whole triangle instead of leaving it an outline.
+
+   Colours ride on `currentColor` so the SVG works in every pack. #}
+{%- set X = [230, 420, 40] %}
+{%- set Y = [40, 362, 362] %}
+{%- set SUBY = [62, 384, 384] %}
+<div style="display:flex; justify-content:center; align-items:center; margin:10px 0;">
+  <svg viewBox="-75 0 610 400" role="img" aria-label="{% for c in corners %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}{% if note %} — {{ note }}{% endif %}"
+       style="width:min(520px,60%); height:auto; max-height:46vh;">
+    <g style="color:{% if filled %}{{ _accent_var("success") }}{% else %}{{ _accent_var("neutral") }}{% endif %};">
+      <polygon points="230,74 420,334 40,334"
+               fill="currentColor" fill-opacity="{% if filled %}0.16{% else %}0{% endif %}"
+               stroke="currentColor" stroke-width="{% if filled %}4{% else %}2.5{% endif %}"
+               stroke-linejoin="round"/>
+    </g>
+    {%- for c in corners %}
+    <g style="color:{{ _accent_var(c.accent | default("neutral")) }};">
+      <text x="{{ X[loop.index0] }}" y="{{ Y[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="25" font-weight="700"
+            font-family="inherit">{{ c.label }}</text>
+      {%- if c.sub %}
+      <text x="{{ X[loop.index0] }}" y="{{ SUBY[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="15" font-weight="500" opacity="0.75"
+            font-family="inherit">{{ c.sub }}</text>
+      {%- endif %}
+    </g>
+    {%- endfor %}
+    {%- if note %}
+    <g style="color:var(--unb-text-dim);">
+      <text x="230" y="268" text-anchor="middle" fill="currentColor"
+            font-size="22" font-weight="600" font-family="inherit">{{ note }}</text>
+    </g>
+    {%- endif %}
+  </svg>
 </div>
 {%- endmacro -%}
 
@@ -124,6 +305,5 @@
 
      code_block(filename, lines)
      step_flow(steps)
-     pipe(stages)
      ide_mockup(filename, sidebar, code_lines, chat_panel=None)
    ──────────────────────────────────────────────────────────────── #}

@@ -1,0 +1,54 @@
+{#- modules/loops/loops.j2
+    Agentic loops — what you can run on a loop, and why loops are the
+    answer to AI slop.
+
+    These slides intentionally use the current vis-* compatibility layer so they
+    match the modern SANS/Zenable decks while the primitive migration described
+    in AGENTS.md is still underway. -#}
+
+{%- macro use_cases() -%}
+<section class="vis-slide" data-label="Loops" style="position:relative; overflow:hidden;">
+  <svg viewBox="0 0 24 24" aria-hidden="true"
+       style="position:absolute; inset:0; margin:auto; height:min(86vh, 86vw); width:min(86vh, 86vw); opacity:0.12; pointer-events:none;">
+    <defs>
+      <linearGradient id="loop-bg-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#14E0CC"/>
+        <stop offset="100%" stop-color="#4AA3F0"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#loop-bg-grad)" d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+  </svg>
+
+  <div style="position:relative; z-index:1; flex:1; display:flex; justify-content:center; align-items:center;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; column-gap:90px; row-gap:34px;">
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Database query tuning</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Compute efficiency</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Logs &rarr; bug fixes</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Goal-based development</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">User feedback &rarr; features</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Documentation grooming</p>
+      <p style="font-size:34px; font-weight:600; color:#fff; margin:0;">Integration verification</p>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro slop_thesis() -%}
+<section class="vis-slide" data-label="Why Loops" style="position:relative; overflow:hidden;">
+  <svg viewBox="0 0 24 24" aria-hidden="true"
+       style="position:absolute; inset:0; margin:auto; height:min(86vh, 86vw); width:min(86vh, 86vw); opacity:0.12; pointer-events:none;">
+    <defs>
+      <linearGradient id="slop-bg-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#14E0CC"/>
+        <stop offset="100%" stop-color="#4AA3F0"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#slop-bg-grad)" d="M12 6v3l4-4-4-4v3c-4.42 0-8 3.58-8 8 0 1.57.46 3.03 1.24 4.26L6.7 14.8c-.45-.83-.7-1.79-.7-2.8 0-3.31 2.69-6 6-6zm6.76 1.74L17.3 9.2c.44.84.7 1.79.7 2.8 0 3.31-2.69 6-6 6v-3l-4 4 4 4v-3c4.42 0 8-3.58 8-8 0-1.57-.46-3.03-1.24-4.26z"/>
+  </svg>
+
+  <div style="position:relative; z-index:1; flex:1; display:flex; justify-content:center; align-items:center; text-align:center;">
+    <p style="font-size:60px; font-weight:800; color:#fff; line-height:1.15; margin:0; max-width:20ch;">Let's talk about loops to manage AI Slop</p>
+  </div>
+</section>
+{%- endmacro -%}
