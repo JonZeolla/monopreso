@@ -1,0 +1,265 @@
+{# ================================================================
+   Building Modern AI Agents — AAIF Community Pittsburgh
+   ----------------------------------------------------------------
+   Inaugural AAIF Community Pittsburgh workshop, hosted at Google
+   Pittsburgh (6425 Penn Ave). Event: https://luma.com/cpeus3f9
+
+   Kickoff slides use the official AAIF template layouts (slides.j2),
+   then one section divider + starter content slide per agenda part:
+
+     1. MCP spec updates — the July 28 release
+     2. Lab · Build an MCP server, connect via goose
+     3. Enterprise-Managed Authorization (EMA) & auth workflows
+     4. Lab · agentgateway — observability, routing, control
+     5. Agent-to-Agent (A2A) communication & discovery
+
+   TODO markers flag copy that needs Jon's confirmation (times, WiFi,
+   QR, spec-change details). All times except lunch (noon, per the
+   event page) are placeholders.
+
+   This deck imports slides.j2 and is therefore AAIF-only — do not
+   point it at another brand pack.
+   ================================================================ #}
+
+{#- Brand pack. `branding` is injected by start.sh — never hardcode it. -#}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from   "modules/branding/" ~ branding ~ "/primitives.j2"
+   import  section_divider, slide_heading, callout, card, card_grid,
+           pros_cons, pill_row, code_block, step_flow %}
+{%- from   "modules/branding/" ~ branding ~ "/slides.j2"
+   import  content_slide, event_cover, welcome_slide, facts_slide,
+           agenda_slide, feature_slide, thanks_slide, join_slide,
+           columns_slide, table_slide, timeline_slide, closing_slide %}
+
+
+{# ── cover ───────────────────────────────────────────────────────── #}
+{#- Copy and layout mirror the official event cover in the AAIF
+    Slides deck: gradient tone, "Hosted by AAIF · with Google", and
+    the 09:00–13:00 window. The hero row is sized for a one-line
+    title, so this title sets its own size inline. -#}
+{{ event_cover(
+     "<span style='font-size:calc(40 * var(--pt));'>Building Modern AI Agents.</span>",
+     subtitle="Launch Series · Pittsburgh",
+     kicker="The AAIF Community Series",
+     meta="THU · AUG 27, 2026 · 09:00 — 13:00",
+     eyebrow="PITTSBURGH · CHAPTER",
+     tone="gradient",
+     hosted_label="Hosted by",
+     hosts=["<svg style='height:82%; max-width:92%; aspect-ratio:838/203; color:currentColor;'
+             aria-label='Agentic AI Foundation'><use href='#aaif-logo'/></svg>"],
+     with_label="With",
+     members=["<img src='presentations/2026-08-27-aaif-mcp-workshop/img/google-white.svg'
+               alt='Google' style='height:74%; max-width:88%;'>"]) }}
+
+
+{# ── welcome / doors open ────────────────────────────────────────── #}
+{{ welcome_slide(
+     "Building Modern AI Agents, <em>Launch Series.</em>",
+     kicker="Welcome · Grab a seat · Get your laptop online",
+     meta="THU · AUG 27, 2026 · 09:00 — 13:00 · GOOGLE PITTSBURGH · LUNCH AT NOON",
+     eyebrow="PITTSBURGH · 2026",
+     people_label="↳ Your host today",
+     people=[
+       {"name": "Jon Zeolla", "role": "AAIF Ambassador · CEO, Zenable",
+        "photo": "modules/shared/img/jonzeolla.jpeg"},
+     ],
+     chips_label="Hosted by",
+     chips=["<svg style='height:78%; max-width:88%; aspect-ratio:838/203; color:currentColor;'
+             aria-label='Agentic AI Foundation'><use href='#aaif-logo'/></svg>",
+            "AAIF · Pittsburgh",
+            "<img src='presentations/2026-08-27-aaif-mcp-workshop/img/google.svg'
+             alt='Google' style='height:78%; max-width:85%;'>"]) }}
+
+
+{# ── thank you ───────────────────────────────────────────────────── #}
+{{ thanks_slide(
+     "Thank you",
+     host_label="Today's host",
+     host="<strong style='color:var(--aaif-ink);'>Google Pittsburgh</strong> "
+          "<em>— the venue, the A/V, and lunch at noon.</em>",
+     members_label="Supported by",
+     members="Agentic AI Foundation · hosted at the Linux Foundation",
+     label="Host &amp; supporters",
+     eyebrow="01 · THANK YOU") }}
+
+
+{# ── about AAIF ──────────────────────────────────────────────────── #}
+{{ facts_slide(
+     "About the Agentic AI Foundation",
+     "A neutral, open foundation advancing agentic AI in the public interest. "
+     "Built on transparency, collaboration, and standardization — hosted at the "
+     "Linux Foundation and shaped by the community that ships it.",
+     label="About the AAIF",
+     eyebrow="02 · ABOUT",
+     facts=[
+       {"value": "2025", "label": "Founded"},
+       {"value": "100%", "label": "Vendor-neutral"},
+       {"value": "OPEN", "label": "By default"},
+     ],
+     highlight_label="The projects",
+     highlight="MCP&emsp;·&emsp;goose&emsp;·&emsp;AGENTS.md&emsp;·&emsp;agentgateway&emsp;·&emsp;A2A",
+     footnote="8 founding platinum members · AWS → OpenAI") }}
+
+
+{# ── agenda ──────────────────────────────────────────────────────── #}
+{# TODO: confirm per-segment times — the official cover pins
+   09:00–13:00 and the event page pins lunch at noon; the splits
+   in between are placeholders. #}
+{{ agenda_slide(
+     "Today's agenda",
+     [
+       {"time": "09:00 · 30m",  "title": "MCP spec updates",
+        "detail": "Welcome, then what changed in the July 28 release and why it matters."},
+       {"time": "09:30 · 75m",  "title": "Lab · MCP server",
+        "detail": "Build an MCP server and connect to it with goose."},
+       {"time": "10:45 · 30m",  "title": "EMA &amp; auth",
+        "detail": "Enterprise-Managed Authorization and authentication workflows."},
+       {"time": "11:15 · 45m",  "title": "Lab · agentgateway",
+        "detail": "Observability, routing, and control for your agents."},
+       {"time": "12:00 · 60m",  "title": "Lunch",
+        "detail": "Provided by Google. Thank you!"},
+     ],
+     label="Run-of-show · Today",
+     eyebrow="03 · RUN-OF-SHOW",
+     note="* Times approximate — labs flex; lunch does not.") }}
+
+
+{# ================================================================
+   Part 1 · MCP spec updates — the July 28 release
+   ================================================================ #}
+{{ section_divider(1, "MCP spec updates.",
+     "A review of the July 28 release — <em>what changed, what it unlocks.</em>",
+     label="Part 1",
+     eyebrow="04 · MCP SPEC",
+     footnote="MODELCONTEXTPROTOCOL.IO · SPEC · CHANGELOG") }}
+
+{# TODO: fill in the actual July 28 spec changes. #}
+{% call content_slide("What changed on July 28",
+                      "The headline changes and what they unlock.",
+                      label="Part 1 · MCP spec",
+                      eyebrow="04 · MCP SPEC") %}
+  {{ card_grid([
+       {"title": "TODO · Change one",   "body": "Summary of the spec change and who it affects.", "accent": "primary"},
+       {"title": "TODO · Change two",   "body": "Summary of the spec change and who it affects.", "accent": "primary"},
+       {"title": "TODO · Change three", "body": "Summary of the spec change and who it affects.", "accent": "primary"},
+     ], cols=3) }}
+{% endcall %}
+
+
+{# ================================================================
+   Part 2 · Lab — build an MCP server, connect via goose
+   ================================================================ #}
+{{ section_divider(2, "Lab · Build an MCP server.",
+     "Hands-on: stand up your own MCP server and <em>drive it with goose.</em>",
+     label="Part 2",
+     eyebrow="05 · LAB ONE",
+     footnote="BRING A LAPTOP · LINUX ENV PROVIDED IF YOU NEED ONE") }}
+
+{# TODO: point at the actual lab repo / instructions URL. #}
+{% call content_slide("Lab one — the plan",
+                      "Work at your own pace; flag a hand when you're stuck.",
+                      label="Part 2 · Lab",
+                      eyebrow="05 · LAB ONE") %}
+  {{ step_flow([
+       {"title": "Set up",   "detail": "Clone the lab repo, verify your environment. TODO: repo URL."},
+       {"title": "Build",    "detail": "Implement an MCP server with tools and resources."},
+       {"title": "Connect",  "detail": "Point goose at your server and drive it."},
+       {"title": "Stretch",  "detail": "Add prompts, elicitation, or the July 28 additions."},
+     ]) }}
+{% endcall %}
+
+
+{# ================================================================
+   Part 3 · Enterprise-Managed Authorization & auth workflows
+   ================================================================ #}
+{{ section_divider(3, "EMA &amp; authentication.",
+     "Enterprise-Managed Authorization — <em>who may do what, and how it's enforced.</em>",
+     label="Part 3",
+     eyebrow="06 · EMA &amp; AUTH") }}
+
+{# TODO: tune to the depth you want — this frames the problem. #}
+{{ columns_slide(
+     "Auth for agents is not auth for apps",
+     [
+       {"label": "The problem",
+        "body": "Agents act on a user's behalf across many services. Static API keys "
+                "and per-app OAuth grants don't capture delegation, scope, or the "
+                "enterprise's policy — <em>who</em> authorized <em>what</em>, for "
+                "<em>how long</em>."},
+       {"label": "What EMA adds",
+        "body": "Enterprise-Managed Authorization puts the enterprise in the loop: "
+                "centrally managed grants, auditable delegation, and authorization "
+                "workflows that survive the hop from user → agent → tool. "
+                "TODO: align with the current EMA draft."},
+     ],
+     label="Part 3 · EMA",
+     eyebrow="06 · EMA &amp; AUTH") }}
+
+
+{# ================================================================
+   Part 4 · Lab — agentgateway
+   ================================================================ #}
+{{ section_divider(4, "Lab · agentgateway.",
+     "Put a gateway in front of your agents — <em>observability, routing, control.</em>",
+     label="Part 4",
+     eyebrow="07 · LAB TWO",
+     footnote="BUILDS ON LAB ONE — KEEP YOUR MCP SERVER RUNNING") }}
+
+{# TODO: point at the actual lab repo / instructions URL. #}
+{% call content_slide("Lab two — the plan",
+                      "Integrate agentgateway with the MCP server from lab one.",
+                      label="Part 4 · Lab",
+                      eyebrow="07 · LAB TWO") %}
+  {{ step_flow([
+       {"title": "Deploy",  "detail": "Run agentgateway in front of your MCP server. TODO: repo URL."},
+       {"title": "Observe", "detail": "Trace the traffic — see every tool call in flight."},
+       {"title": "Route",   "detail": "Federate multiple servers behind one endpoint."},
+       {"title": "Control", "detail": "Apply policy: allow, deny, and rate-limit tool calls."},
+     ]) }}
+{% endcall %}
+
+
+{# ================================================================
+   Part 5 · Agent-to-Agent communication & discovery
+   ================================================================ #}
+{{ section_divider(5, "Agent-to-Agent.",
+     "When agents talk to agents — <em>communication, discovery, trust.</em>",
+     label="Part 5",
+     eyebrow="08 · A2A") }}
+
+{# TODO: tune to the depth you want — this frames the topics. #}
+{% call content_slide("A2A — what we'll cover",
+                      "From one agent with tools to a network of agents.",
+                      label="Part 5 · A2A",
+                      eyebrow="08 · A2A") %}
+  {{ card_grid([
+       {"title": "Communication", "body": "How agents exchange tasks and results across org and vendor boundaries.", "accent": "primary"},
+       {"title": "Discovery",     "body": "How an agent finds another agent — capabilities, cards, and registries.", "accent": "primary"},
+       {"title": "Trust",         "body": "Identity, authorization, and what EMA means once both sides are agents.", "accent": "primary"},
+     ], cols=3) }}
+{% endcall %}
+
+
+{# ── join / QR ───────────────────────────────────────────────────── #}
+{{ join_slide(
+     "Stay in the loop.",
+     kicker="Take it with you",
+     body="Recaps, lab repos, decks, and the next event — "
+          "<em>straight to where the community lives.</em>",
+     links=[
+       "AAIF → AAIF.IO",
+       "COMMUNITY → AAIF.IO / COMMUNITY",
+       "NEXT EVENT → LUMA.COM / EOB7XZDB",
+     ],
+     qr="<img src='presentations/2026-08-27-aaif-mcp-workshop/img/luma-qr.svg'
+          alt='QR code for luma.com/aaif-pittsburgh' style='width:84%; height:auto;'>",
+     qr_caption="Scan to join",
+     tone="navy",
+     eyebrow="09 · JOIN") }}
+
+
+{# ── closing ─────────────────────────────────────────────────────── #}
+{{ closing_slide(lines=[
+     "JON ZEOLLA · AAIF AMBASSADOR · CEO, ZENABLE",
+     "AAIF.IO / COMMUNITY · PITTSBURGH",
+   ]) }}
