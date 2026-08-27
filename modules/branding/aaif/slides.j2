@@ -85,8 +85,8 @@
    is the small mono word between the two groups. #}
 {%- macro event_cover(title, subtitle="", kicker="", meta="", eyebrow="",
                       hosted_label="Hosted by", hosts=[], with_label="", members=[],
-                      footer="AAIF.IO / COMMUNITY") -%}
-<section class="slide aaif-slide aaif-slide--light aaif-slide--nonumber" data-label="{{ title|striptags }}">
+                      footer="AAIF.IO / COMMUNITY", tone="light") -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }} aaif-slide--nonumber" data-label="{{ title|striptags }}">
   <div class="aaif-stage"><div class="aaif-canvas">
     {{ cover_logo() }}
     {%- if eyebrow %}<div class="aaif-eyebrow" style="top:5.51%; font-size:calc(8.5 * var(--pt));">{{ eyebrow }}</div>{% endif %}
@@ -97,7 +97,7 @@
     {%- endif %}
     <h1 class="aaif-title aaif-title--hero" style="position:absolute; left:5.1%; right:5%; top:calc(32.89% + 3.6 * var(--pt));">{{ title|safe }}</h1>
     {%- if subtitle %}
-    <p class="aaif-title" style="position:absolute; left:5.5%; right:5%; top:calc(54.22% + 3.6 * var(--pt)); font-size:calc(20 * var(--pt)); color:var(--aaif-muted);">{{ subtitle|safe }}</p>
+    <p class="aaif-title" style="position:absolute; left:5.5%; right:5%; top:calc(54.22% + 3.6 * var(--pt)); font-size:calc(20 * var(--pt)); {% if tone == 'light' %}color:var(--aaif-muted);{% else %}opacity:0.85;{% endif %}">{{ subtitle|safe }}</p>
     {%- endif %}
     {%- if meta %}
     <p class="aaif-mono" style="position:absolute; left:5.5%; right:5%; top:calc(64.36% + 3.6 * var(--pt)); font-size:calc(14 * var(--pt)); font-weight:700;">{{ meta|safe }}</p>
@@ -108,9 +108,9 @@
     <div style="position:absolute; left:5.5%; right:5.5%; top:79.64%; height:7.47%;
                 display:flex; align-items:center; gap:calc(9 * var(--pt));">
       {%- if hosted_label %}<span class="aaif-label aaif-label--sm" style="flex:0 0 15.17%;">{{ hosted_label|upper }}</span>{% endif %}
-      {%- for h in hosts %}<span class="aaif-chip" style="flex:0 0 20.79%; align-self:stretch;">{{ h }}</span>{% endfor %}
+      {%- for h in hosts %}<span class="aaif-chip" style="flex:0 0 20.79%; align-self:stretch;">{{ h|safe }}</span>{% endfor %}
       {%- if with_label %}<span class="aaif-label aaif-label--sm" style="flex:0 0 7.87%; padding-left:calc(6 * var(--pt));">{{ with_label|upper }}</span>{% endif %}
-      {%- for m in members %}<span class="aaif-chip" style="flex:0 0 19.1%; align-self:stretch;">{{ m }}</span>{% endfor %}
+      {%- for m in members %}<span class="aaif-chip" style="flex:0 0 19.1%; align-self:stretch;">{{ m|safe }}</span>{% endfor %}
     </div>
     {%- endif %}
 
@@ -160,7 +160,7 @@
     <div class="aaif-label aaif-label--sm" style="position:absolute; left:5%; top:calc(75.38% + 3.6 * var(--pt));">{{ chips_label|upper }}</div>
     {%- endif %}
     <div style="position:absolute; left:5%; right:5%; top:80.71%; height:6.76%; display:flex; gap:calc(11 * var(--pt));">
-      {%- for c in chips %}<span class="aaif-chip" style="flex:1 1 0; font-size:calc(9 * var(--pt));">{{ c }}</span>{% endfor %}
+      {%- for c in chips %}<span class="aaif-chip" style="flex:1 1 0; font-size:calc(9 * var(--pt));">{{ c|safe }}</span>{% endfor %}
     </div>
     {%- endif %}
   </div></div>
