@@ -28,8 +28,33 @@
            pros_cons, pill_row, code_block, step_flow %}
 {%- from   "modules/branding/" ~ branding ~ "/slides.j2"
    import  content_slide, event_cover, welcome_slide, facts_slide,
-           agenda_slide, feature_slide, thanks_slide, join_slide,
+           agenda_slide, feature_slide, join_slide,
            columns_slide, table_slide, timeline_slide, closing_slide %}
+
+
+{# ── deck-local helper: two-QR "find the lab" slide ──────────────────
+   Two centred QR codes with a hairline between them, a mono URL
+   under each — no boxes. Each side: {qr, url, label}. #}
+{%- macro lab_links_slide(title, left, right, subtitle="", label="", eyebrow="") -%}
+{% call content_slide(title, subtitle, label=label, eyebrow=eyebrow) %}
+  <div style="display:grid; grid-template-columns:1fr calc(1.2 * var(--pt)) 1fr; align-items:stretch; height:92%;">
+    {%- for side in [left, right] %}
+    {%- if loop.index == 2 %}<div style="background:var(--aaif-rule-strong);"></div>{% endif %}
+    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:calc(11 * var(--pt));">
+      {%- if side.label %}<p class="aaif-label aaif-label--sm" style="margin:0;">{{ side.label|upper }}</p>{% endif %}
+      <img src="{{ side.qr }}" alt="QR code for {{ side.url }}" style="width:calc(100 * var(--pt)); height:auto;">
+      <p class="aaif-mono" style="font-size:calc(8.5 * var(--pt)); margin:0;">{{ side.url }}</p>
+      {%- if side.bullets %}
+      <ul style="margin:0; padding:0; list-style:none; font-family:var(--aaif-body);
+                 font-size:calc(11 * var(--pt)); line-height:1.6; color:var(--aaif-muted); text-align:left;">
+        {%- for b in side.bullets %}<li>&mdash;&ensp;{{ b }}</li>{% endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+    {%- endfor %}
+  </div>
+{% endcall %}
+{%- endmacro -%}
 
 
 {# ── cover ───────────────────────────────────────────────────────── #}
@@ -64,23 +89,10 @@
         "photo": "modules/shared/img/jonzeolla.jpeg"},
      ],
      chips_label="Hosted by",
-     chips=["<svg style='height:78%; max-width:88%; aspect-ratio:838/203; color:currentColor;'
+     chips=["<svg style='height:92%; max-width:94%; aspect-ratio:838/203; color:currentColor;'
              aria-label='Agentic AI Foundation'><use href='#aaif-logo'/></svg>",
-            "AAIF · Pittsburgh",
             "<img src='presentations/2026-08-27-aaif-mcp-workshop/img/google.svg'
-             alt='Google' style='height:78%; max-width:85%;'>"]) }}
-
-
-{# ── thank you ───────────────────────────────────────────────────── #}
-{{ thanks_slide(
-     "Thank you",
-     host_label="Today's host",
-     host="<strong style='color:var(--aaif-ink);'>Google Pittsburgh</strong> "
-          "<em>— the venue, the A/V, and lunch at noon.</em>",
-     members_label="Supported by",
-     members="Agentic AI Foundation · hosted at the Linux Foundation",
-     label="Host &amp; supporters",
-     eyebrow="01 · THANK YOU") }}
+             alt='Google' style='height:92%; max-width:90%;'>"]) }}
 
 
 {# ── about AAIF ──────────────────────────────────────────────────── #}
@@ -90,15 +102,14 @@
      "Built on transparency, collaboration, and standardization — hosted at the "
      "Linux Foundation and shaped by the community that ships it.",
      label="About the AAIF",
-     eyebrow="02 · ABOUT",
+     eyebrow="01 · ABOUT",
      facts=[
        {"value": "2025", "label": "Founded"},
        {"value": "100%", "label": "Vendor-neutral"},
        {"value": "OPEN", "label": "By default"},
      ],
      highlight_label="The projects",
-     highlight="MCP&emsp;·&emsp;goose&emsp;·&emsp;AGENTS.md&emsp;·&emsp;agentgateway&emsp;·&emsp;A2A",
-     footnote="8 founding platinum members · AWS → OpenAI") }}
+     highlight="MCP&emsp;·&emsp;goose&emsp;·&emsp;AGENTS.md&emsp;·&emsp;agentgateway&emsp;·&emsp;A2A") }}
 
 
 {# ── agenda ──────────────────────────────────────────────────────── #}
@@ -109,40 +120,259 @@
      "Today's agenda",
      [
        {"time": "09:00 · 30m",  "title": "MCP spec updates",
-        "detail": "Welcome, then what changed in the July 28 release and why it matters."},
-       {"time": "09:30 · 75m",  "title": "Lab · MCP server",
-        "detail": "Build an MCP server and connect to it with goose."},
-       {"time": "10:45 · 30m",  "title": "EMA &amp; auth",
-        "detail": "Enterprise-Managed Authorization and authentication workflows."},
+        "detail": "Welcome, then what changed in the July 28 release"},
+       {"time": "09:30 · 60m",  "title": "Lab · MCP server",
+        "detail": "Build an MCP server and connect to it with goose"},
+       {"time": "10:30 · 15m",  "title": "Break",
+        "detail": "Stretch, coffee, catch up"},
+       {"time": "10:45 · 30m",  "title": "EMA",
+        "detail": "Enterprise-Managed Authorization"},
        {"time": "11:15 · 45m",  "title": "Lab · agentgateway",
-        "detail": "Observability, routing, and control for your agents."},
+        "detail": "Observability, routing, and control for your agents"},
        {"time": "12:00 · 60m",  "title": "Lunch",
-        "detail": "Provided by Google. Thank you!"},
+        "detail": "Provided by Google, thank you!"},
      ],
      label="Run-of-show · Today",
-     eyebrow="03 · RUN-OF-SHOW",
-     note="* Times approximate — labs flex; lunch does not.") }}
+     eyebrow="02 · RUN-OF-SHOW",
+     note="* Times approximate.") }}
 
 
 {# ================================================================
    Part 1 · MCP spec updates — the July 28 release
    ================================================================ #}
 {{ section_divider(1, "MCP spec updates.",
-     "A review of the July 28 release — <em>what changed, what it unlocks.</em>",
+     "A review of the July 28 release",
      label="Part 1",
-     eyebrow="04 · MCP SPEC",
+     eyebrow="03 · MCP SPEC",
      footnote="MODELCONTEXTPROTOCOL.IO · SPEC · CHANGELOG") }}
 
-{# TODO: fill in the actual July 28 spec changes. #}
-{% call content_slide("What changed on July 28",
-                      "The headline changes and what they unlock.",
-                      label="Part 1 · MCP spec",
-                      eyebrow="04 · MCP SPEC") %}
+{# Source: blog.modelcontextprotocol.io/posts/2026-07-28/ and the
+   mcp-authorization-101 learn deck. #}
+
+{% call content_slide("Stateless MCP",
+                      label="⚠️ Breaking change",
+                      eyebrow="03 · MCP SPEC") %}
+  <div style="display:flex; flex-direction:column; align-items:center; gap:calc(8 * var(--pt)); height:100%;">
+    <video class="aaif-frame" style="width:76%; max-height:84%;"
+           src="presentations/2026-08-27-aaif-mcp-workshop/img/stateless-core-demo.mp4"
+           autoplay loop muted playsinline preload="metadata"
+           aria-label="Before and after: a sticky-session load balancer pinning a client to one instance, versus round-robin across three instances"></video>
+    <p class="aaif-label aaif-label--sm" style="text-transform:none;">
+      Source: blog.modelcontextprotocol.io/posts/2026-07-28/
+    </p>
+  </div>
+{% endcall %}
+
+
+{% call content_slide("Multi Round-Trip Requests (MRTR)",
+                      "Replaces server-initiated elicitation/create, sampling/createMessage, and roots/list (SEP-2322)",
+                      label="⚠️ Breaking change",
+                      eyebrow="03 · MCP SPEC") %}
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:calc(16 * var(--pt)); align-items:start;">
+    {{ code_block("server responds", [
+         '"result": {',
+         '  "resultType": "input_required",',
+         '  "inputRequests": {',
+         '    "github_login": {',
+         '      "method": "elicitation/create",',
+         '      "params": { ... }',
+         '    }',
+         '  },',
+         '  "requestState": "AEAD-protected blob"',
+         '}',
+       ]) }}
+    {{ code_block("client retries with a new id", [
+         '"method": "tools/call",',
+         '"id": 2,',
+         '"params": {',
+         '  ...,',
+         '  "inputResponses": {',
+         '    "github_login": { "action": "accept", ... }',
+         '  },',
+         '  "requestState": "AEAD-protected blob"',
+         '}',
+       ]) }}
+  </div>
+  <p class="aaif-card-body" style="margin-top:calc(10 * var(--pt)); font-size:calc(9 * var(--pt));">
+    No longer requires long-held connections.
+  </p>
+{% endcall %}
+
+
+{% call content_slide("Stateless everywhere",
+                      eyebrow="03 · MCP SPEC") %}
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:calc(18 * var(--pt)); align-items:start;">
+    <div>
+      <p class="aaif-label aaif-label--sm">Before · stateful (SSE)</p>
+      <pre class="mermaid" style="background:transparent; margin-top:calc(6 * var(--pt));">
+sequenceDiagram
+  participant C as Client
+  participant LB as Load Balancer (sticky)
+  participant A as Instance A
+  C->>LB: tools/call
+  LB->>A: routed, session pinned to A
+  A-->>C: server-initiated elicitation/create<br/>pushed down a held-open stream
+  Note over A: A holds the in-flight call<br/>and the open stream
+  C-->>A: elicitation result, which must reach A
+  A-->>C: tool result
+  Note over LB,A: Needs sticky routing or shared storage.<br/>Lose the stream and the call is lost
+      </pre>
+    </div>
+    <div>
+      <p class="aaif-label aaif-label--sm">After · MRTR</p>
+      <pre class="mermaid" style="background:transparent; margin-top:calc(6 * var(--pt));">
+sequenceDiagram
+  participant U as User
+  participant C as Client
+  participant S as Server (any instance)
+  C->>S: tools/call (id 1)
+  S-->>C: InputRequiredResult (id 1)<br/>resultType input_required + requestState
+  Note over S: Request ends here.<br/>Nothing is held in server memory
+  C->>U: prompt for the requested input
+  U-->>C: answers
+  C->>S: tools/call (id 2) + inputResponses + requestState
+  Note over S: Any instance. State arrives in the<br/>echoed blob, which is untrusted input
+  S-->>C: Result (id 2)
+      </pre>
+    </div>
+  </div>
+{% endcall %}
+
+
+{% call content_slide("DCR is deprecated in favour of CIMD",
+                      "With Client ID Metadata Documents the client_id is an HTTPS URL the client controls (SEP-2352)",
+                      label="⚠️ Deprecation",
+                      eyebrow="03 · MCP SPEC") %}
+  {{ pros_cons(
+       [
+         {"title": "No registration step",
+          "detail": "One client_id works at every AS that supports CIMD."},
+         {"title": "Identity is verifiable",
+          "detail": "Domain control backs the client's identity."},
+         {"title": "Updates propagate",
+          "detail": "Every AS reads the new metadata on its next fetch."},
+       ],
+       [
+         {"title": "A row per client, per server",
+          "detail": "Each client gets a minted, non-portable client_id."},
+         {"title": "Registrations outlive the client",
+          "detail": "Stale client records accumulate silently."},
+         {"title": "Anyone can register",
+          "detail": "The consent-screen name and logo are attacker-supplied."},
+       ],
+       "Benefits · CIMD", "Drawbacks · DCR") }}
+{% endcall %}
+
+
+{% call content_slide("DCR vs CIMD",
+                      eyebrow="03 · MCP SPEC") %}
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:calc(18 * var(--pt)); align-items:start;">
+    <div>
+      <p class="aaif-label aaif-label--sm">DCR (RFC 7591)</p>
+      <pre class="mermaid" style="background:transparent; margin-top:calc(6 * var(--pt));">
+sequenceDiagram
+  participant C as MCP Client
+  participant AS as Authorization Server
+  C->>AS: GET authorization server metadata (RFC 8414)
+  AS-->>C: metadata incl. registration_endpoint
+  C->>AS: POST /register (client_name, redirect_uris)
+  Note over AS: AS writes a client record,<br/>one row per client, per AS
+  AS-->>C: client_id (+ client_secret)
+  Note over C,AS: The minted client_id is local:<br/>it isn't portable to another AS
+  C->>AS: /authorize?client_id=(minted)
+  AS-->>C: consent screen shows self-asserted client_name
+      </pre>
+    </div>
+    <div>
+      <p class="aaif-label aaif-label--sm">CIMD (draft)</p>
+      <pre class="mermaid" style="background:transparent; margin-top:calc(6 * var(--pt));">
+sequenceDiagram
+  participant C as MCP Client
+  participant M as Metadata URL (client-hosted)
+  participant AS as Authorization Server
+  Note over C,M: Client already hosts metadata JSON at a<br/>stable HTTPS URL, and that URL is the client_id
+  C->>AS: /authorize?client_id=https://client.dev/oauth/metadata.json
+  Note over AS: client_id is a URL, so fetch it.<br/>No registration record is written
+  AS->>M: GET the client_id URL
+  M-->>AS: client_id, client_name, client_uri, redirect_uris
+  Note over AS: 200 only, no redirects followed.<br/>Document client_id MUST equal the URL
+  AS-->>C: consent screen shows fetched client_name
+      </pre>
+    </div>
+  </div>
+{% endcall %}
+
+
+{% call content_slide("Smaller changes",
+                      eyebrow="03 · MCP SPEC") %}
   {{ card_grid([
-       {"title": "TODO · Change one",   "body": "Summary of the spec change and who it affects.", "accent": "primary"},
-       {"title": "TODO · Change two",   "body": "Summary of the spec change and who it affects.", "accent": "primary"},
-       {"title": "TODO · Change three", "body": "Summary of the spec change and who it affects.", "accent": "primary"},
+       {"title": "Header-based routing", "accent": "primary",
+        "body": "Streamable HTTP requests now carry Mcp-Method and Mcp-Name headers, so gateways, rate limiters, and WAFs route and meter without parsing JSON bodies (SEP-2243). We'll use this in the agentgateway lab."},
+       {"title": "Cacheable list results", "accent": "neutral",
+        "body": "tools/list, prompts/list, resources/list, and resources/read responses include ttlMs and cacheScope, enabling deterministic ordering and stable prompt caches across reconnects (SEP-2549)."},
+       {"title": "Issuer validation", "accent": "warning",
+        "body": "Authorization servers must return the RFC 9207 iss parameter and clients must validate it before code redemption, closing a mix-up attack class (SEP-2468)."},
      ], cols=3) }}
+{% endcall %}
+
+
+{% call content_slide("Tasks",
+                      "Async tool calls, now an official extension (SEP-2663)",
+                      eyebrow="03 · MCP SPEC") %}
+  {{ card_grid([
+       {"title": "Async tool calls", "accent": "primary",
+        "body": "A call can return a task instead of a result; the client polls tasks/get and picks up the result when it's ready."},
+       {"title": "Client signals, server decides", "accent": "primary",
+        "body": "The client signals task support on the request; the server decides whether to run the call as a task."},
+       {"title": "One stream for updates", "accent": "neutral",
+        "body": "io.modelcontextprotocol/tasks replaces HTTP GET notifications with a single subscriptions/listen stream."},
+     ], cols=3) }}
+{% endcall %}
+
+
+{% call content_slide("Deprecations",
+                      "Deprecated features sunset after 12 months (SEP-2577)",
+                      eyebrow="03 · MCP SPEC") %}
+  {{ card_grid([
+       {"title": "Roots, Sampling, Logging", "accent": "warning",
+        "body": "The server-initiated versions are deprecated; MRTR carries the same interactions as answered requests."},
+       {"title": "HTTP+SSE transport", "accent": "warning",
+        "body": "The legacy transport is deprecated in favour of Streamable HTTP."},
+       {"title": "Dynamic Client Registration", "accent": "warning",
+        "body": "Deprecated in favour of CIMD. Existing registrations keep working during the offramp."},
+     ], cols=3) }}
+  {{ callout("All four Tier 1 SDKs (TypeScript, Python, Go, C#) already ship 2026-07-28 support; the Rust SDK is in beta.", accent="neutral") }}
+{% endcall %}
+
+
+{# ── roadmap: closes the 30-minute spec block ────────────────────── #}
+{% call content_slide("The next five priority areas",
+                      eyebrow="03 · MCP SPEC") %}
+  <div style="display:grid; grid-template-columns:56% 1fr; gap:calc(22 * var(--pt)); align-items:start; height:100%;">
+    <div style="display:flex; flex-direction:column; gap:calc(7 * var(--pt));">
+      <img src="presentations/2026-08-27-aaif-mcp-workshop/img/priority-areas.svg"
+           alt="MCP roadmap priority areas: agentic messaging primitives; HTTP-native transport unification and hardening; agent identity and enterprise-ready security; improved primitives; improved SDK developer experience"
+           style="width:100%;">
+      <p class="aaif-label aaif-label--sm" style="text-transform:none; text-align:center;">
+        blog.modelcontextprotocol.io/posts/mcp-roadmap/
+      </p>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:calc(13 * var(--pt)); padding-top:calc(6 * var(--pt));">
+      {%- for t, d in [
+        ("Agent identity and enterprise-ready security",
+         "Standardised mechanisms for agents running as cloud workloads to be recognised and trusted, moving beyond browser-based authorization. Near term: DPoP and Workload Identity Federation."),
+        ("Agentic messaging primitives",
+         "Extending MCP beyond request-response to support longer-running loops, server-pushed results, and mid-flight work steering."),
+        ("HTTP-native transport unification",
+         "Remote MCP servers as standard HTTP workloads, with local deployment modes unified under a single transport."),
+      ] %}
+      <div>
+        <p class="aaif-card-title" style="font-size:calc(12 * var(--pt)); margin:0;">{{ t }}</p>
+        <p class="aaif-card-body" style="font-size:calc(9.5 * var(--pt)); margin-top:calc(3 * var(--pt));">{{ d }}</p>
+      </div>
+      {%- endfor %}
+    </div>
+  </div>
 {% endcall %}
 
 
@@ -150,93 +380,161 @@
    Part 2 · Lab — build an MCP server, connect via goose
    ================================================================ #}
 {{ section_divider(2, "Lab · Build an MCP server.",
-     "Hands-on: stand up your own MCP server and <em>drive it with goose.</em>",
+     "Hands-on: stand up your own MCP server and <em>drive it with goose</em>",
      label="Part 2",
-     eyebrow="05 · LAB ONE",
+     eyebrow="04 · LAB ONE",
      footnote="BRING A LAPTOP · LINUX ENV PROVIDED IF YOU NEED ONE") }}
 
-{# TODO: point at the actual lab repo / instructions URL. #}
 {% call content_slide("Lab one — the plan",
-                      "Work at your own pace; flag a hand when you're stuck.",
+                      "Work at your own pace; flag a hand when you're stuck",
                       label="Part 2 · Lab",
-                      eyebrow="05 · LAB ONE") %}
+                      eyebrow="04 · LAB ONE") %}
   {{ step_flow([
-       {"title": "Set up",   "detail": "Clone the lab repo, verify your environment. TODO: repo URL."},
+       {"title": "Set up",   "detail": "Clone the lab repo, verify your environment."},
        {"title": "Build",    "detail": "Implement an MCP server with tools and resources."},
        {"title": "Connect",  "detail": "Point goose at your server and drive it."},
        {"title": "Stretch",  "detail": "Add prompts, elicitation, or the July 28 additions."},
      ]) }}
 {% endcall %}
 
+{{ lab_links_slide(
+     "Get Started with MCP",
+     {"label": "Lab repo",
+      "qr": "presentations/2026-08-27-aaif-mcp-workshop/img/qr-mcp-lab.svg",
+      "url": "github.com/Zenable-io/labs/tree/main/labs/mcp-get-started",
+      "bullets": ["Available on GitHub", "Run on your computer"]},
+     {"label": "Guided workshop",
+      "qr": "presentations/2026-08-27-aaif-mcp-workshop/img/qr-zenable-learn.svg",
+      "url": "zenable.app/learn?tab=workshops",
+      "bullets": ["Use the lab environment", "Run in a hosted cloud sandbox"]},
+     label="Part 2 · Lab",
+     eyebrow="04 · LAB ONE") }}
+
+{% call content_slide("Getting into the Learning Hub",
+                      eyebrow="04 · LAB ONE") %}
+  <div style="display:flex; justify-content:center; align-items:flex-start; gap:calc(36 * var(--pt));">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div style="display:flex; align-items:center; gap:calc(8 * var(--pt)); height:calc(24 * var(--pt));">
+        <div class="aaif-circle" style="width:calc(20 * var(--pt)); flex:none;">1</div>
+        <p class="aaif-card-body" style="margin:0;">Open <strong>Learning Hub</strong> in the sidebar</p>
+      </div>
+      <img src="presentations/2026-08-27-aaif-mcp-workshop/img/learning-hub-nav.png"
+           alt="Zenable sidebar with an arrow pointing to the Learning Hub entry"
+           class="aaif-frame" style="height:46vh; width:auto; margin-top:calc(10 * var(--pt));">
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div style="display:flex; align-items:center; gap:calc(8 * var(--pt)); height:calc(24 * var(--pt));">
+        <div class="aaif-circle" style="width:calc(20 * var(--pt)); flex:none;">2</div>
+        <p class="aaif-card-body" style="margin:0;">Pick the <strong>Workshops</strong> tab</p>
+      </div>
+      <img src="presentations/2026-08-27-aaif-mcp-workshop/img/learning-hub-workshops.png"
+           alt="Interactive Learning page with an arrow pointing to the Workshops tab"
+           class="aaif-frame" style="height:46vh; width:auto; margin-top:calc(10 * var(--pt));">
+    </div>
+  </div>
+{% endcall %}
+
+
+{# ── break ───────────────────────────────────────────────────────── #}
+{{ feature_slide(
+     "Break.",
+     kicker="10:30 · 15 minutes",
+     meta="BACK AT 10:45",
+     tone="dark",
+     eyebrow="BREAK") }}
+
 
 {# ================================================================
    Part 3 · Enterprise-Managed Authorization & auth workflows
    ================================================================ #}
-{{ section_divider(3, "EMA &amp; authentication.",
-     "Enterprise-Managed Authorization — <em>who may do what, and how it's enforced.</em>",
+{{ section_divider(3, "Enterprise Managed Authentication.",
+     "Centrally managed MCP access",
      label="Part 3",
-     eyebrow="06 · EMA &amp; AUTH") }}
+     eyebrow="05 · EMA &amp; AUTH") }}
 
-{# TODO: tune to the depth you want — this frames the problem. #}
 {{ columns_slide(
      "Auth for agents is not auth for apps",
      [
        {"label": "The problem",
-        "body": "Agents act on a user's behalf across many services. Static API keys "
-                "and per-app OAuth grants don't capture delegation, scope, or the "
-                "enterprise's policy — <em>who</em> authorized <em>what</em>, for "
-                "<em>how long</em>."},
-       {"label": "What EMA adds",
-        "body": "Enterprise-Managed Authorization puts the enterprise in the loop: "
-                "centrally managed grants, auditable delegation, and authorization "
-                "workflows that survive the hop from user → agent → tool. "
-                "TODO: align with the current EMA draft."},
+        "body": "<ul style='margin:0; padding:0; list-style:none; line-height:1.9;'>"
+                "<li style='padding-left:1.5em; text-indent:-1.5em;'>&mdash;&ensp;Today, users authorize MCP access</li>"
+                "<li style='padding-left:1.5em; text-indent:-1.5em;'>&mdash;&ensp;Centrally managing MCP access requires proxies or layer 7 firewalls</li>"
+                "</ul>"},
+       {"label": "The solution",
+        "body": "Configure IdPs and Authorization Servers to use ID-JAGs."
+                "<ul style='margin:calc(10 * var(--pt)) 0 0; padding:0; list-style:none; line-height:1.9;'>"
+                "<li style='padding-left:1.5em; text-indent:-1.5em;'>&mdash;&ensp;IdP administrators now authorize MCP access</li>"
+                "<li style='padding-left:1.5em; text-indent:-1.5em;'>&mdash;&ensp;No change to Resource Server token endpoints (MCP)</li>"
+                "<li style='padding-left:1.5em; text-indent:-1.5em;'>&mdash;&ensp;Minimal change to Authorization Servers</li>"
+                "</ul>"},
      ],
      label="Part 3 · EMA",
-     eyebrow="06 · EMA &amp; AUTH") }}
+     eyebrow="05 · EMA &amp; AUTH") }}
+
+{{ feature_slide(
+     "Demo.",
+     kicker="EMA in action",
+     tone="gradient",
+     eyebrow="05 · EMA &amp; AUTH") }}
 
 
 {# ================================================================
    Part 4 · Lab — agentgateway
    ================================================================ #}
 {{ section_divider(4, "Lab · agentgateway.",
-     "Put a gateway in front of your agents — <em>observability, routing, control.</em>",
+     "Put a gateway in front of your agents — <em>observability, routing, control</em>",
      label="Part 4",
-     eyebrow="07 · LAB TWO",
+     eyebrow="06 · LAB TWO",
      footnote="BUILDS ON LAB ONE — KEEP YOUR MCP SERVER RUNNING") }}
 
-{# TODO: point at the actual lab repo / instructions URL. #}
 {% call content_slide("Lab two — the plan",
-                      "Integrate agentgateway with the MCP server from lab one.",
+                      "See and govern MCP traffic without touching server code",
                       label="Part 4 · Lab",
-                      eyebrow="07 · LAB TWO") %}
+                      eyebrow="06 · LAB TWO") %}
   {{ step_flow([
-       {"title": "Deploy",  "detail": "Run agentgateway in front of your MCP server. TODO: repo URL."},
-       {"title": "Observe", "detail": "Trace the traffic — see every tool call in flight."},
-       {"title": "Route",   "detail": "Federate multiple servers behind one endpoint."},
-       {"title": "Control", "detail": "Apply policy: allow, deny, and rate-limit tool calls."},
+       {"title": "Deploy",  "detail": "Put agentgateway between your agent and your MCP server."},
+       {"title": "Observe", "detail": "Watch every tool call in access logs, metrics, and traces."},
+       {"title": "Route",   "detail": "Serve two servers from one endpoint."},
+       {"title": "Control", "detail": "Refuse the calls you never wanted."},
+       {"title": "Connect", "detail": "Point goose at the gateway."},
      ]) }}
 {% endcall %}
 
+{{ lab_links_slide(
+     "Get Started with agentgateway",
+     {"label": "Lab repo",
+      "qr": "presentations/2026-08-27-aaif-mcp-workshop/img/qr-agentgateway-lab.svg",
+      "url": "github.com/Zenable-io/labs/tree/main/labs/agentgateway-mcp",
+      "bullets": ["Available on GitHub", "Run on your computer"]},
+     {"label": "Guided workshop",
+      "qr": "presentations/2026-08-27-aaif-mcp-workshop/img/qr-zenable-learn.svg",
+      "url": "zenable.app/learn?tab=workshops",
+      "bullets": ["Use the lab environment", "Run in a hosted cloud sandbox"]},
+     label="Part 4 · Lab",
+     eyebrow="06 · LAB TWO") }}
 
-{# ================================================================
-   Part 5 · Agent-to-Agent communication & discovery
-   ================================================================ #}
-{{ section_divider(5, "Agent-to-Agent.",
-     "When agents talk to agents — <em>communication, discovery, trust.</em>",
-     label="Part 5",
-     eyebrow="08 · A2A") }}
-
-{# TODO: tune to the depth you want — this frames the topics. #}
-{% call content_slide("A2A — what we'll cover",
-                      "From one agent with tools to a network of agents.",
-                      label="Part 5 · A2A",
-                      eyebrow="08 · A2A") %}
-  {{ card_grid([
-       {"title": "Communication", "body": "How agents exchange tasks and results across org and vendor boundaries.", "accent": "primary"},
-       {"title": "Discovery",     "body": "How an agent finds another agent — capabilities, cards, and registries.", "accent": "primary"},
-       {"title": "Trust",         "body": "Identity, authorization, and what EMA means once both sides are agents.", "accent": "primary"},
-     ], cols=3) }}
+{% call content_slide("Getting into the Learning Hub",
+                      eyebrow="06 · LAB TWO") %}
+  <div style="display:flex; justify-content:center; align-items:flex-start; gap:calc(36 * var(--pt));">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div style="display:flex; align-items:center; gap:calc(8 * var(--pt)); height:calc(24 * var(--pt));">
+        <div class="aaif-circle" style="width:calc(20 * var(--pt)); flex:none;">1</div>
+        <p class="aaif-card-body" style="margin:0;">Open <strong>Learning Hub</strong> in the sidebar</p>
+      </div>
+      <img src="presentations/2026-08-27-aaif-mcp-workshop/img/learning-hub-nav.png"
+           alt="Zenable sidebar with an arrow pointing to the Learning Hub entry"
+           class="aaif-frame" style="height:46vh; width:auto; margin-top:calc(10 * var(--pt));">
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div style="display:flex; align-items:center; gap:calc(8 * var(--pt)); height:calc(24 * var(--pt));">
+        <div class="aaif-circle" style="width:calc(20 * var(--pt)); flex:none;">2</div>
+        <p class="aaif-card-body" style="margin:0;">Pick the <strong>Workshops</strong> tab</p>
+      </div>
+      <img src="presentations/2026-08-27-aaif-mcp-workshop/img/learning-hub-workshops.png"
+           alt="Interactive Learning page with an arrow pointing to the Workshops tab"
+           class="aaif-frame" style="height:46vh; width:auto; margin-top:calc(10 * var(--pt));">
+    </div>
+  </div>
 {% endcall %}
 
 
@@ -255,7 +553,7 @@
           alt='QR code for luma.com/aaif-pittsburgh' style='width:84%; height:auto;'>",
      qr_caption="Scan to join",
      tone="navy",
-     eyebrow="09 · JOIN") }}
+     eyebrow="07 · JOIN") }}
 
 
 {# ── closing ─────────────────────────────────────────────────────── #}

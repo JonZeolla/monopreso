@@ -122,10 +122,16 @@ Foundation</div>
     {{ chrome(eyebrow=eyebrow or ((num ~ " · " ~ kicker) if num else kicker)) }}
     {%- if num %}<div class="aaif-numeral">{{ "%02d"|format(num) if num is number else num }}</div>{% endif %}
     <div class="aaif-label" style="position:absolute; left:5%; right:5%; top:calc(35.56% + 3.6 * var(--pt)); font-size:calc(9.5 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
-    <h2 class="aaif-title aaif-title--display" style="position:absolute; left:5%; right:8%; top:calc(41.78% + 3.6 * var(--pt)); font-size:calc(44 * var(--pt));">{{ title|safe }}</h2>
-    {%- if subtitle %}
-    <p class="aaif-lead" style="position:absolute; left:5%; right:10%; top:calc(62.22% + 3.6 * var(--pt)); font-size:calc(14 * var(--pt)); line-height:1.43;">{{ subtitle|safe }}</p>
-    {%- endif %}
+    {#- Title and subtitle share one positioned block so a title that
+        wraps to two lines pushes the subtitle down instead of
+        overlapping it. The margin reproduces the source deck's gap
+        for a one-line title. -#}
+    <div style="position:absolute; left:5%; right:8%; top:calc(41.78% + 3.6 * var(--pt));">
+      <h2 class="aaif-title aaif-title--display" style="font-size:calc(44 * var(--pt)); margin:0;">{{ title|safe }}</h2>
+      {%- if subtitle %}
+      <p class="aaif-lead" style="font-size:calc(14 * var(--pt)); line-height:1.43; margin:calc(36 * var(--pt)) 2% 0 0;">{{ subtitle|safe }}</p>
+      {%- endif %}
+    </div>
     {%- if footnote %}
     <p class="aaif-mono" style="position:absolute; left:5%; right:5%; top:calc(79.11% + 3.6 * var(--pt)); font-size:calc(9.5 * var(--pt));">{{ footnote|safe }}</p>
     {%- endif %}
