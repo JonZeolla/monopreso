@@ -25,6 +25,11 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Progressive disclosure: elements with .step inside a slide are
+           revealed one per ArrowDown before advancing to the next slide.
+           visibility (not display) so layout space is reserved up front. */
+        .step { visibility: hidden; }
+        .step.step-visible { visibility: visible; animation: fadeIn 0.4s ease-out; }
         .nav-dot {
             transition: all 0.3s ease;
             position: relative;
@@ -142,6 +147,11 @@
             }
             /* Disable animations */
             .fade-in {
+                animation: none !important;
+            }
+            /* Print every step revealed */
+            .step {
+                visibility: visible !important;
                 animation: none !important;
             }
             /* Ensure gradient text prints */
@@ -276,6 +286,12 @@
 
             if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
                 e.preventDefault();
+                // Reveal the next hidden step on this slide before advancing
+                var pending = allSlides[targetSlideIndex].querySelectorAll('.step:not(.step-visible)');
+                if (pending.length) {
+                    pending[0].classList.add('step-visible');
+                    return;
+                }
                 var nextIndex = getNextVisibleSlide(targetSlideIndex, 1);
                 if (nextIndex !== targetSlideIndex) {
                     targetSlideIndex = nextIndex;
@@ -283,6 +299,12 @@
                 }
             } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
                 e.preventDefault();
+                // Un-reveal the most recent step on this slide before going back
+                var shown = allSlides[targetSlideIndex].querySelectorAll('.step.step-visible');
+                if (shown.length) {
+                    shown[shown.length - 1].classList.remove('step-visible');
+                    return;
+                }
                 var prevIndex = getNextVisibleSlide(targetSlideIndex, -1);
                 if (prevIndex !== targetSlideIndex) {
                     targetSlideIndex = prevIndex;

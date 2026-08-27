@@ -67,8 +67,19 @@
 </section>
 {%- endmacro -%}
 
+{%- macro content_slide(label) -%}
+{# Call-block wrapper owning the <section> + data-label, so a shared slide
+   never has to name a brand-specific section class:
+     {%- call content_slide("Lifecycle") %} ...body... {%- endcall %} #}
+<section class="slide flex flex-col justify-center p-12" data-label="{{ label }}">
+  <div class="max-w-6xl mx-auto w-full fade-in">
+    {{ caller() }}
+  </div>
+</section>
+{%- endmacro -%}
+
 {%- macro slide_heading(label, title, subtitle="") -%}
-{{ _legacy_section_label(label) }}
+{%- if label %}{{ _legacy_section_label(label) }}{% endif %}
 <h3 class="text-4xl font-bold text-white mb-2">{{ title }}</h3>
 {%- if subtitle %}<p class="text-lg text-slate-400 italic mb-8">{{ subtitle|safe }}</p>{% endif %}
 {%- endmacro -%}
@@ -76,9 +87,26 @@
 
 {# ── content primitives ───────────────────────────────────────── #}
 
+{%- macro _accent_tw(name) -%}
+{# Semantic accent → a Tailwind colour that actually exists.
+
+   Do not route these through `zenable-*`: tailwind.config.js defines only
+   bg / bg-light / teal / teal-dark / blue under that namespace, and Tailwind
+   silently emits nothing for an undefined colour — so `border-zenable-amber`
+   renders as no border at all rather than failing loudly. #}
+{%- set m = {
+  "primary":  "teal-400",
+  "secondary":"purple-400",
+  "success":  "emerald-400",
+  "warning":  "amber-400",
+  "danger":   "rose-400",
+  "info":     "sky-400",
+  "neutral":  "slate-400",
+} -%}{{- m.get(name, "slate-400") -}}
+{%- endmacro -%}
+
 {%- macro callout(text, accent="primary") -%}
-{%- set color = _accent_to_zen(accent) -%}
-<div class="mt-6 p-4 rounded-xl border bg-zenable-bg-light/40 border-zenable-{{ color }}/30 text-center text-slate-300">
+<div class="mt-6 p-4 rounded-xl border bg-zenable-bg-light/40 border-{{ _accent_tw(accent) }}/30 text-center text-slate-300">
   {{ text|safe }}
 </div>
 {%- endmacro -%}
@@ -122,7 +150,8 @@
 {{ _legacy_card(title, body, _accent_to_zen(accent)) }}
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3) -%}
+{%- macro card_grid(items, cols=3, size="md") -%}
+{# size="lg" bumps title/body type for slides where the grid IS the slide. #}
 {# Convert primitive item shape to legacy card_grid shape: {title, desc, accent} #}
 {%- set legacy_items = [] -%}
 {%- for it in items -%}
@@ -132,7 +161,164 @@
     "accent": _accent_to_zen(it.accent | default("neutral")),
   }) -%}
 {%- endfor -%}
-{{ _legacy_card_grid(legacy_items, cols) }}
+{% if size == "lg" %}<div class="cards-lg">{% endif %}{{ _legacy_card_grid(legacy_items, cols) }}{% if size == "lg" %}</div>{% endif %}
+{%- endmacro -%}
+
+
+{%- macro pipe(stages) -%}
+{# Left-to-right pipeline of stage cards joined by arrows.
+   Each stage: {label, detail?, meta?, accent?, note?, below?}
+
+   `note` renders as an annotation hanging above the stage on a dotted
+   connector, so the same stage list can be shown twice — bare, then with
+   controls annotated onto it. #}
+{%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
+<div class="flex items-stretch justify-center gap-2 my-5">
+  {%- for stage in stages %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" class="flex-none self-center text-slate-600 text-2xl leading-none">&rarr;</div>
+  {%- endif %}
+  {%- set tw = _accent_tw(stage.accent | default("neutral")) %}
+  <div class="flex-1 min-w-0 flex flex-col items-stretch">
+    {%- if has_notes %}
+    <div class="min-h-[96px] flex flex-col items-center justify-end">
+      {%- if stage.note %}
+      <div class="rounded-lg border border-{{ tw }}/40 bg-zenable-bg-light/80 px-2.5 py-2 text-center">
+        <p class="text-[11px] font-bold leading-snug text-{{ tw }} m-0">{{ stage.note|safe }}</p>
+      </div>
+      <div aria-hidden="true" class="h-3.5 border-l-2 border-dotted border-{{ tw }}/60"></div>
+      {%- endif %}
+    </div>
+    {%- endif %}
+    <div class="flex-1 rounded-xl border border-{{ tw }}/30 bg-{{ tw }}/5 px-3 py-4 text-center flex flex-col justify-center gap-1.5">
+      <p class="text-sm font-bold text-{{ tw }} m-0">{{ stage.label }}</p>
+      {%- if stage.detail %}<p class="text-[11px] leading-snug text-slate-400 m-0">{{ stage.detail|safe }}</p>{% endif %}
+      {%- if stage.meta %}<p class="font-mono text-[10px] uppercase tracking-wider text-slate-500 m-0">{{ stage.meta }}</p>{% endif %}
+    </div>
+    {%- if stage.below %}
+    <p class="mt-2 text-center text-[13px] leading-snug text-slate-400 m-0">{{ stage.below|safe }}</p>
+    {%- endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro statement(lines) -%}
+{# Full-slide declarative statement. No quote marks, no attribution — this
+   is the deck asserting something, not citing someone.
+   `lines`: [{text, muted?}] — one per rendered line. Muted lines render
+   smaller and dimmer, so connective words recede and the nouns carry. #}
+<section class="slide flex items-center justify-center p-8" data-label="Statement">
+  <div class="text-center fade-in">
+    {%- for line in lines %}
+    {%- if line.muted %}
+    <p class="text-3xl font-normal leading-tight text-slate-500 m-0">{{ line.text|safe }}</p>
+    {%- else %}
+    <p class="text-[64px] font-extrabold leading-none tracking-tight text-white m-0">{{ line.text|safe }}</p>
+    {%- endif %}
+    {%- endfor %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro quote(text, attribution, source="", url="") -%}
+{# Full-slide pull quote. `attribution` is the speaker; `source` is where
+   they said it; `url` makes the source a link. #}
+<section class="slide flex items-center justify-center p-8" data-label="Quote">
+  <div class="max-w-4xl mx-auto w-full text-center fade-in">
+    <p class="text-[46px] font-bold leading-tight text-white mb-7">&ldquo;{{ text|safe }}&rdquo;</p>
+    <p class="text-lg font-semibold text-zenable-teal m-0">{{ attribution }}</p>
+    {%- if source %}
+    <p class="text-[13px] text-slate-500 mt-1.5 m-0">
+      {% if url %}<a href="{{ url }}" class="text-slate-400">{{ source }}</a>{% else %}{{ source }}{% endif %}
+    </p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro matrix(headers, rows, caption="") -%}
+{# Comparison matrix. Columns are the things compared, rows are the
+   dimensions they are compared on.
+
+     headers: [{label, sub?}]
+     rows:    [{label, cells}]  where cells: [{level, text?}]
+     level:   strong | partial | weak
+
+   Read down a column for one option's profile; read across a row to see
+   which options cover that dimension. That second reading is the point:
+   it shows gaps being filled. #}
+{%- set _lvl = {"strong": "success", "partial": "warning", "weak": "danger"} %}
+{%- set _sym = {"strong": "●", "partial": "◐", "weak": "○"} %}
+<div class="my-4">
+  <div class="grid gap-1.5 items-stretch" style="grid-template-columns:minmax(140px,1.25fr) repeat({{ headers|length }}, 1fr);">
+    <div></div>
+    {%- for h in headers %}
+    <div class="text-center p-1">
+      <p class="text-[13px] font-bold text-slate-200 m-0">{{ h.label }}</p>
+      {%- if h.sub %}<p class="text-[10px] text-slate-500 m-0">{{ h.sub }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- for row in rows %}
+    <div class="flex items-center px-2 py-1">
+      <p class="text-xs font-semibold leading-snug text-slate-200 m-0">{{ row.label|safe }}</p>
+    </div>
+    {%- for cell in row.cells %}
+    {%- set tw = _accent_tw(_lvl.get(cell.level, "neutral")) %}
+    <div class="rounded-lg border border-{{ tw }}/30 bg-{{ tw }}/5 px-1.5 py-2 text-center flex flex-col items-center justify-center gap-0.5"
+         aria-label="{{ cell.level | default('unrated') }}">
+      <span aria-hidden="true" class="text-[15px] leading-none text-{{ tw }}">{{ _sym.get(cell.level, "○") }}</span>
+      {%- if cell.text %}<p class="text-[10px] leading-tight text-slate-400 m-0">{{ cell.text|safe }}</p>{% endif %}
+    </div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+  {%- if caption %}<p class="mt-2.5 text-center text-[11px] text-slate-500 m-0">{{ caption|safe }}</p>{% endif %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro tradeoff_triangle(corners, note="", filled=false) -%}
+{# Good / fast / cheap style triangle. `corners` is exactly three
+   {label, accent}. `note` renders inside the shape. `filled` lights the
+   whole triangle instead of leaving it an outline.
+
+   Colours ride on `currentColor` so the SVG works in every pack. #}
+{%- set X = [230, 420, 40] %}
+{%- set Y = [40, 362, 362] %}
+{%- set SUBY = [62, 384, 384] %}
+<div style="display:flex; justify-content:center; align-items:center; margin:10px 0;">
+  <svg viewBox="-75 0 610 400" role="img" aria-label="{% for c in corners %}{{ c.label }}{% if not loop.last %}, {% endif %}{% endfor %}{% if note %} — {{ note }}{% endif %}"
+       style="width:min(520px,60%); height:auto; max-height:46vh;">
+    <g class="{% if filled %}text-emerald-400{% else %}text-slate-600{% endif %}">
+      <polygon points="230,74 420,334 40,334"
+               fill="currentColor" fill-opacity="{% if filled %}0.16{% else %}0{% endif %}"
+               stroke="currentColor" stroke-width="{% if filled %}4{% else %}2.5{% endif %}"
+               stroke-linejoin="round"/>
+    </g>
+    {%- for c in corners %}
+    <g class="text-{{ _accent_tw(c.accent | default("neutral")) }}">
+      <text x="{{ X[loop.index0] }}" y="{{ Y[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="25" font-weight="700"
+            font-family="inherit">{{ c.label }}</text>
+      {%- if c.sub %}
+      <text x="{{ X[loop.index0] }}" y="{{ SUBY[loop.index0] }}" text-anchor="middle"
+            fill="currentColor" font-size="15" font-weight="500" opacity="0.75"
+            font-family="inherit">{{ c.sub }}</text>
+      {%- endif %}
+    </g>
+    {%- endfor %}
+    {%- if note %}
+    <g class="text-slate-400">
+      <text x="230" y="268" text-anchor="middle" fill="currentColor"
+            font-size="22" font-weight="600" font-family="inherit">{{ note }}</text>
+    </g>
+    {%- endif %}
+  </svg>
+</div>
 {%- endmacro -%}
 
 
@@ -145,6 +331,5 @@
 
      code_block(filename, lines)
      step_flow(steps)         # candidate: wrap _legacy_flow_steps
-     pipe(stages)
      ide_mockup(filename, sidebar, code_lines, chat_panel=None)
    ──────────────────────────────────────────────────────────────── #}

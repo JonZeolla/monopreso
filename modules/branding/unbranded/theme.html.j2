@@ -21,6 +21,7 @@
   --unb-text-muted:   #94a3b8;
   --unb-text-dim:     #64748b;
   --unb-primary:      #38bdf8;  /* sky-400 */
+  --unb-secondary:    #c084fc;  /* purple-400 */
   --unb-success:      #22c55e;
   --unb-warning:      #f59e0b;
   --unb-danger:       #ef4444;
@@ -56,6 +57,8 @@
 
 /* Semantic accents — used as border + faint tint on cards */
 .unb-accent-primary { border-color: color-mix(in srgb, var(--unb-primary) 35%, transparent); }
+.unb-accent-secondary { border-color: color-mix(in srgb, var(--unb-secondary) 35%, transparent);
+                      background: color-mix(in srgb, var(--unb-secondary) 6%, var(--unb-surface)); }
 .unb-accent-success { border-color: color-mix(in srgb, var(--unb-success) 35%, transparent);
                       background: color-mix(in srgb, var(--unb-success) 6%, var(--unb-surface)); }
 .unb-accent-warning { border-color: color-mix(in srgb, var(--unb-warning) 35%, transparent);
@@ -63,4 +66,14 @@
 .unb-accent-danger  { border-color: color-mix(in srgb, var(--unb-danger) 35%, transparent);
                       background: color-mix(in srgb, var(--unb-danger) 6%, var(--unb-surface)); }
 .unb-accent-info    { border-color: color-mix(in srgb, var(--unb-info) 35%, transparent); }
+
+  /* Citation and source links. Underlined so a reference reads as
+     clickable; muted so it never competes with slide content. */
+  .unb-slide a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px;
+                 text-underline-offset: 2px; text-decoration-color: var(--unb-text-dim); }
+  .unb-slide a:hover { text-decoration-color: currentColor; }
+
+  /* card_grid(size="lg"): for slides where the grid is the whole slide. */
+  .cards-lg .unb-card-title { font-size: 26px; line-height: 1.2; }
+  .cards-lg .unb-card-body  { font-size: 16px; line-height: 1.5; }
 </style>

@@ -1,5 +1,7 @@
 module.exports = {
-  content: ['./current.html'],
+  // Scan every rendered deck: multiple presentations can be served at once
+  // and they share this one stylesheet.
+  content: ['./current.html', './current-*.html'],
   theme: {
     extend: {
       fontFamily: {
