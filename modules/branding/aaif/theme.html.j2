@@ -342,6 +342,12 @@
   color: var(--aaif-ink);
   white-space: pre-line;
 }
+.aaif-slide--navy .aaif-cover-mark,
+.aaif-slide--dark .aaif-cover-mark,
+.aaif-slide--gradient .aaif-cover-mark,
+.aaif-slide--navy .aaif-cover-wordmark,
+.aaif-slide--dark .aaif-cover-wordmark,
+.aaif-slide--gradient .aaif-cover-wordmark { color: #fff; }
 
 /* ── stat callouts (deck p20) ─────────────────────────────────── */
 .aaif-stat-value {
@@ -466,6 +472,10 @@
   object-fit: cover;
   border-radius: 50%;
 }
+/* The silhouette is a placeholder: a real photo replaces it entirely
+   (::after is generated last, so it would otherwise paint on top). */
+.aaif-avatar:has(img)::before,
+.aaif-avatar:has(img)::after { content: none; }
 
 /* ── outlined chip (host / member logo slots, deck p1/p2) ─────── */
 .aaif-chip {

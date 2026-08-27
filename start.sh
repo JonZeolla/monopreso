@@ -18,13 +18,15 @@ function help() {
   exitCode="${1:-0}"
   # Purposefully using tabs for the HEREDOC
   cat <<- HEREDOC
-		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--no-open] [--no-cleanup]
+		Preferred Usage: ./${0##*/} --preso=PRESENTATION [--list] [--engine=ENGINE] [--branding=BRANDING] [--port=PORT] [--no-open] [--no-cleanup]
 		--branding     Override the brand. For modern engine: any directory under modules/branding/
 		               (default: "unbranded"). For revealjs engine: seiso or zenable.
 		               Also honoured via the BRANDING env var (set per-presentation in a
 		               local Taskfile.yml); CLI flag wins over env.
 		--engine       Presentation engine: modern (default) or revealjs
 		--list         List the available presentations
+		--port         Host port to serve on (default: 8000). Also honoured via the PORT env var;
+		               CLI flag wins over env.
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
 		--no-cleanup   Disable the cleanup prompt at the end
@@ -86,6 +88,7 @@ JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION="current.html"
 BRANDING="${BRANDING:-False}"  # respect env; CLI --branding overrides below
 ENGINE="modern"
+PORT="${PORT:-8000}"  # respect env; CLI --port overrides below
 NO_CLEANUP="False"
 NO_OPEN="False"
 
@@ -116,6 +119,12 @@ while getopts "${OPTSPEC}" optchar; do
 
         no-open)
           NO_OPEN="True" ;;
+
+        port)
+          PORT="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
+
+        port=*)
+          PORT=${OPTARG#*=} ;;
 
         preso)
           PRESENTATION="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
@@ -256,14 +265,14 @@ PYEOF
   echo -n "."
   docker buildx build --quiet --load -f Dockerfile.modern -t monopreso-modern:latest . >/dev/null 2>&1 || true
   echo -n "."
-  container_id="$(docker run --rm -d -p 8000:8000 -v .:/srv -w /srv monopreso-modern:latest)"
+  container_id="$(docker run --rm -d -p "${PORT}":8000 -v .:/srv -w /srv monopreso-modern:latest)"
 
   # 4. Wait for server
-  until curl --fail -s http://localhost:8000/current.html >/dev/null; do
+  until curl --fail -s "http://localhost:${PORT}/current.html" >/dev/null; do
     echo -n "."
     sleep .4
   done
-  url="http://localhost:8000/current.html"
+  url="http://localhost:${PORT}/current.html"
 
 else
   ##############################################################################
@@ -356,12 +365,12 @@ EOF
   echo -n "."
   docker buildx build --quiet --load -t monopreso:latest . >/dev/null 2>&1 || true # Continue regardless; assume it failed due to no internet but we have an old version available
   echo -n "."
-  container_id="$(docker run --rm -d -p 35729:35729 -p 8000:8000 -v .:/usr/src/app monopreso:latest)"
-  until curl --fail -s -X GET http://localhost:8000 >/dev/null; do
+  container_id="$(docker run --rm -d -p 35729:35729 -p "${PORT}":8000 -v .:/usr/src/app monopreso:latest)"
+  until curl --fail -s -X GET "http://localhost:${PORT}" >/dev/null; do
     echo -n "."
     sleep .4
   done
-  url="http://localhost:8000/"
+  url="http://localhost:${PORT}/"
 
 fi
 
