@@ -22,6 +22,8 @@
     title_slide %}
 
 {# ── Shared slides (primitive-native — import with context) ────── #}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
 {%- from "modules/sdlc/lifecycle.j2" import
     sdlc, adlc with context %}
 {%- from "modules/agents/running-loops.j2" import
@@ -79,6 +81,11 @@
 {{ title_slide("AI Governance and Guardrails",
                subtitle="Cloud Security Alliance · Birmingham",
                kicker="Jon Zeolla") }}
+
+{# Two image beats before any content: the janitor coping, then the
+   janitor not coping. Sets up "this is the job now" without a bio
+   slide, and buys the room a laugh before the volume data. #}
+{{ ai_janitor_pair() }}
 
 
 <!-- ================================================================

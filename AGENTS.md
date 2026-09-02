@@ -84,6 +84,7 @@ Topic directories currently in use:
 | Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`† |
 | Agent governance | `modules/governance/` | `tool-calls.j2`† (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
+| Intro | `modules/intro/` | `ai-janitor.j2`† |
 | Outro | `modules/outro/` | `outro.j2` |
 
 
@@ -104,6 +105,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
 | `quote(text, attribution, source="", url="")` | Full-slide pull quote. Owns its own `<section>`. `attribution` is the speaker, `source` is where they said it, `url` makes the source a link |
 | `statement(lines)` | Full-slide declarative statement — no quote marks, no attribution. Owns its own `<section>`. `lines`: `{text, muted}` one per rendered line; muted lines render smaller and dimmer so connective words recede |
+| `image_slide(src, alt, label="", caption="")` | Full-slide image — the picture *is* the slide, scaled to fit with nothing competing. `alt` is required. `label` overrides the nav `data-label` (defaults to `alt`); `caption` adds a small line under the image. `aaif` sizes against its 16:9 stage rather than the viewport |
 | `content_slide(label)` | **Call-block** wrapper owning the `<section>` + `data-label` for a content slide. Use `{%- call content_slide("X") %}…{%- endcall %}` so shared slides never name a brand-specific section class |
 | `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub). Pass `""` for `label` to omit the kicker entirely — newer slides do this, since an editorial kicker above a headline is usually filler |
 | `callout(text, accent="primary")` | Bottom emphasis band |

@@ -223,6 +223,23 @@
 {%- endmacro -%}
 
 
+{%- macro image_slide(src, alt, label="", caption="") -%}
+{# Full-slide image. The picture IS the slide: it scales to the viewport
+   and nothing competes with it. `alt` is required — it is the only thing
+   a screen reader or a failed load has to go on. #}
+<section class="slide flex items-center justify-center p-8" data-label="{{ label or alt }}">
+  <div class="text-center fade-in">
+    <img src="{{ src }}" alt="{{ alt }}"
+         class="mx-auto rounded-xl object-contain"
+         style="max-height:calc(100vh - {{ '10rem' if caption else '4rem' }}); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+    {%- if caption %}
+    <p class="text-base text-slate-400 mt-6 m-0">{{ caption|safe }}</p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
 {%- macro quote(text, attribution, source="", url="") -%}
 {# Full-slide pull quote. `attribution` is the speaker; `source` is where
    they said it; `url` makes the source a link. #}
