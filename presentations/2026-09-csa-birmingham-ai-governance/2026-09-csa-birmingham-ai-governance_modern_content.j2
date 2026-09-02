@@ -39,6 +39,12 @@
     loops_require_verifiers with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
     do_it_statically with context %}
+{%- from "modules/guardrails/control-scorecard.j2" import
+    context_files as score_context_files,
+    hooks         as score_hooks,
+    llm_gateway   as score_llm_gateway,
+    agent_review  as score_agent_review,
+    blocking_ci   as score_blocking_ci with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 {%- from "modules/verifiers/verifiers.j2" import
@@ -119,6 +125,21 @@
 {{ four_kinds() }}
 {{ coverage() }}
 {{ weaver_evidence() }}
+
+
+<!-- ================================================================
+     THE SAME FIVE QUESTIONS, ASKED OF EVERY CONTROL
+     One slide shape, five bars, same scale — flipped through so the
+     audience compares profiles rather than hearing five tool pitches.
+     Cheap-and-toothless at one end, slow-and-unbypassable at the other.
+     Drop any line here if the run-through goes long; the shape holds
+     with three cards as well as five.
+     ================================================================ -->
+{{ score_context_files() }}
+{{ score_hooks() }}
+{{ score_llm_gateway() }}
+{{ score_agent_review() }}
+{{ score_blocking_ci() }}
 
 
 <!-- ================================================================

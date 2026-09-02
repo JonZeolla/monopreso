@@ -326,6 +326,45 @@
 {%- endmacro -%}
 
 
+{%- macro _score_color(score) -%}
+{# Four-step scorecard ramp: red → orange → yellow → green. Deliberately not
+   part of the accent vocabulary — this is an ordinal scale, not a category,
+   and `warning` vs `danger` carries no ordering. #}
+{%- set m = {
+  1: "#f87171",
+  2: "#fb923c",
+  3: "#fbbf24",
+  4: "#4ade80",
+} -%}{{- m.get(score, "#64748b") -}}
+{%- endmacro -%}
+
+{%- macro meter_row(items, scale=4, caption="") -%}
+{# Graded bars on one shared scale, so several slides can be read against
+   each other. Each item: {label, score, note}; `score` is 1..scale where
+   scale is the most favourable. Length and colour encode the same number —
+   redundant on purpose, since colour alone fails on a projector. #}
+<div style="display:flex; flex-direction:column; gap:12px; margin:14px 0 4px;">
+  {%- for item in items %}
+  {%- set _s = item.score | default(0) %}
+  <div style="display:grid; grid-template-columns:minmax(150px,0.85fr) minmax(200px,1.6fr) minmax(160px,1.1fr); align-items:center; gap:16px;">
+    <p style="font-size:14px; font-weight:700; color:#e2e8f0; margin:0;">{{ item.label }}</p>
+    <div role="img" aria-label="{{ item.label }}: {{ _s }} of {{ scale }}"
+         style="display:flex; gap:5px;">
+      {%- for i in range(1, scale + 1) %}
+      <span style="flex:1; height:12px; border-radius:999px;
+                   background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}rgba(100,116,139,0.3){% endif %};"></span>
+      {%- endfor %}
+    </div>
+    {%- if item.note %}
+    <p style="font-size:12px; color:#94a3b8; margin:0; line-height:1.4;">{{ item.note|safe }}</p>
+    {%- else %}<span></span>{% endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- if caption %}<p style="font-size:11px; color:#64748b; margin:10px 0 0; text-align:center;">{{ caption|safe }}</p>{% endif %}
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract. Implement
    on demand when extracting the shared slide that needs them:

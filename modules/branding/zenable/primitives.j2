@@ -322,6 +322,45 @@
 {%- endmacro -%}
 
 
+{%- macro _score_color(score) -%}
+{# Four-step scorecard ramp: red → orange → yellow → Zenable teal for the
+   top step. Deliberately not part of the accent vocabulary — this is an
+   ordinal scale, and `warning` vs `danger` carries no ordering. Inline hex
+   rather than Tailwind classes so the ramp cannot silently vanish the way an
+   undefined `zenable-*` colour does. #}
+{%- set m = {
+  1: "#fb7185",
+  2: "#fb923c",
+  3: "#fcd34d",
+  4: "#00BAAE",
+} -%}{{- m.get(score, "#64748b") -}}
+{%- endmacro -%}
+
+{%- macro meter_row(items, scale=4, caption="") -%}
+{# Graded bars on one shared scale, so several slides can be read against
+   each other. Each item: {label, score, note}; `score` is 1..scale where
+   scale is the most favourable. Length and colour encode the same number —
+   redundant on purpose, since colour alone fails on a projector. #}
+<div class="flex flex-col gap-3 mt-4 mb-1">
+  {%- for item in items %}
+  {%- set _s = item.score | default(0) %}
+  <div class="grid items-center gap-4" style="grid-template-columns:minmax(150px,0.85fr) minmax(200px,1.6fr) minmax(160px,1.1fr);">
+    <p class="text-sm font-semibold text-white m-0">{{ item.label }}</p>
+    <div role="img" aria-label="{{ item.label }}: {{ _s }} of {{ scale }}" class="flex gap-1.5">
+      {%- for i in range(1, scale + 1) %}
+      <span class="flex-1 rounded-full" style="height:12px; background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}rgba(100,116,139,0.3){% endif %};"></span>
+      {%- endfor %}
+    </div>
+    {%- if item.note %}
+    <p class="text-xs text-slate-400 m-0 leading-snug">{{ item.note|safe }}</p>
+    {%- else %}<span></span>{% endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- if caption %}<p class="mt-2.5 text-center text-[11px] text-slate-500 m-0">{{ caption|safe }}</p>{% endif %}
+{%- endmacro -%}
+
+
 {# ────────────────────────────────────────────────────────────────
    NOT YET IMPLEMENTED — declared in AGENTS.md contract.
    When extracting the shared slide that needs them, either:

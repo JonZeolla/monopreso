@@ -103,6 +103,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `card_grid(items, cols=3, size="md")` | Grid of cards. Each item: `{title, body, accent}`. `size="lg"` enlarges title and body type via a `.cards-lg` wrapper, for slides where the grid *is* the slide |
 | `pros_cons(benefits, shortcomings, ben_label, short_label)` | Two-column ✓ / ✗ list. Each item: `{title, detail}` |
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
+| `meter_row(items, scale=4, caption="")` | Graded bars on one shared scale, for scoring several things the same way across several slides. Each item: `{label, score, note}`; `score` is `1..scale`, and **`scale` is always the favourable end** — cheap scores high on cost, fast scores high on speed. Fill length and colour (red → orange → yellow → green) encode the same number, so it survives a bad projector. The ramp is brand-owned and deliberately outside the accent vocabulary: accents are categories, this is an ordinal scale |
 | `matrix(headers, rows, caption="")` | Comparison matrix. `headers`: `{label, sub}`; `rows`: `{label, cells}` where each cell is `{level, text}` and `level` is `strong`/`partial`/`weak`. Levels map to success/warning/danger accents plus a ●/◐/○ glyph. Reading across a row shows which columns cover a dimension — that is what makes gaps visible |
 | `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
 | `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
