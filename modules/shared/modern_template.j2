@@ -25,6 +25,11 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Progressive disclosure: elements with .step inside a slide are
+           revealed one per ArrowDown before advancing to the next slide.
+           visibility (not display) so layout space is reserved up front. */
+        .step { visibility: hidden; }
+        .step.step-visible { visibility: visible; animation: fadeIn 0.4s ease-out; }
         .nav-dot {
             transition: all 0.3s ease;
             position: relative;
@@ -142,6 +147,11 @@
             }
             /* Disable animations */
             .fade-in {
+                animation: none !important;
+            }
+            /* Print every step revealed */
+            .step {
+                visibility: visible !important;
                 animation: none !important;
             }
             /* Ensure gradient text prints */
@@ -276,6 +286,12 @@
 
             if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
                 e.preventDefault();
+                // Reveal the next hidden step on this slide before advancing
+                var pending = allSlides[targetSlideIndex].querySelectorAll('.step:not(.step-visible)');
+                if (pending.length) {
+                    pending[0].classList.add('step-visible');
+                    return;
+                }
                 var nextIndex = getNextVisibleSlide(targetSlideIndex, 1);
                 if (nextIndex !== targetSlideIndex) {
                     targetSlideIndex = nextIndex;
@@ -283,6 +299,12 @@
                 }
             } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
                 e.preventDefault();
+                // Un-reveal the most recent step on this slide before going back
+                var shown = allSlides[targetSlideIndex].querySelectorAll('.step.step-visible');
+                if (shown.length) {
+                    shown[shown.length - 1].classList.remove('step-visible');
+                    return;
+                }
                 var prevIndex = getNextVisibleSlide(targetSlideIndex, -1);
                 if (prevIndex !== targetSlideIndex) {
                     targetSlideIndex = prevIndex;
@@ -303,6 +325,38 @@
             var target = explorer.querySelector('[data-fs-detail-id="' + detailId + '"]');
             if (target) target.classList.remove('hidden');
         });
+    </script>
+    {# Mermaid diagrams: any <pre class="mermaid"> block is rendered in place.
+       The library is vendored (modules/shared/js/) so decks work offline;
+       the script only loads when the deck actually contains a diagram. #}
+    <script>
+        if (document.querySelector('.mermaid')) {
+            var mermaidStyle = document.createElement('style');
+            mermaidStyle.textContent = '.mermaid { display: flex; justify-content: center; } .mermaid svg { max-height: 46vh; height: auto; width: auto; max-width: 100%; }';
+            document.head.appendChild(mermaidStyle);
+            var mermaidScript = document.createElement('script');
+            mermaidScript.src = 'modules/shared/js/mermaid.min.js';
+            mermaidScript.onload = function () {
+                // Default font family kept: overriding it breaks mermaid's text
+                // measurement and labels overflow their boxes.
+                mermaid.initialize({
+                    startOnLoad: true,
+                    theme: 'neutral',
+                    themeVariables: {
+                        noteBkgColor: '#EDEBE4',
+                        noteBorderColor: '#8A8578',
+                        noteTextColor: '#1A1A1A',
+                        actorBkg: '#FFFFFF',
+                        actorBorder: '#1A1A1A',
+                        actorTextColor: '#1A1A1A',
+                        signalColor: '#1A1A1A',
+                        signalTextColor: '#1A1A1A',
+                        lineColor: '#1A1A1A'
+                    }
+                });
+            };
+            document.body.appendChild(mermaidScript);
+        }
     </script>
 </body>
 </html>

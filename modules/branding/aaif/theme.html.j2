@@ -1,0 +1,685 @@
+{# ================================================================
+   Agentic AI Foundation (AAIF) — brand pack theme
+   ----------------------------------------------------------------
+   Tokens, type, and slide chrome for the AAIF *chapter/event* deck
+   style. Every value below is lifted from the official "AAIF
+   Presentation Template" Google Slides deck (Slides.pptx, 23 slides)
+   rather than eyeballed:
+
+     canvas       9144000 x 5143500 EMU  =  10in x 5.625in  (16:9)
+     background   #F6F5F1
+     ink / muted  #0A0A0A / #4A4A4A
+     hairline     #C9C6BF   (strong: #9A978F)
+     accent       #14964A   ("tonight" green)
+     display      Space Grotesk Bold
+     body         Instrument Sans
+     chrome       JetBrains Mono
+
+   ── The pt unit ────────────────────────────────────────────────
+   The source deck sets type in points on a 720pt-wide canvas, so a
+   point is exactly 1/7.2 of the slide width. `--pt` encodes that:
+
+       font-size: calc(21 * var(--pt))   <-- the deck's `sz="2100"`
+
+   Because --pt is derived from `cqw` on .aaif-stage, every size
+   scales with the slide and stays proportionally identical to the
+   source at any window size. Copy `sz` values out of the pptx
+   verbatim; do not convert them to px.
+
+   ── The stage ──────────────────────────────────────────────────
+   .aaif-slide fills the viewport and paints the background colour.
+   .aaif-stage is a 16:9 box centred inside it — the actual slide
+   canvas. Because the background is on the outer element there is
+   no visible letterboxing when the window is not 16:9; the content
+   box just stops scaling.
+
+   Include this file ONCE, at the top of a deck. It emits the logo
+   sprite for you.
+   ================================================================ #}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&amp;family=JetBrains+Mono:ital,wght@0,400..700;1,400..700&amp;family=Space+Grotesk:wght@400..700&amp;display=swap">
+
+{%- include "modules/branding/aaif/logo-sprite.html.j2" %}
+
+<style>
+:root {
+  /* ── palette ─────────────────────────────────────────────── */
+  --aaif-cream:        #F6F5F1;   /* slide background            */
+  --aaif-ink:          #0A0A0A;   /* headings, marks             */
+  --aaif-muted:        #4A4A4A;   /* body copy, chrome           */
+  --aaif-rule:         #C9C6BF;   /* hairlines, table borders    */
+  --aaif-rule-strong:  #9A978F;   /* outlined chips, connectors  */
+  --aaif-green:        #14964A;   /* the one accent in the deck  */
+
+  --aaif-navy:         #1A2332;   /* dark slide, deck p13        */
+  --aaif-charcoal:     #252525;   /* dark slide, deck p14        */
+
+  /* on-dark chrome, sampled from deck p10/p13/p14/p15 */
+  --aaif-d-rule:       #8E94A1;
+  --aaif-d-chrome:     #C9C7C0;
+  --aaif-d-label:      #B9BFCB;
+  --aaif-d-body:       #D5DAE3;
+
+  /* ── semantic accents (contract vocabulary) ──────────────── */
+  --aaif-a-primary:    var(--aaif-ink);
+  --aaif-a-secondary:  var(--aaif-green);
+  --aaif-a-success:    var(--aaif-green);
+  --aaif-a-warning:    #A8741C;
+  --aaif-a-danger:     #A33A2A;
+  --aaif-a-info:       #1B7F99;
+  --aaif-a-neutral:    var(--aaif-rule-strong);
+
+  /* ── type families ───────────────────────────────────────── */
+  --aaif-display: "Space Grotesk", "Instrument Sans", system-ui, sans-serif;
+  --aaif-body:    "Instrument Sans", system-ui, -apple-system, sans-serif;
+  --aaif-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ── canvas geometry, as fractions of the slide ──────────── */
+  --aaif-gutter:      5%;      /* every content block starts here */
+  --aaif-head-top:    15.11%;  /* eyebrow row                     */
+  --aaif-title-top:   20.98%;  /* section title row               */
+  --aaif-rule-y:      90.31%;  /* footer hairline                 */
+  --aaif-foot-y:      91.73%;  /* footer text row                 */
+}
+
+/* ── slide shell ──────────────────────────────────────────────
+   The section paints the background; the stage is the 16:9 canvas
+   everything is positioned inside. */
+.aaif-slide {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--aaif-cream);
+  color: var(--aaif-ink);
+  font-family: var(--aaif-body);
+  counter-increment: aaif-page;
+  overflow: hidden;
+}
+.aaif-slide--nonumber { counter-increment: none; }
+
+.aaif-stage {
+  position: relative;
+  width:  min(100vw, calc(100vh * 16 / 9));
+  height: min(100vh, calc(100vw * 9 / 16));
+  container-type: size;
+  container-name: aaif;
+}
+
+/* --pt lives here, not on .aaif-stage: a container query unit
+   resolves against the nearest ANCESTOR container, so it has to be
+   read from inside the stage rather than on it. */
+.aaif-canvas {
+  position: absolute;
+  inset: 0;
+  --pt: calc(1cqw / 7.2);
+}
+
+/* ── tone variants ───────────────────────────────────────────── */
+.aaif-slide--light    { background: var(--aaif-cream);    color: var(--aaif-ink); }
+.aaif-slide--navy     { background: var(--aaif-navy);     color: #fff; }
+.aaif-slide--dark     { background: var(--aaif-charcoal); color: #fff; }
+
+/* The deck's mesh-gradient background. This is the deck's own
+   2048x1152 PNG, downsampled to 320x180 and inlined as a data URI —
+   a smooth mesh survives that losslessly to the eye and costs ~10KB
+   instead of 700KB, and it keeps a rendered deck a single
+   self-contained HTML file. The layered radial-gradient fallback
+   underneath keeps the slide readable if the URI is ever stripped. */
+.aaif-slide--gradient {
+  background-color: #0B0A0C;
+  background-image:
+    url("data:image/jpeg;base64,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"),
+    radial-gradient(75% 62% at 20%  6%,  #1D95B1 0%, rgba(29,149,177,0) 62%),
+    radial-gradient(58% 66% at 76% 44%,  #A455AB 0%, rgba(164,85,171,0) 66%),
+    radial-gradient(46% 44% at 30% 94%,  #543F22 0%, rgba(84,63,34,0)   70%),
+    radial-gradient(48% 52% at 88% 86%,  #7B4180 0%, rgba(123,65,128,0) 70%);
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+}
+
+.aaif-slide--navy .aaif-eyebrow,
+.aaif-slide--dark .aaif-eyebrow,
+.aaif-slide--gradient .aaif-eyebrow,
+.aaif-slide--navy .aaif-foot,
+.aaif-slide--dark .aaif-foot,
+.aaif-slide--gradient .aaif-foot   { color: var(--aaif-d-chrome); }
+
+.aaif-slide--navy .aaif-hairline,
+.aaif-slide--dark .aaif-hairline,
+.aaif-slide--gradient .aaif-hairline { background: var(--aaif-d-rule); }
+
+.aaif-slide--navy .aaif-wordmark,
+.aaif-slide--dark .aaif-wordmark,
+.aaif-slide--gradient .aaif-wordmark,
+.aaif-slide--navy .aaif-mark,
+.aaif-slide--dark .aaif-mark,
+.aaif-slide--gradient .aaif-mark   { color: #fff; }
+
+.aaif-slide--navy .aaif-label,
+.aaif-slide--dark .aaif-label      { color: var(--aaif-d-label); }
+.aaif-slide--gradient .aaif-label  { color: #E8E6DF; }
+
+.aaif-slide--navy .aaif-title,
+.aaif-slide--dark .aaif-title,
+.aaif-slide--gradient .aaif-title  { color: #fff; }
+
+.aaif-slide--navy .aaif-lead,
+.aaif-slide--navy .aaif-body-text  { color: var(--aaif-d-body); }
+.aaif-slide--dark .aaif-lead,
+.aaif-slide--dark .aaif-body-text  { color: #DDDBD4; }
+.aaif-slide--gradient .aaif-lead,
+.aaif-slide--gradient .aaif-body-text { color: #EDEBE4; }
+
+.aaif-slide--navy .aaif-mono,
+.aaif-slide--dark .aaif-mono,
+.aaif-slide--gradient .aaif-mono   { color: #fff; }
+
+/* ── chrome ───────────────────────────────────────────────────
+   Logo mark + wordmark top-left, mono eyebrow top-right, hairline
+   and footer row along the bottom. Emitted by chrome() in
+   primitives.j2 so every layout carries an identical set. */
+.aaif-mark {
+  position: absolute;
+  left: 5%; top: 5.33%;
+  width: 2.7%; height: 4.8%;
+  color: var(--aaif-ink);
+}
+.aaif-wordmark {
+  position: absolute;
+  left: 8.6%; top: 4.8%;
+  font-family: var(--aaif-body);
+  font-weight: 700;
+  font-size: calc(7.5 * var(--pt));
+  line-height: 1.1333;
+  letter-spacing: -0.005em;
+  color: var(--aaif-ink);
+  white-space: pre-line;
+}
+.aaif-eyebrow {
+  position: absolute;
+  right: 5%; top: 4.8%;
+  font-family: var(--aaif-mono);
+  font-size: calc(7.5 * var(--pt));
+  letter-spacing: 0.02em;
+  text-transform: uppercase;   /* the deck's eyebrow is always caps */
+  color: var(--aaif-muted);
+  text-align: right;
+}
+.aaif-hairline {
+  position: absolute;
+  left: 5%; width: 90%;
+  top: var(--aaif-rule-y);
+  height: 1px;
+  background: var(--aaif-rule);
+}
+.aaif-foot {
+  position: absolute;
+  top: var(--aaif-foot-y);
+  font-family: var(--aaif-mono);
+  font-size: calc(7.5 * var(--pt));
+  color: var(--aaif-muted);
+}
+.aaif-foot--left  { left: 5%; text-decoration: underline; text-underline-offset: 0.25em; }
+.aaif-foot--right { right: 5%; text-align: right; }
+.aaif-foot--right::after { content: counter(aaif-page, decimal-leading-zero); }
+
+/* ── heading block ────────────────────────────────────────────
+   Eyebrow at 15.11%, title at 20.98% — the offsets every content
+   slide in the source deck uses. The eyebrow's fixed height is what
+   lands the title on its row regardless of eyebrow presence. */
+.aaif-head {
+  position: absolute;
+  left: var(--aaif-gutter);
+  right: var(--aaif-gutter);
+  /* +3.6pt reproduces the 0.05in top inset Google Slides applies
+     inside every text box, so our first line sits on the deck's. */
+  top: calc(var(--aaif-head-top) + 3.6 * var(--pt));
+}
+.aaif-label {
+  font-family: var(--aaif-mono);
+  font-size: calc(9 * var(--pt));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aaif-muted);
+  /* 12.15pt line box + 11.6pt margin = the deck's 23.8pt eyebrow
+     row, which is what lands the title on its own row at 20.98%. */
+  margin: 0 0 calc(11.6 * var(--pt)) 0;
+  height: calc(9 * var(--pt) * 1.35);
+}
+.aaif-label--sm  { font-size: calc(8.5 * var(--pt)); height: auto; margin: 0; }
+.aaif-label--green { color: var(--aaif-green); }
+
+.aaif-title {
+  font-family: var(--aaif-display);
+  font-weight: 700;
+  font-size: calc(21 * var(--pt));
+  line-height: 1.18;
+  letter-spacing: -0.02em;
+  color: var(--aaif-ink);
+  margin: 0;
+}
+.aaif-title--lg      { font-size: calc(23 * var(--pt)); }
+.aaif-title--display { font-size: calc(40 * var(--pt)); line-height: 1.12; }
+.aaif-title--hero    { font-size: calc(60 * var(--pt)); line-height: 1.02; letter-spacing: -0.035em; }
+.aaif-title em, .aaif-title i { font-style: italic; font-weight: 400; }
+
+.aaif-lead {
+  font-family: var(--aaif-body);
+  font-size: calc(13 * var(--pt));
+  line-height: 1.45;
+  color: var(--aaif-muted);
+  margin: 0;
+}
+.aaif-body-text {
+  font-family: var(--aaif-body);
+  font-size: calc(12 * var(--pt));
+  line-height: 1.5;
+  color: var(--aaif-muted);
+  margin: 0;
+}
+.aaif-mono {
+  font-family: var(--aaif-mono);
+  font-size: calc(9.5 * var(--pt));
+  letter-spacing: 0.02em;
+  color: var(--aaif-ink);
+  margin: 0;
+}
+
+/* ── body region ──────────────────────────────────────────────
+   Everything below the heading. `--top` lets a layout pin its own
+   start row the way the source deck does. */
+.aaif-body {
+  position: absolute;
+  left: var(--aaif-gutter);
+  right: var(--aaif-gutter);
+  top: calc(var(--top, 33.78%) + 3.6 * var(--pt));
+  bottom: 12%;
+}
+.aaif-body--center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── the oversized numeral on divider slides (deck p6/p9/p16) ── */
+.aaif-numeral {
+  position: absolute;
+  right: 5%; top: 16.89%;
+  font-family: var(--aaif-display);
+  font-weight: 700;
+  font-size: calc(96 * var(--pt));
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  color: var(--aaif-ink);
+  text-align: right;
+}
+.aaif-slide--navy .aaif-numeral,
+.aaif-slide--dark .aaif-numeral,
+.aaif-slide--gradient .aaif-numeral { color: #fff; }
+
+/* ── cover slides ─────────────────────────────────────────────── */
+.aaif-cover-mark {
+  position: absolute;
+  left: 5.5%; top: 6.04%;
+  width: 3%; height: 5.33%;
+  color: var(--aaif-ink);
+}
+.aaif-cover-wordmark {
+  position: absolute;
+  left: 9.5%; top: 5.51%;
+  font-family: var(--aaif-display);
+  font-weight: 700;
+  font-size: calc(9 * var(--pt));
+  line-height: 1.1111;
+  letter-spacing: -0.01em;
+  color: var(--aaif-ink);
+  white-space: pre-line;
+}
+.aaif-slide--navy .aaif-cover-mark,
+.aaif-slide--dark .aaif-cover-mark,
+.aaif-slide--gradient .aaif-cover-mark,
+.aaif-slide--navy .aaif-cover-wordmark,
+.aaif-slide--dark .aaif-cover-wordmark,
+.aaif-slide--gradient .aaif-cover-wordmark { color: #fff; }
+
+/* ── stat callouts (deck p20) ─────────────────────────────────── */
+.aaif-stat-value {
+  font-family: var(--aaif-display);
+  font-weight: 700;
+  font-size: calc(60 * var(--pt));
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--aaif-ink);
+}
+.aaif-stat-value--md { font-size: calc(30 * var(--pt)); }
+.aaif-stat-value--sm { font-size: calc(24 * var(--pt)); }
+.aaif-slide--navy .aaif-stat-value,
+.aaif-slide--dark .aaif-stat-value,
+.aaif-slide--gradient .aaif-stat-value { color: #fff; }
+
+/* ── table (deck p17) ─────────────────────────────────────────── */
+.aaif-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.aaif-table th,
+.aaif-table td {
+  border: 1px solid var(--aaif-rule);
+  /* 4.32pt = the deck's 54875 EMU cell inset; the row height is what
+     the deck actually fixes, so tables of any length keep its rhythm
+     until you override --aaif-row-h. */
+  padding: calc(4.32 * var(--pt)) calc(4.32 * var(--pt));
+  height: var(--aaif-row-h, calc(27.4 * var(--pt)));
+  text-align: left;
+  vertical-align: middle;
+}
+.aaif-table th {
+  background: var(--aaif-ink);
+  color: var(--aaif-cream);
+  font-family: var(--aaif-mono);
+  font-weight: 700;
+  font-size: calc(8.5 * var(--pt));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.aaif-table td {
+  font-family: var(--aaif-body);
+  font-size: calc(9.5 * var(--pt));
+  color: var(--aaif-ink);
+  background: var(--aaif-cream);
+}
+
+/* ── timeline (deck p22) ──────────────────────────────────────── */
+.aaif-timeline { position: relative; }
+.aaif-timeline-rail {
+  position: absolute;
+  left: 2.1%; right: 20.6%;
+  top: calc(2.67% + 0.5px);
+  height: 1.5px;
+  background: var(--aaif-rule-strong);
+}
+.aaif-timeline-row {
+  position: relative;
+  display: grid;
+  gap: 0;
+}
+.aaif-dot {
+  /* the deck's dot is 3% of the slide width = 21.6pt */
+  width: calc(21.6 * var(--pt));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--aaif-ink);
+}
+.aaif-dot--green { background: var(--aaif-green); }
+
+/* ── numbered circles (deck p7 agenda) ────────────────────────── */
+.aaif-circle {
+  /* 4.2% of the slide width = 30.2pt */
+  width: calc(30.2 * var(--pt));
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid var(--aaif-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--aaif-mono);
+  font-weight: 700;
+  font-size: calc(11 * var(--pt));
+  color: var(--aaif-ink);
+}
+
+/* ── avatar placeholder ───────────────────────────────────────
+   The source deck ships raster placeholder headshots; this is the
+   same silhouette drawn in CSS so a deck stays self-contained.
+   Pass a real <img> through the macro's `photo` argument to
+   replace it. */
+.aaif-avatar {
+  border-radius: 50%;
+  background: var(--aaif-ink);
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+.aaif-avatar::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: 21%;
+  width: 30%; aspect-ratio: 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--aaif-cream);
+}
+.aaif-avatar::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 60%;
+  width: 62%; height: 55%;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 0 0;
+  background: var(--aaif-cream);
+}
+.aaif-avatar img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+/* The silhouette is a placeholder: a real photo replaces it entirely
+   (::after is generated last, so it would otherwise paint on top). */
+.aaif-avatar:has(img)::before,
+.aaif-avatar:has(img)::after { content: none; }
+
+/* ── outlined chip (host / member logo slots, deck p1/p2) ─────── */
+.aaif-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--aaif-rule-strong);
+  border-radius: calc(3 * var(--pt));
+  background: transparent;
+  font-family: var(--aaif-mono);
+  font-weight: 700;
+  font-size: calc(9.5 * var(--pt));
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--aaif-ink);
+  padding: calc(6 * var(--pt)) calc(8 * var(--pt));
+  text-align: center;
+}
+.aaif-slide--navy .aaif-chip,
+.aaif-slide--dark .aaif-chip,
+.aaif-slide--gradient .aaif-chip {
+  border-color: rgba(255,255,255,0.45);
+  color: #fff;
+}
+
+/* ── contract primitives ──────────────────────────────────────
+   The deck itself has no card vocabulary — it is hairlines and
+   type. These render the contract's card/callout/pill in that same
+   register: sharp corners, one hairline, one accent rule. */
+.aaif-card {
+  border: 1px solid var(--aaif-rule);
+  border-left: calc(2.5 * var(--pt)) solid var(--aaif-a-neutral);
+  background: transparent;
+  padding: calc(9 * var(--pt)) calc(10 * var(--pt));
+}
+.aaif-card-title {
+  font-family: var(--aaif-display);
+  font-weight: 700;
+  font-size: calc(11.5 * var(--pt));
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--aaif-ink);
+  margin: 0 0 calc(3 * var(--pt)) 0;
+}
+.aaif-card-body {
+  font-family: var(--aaif-body);
+  font-size: calc(9.5 * var(--pt));
+  line-height: 1.4;
+  color: var(--aaif-muted);
+  margin: 0;
+}
+.aaif-slide--navy .aaif-card,
+.aaif-slide--dark .aaif-card,
+.aaif-slide--gradient .aaif-card { border-color: rgba(255,255,255,0.28); }
+.aaif-slide--navy .aaif-card-title,
+.aaif-slide--dark .aaif-card-title,
+.aaif-slide--gradient .aaif-card-title { color: #fff; }
+.aaif-slide--navy .aaif-card-body,
+.aaif-slide--dark .aaif-card-body,
+.aaif-slide--gradient .aaif-card-body { color: rgba(255,255,255,0.86); }
+
+.aaif-callout {
+  border-left: calc(2.5 * var(--pt)) solid var(--aaif-a-primary);
+  background: rgba(10,10,10,0.035);
+  padding: calc(8 * var(--pt)) calc(10 * var(--pt));
+  font-family: var(--aaif-body);
+  font-size: calc(10.5 * var(--pt));
+  line-height: 1.45;
+  color: var(--aaif-ink);
+}
+.aaif-slide--navy .aaif-callout,
+.aaif-slide--dark .aaif-callout,
+.aaif-slide--gradient .aaif-callout {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+
+.aaif-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--aaif-a-neutral);
+  border-radius: calc(3 * var(--pt));
+  padding: calc(3.5 * var(--pt)) calc(7 * var(--pt));
+  font-family: var(--aaif-mono);
+  font-size: calc(8.5 * var(--pt));
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--aaif-ink);
+}
+.aaif-slide--navy .aaif-pill,
+.aaif-slide--dark .aaif-pill,
+.aaif-slide--gradient .aaif-pill { border-color: rgba(255,255,255,0.45); color: #fff; }
+
+/* accent hooks — semantic names only; shared slides never see hex */
+.aaif-accent-primary   { --aaif-accent: var(--aaif-a-primary);   border-left-color: var(--aaif-a-primary); }
+.aaif-accent-secondary { --aaif-accent: var(--aaif-a-secondary); border-left-color: var(--aaif-a-secondary); }
+.aaif-accent-success   { --aaif-accent: var(--aaif-a-success);   border-left-color: var(--aaif-a-success); }
+.aaif-accent-warning   { --aaif-accent: var(--aaif-a-warning);   border-left-color: var(--aaif-a-warning); }
+.aaif-accent-danger    { --aaif-accent: var(--aaif-a-danger);    border-left-color: var(--aaif-a-danger); }
+.aaif-accent-info      { --aaif-accent: var(--aaif-a-info);      border-left-color: var(--aaif-a-info); }
+.aaif-accent-neutral   { --aaif-accent: var(--aaif-a-neutral);   border-left-color: var(--aaif-a-neutral); }
+span.aaif-pill.aaif-accent-primary,
+span.aaif-pill.aaif-accent-secondary,
+span.aaif-pill.aaif-accent-success,
+span.aaif-pill.aaif-accent-warning,
+span.aaif-pill.aaif-accent-danger,
+span.aaif-pill.aaif-accent-info,
+span.aaif-pill.aaif-accent-neutral { border-color: var(--aaif-accent); color: var(--aaif-accent); }
+
+/* ── code card (contract: code_block) ─────────────────────────── */
+.aaif-code {
+  border: 1px solid var(--aaif-rule);
+  background: var(--aaif-cream);
+  overflow: hidden;
+}
+.aaif-code-bar {
+  display: flex;
+  align-items: center;
+  gap: calc(3 * var(--pt));
+  padding: calc(4 * var(--pt)) calc(6 * var(--pt));
+  border-bottom: 1px solid var(--aaif-rule);
+}
+.aaif-code-dot { width: calc(4 * var(--pt)); aspect-ratio: 1; border-radius: 50%; }
+.aaif-code-name {
+  margin-left: calc(4 * var(--pt));
+  font-family: var(--aaif-mono);
+  font-size: calc(7.5 * var(--pt));
+  color: var(--aaif-muted);
+}
+.aaif-code pre {
+  margin: 0;
+  padding: calc(7 * var(--pt)) calc(8 * var(--pt));
+  font-family: var(--aaif-mono);
+  font-size: calc(8.5 * var(--pt));
+  line-height: 1.6;
+  color: var(--aaif-ink);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ── media frame ──────────────────────────────────────────────── */
+.aaif-frame {
+  border: 1px solid var(--aaif-rule-strong);
+  background: rgba(10,10,10,0.02);
+  overflow: hidden;
+}
+
+/* ── bar chart (deck p21) ─────────────────────────────────────── */
+.aaif-chart { position: relative; width: 100%; height: 100%; }
+.aaif-chart-plot {
+  position: absolute;
+  left: 5%; right: 0; top: 0; bottom: calc(11 * var(--pt));
+  border-left: 1px solid var(--aaif-rule);
+  border-bottom: 1px solid var(--aaif-rule);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+}
+.aaif-chart-grid {
+  position: absolute;
+  left: 0; right: 0;
+  border-top: 1px solid var(--aaif-rule);
+}
+.aaif-chart-bar { width: 9%; background: #1B2434; position: relative; }
+.aaif-chart-bar span {
+  position: absolute;
+  left: 50%; bottom: 100%;
+  transform: translateX(-50%);
+  margin-bottom: calc(2 * var(--pt));
+  font-family: var(--aaif-mono);
+  font-size: calc(7 * var(--pt));
+  color: var(--aaif-muted);
+}
+.aaif-chart-tick,
+.aaif-chart-xlabel {
+  position: absolute;
+  font-family: var(--aaif-mono);
+  font-size: calc(7 * var(--pt));
+  color: var(--aaif-muted);
+}
+
+/* ================================================================
+   Engine overrides
+   ----------------------------------------------------------------
+   modules/shared/modern_template.j2 assumes a dark deck: it sets
+   dark body classes, teal nav dots, and a #0B1120 print background.
+   This pack is light, so those assumptions are corrected here. If
+   the wrapper ever grows real per-brand hooks, this block is what
+   goes away.
+   ================================================================ */
+body {
+  background: var(--aaif-cream) !important;
+  color: var(--aaif-ink) !important;
+  counter-reset: aaif-page 0;    /* covers do not increment; slide 2 reads 01 */
+}
+#nav-dots .nav-dot           { background: var(--aaif-rule); }
+#nav-dots .nav-dot:hover     { background: var(--aaif-ink); }
+#nav-dots .nav-dot.active    { background: var(--aaif-ink); }
+#nav-dots .nav-dot::before   { background: var(--aaif-ink); border-color: var(--aaif-ink); color: var(--aaif-cream); }
+body > .fixed.bottom-6       { color: var(--aaif-muted); }
+body > .fixed.bottom-6 kbd   { background: transparent; border-color: var(--aaif-rule); }
+
+@media print {
+  html, body { background: var(--aaif-cream) !important; }
+  .aaif-slide { height: 100vh !important; }
+}
+</style>

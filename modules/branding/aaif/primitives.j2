@@ -1,0 +1,255 @@
+{# ================================================================
+   Agentic AI Foundation (AAIF) — brand-pack primitives
+   ----------------------------------------------------------------
+   Implements the primitive macro contract (see repo-root AGENTS.md)
+   in the AAIF chapter/event style: cream canvas, Space Grotesk
+   display, Instrument Sans body, JetBrains Mono chrome, one green
+   accent. All the .aaif-* classes come from this pack's
+   theme.html.j2.
+
+   Three things about this pack are worth knowing before you use it:
+
+   1. It is a LIGHT pack, and a warm one — #F6F5F1, not white.
+      Content written for the dark packs needs its colours re-checked.
+
+   2. Every layout is positioned on a 16:9 stage in percentages
+      lifted from the source Google Slides deck, and sets type with
+      `calc(N * var(--pt))` where N is the deck's point size. Keep
+      that convention when you add a layout: it is the whole reason
+      this pack lines up with the original.
+
+   3. It does NOT ship the sans-cloud `vis-*` compatibility layer
+      the Zenable pack carries, so shared slides under
+      modules/<topic>/ that still emit raw `vis-*` markup render
+      unstyled here. Only slides written against these primitives
+      work.
+
+   Slide chrome — logo mark, wordmark, mono eyebrow, footer hairline,
+   footer text, page number — is emitted by chrome(), so every layout
+   carries an identical set. Page numbers are a CSS counter; there is
+   nothing to pass in and nothing to renumber when slides move.
+   ================================================================ #}
+
+
+{# ── internal helpers ─────────────────────────────────────────── #}
+
+{%- macro _accent(name) -%}
+{%- set m = {
+  "primary":  "aaif-accent-primary",
+  "secondary":"aaif-accent-secondary",
+  "success":  "aaif-accent-success",
+  "warning":  "aaif-accent-warning",
+  "danger":   "aaif-accent-danger",
+  "info":     "aaif-accent-info",
+  "neutral":  "aaif-accent-neutral",
+} -%}{{- m.get(name, "aaif-accent-neutral") -}}
+{%- endmacro -%}
+
+
+{# Slide furniture. `eyebrow` is the mono line top-right (the source
+   deck uses "SECTION · TOPIC"); `foot` is the underlined mono link
+   bottom-left. Set page=False on covers, which the deck leaves
+   unnumbered. #}
+{%- macro chrome(eyebrow="", foot="aaif.io / events", page=True, logo=True, rule=True) -%}
+{%- if logo %}
+<svg class="aaif-mark" viewBox="0 0 203 203" aria-label="Agentic AI Foundation"><use href="#aaif-mark"/></svg>
+<div class="aaif-wordmark">Agentic AI
+Foundation</div>
+{%- endif %}
+{%- if eyebrow %}<div class="aaif-eyebrow">{{ eyebrow }}</div>{% endif %}
+{%- if rule %}<div class="aaif-hairline"></div>{% endif %}
+{%- if foot %}<div class="aaif-foot aaif-foot--left">{{ foot }}</div>{% endif %}
+{%- if page %}<div class="aaif-foot aaif-foot--right"></div>{% endif %}
+{%- endmacro -%}
+
+
+{# The larger top-left lockup the two cover slides use. #}
+{%- macro cover_logo() -%}
+<svg class="aaif-cover-mark" viewBox="0 0 203 203" aria-label="Agentic AI Foundation"><use href="#aaif-mark"/></svg>
+<div class="aaif-cover-wordmark">Agentic AI
+Foundation</div>
+{%- endmacro -%}
+
+
+{# A round placeholder headshot. Pass `photo` (a URL) to use a real
+   one; the CSS silhouette is the fallback, matching the source
+   deck's placeholder. #}
+{%- macro avatar(size, photo="") -%}
+<div class="aaif-avatar" style="width:{{ size }};">
+  <div style="padding-top:100%;"></div>
+  {%- if photo %}<img src="{{ photo }}" alt="">{% endif %}
+</div>
+{%- endmacro -%}
+
+
+{# ── structural primitives ────────────────────────────────────── #}
+
+{# Cover slide — deck p1. `gradient=True` swaps to the mesh-gradient
+   background; `tone` takes "light" | "navy" | "dark" | "gradient"
+   for the other three. #}
+{%- macro title_slide(title, subtitle="", kicker="", gradient=False, tone="", meta="", eyebrow="", footer="AAIF.IO / COMMUNITY") -%}
+{%- set t = tone or ("gradient" if gradient else "light") -%}
+<section class="slide aaif-slide aaif-slide--{{ t }} aaif-slide--nonumber" data-label="{{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ cover_logo() }}
+    {%- if eyebrow %}<div class="aaif-eyebrow" style="top:5.51%; font-size:calc(8.5 * var(--pt));">{{ eyebrow }}</div>{% endif %}
+    <div class="aaif-hairline" style="top:16.89%; left:5.5%; width:89%;"></div>
+    {%- if kicker %}
+    <div class="aaif-label" style="position:absolute; left:5.5%; top:26.67%; font-size:calc(10 * var(--pt)); height:auto; margin:0;">{{ kicker }}</div>
+    {%- endif %}
+    <h1 class="aaif-title aaif-title--hero" style="position:absolute; left:5.1%; right:5%; top:32.89%;">{{ title|safe }}</h1>
+    {%- if subtitle %}
+    <p class="aaif-title" style="position:absolute; left:5.5%; right:5%; top:54.22%; font-size:calc(20 * var(--pt)); color:var(--aaif-muted);">{{ subtitle|safe }}</p>
+    {%- endif %}
+    {%- if meta %}
+    <p class="aaif-mono" style="position:absolute; left:5.5%; right:5%; top:64.36%; font-size:calc(14 * var(--pt)); font-weight:700;">{{ meta|safe }}</p>
+    {%- endif %}
+    {%- if footer %}<div class="aaif-foot" style="right:5.5%; text-align:right; top:91.02%; font-size:calc(9 * var(--pt));">{{ footer }}</div>{% endif %}
+    {{ caller() if caller is defined and caller }}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# Section break — deck p6/p9/p16: an oversized numeral top-right,
+   a mono kicker, a display title, and an optional lead paragraph.
+   This is the deck's divider, and it replaces the old pack's
+   full-bleed gradient one. #}
+{%- macro section_divider(num, title, subtitle="", label="", eyebrow="", tone="light", footnote="") -%}
+{%- set kicker = label or eyebrow or title -%}
+<section class="slide aaif-slide aaif-slide--{{ tone }}" data-label="Section: {{ title|striptags }}">
+  <div class="aaif-stage"><div class="aaif-canvas">
+    {{ chrome(eyebrow=eyebrow or ((num ~ " · " ~ kicker) if num else kicker)) }}
+    {%- if num %}<div class="aaif-numeral">{{ "%02d"|format(num) if num is number else num }}</div>{% endif %}
+    <div class="aaif-label" style="position:absolute; left:5%; right:5%; top:calc(35.56% + 3.6 * var(--pt)); font-size:calc(9.5 * var(--pt)); height:auto; margin:0;">{{ kicker|upper }}</div>
+    {#- Title and subtitle share one positioned block so a title that
+        wraps to two lines pushes the subtitle down instead of
+        overlapping it. The margin reproduces the source deck's gap
+        for a one-line title. -#}
+    <div style="position:absolute; left:5%; right:8%; top:calc(41.78% + 3.6 * var(--pt));">
+      <h2 class="aaif-title aaif-title--display" style="font-size:calc(44 * var(--pt)); margin:0;">{{ title|safe }}</h2>
+      {%- if subtitle %}
+      <p class="aaif-lead" style="font-size:calc(14 * var(--pt)); line-height:1.43; margin:calc(36 * var(--pt)) 2% 0 0;">{{ subtitle|safe }}</p>
+      {%- endif %}
+    </div>
+    {%- if footnote %}
+    <p class="aaif-mono" style="position:absolute; left:5%; right:5%; top:calc(79.11% + 3.6 * var(--pt)); font-size:calc(9.5 * var(--pt));">{{ footnote|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
+{# Maturity-model break. Same numeral shell as section_divider, but
+   labelled "Level N · Stage" so a deck can tell the two apart in the
+   nav rail. #}
+{%- macro maturity_level(level, stage, title, subtitle="") -%}
+{{ section_divider(level, title, subtitle,
+     label="Level " ~ level ~ " · " ~ stage) }}
+{%- endmacro -%}
+
+
+{# Heading block for a content slide. Unlike the slide-emitting
+   macros above this returns a fragment — callers wrap it in their
+   own <section>, usually via content_slide() from slides.j2. #}
+{%- macro slide_heading(label, title, subtitle="") -%}
+<div class="aaif-head">
+  {%- if label %}<div class="aaif-label">{{ label|upper }}</div>{% endif %}
+  <div class="aaif-title">{{ title|safe }}</div>
+  {%- if subtitle %}<div class="aaif-lead" style="margin-top:calc(6 * var(--pt));">{{ subtitle|safe }}</div>{% endif %}
+</div>
+{%- endmacro -%}
+
+
+{# ── content primitives ───────────────────────────────────────── #}
+
+{%- macro callout(text, accent="primary") -%}
+<div class="aaif-callout {{ _accent(accent) }}">{{ text|safe }}</div>
+{%- endmacro -%}
+
+{%- macro card(title, body, accent="neutral") -%}
+<div class="aaif-card {{ _accent(accent) }}">
+  {%- if title %}<p class="aaif-card-title">{{ title }}</p>{% endif %}
+  {%- if body %}<p class="aaif-card-body">{{ body|safe }}</p>{% endif %}
+</div>
+{%- endmacro -%}
+
+{%- macro card_grid(items, cols=3) -%}
+<div style="display:grid; grid-template-columns:repeat({{ cols }},minmax(0,1fr)); gap:calc(9 * var(--pt));">
+  {%- for item in items %}
+    {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro pros_cons(benefits, shortcomings, ben_label="Benefits", short_label="Shortcomings") -%}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:calc(18 * var(--pt));">
+  <div>
+    <p class="aaif-label aaif-label--sm aaif-label--green" style="margin-bottom:calc(6 * var(--pt));">{{ ben_label|upper }}</p>
+    <div style="display:flex; flex-direction:column; gap:calc(7 * var(--pt));">
+      {%- for item in benefits %}
+      {{ card(item.title, item.detail | default(item.body | default("")), "success") }}
+      {%- endfor %}
+    </div>
+  </div>
+  <div>
+    <p class="aaif-label aaif-label--sm" style="color:var(--aaif-a-danger); margin-bottom:calc(6 * var(--pt));">{{ short_label|upper }}</p>
+    <div style="display:flex; flex-direction:column; gap:calc(7 * var(--pt));">
+      {%- for item in shortcomings %}
+      {{ card(item.title, item.detail | default(item.body | default("")), "danger") }}
+      {%- endfor %}
+    </div>
+  </div>
+</div>
+{%- endmacro -%}
+
+{%- macro pill_row(items, justify="flex-start") -%}
+<div style="display:flex; flex-wrap:wrap; gap:calc(6 * var(--pt)); justify-content:{{ justify }};">
+  {%- for item in items %}
+    <span class="aaif-pill {{ _accent(item.accent | default('neutral')) }}">{{ item.label }}</span>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{# Code card. `lines` is a list of strings; they are escaped, so pass
+   plain source rather than pre-highlighted markup. #}
+{%- macro code_block(filename, lines) -%}
+<div class="aaif-code">
+  <div class="aaif-code-bar">
+    <span class="aaif-code-dot" style="background:#ff5f57;"></span>
+    <span class="aaif-code-dot" style="background:#febc2e;"></span>
+    <span class="aaif-code-dot" style="background:#28c840;"></span>
+    {%- if filename %}<span class="aaif-code-name">{{ filename }}</span>{% endif %}
+  </div>
+  <pre><code>{% for line in lines %}{{ line }}{{ "\n" if not loop.last }}{% endfor %}</code></pre>
+</div>
+{%- endmacro -%}
+
+{# Horizontal numbered steps, drawn with the deck's outlined circles
+   (p7) rather than filled chips. Each step: {title, detail}. #}
+{%- macro step_flow(steps) -%}
+<div style="display:grid; grid-template-columns:repeat({{ steps|length }},minmax(0,1fr)); gap:calc(8 * var(--pt)); align-items:start;">
+  {%- for step in steps %}
+  <div>
+    <div class="aaif-circle" style="width:calc(30 * var(--pt));">{{ loop.index }}</div>
+    <p class="aaif-card-title" style="margin-top:calc(8 * var(--pt));">{{ step.title }}</p>
+    {%- if step.detail %}<p class="aaif-card-body" style="margin-top:calc(3 * var(--pt));">{{ step.detail|safe }}</p>{% endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{# ────────────────────────────────────────────────────────────────
+   NOT YET IMPLEMENTED — declared in the AGENTS.md contract.
+   Implement on demand when extracting the consuming shared slide.
+
+     pipe(stages)
+     ide_mockup(filename, sidebar, code_lines, chat_panel=None)
+
+   Note: code_block() and step_flow() above ARE implemented here but
+   are still stubs in the sans-cloud, zenable, and unbranded packs.
+   Until those catch up, use them only from AAIF-specific slides —
+   a shared slide under modules/<topic>/ that calls them would break
+   the "same content, swap brand" guarantee.
+   ──────────────────────────────────────────────────────────────── #}

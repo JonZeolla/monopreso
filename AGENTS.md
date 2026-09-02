@@ -59,6 +59,14 @@ Currently shipped:
 - `sans-cloud/` — the SANS Cloud Security webcast skin (orange/teal, header bar, series-overview/CSE-summit slides). Used by `2026-03`, `2026-05`, `2026-06` decks.
 - `zenable/` — Tailwind-based; reuses Zenable color tokens from `modules/shared/tailwind.config.js`. Delegates several primitives to the long-standing macros in `modules/shared/components/modern_macros.j2`.
 - `unbranded/` — neutral system-font skin, no corporate colors. For talks that should carry no employer/sponsor branding.
+- `aaif/` — Agentic AI Foundation. The only **light** pack: cream `#F6F5F1` slides, black type, hairline rules, and one accent (`#14964A`). Space Grotesk display / Instrument Sans body / JetBrains Mono chrome. It is a slide-for-slide rebuild of the official "AAIF Presentation Template" Google Slides deck (`Slides.pptx`, 23 slides) — palette, type sizes, and every layout offset come from that file rather than from taste. Ships an extra `slides.j2` carrying all 19 source layouts and a `logo-sprite.html.j2`. Reference gallery: `presentations/aaif-template`, which reproduces all 23 source slides with the source's own copy so the two are diffable side by side.
+
+  Two conventions make that alignment reproducible, and you must keep both when you add an AAIF layout:
+
+  1. **`--pt`.** The source canvas is 720 pt × 405 pt, so a point is exactly 1/7.2 of the slide width. Type is set as `calc(N * var(--pt))` where N is the deck's own `sz` value divided by 100 — copy `sz` out of the pptx verbatim, never convert to px. `--pt` is an absolute length, so it is correct for vertical offsets too.
+  2. **The stage.** `.aaif-slide` fills the viewport and paints the background; `.aaif-stage` is a 16:9 box centred inside it; `.aaif-canvas` sits inside the stage and is where `--pt` is defined (a container query unit resolves against the nearest *ancestor* container, not the element carrying `container-type`). Positions are percentages of the stage, lifted from the source EMU offsets, plus `3.6 * var(--pt)` for the 0.05 in inset Google Slides applies inside every text box.
+
+Because `aaif` is light, it has to override the dark assumptions baked into `modules/shared/modern_template.j2` — the `<body>` classes, the teal nav dots, and the `#0B1120` print background. Those overrides are quarantined in an "engine overrides" block at the bottom of its `theme.html.j2`. If the wrapper ever grows real brand hooks, that block is what goes away.
 
 ### Shared slides live in `modules/<topic>/<slide>.j2`
 
@@ -92,7 +100,7 @@ These macro names + signatures must match across every brand pack. Shared slides
 | Macro | Purpose |
 |---|---|
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
-| `section_divider(num, title, subtitle="")` | Big "Part N · Title" break between sections |
+| `section_divider(num, title, subtitle="")` | Section break between parts. Packs are free to render it their own way — `aaif` uses the source deck's oversized numeral rather than a "Part N" band, and takes optional `label` / `eyebrow` / `footnote` on top of the contract arguments. |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
 | `quote(text, attribution, source="", url="")` | Full-slide pull quote. Owns its own `<section>`. `attribution` is the speaker, `source` is where they said it, `url` makes the source a link |
 | `statement(lines)` | Full-slide declarative statement — no quote marks, no attribution. Owns its own `<section>`. `lines`: `{text, muted}` one per rendered line; muted lines render smaller and dimmer so connective words recede |
@@ -105,13 +113,15 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
 | `meter_row(items, scale=4, caption="")` | Graded bars on one shared scale, for scoring several things the same way across several slides. Each item: `{label, score, note}`; `score` is `1..scale`, and **`scale` is always the favourable end** — cheap scores high on cost, fast scores high on speed. Fill length and colour (red → orange → yellow → green) encode the same number, so it survives a bad projector. The ramp is brand-owned and deliberately outside the accent vocabulary: accents are categories, this is an ordinal scale |
 | `matrix(headers, rows, caption="")` | Comparison matrix. `headers`: `{label, sub}`; `rows`: `{label, cells}` where each cell is `{level, text}` and `level` is `strong`/`partial`/`weak`. Levels map to success/warning/danger accents plus a ●/◐/○ glyph. Reading across a row shows which columns cover a dimension — that is what makes gaps visible |
-| `code_block(filename, lines)` | Mac-window code card *(not yet implemented in any pack)* |
-| `step_flow(steps)` | Horizontal numbered steps *(not yet implemented)* |
-| `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated |
-| `tradeoff_triangle(corners, note="", filled=false)` | Three-corner tradeoff triangle (good/fast/cheap). `corners`: exactly three `{label, accent}`. `note` renders inside the shape; `filled` lights the whole triangle rather than leaving an outline. SVG, coloured via `currentColor` so it works in every pack |
-| `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented)* |
+| `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated *(not in `aaif`)* |
+| `tradeoff_triangle(corners, note="", filled=false)` | Three-corner tradeoff triangle (good/fast/cheap). `corners`: exactly three `{label, accent}`. `note` renders inside the shape; `filled` lights the whole triangle rather than leaving an outline. SVG, coloured via `currentColor` so it works in every pack *(not in `aaif`)* |
+| `code_block(filename, lines)` | Mac-window code card *(`aaif` only)* |
+| `step_flow(steps)` | Horizontal numbered steps *(`aaif` only)* |
+| `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented in any pack)* |
 
-The three "not yet implemented" primitives are stubbed in each brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
+`ide_mockup` is stubbed in every brand pack's primitives.j2 (commented at the bottom). Implement it when extracting the first shared slide that needs it — see the "vertical-slice migration" rule below.
+
+**The contract is not uniformly covered yet, and the gaps run in both directions.** `code_block` and `step_flow` exist **only in the `aaif` pack**. `content_slide`, `quote`, `statement`, `meter_row`, `matrix`, `pipe` and `tradeoff_triangle` exist in `sans-cloud`, `zenable` and `unbranded` but **not in `aaif`**. Call either group from pack-specific slides if you like, but a shared slide under `modules/<topic>/` that calls one would render nothing under the packs that lack it, breaking the "same content, swap brand" guarantee. Before promoting any of them to shared use, implement it in the missing packs and clear the note above.
 
 ### Importing a primitive-native slide: `with context`
 
@@ -213,10 +223,12 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
   - **First primitive-native shared slides.** `2026-09-csa-birmingham-ai-governance` ships four modules (`modules/sdlc/lifecycle.j2`, `modules/guardrails/deterministic-vs-llm.j2`, `guardrail-decisions.j2`, `structure-enables-speed.j2`) written entirely against primitives — no hex, no brand classes, no raw `<section>`. They render correctly under all three packs and are the reference example for new work. Supporting this required implementing `content_slide` and `pipe` in all three packs, adding `--unb-secondary` to the unbranded theme, and fixing zenable's `callout` accent bug.
   - There is a `new-presentation` skill at `.claude/skills/new-presentation/` covering deck scaffolding, the primitive rules, and the render pipeline. Its `scripts/scaffold_deck.sh` creates a modern deck with the engagement facts filled in — use it rather than the repo's root `create.sh`, which scaffolds the legacy revealjs layout.
+  - **The `aaif` pack is the first one built primitives-first.** It ships no `vis-*` compatibility layer, so nothing renders through it except slides written against the contract. `presentations/aaif-template` is its reference gallery and doubles as a regression check on the primitives. It is the closest thing the repo has to a proof that the contract is sufficient — and it is currently the only pack for which that is true.
+  - **`aaif` was retuned to the source Google Slides deck (August 2026).** Its first iteration was a white / indigo-coral-gradient / Instrument Sans skin that did not match the official template at all. `theme.html.j2`, `primitives.j2`, `slides.j2` and the gallery deck were rewritten against `Slides.pptx`: cream canvas, Space Grotesk + JetBrains Mono, the `--pt` unit, the 16:9 stage, and all 19 source layouts. `split_slide()`, `statement_slide()`, `stat_row()` and `closing_slide()` are kept as carry-overs for decks written against the first iteration; they are not in the source deck.
 
 - **Not done**
   - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.
-  - Three primitives are stubbed only: `code_block`, `step_flow`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
+  - `ide_mockup` is stubbed in every pack. `code_block` and `step_flow` exist only in `aaif`; `content_slide`, `quote`, `statement`, `meter_row`, `matrix`, `pipe` and `tradeoff_triangle` exist everywhere except `aaif`. Close a gap when the first shared slide that needs that primitive lands.
   - `modules/shared/components/modern_macros.j2` overlaps with the Zenable pack and remains the source for legacy ISACA-DC content. Plan: as slides are extracted, fold the relevant macros into `modules/branding/zenable/primitives.j2` and shrink `modern_macros.j2`. Do not delete it pre-emptively — ISACA-DC still imports it directly.
 
 ### Vertical-slice migration rule

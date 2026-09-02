@@ -25,6 +25,8 @@ function help() {
 		               local Taskfile.yml); CLI flag wins over env.
 		--engine       Presentation engine: modern (default) or revealjs
 		--list         List the available presentations
+		--port         Host port to serve on (default: 8000). Also honoured via the PORT env var;
+		               CLI flag wins over env.
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
 		--port         Serve on this port instead of auto-selecting a free one
@@ -129,6 +131,7 @@ PORT=
 DEFAULT_PORT=8000
 BRANDING="${BRANDING:-False}"  # respect env; CLI --branding overrides below
 ENGINE="modern"
+PORT="${PORT:-8000}"  # respect env; CLI --port overrides below
 NO_CLEANUP="False"
 NO_OPEN="False"
 
@@ -162,6 +165,12 @@ while getopts "${OPTSPEC}" optchar; do
 
         no-open)
           NO_OPEN="True" ;;
+
+        port)
+          PORT="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;
+
+        port=*)
+          PORT=${OPTARG#*=} ;;
 
         preso)
           PRESENTATION="${!OPTIND}"; OPTIND=$(( OPTIND + 1 )) ;;

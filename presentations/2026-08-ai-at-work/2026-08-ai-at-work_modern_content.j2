@@ -1,0 +1,151 @@
+{# ================================================================
+   AI at Work · August 27, 2026
+   Loops: managing AI slop with agentic feedback loops
+
+   Modern-engine orchestration layer. Reusable slides are imported
+   from modules/**; the few deck-specific slides (intro + audience
+   polls) live inline below.
+   ================================================================ #}
+
+{# ── Brand pack selected by start.sh / the local Taskfile ─────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    section_divider,
+    content_slide,
+    tradeoff_triangle %}
+
+{# ── Shared slide content ─────────────────────────────────────── #}
+{%- from "modules/loops/loops.j2" import
+    use_cases as loop_use_cases,
+    slop_thesis %}
+{%- from "modules/agents/agent-feedback-loop.j2" import feedback_loop as agent_feedback_loop %}
+{%- from "modules/outro/outro.j2" import thank_you %}
+
+
+<!-- ================================================================
+     OPENING — deck-specific
+     ================================================================ -->
+
+<!-- Intro: Jon Zeolla -->
+<section class="slide flex items-center justify-center p-8" data-label="Intro">
+  <div class="text-center fade-in">
+    <h1 class="font-bold tracking-tight text-white" style="font-size:4.5rem; line-height:1.1; margin-bottom:1rem;">Jon Zeolla</h1>
+    <p class="italic font-medium text-zenable-teal" style="font-size:2rem; margin-bottom:4rem;">AI Janitor</p>
+    <p class="text-slate-400" style="font-size:1.5rem;">Founder, Zenable&nbsp;&nbsp;&middot;&nbsp;&nbsp;AAIF Ambassador</p>
+  </div>
+</section>
+
+<!-- Intro beat 2: AI Janitor -->
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="AI Janitor">
+  <div class="text-center fade-in">
+    <img src="presentations/2026-08-ai-at-work/img/ai_janitor.png" alt="AI Janitor robot tidying a data center"
+         class="mx-auto rounded-xl object-contain" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+  </div>
+</section>
+
+<!-- Intro beat 3: AI Janitor, hectic -->
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="AI Janitor (hectic)">
+  <div class="text-center fade-in">
+    <img src="presentations/2026-08-ai-at-work/img/ai_janitor_hectic.png" alt="AI Janitor robot, overwhelmed"
+         class="mx-auto rounded-xl object-contain" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+  </div>
+</section>
+
+<!-- PSA -->
+<section class="slide flex items-center justify-center p-8" data-label="PSA">
+  <h2 class="font-bold text-white tracking-tight fade-in text-center"
+      style="font-size:6rem; line-height:1.05; max-width:20ch;">Public Service Announcement</h2>
+</section>
+
+<!-- Poll: show of hands, progressively disclosed -->
+<section class="slide flex items-center justify-center p-8" data-label="Show of Hands">
+  <div class="text-center fade-in max-w-5xl mx-auto">
+    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-zenable-teal mb-6">Show of hands</p>
+    <h2 class="text-5xl font-bold text-white leading-tight mb-12">Who here has&hellip;</h2>
+    <p class="step text-4xl font-semibold text-white leading-snug mb-8">&hellip;hit their <span class="gradient-text">subscription limits</span>?</p>
+    <p class="step text-4xl font-semibold text-white leading-snug">&hellip;watched AI build something and said&hellip; <span class="gradient-text">What?!</span></p>
+  </div>
+</section>
+
+<!-- The broken pipe, bare -->
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="Broken Pipe">
+  <img src="modules/vibe-coding/img/if_it_works_dont_touch_it.jpg" alt="A downspout pouring water directly next to the drain pipe it was supposed to connect to"
+       class="mx-auto rounded-xl object-contain fade-in" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+</section>
+
+
+<!-- The inspiration for this demo: memory, in practice -->
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="Meanwhile on Slack">
+  <div class="text-center fade-in max-w-6xl mx-auto">
+    <img src="presentations/2026-08-ai-at-work/img/slack_memory_counterproductive.png"
+         alt="Slack post: deleting memory files and shrinking context finally made output concise — maybe memory is counterproductive"
+         class="mx-auto rounded-xl max-h-[70vh] object-contain">
+  </div>
+</section>
+
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="Meanwhile on Slack 2">
+  <div class="text-center fade-in max-w-6xl mx-auto">
+    <img src="presentations/2026-08-ai-at-work/img/slack_claude_mem_daemon.png"
+         alt="Slack post: 106 claude processes using 11.42 GB, all children of the claude-mem plugin's worker daemon"
+         class="mx-auto rounded-xl max-h-[70vh] object-contain">
+  </div>
+</section>
+
+<!-- What people are actually putting in memory -->
+<section class="slide flex items-center justify-center p-8 image-slide" data-label="Shut Up Memory">
+  <div class="text-center fade-in max-w-6xl mx-auto">
+    <img src="presentations/2026-08-ai-at-work/img/tweet_shut_up_memory.png"
+         alt="Tweet: pasted an all-caps 'shut up, you are a tool, just do the task' rant into Claude's memory and claims 10x better results"
+         class="mx-auto rounded-xl object-contain" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+  </div>
+</section>
+
+
+<!-- ================================================================
+     THE CLAIM — good, cheap, fast, all lit green. Just the triangle.
+     ================================================================ -->
+<section class="slide flex items-center justify-center p-8" data-label="Good Cheap Fast">
+  <style>
+    /* Hero-size the triangle on this slide only */
+    section[data-label="Good Cheap Fast"] svg { width: min(880px, 78vw) !important; max-height: 78vh !important; }
+  </style>
+  <div class="fade-in w-full">
+    {{ tradeoff_triangle([
+      {"label": "Good",  "accent": "success"},
+      {"label": "Cheap", "accent": "success"},
+      {"label": "Fast",  "accent": "success"},
+    ], filled=true) }}
+  </div>
+</section>
+
+
+<!-- ================================================================
+     LOOPS
+     ================================================================ -->
+{{ loop_use_cases() }}
+
+
+<!-- ================================================================
+     WHY I'M HERE — loops vs. slop, and why determinism matters
+     ================================================================ -->
+{{ slop_thesis() }}
+
+
+<!-- ================================================================
+     NOW WHAT
+     ================================================================ -->
+{{ agent_feedback_loop() }}
+
+
+<!-- ================================================================
+     DEMO
+     ================================================================ -->
+<section class="slide flex items-center justify-center p-8" data-label="Section: Demo">
+  <h2 class="font-bold text-white tracking-tight fade-in" style="font-size:9rem; line-height:1;">Demo</h2>
+</section>
+
+
+<!-- ================================================================
+     CLOSE
+     ================================================================ -->
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
