@@ -1,0 +1,75 @@
+{#- modules/guardrails/structure-enables-speed.j2
+    The counter-intuitive close: structure in a repository makes an agent
+    faster, not slower.
+
+    This is the argument most likely to meet resistance in a governance room,
+    because both camps expect controls and velocity to trade off. The slides
+    therefore lead with the mechanism (an agent guesses less when the repo
+    tells it more) rather than with the claim.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/structure-enables-speed.j2" import
+          structure_is_speed, the_loop with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro structure_is_speed() -%}
+{#- Three concrete pieces of structure, each framed by the guessing it
+    removes. The argument is the title; the cards are the evidence. -#}
+{%- call content_slide("Structure is speed") %}
+  {{ slide_heading("", "Structure = Speed") }}
+  {{ card_grid([
+    {"title": "Context files",
+     "body": "Conventions, architecture, and approved patterns written where the agent reads them. It stops inferring house style from whatever file it happened to open.",
+     "accent": "primary"},
+    {"title": "Hooks",
+     "body": "Checks that fire inside the loop, while the agent still has the change in hand. It fixes its own mistake instead of waiting on a human to find it.",
+     "accent": "info"},
+    {"title": "Reviewers",
+     "body": "Agent and human review catch what no rule was written for, and every correction becomes something the next attempt already knows.",
+     "accent": "success"},
+  ], cols=3) }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro the_loop() -%}
+{#- Closes the maturity arc: the controls built in earlier levels become the
+    training signal here. Drawn as a pipeline because the compounding only
+    happens if the last step feeds the first. -#}
+{%- call content_slide("The feedback loop") %}
+  {{ slide_heading("Compounding",
+                   "Guardrails are the feedback loop",
+                   "Each violation is a labelled example of what your organisation considers wrong.") }}
+  {{ pipe([
+    {"label": "Agent acts",     "detail": "Writes code against the context it has", "accent": "info"},
+    {"label": "Control fires",  "detail": "A rule blocks; a reviewer objects",      "accent": "danger"},
+    {"label": "Signal is kept", "detail": "What failed, where, and how often",      "accent": "warning"},
+    {"label": "Context updates","detail": "The rule becomes written guidance",      "accent": "secondary"},
+    {"label": "Agent acts",     "detail": "With one fewer way to be wrong",         "accent": "success"},
+  ]) }}
+  {{ card_grid([
+    {"title": "Fix the recurring, not the memorable",
+     "body": "Update context in response to patterns in the evidence, not to the one failure that annoyed someone senior.",
+     "accent": "warning"},
+    {"title": "Bound every edit",
+     "body": "Small, reviewed changes to instructions. A rewritten context file is an unreviewed behaviour change.",
+     "accent": "info"},
+    {"title": "Promote only what measures better",
+     "body": "Hold out a set of tasks. If the new guidance does not move them, it is prose, not an improvement.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("This is the difference between governance that ages badly and
+              governance that gets <strong>better every quarter</strong>.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

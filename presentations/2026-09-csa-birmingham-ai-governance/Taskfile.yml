@@ -1,0 +1,37 @@
+---
+# Per-presentation Taskfile, picked up when `task start` runs from this
+# directory. Sets this deck's default brand; the root Taskfile is included so
+# stop / clean / generate-pdf still work.
+#
+# Override the brand:
+#   BRANDING=unbranded task start        # via env (useful for spotting brand leaks)
+#   task start -- --branding=sans-cloud  # via CLI flag, wins over env
+
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  # The sh: form is required so a BRANDING already set in the shell wins.
+  # A bare "BRANDING: zenable" would clobber it.
+  BRANDING:
+    sh: echo "${BRANDING:-zenable}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start AI Governance and Guardrails for Software (default brand: zenable)"
+    cmds:
+      - task: root:start

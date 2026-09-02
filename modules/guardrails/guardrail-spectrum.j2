@@ -1,0 +1,97 @@
+{#- modules/guardrails/guardrail-spectrum.j2
+    The guardrail spectrum: highway guardrail → Disney monorail → paved road.
+
+    The metaphor carries the whole argument: constraint buys speed, but only
+    along the path the constraint defines, and past a point it buys speed by
+    spending the model's creativity. The paved road is the deliberate middle.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/guardrail-spectrum.j2" import
+          highway_vs_monorail, the_balance, paved_roads with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    pill_row,
+    callout
+-%}
+
+
+{%- macro highway_vs_monorail() -%}
+{#- One slide, three vehicles. The spectrum is drawn as a pipe so the
+    audience reads it left-to-right as increasing constraint. -#}
+{%- call content_slide("The guardrail spectrum") %}
+  {{ slide_heading("",
+                   "From the highway to the monorail",
+                   "Constraint is how fast systems go fast.") }}
+  {{ pipe([
+    {"label": "Open field",
+     "detail": "No road at all. Go anywhere, slowly, and get lost often.",
+     "meta": "no constraint",
+     "accent": "neutral"},
+    {"label": "Highway guardrail",
+     "detail": "Keeps you out of the ditch. Speed, lane, and route are still yours.",
+     "meta": "bounded freedom",
+     "accent": "info"},
+    {"label": "Disney monorail",
+     "detail": "One track, no steering wheel. Much faster, precisely because there is less discretion.",
+     "meta": "total constraint",
+     "accent": "danger"},
+  ]) }}
+  {{ callout("Every constraint trades discretion for speed along one path.
+              The question is <strong>how much track to lay</strong>.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro the_balance() -%}
+{#- The counterpoint, stated before anyone in the audience objects: the
+    monorail end of the spectrum spends the model's best property. -#}
+{%- call content_slide("The balance") %}
+  {{ slide_heading("",
+                   "Too much track kills the reason you came",
+                   "A model's creativity and problem-solving are features. Constrain everything and you own a very expensive template engine.") }}
+  {{ card_grid([
+    {"title": "Under-constrained",
+     "body": "The agent improvises your architecture, your naming, and your security posture. Fast until the rework arrives.",
+     "accent": "warning"},
+    {"title": "Over-constrained",
+     "body": "Every decision is pre-made. The model can no longer surprise you — including the good surprises: the fix, the simplification, the catch.",
+     "accent": "danger"},
+    {"title": "Deliberately constrained",
+     "body": "Non-negotiables are locked. Everything else is open ground where model judgement earns its keep.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("Constrain what must never vary. Leave room where variation is
+              the value.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro paved_roads() -%}
+{#- The organizational answer to the balance problem. A paved road is
+    direction supplied up front, not a wall hit at the end. -#}
+{%- call content_slide("Paved roads") %}
+  {{ slide_heading("",
+                   "Paved roads",
+                   "A road you were already on when you started.") }}
+  {{ card_grid([
+    {"title": "Examples, up front",
+     "body": "Golden paths, reference implementations, approved patterns. The agent imitates what it can see, so show it the good version first.",
+     "accent": "success"},
+    {"title": "Direction, up front",
+     "body": "Conventions and constraints written where the agent reads them — before it generates, not after it guesses wrong.",
+     "accent": "info"},
+    {"title": "Freedom past the shoulder",
+     "body": "Leaving the paved road is possible — it just stops being free. Novel work escalates to a human instead of being silently blocked.",
+     "accent": "primary"},
+  ], cols=3) }}
+  {{ callout("Paved roads start the model on the right path.
+              <strong>Verifiers keep it there.</strong>", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

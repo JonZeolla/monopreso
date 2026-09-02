@@ -1,0 +1,121 @@
+{#- modules/guardrails/policy-as-code.j2
+    Policy as code: where it came from, and the architecture vocabulary that
+    still describes every enforcement system built since.
+
+    The XACML PDP/PIP/PEP/PAP roles are presented via the CNCF Kubernetes
+    Policy Management whitepaper's framing, then re-mapped onto the agentic
+    coding pipeline — same shape, new actors.
+
+    Source: CNCF / Kubernetes SIG-Security, "Kubernetes Policy Management"
+    whitepaper v1 — github.com/kubernetes/sig-security (see deck SOURCES.md).
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/policy-as-code.j2" import
+          pac_history, policy_architecture, policy_architecture_today with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    quote,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro pac_history() -%}
+{%- call content_slide("Policy as code: history") %}
+  {{ slide_heading("",
+                   "Policy, before and after it became code",
+                   "The idea is older than the tooling. Each generation moved enforcement closer to the change.") }}
+  {{ pipe([
+    {"label": "Policy as PDFs",
+     "detail": "Binders, wikis, annual attestations. Enforced by audit, months after the fact.",
+     "meta": "pre-2003",
+     "accent": "neutral"},
+    {"label": "XACML",
+     "detail": "OASIS standardizes a policy language and an architecture: PAP, PDP, PIP, PEP.",
+     "meta": "2003",
+     "accent": "info"},
+    {"label": "Cloud-native",
+     "detail": "Kubernetes admission control; policy engines evaluate every API request.",
+     "meta": "2010s",
+     "accent": "secondary"},
+    {"label": "Policy as code",
+     "detail": "Policies versioned, reviewed, and tested like software; enforced in PRs and CI.",
+     "meta": "2020s",
+     "accent": "primary"},
+    {"label": "Agent guardrails",
+     "detail": "The same architecture, pointed at what a coding agent is about to do.",
+     "meta": "now",
+     "accent": "success"},
+  ]) }}
+  {{ callout("Fifty years of governance keeps rediscovering one lesson: the
+              cheapest place to enforce anything is the
+              <strong>earliest place you can</strong>.", accent="info") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro do_it_statically() -%}
+{#- Epigraph opening the policy-as-code section. Practitioners who
+    disagree about nearly everything else agreeing on this one point is a
+    stronger argument for deterministic checks than the speaker asserting
+    it. Attributed to the panel rather than an individual: the line claims
+    consensus, and the specific speaker is not identifiable from the
+    recording. -#}
+{{ quote("Everyone here agrees as much as we can do statically we should do statically",
+         "Dex Horthy &middot; Geoff Huntley &middot; Ian Livingstone &middot; Greg Pstrucha",
+         source="The Great Loops Debate &mdash; AI Engineer World&rsquo;s Fair, 2026",
+         url="https://youtu.be/c35YoMdnI78") }}
+{%- endmacro -%}
+
+
+{%- macro policy_architecture(image_path="modules/guardrails/img/xacml-policy-architecture.png") -%}
+{#- The XACML reference architecture, shown as the whitepaper draws it.
+    The figure is black-on-white, so it sits on a light plate — that is a
+    legibility requirement of the source image, not a brand colour. -#}
+{%- call content_slide("Policy architecture") %}
+  {{ slide_heading("", "Policy as Code") }}
+  <div style="flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:8px 0;">
+    <img src="{{ image_path }}"
+         alt="XACML policy architecture: users or systems call the Policy Enforcement Point, which reaches resources and consults the Policy Decision Point; the PDP draws attributes from the Policy Information Point and policies authored by the Policy Administration Point."
+         class="plain"
+         style="width:100%; max-width:1000px; max-height:44vh; object-fit:contain; background:white; border-radius:12px; padding:12px;">
+  </div>
+  <p style="text-align:right; font-size:11px; opacity:0.6; margin:0 0 10px 0;">
+    Figure from <a href="https://github.com/kubernetes/sig-security/blob/main/sig-security-docs/papers/policy/CNCF_Kubernetes_Policy_Management_WhitePaper_v1.pdf">CNCF &amp; Kubernetes SIG-Security, &ldquo;Kubernetes Policy Management&rdquo; white paper v1 (p.&nbsp;6)</a>
+  </p>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro policy_architecture_today() -%}
+{#- The payoff for teaching 2003 vocabulary in 2026: the agentic pipeline
+    is the same diagram with the boxes renamed. -#}
+{%- call content_slide("Same architecture, new actors") %}
+  {{ slide_heading("",
+                   "Your agent pipeline is the same diagram",
+                   "Rename the boxes and the twenty-year-old architecture describes this year's tooling.") }}
+  {{ pipe([
+    {"label": "Request",
+     "detail": "A coding agent proposes a change or a tool call",
+     "accent": "neutral"},
+    {"label": "PEP",
+     "detail": "The hook, the PR gate, the CI check that intercepts it",
+     "accent": "warning"},
+    {"label": "PDP",
+     "detail": "Your policy engine — the rules that decide, deterministically",
+     "accent": "primary",
+     "note": "PIP: repo context, metadata, and history. PAP: the repo itself — policies versioned next to the code they govern"},
+    {"label": "Allow / deny",
+     "detail": "Merge, block, or escalate to a human — with the reason recorded",
+     "accent": "success"},
+  ]) }}
+  {{ callout("The architecture is twenty years old.
+              <strong>Only the requester is new.</strong>", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}

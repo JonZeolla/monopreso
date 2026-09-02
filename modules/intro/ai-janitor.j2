@@ -1,0 +1,38 @@
+{# ================================================================
+   AI Janitor — the two-beat opening image pair.
+
+   Beat 1 lands the joke: the title "AI Janitor" is a real job
+   description, and here is the robot doing it, cheerfully, with a
+   99% system-health dashboard behind it.
+
+   Beat 2 is the punchline: same robot, same room, no longer coping.
+   The pair only works in order — beat 2 is meaningless without the
+   optimism of beat 1 to undercut.
+
+   Primitive-native. Imports the brand pack itself, so whatever
+   imports this module must do so WITH CONTEXT. See AGENTS.md.
+   ================================================================ #}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import image_slide %}
+
+{%- set _DIR = "modules/shared/img" %}
+
+
+{%- macro janitor() -%}
+{{ image_slide(_DIR ~ "/ai_janitor.png",
+               "AI Janitor robot tidying a data center",
+               label="AI Janitor") }}
+{%- endmacro -%}
+
+
+{%- macro janitor_hectic() -%}
+{{ image_slide(_DIR ~ "/ai_janitor_hectic.png",
+               "AI Janitor robot, overwhelmed",
+               label="AI Janitor (hectic)") }}
+{%- endmacro -%}
+
+
+{%- macro both() -%}
+{# The pair, in the only order that works. #}
+{{ janitor() }}
+{{ janitor_hectic() }}
+{%- endmacro -%}

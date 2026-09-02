@@ -76,12 +76,19 @@ Topic directories currently in use:
 
 | Topic | Path | Slide modules |
 |---|---|---|
-| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2` |
+| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2`, `context-rules-intro.j2`†, `skill-optimization.j2`† |
 | AI / agent review | `modules/agents/` | `agent-review.j2` |
 | Hooks | `modules/hooks/` | `hooks.j2` |
-| Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2` |
+| Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`† |
+| Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
+| Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`† |
+| Agent governance | `modules/governance/` | `tool-calls.j2`† (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
+| Intro | `modules/intro/` | `ai-janitor.j2`† |
 | Outro | `modules/outro/` | `outro.j2` |
+
+
+† Primitive-native: contains no hex colors, brand class names, or raw `<section>` markup, and renders correctly under all three packs. Use these as the model for new slides — not the older `vis-*` modules. They must be imported **`with context`** (see below).
 
 Grouping convention: bundle macros into one module if they're the same topic and likely to evolve together (`context-files.j2` exports both `mockup()` and `tradeoffs()`); split into separate modules if they're substantially different shapes (`cicd-enforcement.j2` vs. `server-side-review.j2`). Add a new topic dir when an extracted slide doesn't fit an existing one — don't dump everything into a generic bucket.
 
@@ -96,24 +103,55 @@ These macro names + signatures must match across every brand pack. Shared slides
 | `title_slide(title, subtitle="", kicker="")` | Cover slide |
 | `section_divider(num, title, subtitle="")` | Section break between parts. Packs are free to render it their own way — `aaif` uses the source deck's oversized numeral rather than a "Part N" band, and takes optional `label` / `eyebrow` / `footnote` on top of the contract arguments. |
 | `maturity_level(level, stage, title, subtitle="")` | "Level N: Stage" break in a maturity model |
-| `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub) |
+| `quote(text, attribution, source="", url="")` | Full-slide pull quote. Owns its own `<section>`. `attribution` is the speaker, `source` is where they said it, `url` makes the source a link |
+| `statement(lines)` | Full-slide declarative statement — no quote marks, no attribution. Owns its own `<section>`. `lines`: `{text, muted}` one per rendered line; muted lines render smaller and dimmer so connective words recede |
+| `image_slide(src, alt, label="", caption="")` | Full-slide image — the picture *is* the slide, scaled to fit with nothing competing. `alt` is required. `label` overrides the nav `data-label` (defaults to `alt`); `caption` adds a small line under the image. `aaif` sizes against its 16:9 stage rather than the viewport |
+| `content_slide(label)` | **Call-block** wrapper owning the `<section>` + `data-label` for a content slide. Use `{%- call content_slide("X") %}…{%- endcall %}` so shared slides never name a brand-specific section class |
+| `slide_heading(label, title, subtitle="")` | Top of a content slide (kicker + headline + sub). Pass `""` for `label` to omit the kicker entirely — newer slides do this, since an editorial kicker above a headline is usually filler |
 | `callout(text, accent="primary")` | Bottom emphasis band |
 | `card(title, body, accent="neutral")` | Bordered card |
-| `card_grid(items, cols=3)` | Grid of cards. Each item: `{title, body, accent}` |
+| `card_grid(items, cols=3, size="md")` | Grid of cards. Each item: `{title, body, accent}`. `size="lg"` enlarges title and body type via a `.cards-lg` wrapper, for slides where the grid *is* the slide |
 | `pros_cons(benefits, shortcomings, ben_label, short_label)` | Two-column ✓ / ✗ list. Each item: `{title, detail}` |
 | `pill_row(items, justify="center")` | Badge/pill row. Each item: `{label, accent}` |
+| `meter_row(items, scale=4, caption="")` | Graded bars on one shared scale, for scoring several things the same way across several slides. Each item: `{label, score, note}`; `score` is `1..scale`, and **`scale` is always the favourable end** — cheap scores high on cost, fast scores high on speed. Fill length and colour (red → orange → yellow → green) encode the same number, so it survives a bad projector. The ramp is brand-owned and deliberately outside the accent vocabulary: accents are categories, this is an ordinal scale |
+| `matrix(headers, rows, caption="")` | Comparison matrix. `headers`: `{label, sub}`; `rows`: `{label, cells}` where each cell is `{level, text}` and `level` is `strong`/`partial`/`weak`. Levels map to success/warning/danger accents plus a ●/◐/○ glyph. Reading across a row shows which columns cover a dimension — that is what makes gaps visible |
+| `pipe(stages)` | Left-to-right pipeline of stage cards joined by arrows. Each stage: `{label, detail, meta, accent, note}` — only `label` required. A stage's optional `note` renders as an annotation hanging above it on a dotted connector, so one stage list can be shown twice: bare, then annotated *(not in `aaif`)* |
+| `tradeoff_triangle(corners, note="", filled=false)` | Three-corner tradeoff triangle (good/fast/cheap). `corners`: exactly three `{label, accent}`. `note` renders inside the shape; `filled` lights the whole triangle rather than leaving an outline. SVG, coloured via `currentColor` so it works in every pack *(not in `aaif`)* |
 | `code_block(filename, lines)` | Mac-window code card *(`aaif` only)* |
 | `step_flow(steps)` | Horizontal numbered steps *(`aaif` only)* |
-| `pipe(stages)` | Pipeline diagram with stage cards *(not yet implemented)* |
-| `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented)* |
+| `ide_mockup(filename, sidebar, code_lines, chat_panel=None)` | Faux IDE *(not yet implemented in any pack)* |
 
-`pipe` and `ide_mockup` are stubbed in every brand pack's primitives.j2 (commented at the bottom). Implement them when extracting the first shared slide that needs them — see the "vertical-slice migration" rule below.
+`ide_mockup` is stubbed in every brand pack's primitives.j2 (commented at the bottom). Implement it when extracting the first shared slide that needs it — see the "vertical-slice migration" rule below.
 
-`code_block` and `step_flow` exist **only in the `aaif` pack** and are still stubs in the other three. Call them from AAIF-specific slides if you like, but a shared slide under `modules/<topic>/` that calls them would render nothing under the other packs and break the "same content, swap brand" guarantee. Before promoting either one to shared use, implement it in `sans-cloud`, `zenable`, and `unbranded` and clear the "aaif only" note above.
+**The contract is not uniformly covered yet, and the gaps run in both directions.** `code_block` and `step_flow` exist **only in the `aaif` pack**. `content_slide`, `quote`, `statement`, `meter_row`, `matrix`, `pipe` and `tradeoff_triangle` exist in `sans-cloud`, `zenable` and `unbranded` but **not in `aaif`**. Call either group from pack-specific slides if you like, but a shared slide under `modules/<topic>/` that calls one would render nothing under the packs that lack it, breaking the "same content, swap brand" guarantee. Before promoting any of them to shared use, implement it in the missing packs and clear the note above.
+
+### Importing a primitive-native slide: `with context`
+
+A shared slide that uses primitives resolves the brand path at load time:
+
+```jinja
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import pros_cons %}
+```
+
+Jinja evaluates that when the module is imported, and an imported template does **not** inherit the importer's context by default. So `branding` is undefined, the path collapses, and you get:
+
+```
+TemplateNotFound: 'modules/branding//primitives.j2'
+```
+
+The empty segment between the slashes is the tell. The fix is on the **deck's** import of the slide module:
+
+```jinja
+{%- from "modules/sdlc/lifecycle.j2" import stages with context %}
+```
+
+Any module that imports primitives must be imported `with context` by whatever imports it, all the way down the chain. Modules that emit plain markup and import nothing brand-dependent don't need it — which is why the older `vis-*` modules never hit this.
 
 ### Accent vocabulary (semantic, not color)
 
 Every primitive that takes an `accent` parameter accepts: `primary`, `secondary`, `success`, `warning`, `danger`, `info`, `neutral`. Each brand pack maps those to its actual palette. Shared slides must use the semantic names. **No hex codes in `modules/<topic>/*.j2`.**
+
+When implementing a primitive in the `zenable` pack, route the accent through `_accent_tw()`, which returns a real Tailwind color. Do **not** compose `zenable-*` class names from an accent: `tailwind.config.js` defines only `bg`, `bg-light`, `teal`, `teal-dark`, and `blue` under that namespace, and Tailwind silently emits nothing for an undefined color — so a wrong token renders an uncolored element instead of failing. (`callout` had exactly this bug for `warning`/`danger`/`neutral`; fixed.) An unrecognized accent name falls through to neutral in every pack, so a typo yields a bland slide rather than an error.
 
 ---
 
@@ -185,12 +223,14 @@ The "brand pack + shared slides" architecture is **scaffolded but not yet adopte
   - **Brand resolution wired through `start.sh`.** Respects `BRANDING` env var → CLI `--branding=` → per-deck `Taskfile.yml` → engine default. The resolved value is passed into Jinja as `branding` and validated against `modules/branding/<name>/` existence.
   - `2026-06-coding-guardrails` has a local `Taskfile.yml` that defaults its brand to `zenable`, and its content file's theme include is parametrized on `branding`.
   - `2026-08-sans-cse-guardrails-ai-coding` follows the thin modern orchestration pattern, defaults to `zenable`, and adds reusable maturity-model, context-injection, and context-refinement slides. The new Level 4 material covers evaluation splits, bounded skill/context updates, SkillOpt, related research, and promotion gates.
+  - **First primitive-native shared slides.** `2026-09-csa-birmingham-ai-governance` ships four modules (`modules/sdlc/lifecycle.j2`, `modules/guardrails/deterministic-vs-llm.j2`, `guardrail-decisions.j2`, `structure-enables-speed.j2`) written entirely against primitives — no hex, no brand classes, no raw `<section>`. They render correctly under all three packs and are the reference example for new work. Supporting this required implementing `content_slide` and `pipe` in all three packs, adding `--unb-secondary` to the unbranded theme, and fixing zenable's `callout` accent bug.
+  - There is a `new-presentation` skill at `.claude/skills/new-presentation/` covering deck scaffolding, the primitive rules, and the render pipeline. Its `scripts/scaffold_deck.sh` creates a modern deck with the engagement facts filled in — use it rather than the repo's root `create.sh`, which scaffolds the legacy revealjs layout.
   - **The `aaif` pack is the first one built primitives-first.** It ships no `vis-*` compatibility layer, so nothing renders through it except slides written against the contract. `presentations/aaif-template` is its reference gallery and doubles as a regression check on the primitives. It is the closest thing the repo has to a proof that the contract is sufficient — and it is currently the only pack for which that is true.
   - **`aaif` was retuned to the source Google Slides deck (August 2026).** Its first iteration was a white / indigo-coral-gradient / Instrument Sans skin that did not match the official template at all. `theme.html.j2`, `primitives.j2`, `slides.j2` and the gallery deck were rewritten against `Slides.pptx`: cream canvas, Space Grotesk + JetBrains Mono, the `--pt` unit, the 16:9 stage, and all 19 source layouts. `split_slide()`, `statement_slide()`, `stat_row()` and `closing_slide()` are kept as carry-overs for decks written against the first iteration; they are not in the source deck.
 
 - **Not done**
   - Shared slides have been extracted into topic dirs under `modules/<topic>/` (context, agents, hooks, guardrails, ci-cd, outro), and the 2026-06 and 2026-08 decks are wired up to them. They still emit sans-cloud-flavored `vis-*` HTML directly. The Zenable theme currently renders those slides through an interim compatibility layer that imports the SANS `vis-*` framework and overrides its tokens; this is visually functional but does not yet prove the primitive contract. The unbranded pack does not provide that compatibility layer. The shared slides still need to be rewritten on top of brand-pack primitives.
-  - Four primitives are stubbed only: `code_block`, `step_flow`, `pipe`, `ide_mockup`. Implement them when the first shared slide that needs them lands.
+  - `ide_mockup` is stubbed in every pack. `code_block` and `step_flow` exist only in `aaif`; `content_slide`, `quote`, `statement`, `meter_row`, `matrix`, `pipe` and `tradeoff_triangle` exist everywhere except `aaif`. Close a gap when the first shared slide that needs that primitive lands.
   - `modules/shared/components/modern_macros.j2` overlaps with the Zenable pack and remains the source for legacy ISACA-DC content. Plan: as slides are extracted, fold the relevant macros into `modules/branding/zenable/primitives.j2` and shrink `modern_macros.j2`. Do not delete it pre-emptively — ISACA-DC still imports it directly.
 
 ### Vertical-slice migration rule

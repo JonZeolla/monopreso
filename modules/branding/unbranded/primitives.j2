@@ -200,6 +200,23 @@
 {%- endmacro -%}
 
 
+{%- macro image_slide(src, alt, label="", caption="") -%}
+{# Full-slide image. The picture IS the slide: it scales to the viewport
+   and nothing competes with it. `alt` is required — it is the only thing
+   a screen reader or a failed load has to go on. #}
+<section class="unb-slide" data-label="{{ label or alt }}" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    <img src="{{ src }}" alt="{{ alt }}"
+         style="display:block; margin:0 auto; border-radius:12px; object-fit:contain;
+                max-height:calc(100vh - {{ '10rem' if caption else '4rem' }}); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+    {%- if caption %}
+    <p style="font-size:16px; color:var(--unb-text-muted); margin:24px 0 0 0;">{{ caption|safe }}</p>
+    {%- endif %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
 {%- macro quote(text, attribution, source="", url="") -%}
 {# Full-slide pull quote. `attribution` is the speaker; `source` is where
    they said it; `url` makes the source a link. #}
@@ -296,6 +313,45 @@
     {%- endif %}
   </svg>
 </div>
+{%- endmacro -%}
+
+
+{%- macro _score_color(score) -%}
+{# Four-step scorecard ramp: red → orange → yellow → green. Deliberately not
+   part of the accent vocabulary — this is an ordinal scale, not a category,
+   and `warning` vs `danger` carries no ordering. #}
+{%- set m = {
+  1: "var(--unb-danger)",
+  2: "#f97316",
+  3: "var(--unb-warning)",
+  4: "var(--unb-success)",
+} -%}{{- m.get(score, "var(--unb-text-dim)") -}}
+{%- endmacro -%}
+
+{%- macro meter_row(items, scale=4, caption="") -%}
+{# Graded bars on one shared scale, so several slides can be read against
+   each other. Each item: {label, score, note}; `score` is 1..scale where
+   scale is the most favourable. Length and colour encode the same number —
+   redundant on purpose, since colour alone fails on a projector. #}
+<div style="display:flex; flex-direction:column; gap:12px; margin:14px 0 4px;">
+  {%- for item in items %}
+  {%- set _s = item.score | default(0) %}
+  <div style="display:grid; grid-template-columns:minmax(150px,0.85fr) minmax(200px,1.6fr) minmax(160px,1.1fr); align-items:center; gap:16px;">
+    <p style="font-size:14px; font-weight:600; color:var(--unb-text); margin:0;">{{ item.label }}</p>
+    <div role="img" aria-label="{{ item.label }}: {{ _s }} of {{ scale }}"
+         style="display:flex; gap:5px;">
+      {%- for i in range(1, scale + 1) %}
+      <span style="flex:1; height:12px; border-radius:999px;
+                   background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}var(--unb-border){% endif %};"></span>
+      {%- endfor %}
+    </div>
+    {%- if item.note %}
+    <p style="font-size:12px; color:var(--unb-text-muted); margin:0; line-height:1.4;">{{ item.note|safe }}</p>
+    {%- else %}<span></span>{% endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- if caption %}<p style="font-size:11px; color:var(--unb-text-dim); margin:10px 0 0; text-align:center;">{{ caption|safe }}</p>{% endif %}
 {%- endmacro -%}
 
 

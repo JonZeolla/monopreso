@@ -1,16 +1,15 @@
 {# ================================================================
-   Guardrails for AI Coding
-   SANS@Night · SANS Cloud Security Exchange Summit · August 20, 2026
-   60 minutes · in-person and virtual
+   AI Governance and Guardrails
+   Cloud Security Alliance (CSA) Birmingham · September 8, 2026
+   Birmingham, AL · 60 minutes · in-person
 
    Modern-engine orchestration layer. This file chooses the brand and the
    slide order; it contains no HTML. Every rendered slide comes from a
    macro under modules/<topic>/ so other decks can reuse it.
 
-   2026-08-20: replaced wholesale with the CSA Birmingham running order.
-   The two talks are converging; this is the starting point for that, not
-   a finished SANS-specific deck. The previous maturity-model version is
-   in git at 2c05dc7 if any of it is wanted back.
+   2026-08-20: mirrored from the SANS CSE deck, which is where the running
+   order was refined. The two talks are the same talk; only the cover
+   slide differs.
 
    Modules that resolve the brand pack themselves are imported WITH CONTEXT
    — without it `branding` is undefined at load time and the path collapses
@@ -23,6 +22,18 @@
     title_slide %}
 
 {# ── Shared slides (primitive-native — import with context) ────── #}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
+{%- from "modules/sdlc/lifecycle.j2" import
+    sdlc, adlc with context %}
+{%- from "modules/agents/running-loops.j2" import
+    how_i_run_loops with context %}
+{%- from "modules/guardrails/maturity-model.j2" import
+    maturity_overview with context %}
+{%- from "modules/guardrails/structure-enables-speed.j2" import
+    structure_is_speed with context %}
+{%- from "modules/verifiers/self-improvement.j2" import
+    improvement_gates with context %}
 {%- from "modules/agents/good-fast-cheap.j2" import
     pick_two,
     agent_loops,
@@ -30,6 +41,12 @@
     loops_require_verifiers with context %}
 {%- from "modules/guardrails/policy-as-code.j2" import
     do_it_statically with context %}
+{%- from "modules/guardrails/control-scorecard.j2" import
+    context_files as score_context_files,
+    hooks         as score_hooks,
+    llm_gateway   as score_llm_gateway,
+    agent_review  as score_agent_review,
+    blocking_ci   as score_blocking_ci with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 {%- from "modules/verifiers/verifiers.j2" import
@@ -46,7 +63,8 @@
 {%- from "modules/context/context-window.j2"      import interactive  as context_window_interactive %}
 {%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
 {%- from "modules/context/context-files.j2"       import
-    mockup as context_files_mockup %}
+    mockup    as context_files_mockup,
+    tradeoffs as context_files_tradeoffs %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import pci_example as deterministic_pci_example %}
 {%- from "modules/hooks/hooks.j2"                 import when_x_then_y as hooks_when_x_then_y %}
 {%- from "modules/agents/agent-feedback-loop.j2"  import feedback_loop as agent_feedback_loop %}
@@ -60,9 +78,14 @@
      lifecycle everyone half-knows — grouped together as the shared
      ground the rest of the talk stands on.
      ================================================================ -->
-{{ title_slide("Guardrails for AI Coding",
-               subtitle="SANS@Night · Cloud Security Exchange Summit",
+{{ title_slide("AI Governance and Guardrails",
+               subtitle="Cloud Security Alliance · Birmingham",
                kicker="Jon Zeolla") }}
+
+{# Two image beats before any content: the janitor coping, then the
+   janitor not coping. Sets up "this is the job now" without a bio
+   slide, and buys the room a laugh before the volume data. #}
+{{ ai_janitor_pair() }}
 
 
 <!-- ================================================================
@@ -72,6 +95,8 @@
 {{ code_volume_ten_years() }}
 {{ code_volume_inflection() }}
 {{ coding_agent_evolution() }}
+{{ sdlc() }}
+{{ adlc() }}
 
 
 <!-- ================================================================
@@ -90,6 +115,7 @@
      that makes the thesis land instead of being asserted.
      ================================================================ -->
 {{ context_files_mockup() }}
+{{ context_files_tradeoffs() }}
 {{ context_window_interactive() }}
 {{ context_degradation_quality_drop() }}
 {{ context_and_skills() }}
@@ -101,6 +127,7 @@
      Practitioners agreeing on static analysis, then the four kinds and
      the coverage matrix.
      ================================================================ -->
+{{ maturity_overview() }}
 {{ do_it_statically() }}
 {{ four_kinds() }}
 {{ coverage() }}
@@ -108,10 +135,26 @@
 
 
 <!-- ================================================================
+     THE SAME FIVE QUESTIONS, ASKED OF EVERY CONTROL
+     One slide shape, five bars, same scale — flipped through so the
+     audience compares profiles rather than hearing five tool pitches.
+     Cheap-and-toothless at one end, slow-and-unbypassable at the other.
+     Drop any line here if the run-through goes long; the shape holds
+     with three cards as well as five.
+     ================================================================ -->
+{{ score_context_files() }}
+{{ score_hooks() }}
+{{ score_llm_gateway() }}
+{{ score_agent_review() }}
+{{ score_blocking_ci() }}
+
+
+<!-- ================================================================
      THE LOOP AND THE GOVERNANCE PAYOFF
      ================================================================ -->
 {{ agent_feedback_loop() }}
 {{ policy_feedback() }}
+{{ improvement_gates() }}
 
 
 <!-- ================================================================
@@ -125,6 +168,8 @@
 <!-- ================================================================
      CLOSE
      ================================================================ -->
+{{ structure_is_speed() }}
+{{ how_i_run_loops() }}
 {{ agents_validators_recap() }}
 {{ questions() }}
 {{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

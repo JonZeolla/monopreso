@@ -1,0 +1,155 @@
+{#- modules/guardrails/control-scorecard.j2
+    One slide shape, scored the same way for every control.
+
+    Every control an audience might reach for — context files, hooks, an LLM
+    gateway, agent review, blocking CI — gets the same five bars on the same
+    scale, so the slides can be flipped through and compared. The point is not
+    any single score: it is that nothing comes out green across the board, and
+    the shape of the tradeoff differs per control.
+
+    Scoring convention, and the only rule that matters here:
+    **4 is always the favourable end.** Not "high", not "a lot" — favourable.
+    So cheap scores 4 on Cost, and fast feedback scores 4 on Speed. If a bar
+    were ever read as raw magnitude, the whole slide would flip meaning
+    halfway down and the comparison would be worthless.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/control-scorecard.j2" import
+          context_files, hooks, llm_gateway, agent_review, blocking_ci
+          with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    meter_row,
+    callout
+-%}
+
+{#- The dimension order is fixed for every control. Reordering it for one
+    slide would break the flip-through comparison, which is the whole idea. -#}
+{%- set DIMENSIONS = [
+  {"key": "setup",         "label": "Setup"},
+  {"key": "maintenance",   "label": "Maintenance"},
+  {"key": "cost",          "label": "Cost"},
+  {"key": "speed",         "label": "Speed"},
+  {"key": "effectiveness", "label": "Effectiveness"},
+] -%}
+
+{%- set LEGEND = "Four bars is the favourable end of every dimension — cheap, fast, low-maintenance. Nothing scores four across the board." -%}
+
+
+{%- macro _scorecard(name, tagline, scores, note="", accent="info") -%}
+{#- The shared shape. Per-control macros below are data, not markup, so a new
+    control is one dict away and lands in the same layout automatically. -#}
+{%- call content_slide(name) %}
+  {{ slide_heading("", name, tagline) }}
+  {{ meter_row([
+       {"label": "Setup",         "score": scores.setup.score,         "note": scores.setup.note},
+       {"label": "Maintenance",   "score": scores.maintenance.score,   "note": scores.maintenance.note},
+       {"label": "Cost",          "score": scores.cost.score,          "note": scores.cost.note},
+       {"label": "Speed",         "score": scores.speed.score,         "note": scores.speed.note},
+       {"label": "Effectiveness", "score": scores.effectiveness.score, "note": scores.effectiveness.note},
+     ], caption=LEGEND) }}
+  {%- if note %}{{ callout(note, accent=accent) }}{% endif %}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro context_files() -%}
+{#- The cheapest thing on the list and the weakest control on the list. Worth
+    saying out loud: a file the model may or may not follow is guidance, not
+    enforcement — which is exactly why it scores 4, 4, 4 and then 1. -#}
+{{ _scorecard(
+   "Context files",
+   "Rules and conventions the agent reads before it writes",
+   {
+     "setup":         {"score": 4, "note": "Write a file. Commit it."},
+     "maintenance":   {"score": 2, "note": "Drifts silently as the codebase moves"},
+     "cost":          {"score": 4, "note": "Free, minus tokens on every call"},
+     "speed":         {"score": 4, "note": "Applies before the first keystroke"},
+     "effectiveness": {"score": 1, "note": "Advisory — the model can ignore it"},
+   },
+   note="The cheapest control you can add, and the one with no teeth.
+         Treat it as <strong>steering</strong>, never as a gate.",
+   accent="warning") }}
+{%- endmacro -%}
+
+
+{%- macro hooks() -%}
+{#- Deterministic and blocking, inside the loop, at almost no cost. The catch
+    is scope, not capability: it only binds the agent that honours it. -#}
+{{ _scorecard(
+   "Hooks",
+   "Deterministic checks on the agent's own tool calls",
+   {
+     "setup":         {"score": 3, "note": "A script and a config entry"},
+     "maintenance":   {"score": 3, "note": "Stable, but the scripts are yours to keep"},
+     "cost":          {"score": 4, "note": "Runs locally, negligible"},
+     "speed":         {"score": 4, "note": "Blocks in the loop, sub-second"},
+     "effectiveness": {"score": 3, "note": "Real enforcement — for agents that honour it"},
+   },
+   note="The best speed-to-enforcement ratio on this list. It binds
+         <strong>this agent</strong>, not the repository.",
+   accent="success") }}
+{%- endmacro -%}
+
+
+{%- macro llm_gateway() -%}
+{#- Expensive to stand up and to run, and the only control here that sees
+    every call regardless of which client made it. That chokepoint is what
+    you are buying; the infrastructure is what you are paying. -#}
+{{ _scorecard(
+   "LLM gateway",
+   "Every model call routed through one place you control",
+   {
+     "setup":         {"score": 2, "note": "A service to deploy, route, and trust"},
+     "maintenance":   {"score": 2, "note": "New models and providers, forever"},
+     "cost":          {"score": 2, "note": "Infrastructure plus a hop on every request"},
+     "speed":         {"score": 3, "note": "Inline, tens of milliseconds"},
+     "effectiveness": {"score": 4, "note": "Logging, redaction, model allowlists — no bypass"},
+   },
+   note="The only control here that sees every call no matter which tool
+         made it. That chokepoint is the whole product.",
+   accent="info") }}
+{%- endmacro -%}
+
+
+{%- macro agent_review() -%}
+{#- Broad coverage, real judgement, and non-deterministic — the profile is
+    almost the inverse of hooks, which is why teams run both. -#}
+{{ _scorecard(
+   "Agent review",
+   "A second model arguing with the first, on the diff",
+   {
+     "setup":         {"score": 3, "note": "A bot, a prompt, and pipeline wiring"},
+     "maintenance":   {"score": 3, "note": "Prompts drift; false positives need tuning"},
+     "cost":          {"score": 2, "note": "Tokens per pull request, plus triage time"},
+     "speed":         {"score": 2, "note": "Minutes later, after the work is done"},
+     "effectiveness": {"score": 3, "note": "Catches what no rule anticipated — inconsistently"},
+   },
+   note="Catches what you never wrote a rule for. Different answer every
+         run, so it advises — it does not decide.",
+   accent="secondary") }}
+{%- endmacro -%}
+
+
+{%- macro blocking_ci() -%}
+{#- The slowest feedback and the only unbypassable one. That is the trade the
+    slide exists to make visible. -#}
+{{ _scorecard(
+   "Blocking CI",
+   "Policy as code, server-side, between the branch and main",
+   {
+     "setup":         {"score": 2, "note": "Pipeline work, plus an exceptions process"},
+     "maintenance":   {"score": 2, "note": "Rules, waivers, and the false positives"},
+     "cost":          {"score": 3, "note": "CI minutes, and engineers waiting on them"},
+     "speed":         {"score": 1, "note": "Long after the context is gone"},
+     "effectiveness": {"score": 4, "note": "Server-side. Nobody merges around it."},
+   },
+   note="The slowest feedback and the only one nobody can skip.
+         That is the trade, stated plainly.",
+   accent="danger") }}
+{%- endmacro -%}
