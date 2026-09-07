@@ -113,7 +113,15 @@ tasks:
         vars:
           PRESENTATION: '{{.PRESENTATION}}'
           CLI_ARGS: --no-open --no-cleanup
-      - /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --print-to-pdf="{{.OUTPUT_PDF}}" 'http://localhost:8000/?print-pdf'
+      # The modern engine serves the deck at /current.html; revealjs serves it at / and needs ?print-pdf
+      - |
+        if curl --fail -s -o /dev/null http://localhost:8000/current.html; then
+          url='http://localhost:8000/current.html'
+        else
+          url='http://localhost:8000/?print-pdf'
+        fi
+        /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --no-pdf-header-footer \
+          --virtual-time-budget=10000 --print-to-pdf="{{.OUTPUT_PDF}}" "${url}"
 
   cleanup-pdfs:
     desc: Cleanup the generated PDFs

@@ -1,0 +1,32 @@
+---
+# Per-presentation Taskfile. Picked up automatically when `task start` runs
+# from this directory. This deck imports the AAIF pack's slides.j2, which no
+# other pack ships, so it is pinned to BRANDING=aaif and is not brand-swappable.
+
+version: '3'
+
+set:
+  - nounset
+  - errexit
+  - pipefail
+
+silent: true
+
+includes:
+  root:
+    taskfile: ../../Taskfile.yml
+    dir: ../..
+
+env:
+  # Default brand for this presentation. Shell env wins if already set.
+  BRANDING:
+    sh: echo "${BRANDING:-aaif}"
+
+tasks:
+  default:
+    deps: [start]
+
+  start:
+    desc: "Start this presentation (default brand: aaif)"
+    cmds:
+      - task: root:start
