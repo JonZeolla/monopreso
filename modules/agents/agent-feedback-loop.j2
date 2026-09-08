@@ -8,7 +8,40 @@
   <div class="vis-title">Coding Agents feedback loop</div>
 
   <div style="flex:1; display:flex; justify-content:center; align-items:center;">
-    <svg viewBox="0 0 1400 720" preserveAspectRatio="xMidYMid meet"
+    <style>
+  /* Light mode. This slide is one SVG, so its colours are `fill` attributes
+     rather than `color` — the engine's light-mode text rules cannot reach
+     them, and neither can a contrast audit that reads `color`. Every fill is
+     remapped here by hand.
+
+     The IDE window goes light with everything else — an earlier version kept
+     it dark, which left its title bar dark while the body turned light. One
+     ground per theme is simpler and reads better. `.afl-on-dark` is kept as a
+     hook in case that decision is revisited. */
+  body.light-mode .afl-svg [fill="#e2e8f0"] { fill: #0f172a; }
+  body.light-mode .afl-svg [fill="#94a3b8"] { fill: #475569; }
+  body.light-mode .afl-svg [fill="#64748b"] { fill: #52525b; }
+  /* The window chrome: title bar and its rounded cap. */
+  body.light-mode .afl-svg rect[fill="rgba(51,65,85,0.7)"] { fill: #e2e8f0; }
+  body.light-mode .afl-svg text[fill="#5eead4"] { fill: #0f766e; }
+  body.light-mode .afl-svg text[fill="#fcd34d"] { fill: #a16207; }
+  body.light-mode .afl-svg text[fill="#d8b4fe"] { fill: #7e22ce; }
+  body.light-mode .afl-svg text[fill="#93c5fd"] { fill: #0369a1; }
+  body.light-mode .afl-svg text[fill="#86efac"] { fill: #15803d; }
+  body.light-mode .afl-svg text[fill="#c084fc"] { fill: #7e22ce; }
+  /* Connectors and their arrowheads darken to match their labels. */
+  body.light-mode .afl-svg [stroke="#2dd4bf"] { stroke: #0f766e; }
+  body.light-mode .afl-svg [stroke="#fbbf24"] { stroke: #a16207; }
+  body.light-mode .afl-svg [stroke="#c084fc"] { stroke: #7e22ce; }
+  body.light-mode .afl-svg [stroke="#60a5fa"] { stroke: #0369a1; }
+  body.light-mode .afl-svg [stroke="#4ade80"] { stroke: #15803d; }
+  body.light-mode .afl-svg marker path[fill="#2dd4bf"] { fill: #0f766e; }
+  body.light-mode .afl-svg marker path[fill="#fbbf24"] { fill: #a16207; }
+  body.light-mode .afl-svg marker path[fill="#c084fc"] { fill: #7e22ce; }
+  body.light-mode .afl-svg marker path[fill="#60a5fa"] { fill: #0369a1; }
+  body.light-mode .afl-svg marker path[fill="#4ade80"] { fill: #15803d; }
+</style>
+<svg class="afl-svg" viewBox="0 0 1400 720" preserveAspectRatio="xMidYMid meet"
          style="width:100%; max-height:78vh;"
          aria-label="Oval feedback loop: IDE → Feedback Agent → Knowledge DB → Verifiers (Infrastructure as Code, Software, Identity, Cloud) → IDE, plus an inner self-loop on the IDE for agent loop verifiers">
 
@@ -39,11 +72,11 @@
         <circle cx="590" cy="27" r="4" fill="#ef4444"/>
         <circle cx="604" cy="27" r="4" fill="#fbbf24"/>
         <circle cx="618" cy="27" r="4" fill="#22c55e"/>
-        <text x="700" y="33" font-size="11" fill="#94a3b8" text-anchor="middle"
+        <text class="afl-on-dark" x="700" y="33" font-size="11" fill="#94a3b8" text-anchor="middle"
               font-family="ui-monospace,SFMono-Regular,Menlo,monospace">auth_service.py</text>
-        <text x="700" y="80"  font-size="22" fill="#e2e8f0" font-weight="700" text-anchor="middle">IDE</text>
-        <text x="700" y="108" font-size="13" fill="#94a3b8" text-anchor="middle">edits · accepts · rejects</text>
-        <text x="700" y="148" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">
+        <text class="afl-on-dark" x="700" y="80"  font-size="22" fill="#e2e8f0" font-weight="700" text-anchor="middle">IDE</text>
+        <text class="afl-on-dark" x="700" y="108" font-size="13" fill="#94a3b8" text-anchor="middle">edits · accepts · rejects</text>
+        <text class="afl-on-dark" x="700" y="148" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">
           "this is the way we do it"
         </text>
       </g>

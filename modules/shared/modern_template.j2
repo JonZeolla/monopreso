@@ -44,6 +44,176 @@
            is usually .focus-step alone (visible on open); the rest add .step. */
         .focus-step { transition: opacity 0.3s ease; }
         .focus-step:has(~ .focus-step.step-visible) { opacity: 0.32; }
+
+        /* ── Slide colour tokens ────────────────────────────────────────
+           Slides that emit their own markup (charts, code cards, the
+           requirement and profile modules) take their text and surface
+           colours from these rather than hard-coding a hex, so light mode is
+           one variable flip instead of an override per element. Brand accents
+           are NOT here — those stay owned by the brand pack. */
+        :root {
+          --slide-ink:      #f1f5f9;   /* primary text            */
+          --slide-ink-2:    #94a3b8;   /* secondary / body        */
+          --slide-ink-3:    #64748b;   /* muted / captions        */
+          --slide-surface:  rgba(29,41,57,0.55);
+          --slide-sunken:   rgba(2,6,23,0.55);
+          --slide-hairline: rgba(148,163,184,0.16);
+          --slide-rule:     rgba(100,116,139,0.28);
+        }
+        body.light-mode {
+          --slide-ink:      #0f172a;
+          --slide-ink-2:    #475569;
+          --slide-ink-3:    #64748b;
+          --slide-surface:  rgba(241,245,249,0.85);
+          --slide-sunken:   rgba(241,245,249,0.95);
+          --slide-hairline: rgba(15,23,42,0.14);
+          --slide-rule:     rgba(71,85,105,0.28);
+        }
+
+        /* ── Light mode: engine chrome + Tailwind primitives ─────────────
+           Specificity note: the brand pack ships `body.font-sans { background:
+           … !important }` and is included AFTER this block, so a bare
+           `body.light-mode` loses the tie on document order. Every rule here
+           that fights the pack is written `body.light-mode.font-sans`. */
+        body.light-mode,
+        body.light-mode.font-sans {
+          background: #f8fafc !important;
+          color: #0f172a !important;
+        }
+        body.light-mode .slide,
+        body.light-mode .vis-slide { background: transparent !important; }
+        body.light-mode .text-white     { color: #0f172a !important; }
+        body.light-mode .text-slate-200 { color: #1e293b !important; }
+        body.light-mode .text-slate-300 { color: #334155 !important; }
+        body.light-mode .text-slate-400 { color: #475569 !important; }
+        body.light-mode .text-slate-500 { color: #64748b !important; }
+        body.light-mode .text-slate-600 { color: #94a3b8 !important; }
+        body.light-mode [class*="bg-zenable-bg"] { background-color: #f8fafc !important; }
+        body.light-mode [class*="border-slate-7"] { border-color: rgba(15,23,42,0.15) !important; }
+        body.light-mode .nav-dot { background: rgba(15,23,42,0.22); }
+        body.light-mode .nav-dot::before { background: #1e293b; border-color: rgba(15,23,42,0.2); }
+        /* Accent-tinted cards keep their hue in light mode — that tint is how
+           a benefit reads as a benefit. Only the neutral surfaces are swapped;
+           the coloured fills and borders are left to the brand pack. */
+        body.light-mode .slide [class*="bg-slate-"],
+        body.light-mode .slide [class*="bg-zenable-bg"] { background-color: #f1f5f9 !important; }
+        body.light-mode .gradient-text {
+          background: none; -webkit-text-fill-color: initial; color: #0f766e;
+        }
+
+        /* ── Light mode: accent text ──────────────────────────────────────
+           Every accent in this deck is tuned for a dark ground, which puts it
+           around 1.6–2.6:1 on white — legible on a monitor, invisible on a
+           projector. Each one is remapped to the same hue several steps
+           darker, so identity survives and contrast clears 4.5:1. Fills and
+           borders keep the bright value; only TEXT is remapped. */
+        body.light-mode .slide .text-teal-400,
+        body.light-mode .slide .text-zenable-teal,
+        body.light-mode [style*="color:#2dd4bf"],
+        body.light-mode [style*="color:#00BAAE"],
+        body.light-mode [style*="color:#14E0CC"]   { color: #0f766e !important; }
+        body.light-mode .slide .text-emerald-400,
+        body.light-mode [style*="color:#4ade80"],
+        body.light-mode [style*="color:#34d399"]   { color: #047857 !important; }
+        body.light-mode .slide .text-rose-400,
+        body.light-mode [style*="color:#fb7185"],
+        body.light-mode [style*="color:#f87171"]   { color: #be123c !important; }
+        body.light-mode .slide .text-sky-400,
+        body.light-mode [style*="color:#60a5fa"],
+        body.light-mode [style*="color:#38bdf8"]   { color: #0369a1 !important; }
+        body.light-mode .slide .text-purple-400,
+        body.light-mode [style*="color:#c084fc"]   { color: #7e22ce !important; }
+        body.light-mode .slide .text-amber-400,
+        body.light-mode [style*="color:#fbbf24"],
+        body.light-mode [style*="color:#fcd34d"]   { color: #b45309 !important; }
+        /* Pale fills meant to sit on a dark ground: chip values, soft greens
+           and reds. On white these run 1.1–3.1:1, so they take the deep step
+           of their own hue. */
+        body.light-mode [style*="color:#dbeafe"] { color: #1e3a8a !important; }
+        body.light-mode [style*="color:#ffe4e6"] { color: #9f1239 !important; }
+        body.light-mode [style*="color:#16a34a"],
+        body.light-mode [style*="color:#22c55e"] { color: #15803d !important; }
+        body.light-mode [style*="color:#fca5a5"] { color: #b91c1c !important; }
+
+        /* Charts are SVG, so their colours are `fill`/`stroke` attributes and
+           none of the text rules above touch them. These are the greys every
+           chart in the deck uses for axis labels, ticks and captions.
+           Matched on any element, not just <text>: these charts set `fill` on
+           a wrapping <g> and let the labels inherit it. */
+        body.light-mode .slide svg [fill="#94a3b8"],
+        body.light-mode .vis-slide svg [fill="#94a3b8"] { fill: #475569; }
+        body.light-mode .slide svg [fill="#cbd5e1"],
+        body.light-mode .vis-slide svg [fill="#cbd5e1"] { fill: #334155; }
+        body.light-mode .slide svg [fill="#64748b"],
+        body.light-mode .vis-slide svg [fill="#64748b"] { fill: #52525b; }
+        body.light-mode .slide svg [fill="#5eead4"],
+        body.light-mode .vis-slide svg [fill="#5eead4"] { fill: #0f766e; }
+        body.light-mode .slide svg [fill="#fcd34d"],
+        body.light-mode .vis-slide svg [fill="#fcd34d"] { fill: #a16207; }
+        body.light-mode .slide svg [fill="#e2e8f0"],
+        body.light-mode .vis-slide svg [fill="#e2e8f0"] { fill: #0f172a; }
+        /* Gridlines drawn for a dark ground vanish on white. */
+        body.light-mode .slide svg [stroke^="rgba(51,65,85"],
+        body.light-mode .vis-slide svg [stroke^="rgba(51,65,85"],
+        body.light-mode .slide svg [stroke^="rgba(148,163,184"],
+        body.light-mode .vis-slide svg [stroke^="rgba(148,163,184"] { stroke: rgba(71,85,105,0.35); }
+        body.light-mode .slide svg rect[fill^="rgba(15,23,42"],
+        body.light-mode .vis-slide svg rect[fill^="rgba(15,23,42"] { fill: rgba(241,245,249,0.85); }
+
+        /* Brand-pack kickers and titles use CSS variables rather than hex. */
+        body.light-mode .vis-label   { color: #0f766e !important; }
+        body.light-mode .unb-label   { color: #0f766e !important; }
+
+        /* ── Code surfaces in light mode ─────────────────────────────────
+           The brand pack already turns code cards light and re-tunes its
+           syn-* palette for that ground, so the deck follows that rather than
+           keeping code dark — one approach, not two. These rules only catch
+           the surfaces the pack's substring selectors miss, and carry the
+           pack's own specificity (body.light-mode .vis-slide …) so they land
+           on the right side of the cascade. */
+        body.light-mode [style*="background:rgba(30,41,59,0.85)"] { background: #eef2f7 !important; }
+        body.light-mode [style*="background:rgba(30,41,59,0.85)"] .vis-card-filename,
+        body.light-mode [style*="background:rgba(30,41,59,0.85)"] > div > span { color: #475569 !important; }
+
+        /* The pack maps a few dark-ground accents to steps that still fall
+           short on white (a 3.1:1 green, a 1.8:1 red). Same hue, deeper. */
+        body.light-mode.font-sans .vis-slide [style*="color:#4ade80"],
+        body.light-mode.font-sans .vis-slide [style*="color:#22c55e"],
+        body.light-mode.font-sans .vis-slide [style*="color:#16a34a"] { color: #15803d !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#f87171"],
+        body.light-mode.font-sans .vis-slide [style*="color:#fca5a5"] { color: #b91c1c !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#fbbf24"],
+        body.light-mode.font-sans .vis-slide [style*="color:#fcd34d"] { color: #a16207 !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#60a5fa"] { color: #0369a1 !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#c084fc"] { color: #7e22ce !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#94a3b8"] { color: #475569 !important; }
+        body.light-mode.font-sans .vis-slide [style*="color:#2dd4bf"] { color: #0f766e !important; }
+        /* The quoted hook output uses translucent pastels — fine on a dark
+           card, 3.1:1 on white. Opaque, deeper, same hue. */
+        body.light-mode.font-sans .vis-slide [style*="rgba(134,239,172"] { color: #15803d !important; }
+        body.light-mode.font-sans .vis-slide [style*="rgba(248,113,113"] { color: #b91c1c !important; }
+        body.light-mode.font-sans .vis-slide [style*="rgba(252,211,77"]  { color: #a16207 !important; }
+
+        /* ── Light / dark toggle ────────────────────────────────────────── */
+        .theme-toggle {
+          position: fixed; bottom: 20px; right: 20px; z-index: 200;
+          width: 44px; height: 44px; border-radius: 50%;
+          border: 2px solid rgba(100,116,139,0.3);
+          background: rgba(15,23,42,0.85); color: #fbbf24;
+          cursor: pointer; font-size: 20px;
+          display: flex; align-items: center; justify-content: center;
+          transition: transform 0.2s ease, background 0.2s ease;
+          backdrop-filter: blur(8px);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        .theme-toggle:hover { transform: scale(1.1); }
+        .theme-toggle:focus-visible { outline: 2px solid #2dd4bf; outline-offset: 3px; }
+        body.light-mode .theme-toggle {
+          background: rgba(255,255,255,0.9);
+          border-color: rgba(203,213,225,0.8);
+          color: #475569;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
         /* Repeated headings that only exist in the PDF, where a swap becomes
            two pages and the second page needs its own title. */
         .print-only { display: none; }
@@ -195,6 +365,9 @@
             .print-only { display: block !important; }
             /* Every beat of a focus sequence prints at full strength. */
             .focus-step { opacity: 1 !important; }
+            .theme-toggle { display: none !important; }
+            /* Light mode prints on white, not on the dark deck background. */
+            body.light-mode { background: #ffffff !important; }
             /* Ensure gradient text prints */
             .gradient-text {
                 background: none !important;
@@ -217,11 +390,91 @@
         or scroll to navigate
     </div>
 
+    <button class="theme-toggle" id="theme-toggle" type="button"
+            aria-label="Toggle light and dark mode" title="Toggle light/dark mode">&#9728;&#65039;</button>
+
     <div class="scroll-container" id="container">
 {{ content }}
     </div>
 
     <script>
+        // ── Autofit ──────────────────────────────────────────────────────
+        // Slides are authored at a comfortable size for a laptop; on a 1080p
+        // projector or a big desktop that leaves half the slide empty. Measure
+        // what each slide actually occupies and scale it up to fill the space
+        // it has, capped so nothing turns into a billboard. Slides that are
+        // already full are left alone — this only ever grows, never shrinks.
+        //
+        // `zoom` rather than `transform: scale()` so the scaled box still
+        // participates in layout and centring keeps working. Applied to the
+        // section's children, so the section keeps its own 100vh height.
+        (function () {
+            var MAX = 1.55;      // never more than this
+            var FILL = 0.94;     // leave a little breathing room
+            function fit() {
+                var slides = document.querySelectorAll('.scroll-container > section');
+                slides.forEach(function (s) {
+                    var kids = [].filter.call(s.children, function (k) {
+                        return k.nodeType === 1 && getComputedStyle(k).position !== 'fixed';
+                    });
+                    if (!kids.length) return;
+                    kids.forEach(function (k) { k.style.zoom = ''; });
+                    var cs = getComputedStyle(s);
+                    var availH = s.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+                    var availW = s.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+                    // Measure the INK, not the boxes. Several slides use a
+                    // flex:1 spacer that already fills the slide, so measuring
+                    // containers would report "full" while the visible content
+                    // sits in the middle of an empty column. Leaf elements —
+                    // text, images, svg, code — are what actually shows.
+                    var top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
+                    var LEAFY = { IMG: 1, SVG: 1, PRE: 1, CANVAS: 1, VIDEO: 1, HR: 1, INPUT: 1, BUTTON: 1 };
+                    s.querySelectorAll('*').forEach(function (el) {
+                        if (!LEAFY[el.tagName] && el.children.length) return;
+                        var cs2 = getComputedStyle(el);
+                        if (cs2.display === 'none' || cs2.position === 'fixed') return;
+                        var r = el.getBoundingClientRect();
+                        if (r.height < 1 || r.width < 1) return;
+                        top = Math.min(top, r.top); bottom = Math.max(bottom, r.bottom);
+                        left = Math.min(left, r.left); right = Math.max(right, r.right);
+                    });
+                    var h = bottom - top, w = right - left;
+                    if (!(h > 0) || !(w > 0)) return;
+                    var scale = Math.min(availH * FILL / h, availW * FILL / w, MAX);
+                    if (scale > 1.02) {
+                        kids.forEach(function (k) { k.style.zoom = scale.toFixed(3); });
+                    }
+                });
+            }
+            var pending;
+            function schedule() { cancelAnimationFrame(pending); pending = requestAnimationFrame(fit); }
+            if (document.fonts && document.fonts.ready) { document.fonts.ready.then(schedule); }
+            window.addEventListener('load', schedule);
+            window.addEventListener('resize', schedule);
+            schedule();
+        })();
+
+        // Light / dark toggle. The choice is remembered per browser, so a
+        // presenter who set light mode for a bright room gets it back on the
+        // next render rather than re-clicking every time.
+        (function () {
+            var btn = document.getElementById('theme-toggle');
+            var SUN = '\u2600\uFE0F', MOON = '\uD83C\uDF19';
+            function paint(light) {
+                document.body.classList.toggle('light-mode', light);
+                btn.textContent = light ? MOON : SUN;
+                btn.setAttribute('aria-pressed', light ? 'true' : 'false');
+            }
+            var saved;
+            try { saved = localStorage.getItem('preso-theme'); } catch (e) { saved = null; }
+            paint(saved === 'light');
+            btn.addEventListener('click', function () {
+                var light = !document.body.classList.contains('light-mode');
+                paint(light);
+                try { localStorage.setItem('preso-theme', light ? 'light' : 'dark'); } catch (e) {}
+            });
+        })();
+
         // Auto-generate nav dots from slide sections
         (function() {
             const container = document.getElementById('container');

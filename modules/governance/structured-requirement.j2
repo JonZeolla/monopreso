@@ -48,7 +48,7 @@
 {%- set TEAL      = "#2dd4bf" -%}
 
 {%- set _LABEL = "font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; margin:0 0 8px 0;" -%}
-{%- set _SNIPPET = "font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; line-height:1.7; background:rgba(2,6,23,0.55); border:1px solid rgba(148,163,184,0.16); border-radius:7px; padding:10px 12px; margin:0; white-space:pre; overflow-x:auto; color:#cbd5e1;" -%}
+{%- set _SNIPPET = "font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; line-height:1.7; background:var(--slide-sunken); border:1px solid var(--slide-hairline); border-radius:7px; padding:10px 12px; margin:0; white-space:pre; overflow-x:auto; color:var(--slide-ink);" -%}
 
 
 {%- macro _chip(kind, value, negate=false) -%}
@@ -68,14 +68,14 @@
 {%- endmacro -%}
 
 {%- macro _op(text) -%}
-<span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:#64748b; font-weight:700; letter-spacing:0.1em;">{{ text|safe }}</span>
+<span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:var(--slide-ink-3); font-weight:700; letter-spacing:0.1em;">{{ text|safe }}</span>
 {%- endmacro -%}
 
 {%- macro _verdict(colour, glyph, label, code, why) -%}
-<div style="border:1px solid rgba(148,163,184,0.16); border-left:4px solid {{ colour }}; border-radius:8px; padding:14px 16px; background:rgba(29,41,57,0.55); display:flex; flex-direction:column; gap:9px;">
+<div style="border:1px solid var(--slide-hairline); border-left:4px solid {{ colour }}; border-radius:8px; padding:14px 16px; background:var(--slide-surface); display:flex; flex-direction:column; gap:9px;">
   <p style="margin:0; font-size:15px; font-weight:700; color:{{ colour }};">{{ glyph|safe }}&nbsp; {{ label }}</p>
   <pre style="{{ _SNIPPET }}">{{ code|safe }}</pre>
-  <p style="margin:0; font-size:13px; line-height:1.5; color:#94a3b8;">{{ why|safe }}</p>
+  <p style="margin:0; font-size:13px; line-height:1.5; color:var(--slide-ink-2);">{{ why|safe }}</p>
 </div>
 {%- endmacro -%}
 
@@ -98,7 +98,7 @@
          style="border:1px solid rgba(96,165,250,0.24); background:rgba(96,165,250,0.04); border-radius:10px; padding:15px 20px;">
       <p style="{{ _LABEL }} color:{{ SCOPE }};">Where it applies</p>
       <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
-        <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:#94a3b8;">every repo</span>
+        <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:var(--slide-ink-2);">every repo</span>
         {{ _op("&rarr;") }}
         {%- for cond in scope %}
         {%- if not loop.first %}{{ _op("AND NOT" if cond.negate else "AND") }}{% endif %}
@@ -163,6 +163,6 @@
                   "why":  "A key we hold, rotate and can revoke."},
     "fails":     {"code": 'sse_algorithm = <span style="color:#fbbf24;">"AES256"</span>',
                   "why":  "Encrypted &mdash; with a key AWS holds. Meets &ldquo;at rest&rdquo;, not &ldquo;customer-managed&rdquo;."},
-    "exception": {"code": '<span style="color:#64748b;"># SNS: alarms cannot publish to a CMK topic</span>\nkms_master_key_id = <span style="color:#fbbf24;">"alias/aws/sns"</span>',
+    "exception": {"code": '<span style="color:var(--slide-ink-3);"># SNS: alarms cannot publish to a CMK topic</span>\nkms_master_key_id = <span style="color:#fbbf24;">"alias/aws/sns"</span>',
                   "why":  "Named, time-boxed, reviewed. The service genuinely cannot."}}) }}
 {%- endmacro -%}

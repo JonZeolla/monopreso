@@ -85,7 +85,7 @@
           is a snapshot; these are where it is heading and what it hides. -#}
       <ul style="margin:22px 0 0 34px; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;">
         {%- for note in notes %}
-        <li style="font-size:15px; line-height:1.5; color:#94a3b8;">{{ note|safe }}</li>
+        <li style="font-size:15px; line-height:1.5; color:var(--slide-ink-2);">{{ note|safe }}</li>
         {%- endfor %}
       </ul>
       {%- endif %}
