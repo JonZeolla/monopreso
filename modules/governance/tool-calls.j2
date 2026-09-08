@@ -3,8 +3,10 @@
     through a tool call, which makes the tool-call boundary the one place to
     monitor, gate, and contain agent activity.
 
-    Sandboxing slides cover nono (nolabs) — kernel-enforced, per-tool-call
-    sandboxing. Sources: nono.sh · github.com/nolabs-ai/nono (see deck
+    `sandboxing_nono()` is product-neutral despite its name — it lists the
+    properties worth demanding of any sandbox. `nono_scoped_call()` is still
+    the nono (nolabs) mechanism walk-through, kept for decks that want a
+    concrete example. Sources: nono.sh · github.com/nolabs-ai/nono (see deck
     SOURCES.md).
 
     Written against the brand-pack primitive contract (see AGENTS.md): no hex
@@ -62,7 +64,7 @@
     {"label": "Decided",
      "detail": "Policy allows, denies, or escalates to a human prompt",
      "accent": "warning",
-     "note": "This is a PEP asking a PDP — the policy architecture from earlier, applied to a single tool call"},
+     "note": "All three governance steps, collapsed into one tool call: the rule, the place it runs, and the record that it did"},
     {"label": "Contained",
      "detail": "Runs inside a sandbox scoped to exactly this call",
      "accent": "danger"},
@@ -77,30 +79,32 @@
 
 
 {%- macro sandboxing_nono() -%}
-{%- call content_slide("Sandboxing: nono") %}
+{#- The properties that make a sandbox worth having, stated as concepts
+    rather than as one tool's feature list. An earlier version was a pitch for
+    a specific open-source sandbox; naming a product invites "do we buy that?"
+    when the useful question is "does whatever we use behave like this?".
+    These four are the checklist to hold any candidate against. -#}
+{%- call content_slide("Sandboxing: what to look for") %}
   {{ slide_heading("",
-                   "Sandboxing agents at the kernel: nono",
-                   "Open source, from nolabs. Deny by default, no container, no VM, no daemon.") }}
+                   "What makes a sandbox worth having",
+                   "Four properties. Whatever you use, hold it against these.") }}
   {{ card_grid([
-    {"title": "Kernel-enforced",
-     "body": "Wraps the agent's process in the host kernel's own isolation primitives. The kernel enforces it, not the agent's cooperation.",
+    {"title": "Enforced below the agent",
+     "body": "The isolation is imposed by something the agent cannot talk its way past — the kernel, the hypervisor, the platform. Not the agent's own cooperation.",
      "accent": "primary"},
-    {"title": "Zero infrastructure",
-     "body": "Runs directly on the developer's machine — macOS, Linux, WSL2. No image to build, no cluster to operate.",
+    {"title": "Cheap enough to always be on",
+     "body": "If it needs an image built or a cluster operated, it gets skipped on the busy day. The sandbox nobody turns off is the one that protects you.",
      "accent": "info"},
-    {"title": "Least privilege by default",
-     "body": "File access, network reach, and credentials start at nothing and are granted per task, not per install.",
+    {"title": "Deny by default",
+     "body": "File access, network reach and credentials start at nothing and are granted per task — not handed over once at install and inherited forever.",
      "accent": "success"},
-    {"title": "Scoped per tool call",
-     "body": "Each tool call gets its own authority — and that authority expires the moment the call finishes.",
+    {"title": "Scoped to the task, not the session",
+     "body": "Authority is granted for the work in hand and expires when it finishes, so a long session does not accumulate everything it was ever trusted with.",
      "accent": "warning"},
   ], cols=4) }}
-  {{ callout("Sandbox the agent <strong>without breaking its loop</strong>.",
+  {{ callout("Bound the blast radius <strong>without breaking the loop</strong>.
+              A sandbox that stops the work gets removed.",
              accent="neutral") }}
-  <p style="text-align:right; font-size:11px; opacity:0.6; margin:10px 0 0 0;">
-    <a href="https://nono.sh/">nono.sh</a> &middot;
-    <a href="https://github.com/nolabs-ai/nono">github.com/nolabs-ai/nono</a>
-  </p>
 {%- endcall %}
 {%- endmacro -%}
 

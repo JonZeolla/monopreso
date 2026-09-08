@@ -1,0 +1,81 @@
+{#- modules/governance/what-is-governance.j2
+    Governance, defined in the plainest terms the room already agrees with.
+
+    A security audience recognises the word "governance" and has usually been
+    handed a framework-shaped definition of it. This says the same thing in
+    three steps they can hold for the rest of the talk, and those three steps
+    are the deck's spine: write the rule, put it where the work happens, then
+    check. Everything after this hangs off one of the three.
+
+    Deliberately no PAP/PDP/PEP, no XACML, no control-family vocabulary. The
+    architecture underneath is real and old, but naming it here costs the room
+    the thread and buys nothing they will use on Monday.
+
+    ── One word, one definition, three boxes ──────────────────────
+    The subtitle is the definition Jon has used since the 2023 and 2024 "Your
+    Governance Is Broken" talks (modules/governance/governance_intro*.html),
+    where the surrounding words faded and "making and enforcing decisions" was
+    what stayed on screen. Keep the wording verbatim; the room that saw those
+    talks should recognise it. Set plain and large — an earlier version bolded
+    the middle clause, which read as a pull quote competing with the boxes.
+
+    Note the definition covers "make" and "enforce" but not "update". The third
+    box is the one this talk argues everybody is guessing at, so the boxes
+    deliberately say more than the sentence above them does. That gap is a
+    thing to say out loud, not to paper over by editing the definition.
+
+    Nothing else on the slide: no callout, no kicker. The three labels are the
+    argument, and every further line of chrome made the room read instead of
+    listen.
+    An earlier version carried a heading plus a second slide layering the
+    AI-native tooling on top; both were cut. Keep it bare — the speaker says
+    the rest.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/governance/what-is-governance.j2" import
+          what_it_is with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pipe
+-%}
+
+
+{#- The three steps. Labels only — no detail lines. The whole point of the
+    slide is that each phrase is short enough to land as it appears, and a
+    sentence under each one turned it into something to read rather than hear.
+    The speaker says the rest.
+
+    No `note` or `below` key: those reserve an annotation gutter in every
+    pack's `pipe()`, which would push the row off the vertical centre. -#}
+{%- set STEPS = [
+  {"label": "Make the rules",    "accent": "primary"},
+  {"label": "Enforce the rules", "accent": "info"},
+  {"label": "Update the rules",  "accent": "success"},
+] -%}
+
+
+{%- macro what_it_is() -%}
+{#- reveal="stages": the three boxes arrive ONE AT A TIME, each with the arrow
+    that leads to it, so the definition is walked through a beat at a time
+    rather than dumped. `.step` uses visibility:hidden, so all three positions
+    are held from the start and nothing shifts as they appear. Three presses,
+    then the slide advances.
+
+    size="lg": with no detail text under the labels, the boxes carry the slide
+    and need the type. -#}
+{%- call content_slide("What governance is") %}
+  {#- Sized in `em` so it scales with whatever each pack sets for a subtitle,
+      rather than pinning a px value that only suits one theme. No bold: the
+      sentence is read aloud, and emphasis markup made it look like a pull
+      quote competing with the three boxes. -#}
+  {{ slide_heading("", "Governance",
+                   '<span style="font-size:1.5em; line-height:1.35;">Governance is the process of
+                    making and enforcing decisions within an organization.</span>') }}
+  {{ pipe(STEPS, reveal="stages", size="lg") }}
+{%- endcall %}
+{%- endmacro -%}

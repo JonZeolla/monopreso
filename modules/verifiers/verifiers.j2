@@ -70,12 +70,22 @@
 
 
 {%- macro four_kinds() -%}
-{#- A 2x2 of four distinct things, not a sequence. An arrow-joined pipe
-    implied a progression from software to humans, which is wrong: these
-    are four different kinds, and the point of the next slide is that no
-    ordering among them exists. -#}
-{%- call content_slide("Four kinds of verifier") %}
-  {{ slide_heading("", "Four kinds of verifier") }}
+{#- Introduces the word "verifier" and then, on the next key press, shows the
+    four kinds it covers. Definition first so the taxonomy has somewhere to
+    attach: a room that has not been told what a verifier IS will spend the
+    2x2 trying to work it out instead of reading it.
+
+    A 2x2 of four distinct things, not a sequence. An arrow-joined pipe implied
+    a progression from software to humans, which is wrong: these are four
+    different kinds, and no ordering among them exists.
+
+    The grid is one grouped `.step`, so all four cards land on a single press
+    rather than four. -#}
+{%- call content_slide("Verifiers") %}
+  {{ slide_heading("", "Verifiers",
+                   '<span style="font-size:1.5em; line-height:1.35;">A verifier is a step in the process
+                    responsible for <strong>identifying whether the governance is being
+                    followed</strong>.</span>') }}
   {{ card_grid([
     {"title": "Software",
      "body": "Tests, linters, type checkers, schema validation, policy engines. Deterministic.",
@@ -89,7 +99,7 @@
     {"title": "Human",
      "body": "A reviewer who understands why the system exists.",
      "accent": "warning"},
-  ], cols=2, size="lg") }}
+  ], cols=2, size="lg", reveal=true) }}
 {%- endcall %}
 {%- endmacro -%}
 
@@ -122,7 +132,7 @@
             {"level": "strong",  "text": "by construction"},
             {"level": "partial", "text": "threshold &amp; drift"},
             {"level": "weak",    "text": "varies per run"},
-            {"level": "weak",    "text": "varies per mood"},
+            {"level": "partial", "text": "varies per mood"},
           ]},
          {"label": "Cheap enough for every change",
           "cells": [
@@ -143,7 +153,7 @@
             {"level": "weak",    "text": "no notion of why"},
             {"level": "weak",    "text": "features, not meaning"},
             {"level": "strong",  "text": "spans files"},
-            {"level": "strong",  "text": "knows the business"},
+            {"level": "partial", "text": "depends on experience"},
           ]},
        ],
        caption="● strong &nbsp;·&nbsp; ◐ partial &nbsp;·&nbsp; ○ weak") }}

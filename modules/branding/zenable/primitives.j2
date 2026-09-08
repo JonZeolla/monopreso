@@ -150,7 +150,10 @@
 {{ _legacy_card(title, body, _accent_to_zen(accent)) }}
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3, size="md") -%}
+{%- macro card_grid(items, cols=3, size="md", reveal=false) -%}
+{#- `reveal=true` wraps the whole grid in a single `.step`, so every card
+    arrives together on one key press while its space stays reserved — for a
+    slide that states a definition first and shows the taxonomy second. -#}
 {# size="lg" bumps title/body type for slides where the grid IS the slide. #}
 {# Convert primitive item shape to legacy card_grid shape: {title, desc, accent} #}
 {%- set legacy_items = [] -%}
@@ -161,44 +164,100 @@
     "accent": _accent_to_zen(it.accent | default("neutral")),
   }) -%}
 {%- endfor -%}
-{% if size == "lg" %}<div class="cards-lg">{% endif %}{{ _legacy_card_grid(legacy_items, cols) }}{% if size == "lg" %}</div>{% endif %}
+{% if reveal %}<div class="step">{% endif %}{% if size == "lg" %}<div class="cards-lg">{% endif %}{{ _legacy_card_grid(legacy_items, cols) }}{% if size == "lg" %}</div>{% endif %}{% if reveal %}</div>{% endif %}
 {%- endmacro -%}
 
 
-{%- macro pipe(stages) -%}
+{# Vertical numbered list: an accent-coloured circle per step, joined by a
+   connector line, with a title and optional detail beside it. Each item:
+   {title, detail?, accent?}.
+
+   Use this instead of `pipe()` when the sequence is a narrative to be read
+   down the slide rather than a flow to be scanned across it — five stages with
+   a sentence each are unreadable squeezed into horizontal cards, and the
+   numbers make the ordering explicit rather than implied by arrows. #}
+{%- macro numbered_steps(items) -%}
+<div class="flex flex-col w-full">
+  {%- for item in items %}
+  {%- set tw = _accent_tw(item.accent | default("neutral")) %}
+  <div class="flex gap-6">
+    <div class="flex-none flex flex-col items-center">
+      <div class="w-12 h-12 flex-none rounded-full border-2 border-{{ tw }} flex items-center justify-center">
+        <span class="text-xl font-bold text-{{ tw }}">{{ loop.index }}</span>
+      </div>
+      {%- if not loop.last %}<div class="w-0.5 flex-1 min-h-[20px] bg-{{ tw }}/40"></div>{% endif %}
+    </div>
+    <div class="{% if not loop.last %}pb-7{% endif %} pt-1.5">
+      <p class="text-2xl font-bold text-white m-0 leading-tight">{{ item.title }}</p>
+      {%- if item.detail %}<p class="text-base text-slate-400 mt-1.5 m-0 leading-snug">{{ item.detail|safe }}</p>{% endif %}
+    </div>
+  </div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+
+{%- macro pipe(stages, reveal=false, size="md") -%}
 {# Left-to-right pipeline of stage cards joined by arrows.
    Each stage: {label, detail?, meta?, accent?, note?, below?}
 
    `note` renders as an annotation hanging above the stage on a dotted
-   connector, so the same stage list can be shown twice — bare, then with
-   controls annotated onto it. #}
+   connector; `below` renders under the card. `size="lg"` scales the type up
+   for slides where the pipeline IS the slide. #}
+{%- set lg = (size == "lg") %}
+{#- reveal: false = static. true / "below" = the below-labels arrive together
+    on one press. "stages" = the cards themselves arrive one at a time, each
+    with the arrow that leads to it. -#}
+{%- set reveal_stages = (reveal == "stages") %}
+{%- set reveal_below = (reveal and not reveal_stages) %}
 {%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
-<div class="flex items-stretch justify-center gap-2 my-5">
+{%- set has_below = stages | selectattr("below", "defined") | list | length > 0 %}
+{#- ── Layout ─────────────────────────────────────────────────────
+    A grid, not a flex row. Rows are: note gutter (optional), the cards, then
+    the below labels (optional). Arrows live in the CARD row only, so they
+    centre on the cards no matter how many lines of below text hang under the
+    tallest column. A flex row centred each arrow in the whole column, which
+    dragged them well below the cards as soon as one stage had five controls
+    listed under it. -#}
+{%- set card_row = 2 if has_notes else 1 %}
+<div class="grid justify-center my-5" style="grid-auto-flow:column; align-items:start;
+     grid-template-columns:{% for s in stages %}{% if not loop.first %} auto{% endif %} {{ 'auto' if lg else 'minmax(0,1fr)' }}{% endfor %};
+     column-gap:{{ '16px' if lg else '8px' }};">
   {%- for stage in stages %}
-  {%- if not loop.first %}
-  <div aria-hidden="true" class="flex-none self-center text-slate-600 text-2xl leading-none">&rarr;</div>
-  {%- endif %}
+  {%- set col = loop.index0 * 2 + 1 %}
   {%- set tw = _accent_tw(stage.accent | default("neutral")) %}
-  <div class="flex-1 min-w-0 flex flex-col items-stretch">
-    {%- if has_notes %}
-    <div class="min-h-[96px] flex flex-col items-center justify-end">
-      {%- if stage.note %}
-      <div class="rounded-lg border border-{{ tw }}/40 bg-zenable-bg-light/80 px-2.5 py-2 text-center">
-        <p class="text-[11px] font-bold leading-snug text-{{ tw }} m-0">{{ stage.note|safe }}</p>
-      </div>
-      <div aria-hidden="true" class="h-3.5 border-l-2 border-dotted border-{{ tw }}/60"></div>
-      {%- endif %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" class="flex items-center justify-center text-slate-600 {% if lg %}text-5xl{% else %}text-3xl{% endif %} leading-none{% if reveal_stages %} step{% endif %}"
+       {%- if reveal_stages %} data-step="pipe-stage-{{ loop.index }}"{% endif %}
+       style="grid-column:{{ col - 1 }}; grid-row:{{ card_row }}; align-self:stretch;">&rarr;</div>
+  {%- endif %}
+  {%- if has_notes %}
+  <div class="min-h-[96px] flex flex-col items-center justify-end{% if reveal_stages %} step{% endif %}"
+       {%- if reveal_stages %} data-step="pipe-stage-{{ loop.index }}"{% endif %}
+       style="grid-column:{{ col }}; grid-row:1;">
+    {%- if stage.note %}
+    <div class="rounded-lg border border-{{ tw }}/40 bg-zenable-bg-light/80 px-2.5 py-2 text-center">
+      <p class="text-[13px] font-bold leading-snug text-{{ tw }} m-0">{{ stage.note|safe }}</p>
     </div>
-    {%- endif %}
-    <div class="flex-1 rounded-xl border border-{{ tw }}/30 bg-{{ tw }}/5 px-3 py-4 text-center flex flex-col justify-center gap-1.5">
-      <p class="text-sm font-bold text-{{ tw }} m-0">{{ stage.label }}</p>
-      {%- if stage.detail %}<p class="text-[11px] leading-snug text-slate-400 m-0">{{ stage.detail|safe }}</p>{% endif %}
-      {%- if stage.meta %}<p class="font-mono text-[10px] uppercase tracking-wider text-slate-500 m-0">{{ stage.meta }}</p>{% endif %}
-    </div>
-    {%- if stage.below %}
-    <p class="mt-2 text-center text-[13px] leading-snug text-slate-400 m-0">{{ stage.below|safe }}</p>
+    <div aria-hidden="true" class="h-3.5 border-l-2 border-dotted border-{{ tw }}/60"></div>
     {%- endif %}
   </div>
+  {%- endif %}
+  <div class="rounded-xl border border-{{ tw }}/30 bg-{{ tw }}/5 {% if lg %}px-8 py-7{% else %}px-3 py-4{% endif %} text-center flex flex-col justify-center gap-1.5{% if reveal_stages %} step{% endif %}"
+       {%- if reveal_stages %} data-step="pipe-stage-{{ loop.index }}"{% endif %}
+       style="grid-column:{{ col }}; grid-row:{{ card_row }}; {% if lg %}justify-self:center;{% else %}align-self:stretch;{% endif %}">
+    <p class="{% if lg %}text-3xl whitespace-nowrap{% else %}text-base{% endif %} font-bold text-{{ tw }} m-0">{{ stage.label }}</p>
+    {%- if stage.detail %}<p class="{% if lg %}text-base{% else %}text-[13px]{% endif %} leading-snug text-slate-400 m-0">{{ stage.detail|safe }}</p>{% endif %}
+    {%- if stage.meta %}<p class="font-mono text-[11px] uppercase tracking-wider text-slate-500 m-0">{{ stage.meta }}</p>{% endif %}
+  </div>
+  {%- if has_below %}
+  <div style="grid-column:{{ col }}; grid-row:{{ card_row + 1 }};">
+    {%- if stage.below %}
+    <p class="mt-2 text-center {% if lg %}text-xl{% else %}text-[15px]{% endif %} leading-snug text-slate-400 m-0{% if reveal_below %} step{% endif %}"
+       {%- if reveal_below %} data-step="pipe-below"{% endif %}>{{ stage.below|safe }}</p>
+    {%- endif %}
+  </div>
+  {%- endif %}
   {%- endfor %}
 </div>
 {%- endmacro -%}
@@ -357,20 +416,25 @@
 {# Graded bars on one shared scale, so several slides can be read against
    each other. Each item: {label, score, note}; `score` is 1..scale where
    scale is the most favourable. Length and colour encode the same number —
-   redundant on purpose, since colour alone fails on a projector. #}
-<div class="flex flex-col gap-3 mt-4 mb-1">
+   redundant on purpose, since colour alone fails on a projector.
+
+   The note column only exists when some item actually carries a note. With no
+   notes the bars span the full width of the slide instead of leaving a dead
+   third column, so they line up with whatever sits above them. #}
+{%- set has_notes = items | selectattr("note") | list | length > 0 %}
+<div class="flex flex-col gap-4 mt-10 mb-1">
   {%- for item in items %}
   {%- set _s = item.score | default(0) %}
-  <div class="grid items-center gap-4" style="grid-template-columns:minmax(150px,0.85fr) minmax(200px,1.6fr) minmax(160px,1.1fr);">
-    <p class="text-sm font-semibold text-white m-0">{{ item.label }}</p>
+  <div class="grid items-center gap-4" style="grid-template-columns:minmax(140px,{% if has_notes %}0.85fr{% else %}210px{% endif %}) {% if has_notes %}minmax(200px,1.6fr) minmax(160px,1.1fr){% else %}1fr{% endif %};">
+    <p class="text-base font-semibold text-white m-0">{{ item.label }}</p>
     <div role="img" aria-label="{{ item.label }}: {{ _s }} of {{ scale }}" class="flex gap-1.5">
       {%- for i in range(1, scale + 1) %}
-      <span class="flex-1 rounded-full" style="height:12px; background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}rgba(100,116,139,0.3){% endif %};"></span>
+      <span class="flex-1 rounded-full" style="height:16px; background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}rgba(100,116,139,0.3){% endif %};"></span>
       {%- endfor %}
     </div>
-    {%- if item.note %}
+    {%- if has_notes %}{% if item.note %}
     <p class="text-xs text-slate-400 m-0 leading-snug">{{ item.note|safe }}</p>
-    {%- else %}<span></span>{% endif %}
+    {%- else %}<span></span>{% endif %}{% endif %}
   </div>
   {%- endfor %}
 </div>

@@ -1,10 +1,17 @@
 {#- modules/guardrails/policy-as-code.j2
-    Policy as code: where it came from, and the architecture vocabulary that
-    still describes every enforcement system built since.
+    Policy as code: where it came from, and the architecture that still
+    describes every enforcement system built since.
 
-    The XACML PDP/PIP/PEP/PAP roles are presented via the CNCF Kubernetes
-    Policy Management whitepaper's framing, then re-mapped onto the agentic
-    coding pipeline — same shape, new actors.
+    `pac_history()` and `do_it_statically()` are written for a general
+    audience and name no standards vocabulary — deliberately, because the
+    acronyms cost a room the thread and buy nothing they will use.
+
+    `policy_architecture()` and `policy_architecture_today()` DO teach the
+    XACML PAP/PDP/PIP/PEP roles, via the CNCF Kubernetes Policy Management
+    whitepaper's framing, then re-map them onto the agentic coding pipeline.
+    They are for a practitioner audience that wants the reference model; no
+    deck currently imports them. Do not mix them with `pac_history()` in the
+    same run — the whole point of that slide is that it avoids the vocabulary.
 
     Source: CNCF / Kubernetes SIG-Security, "Kubernetes Policy Management"
     whitepaper v1 — github.com/kubernetes/sig-security (see deck SOURCES.md).
@@ -21,41 +28,43 @@
     slide_heading,
     quote,
     card_grid,
+    numbered_steps,
     pipe,
     callout
 -%}
 
 
 {%- macro pac_history() -%}
-{%- call content_slide("Policy as code: history") %}
-  {{ slide_heading("",
-                   "Policy, before and after it became code",
-                   "The idea is older than the tooling. Each generation moved enforcement closer to the change.") }}
-  {{ pipe([
-    {"label": "Policy as PDFs",
-     "detail": "Binders, wikis, annual attestations. Enforced by audit, months after the fact.",
-     "meta": "pre-2003",
+{#- The middle step of the three — "put the rules in the process" — has been
+    moving in one direction for fifty years, and this is that direction drawn
+    once. Kept deliberately free of standards vocabulary: the point is the
+    arrow, not the acronyms of any particular generation.
+
+    Rendered as a numbered vertical list rather than a horizontal pipe: five
+    stages each carrying a sentence are unreadable squeezed into cards across
+    the slide, and 1-2-3-4-5 states the ordering outright instead of leaving it
+    to arrows. Title and stages only — the subtitle, the then/now stamps and
+    the closing callout were all cut, since the order already says "this got
+    earlier over time". -#}
+{%- call content_slide("How governance used to work") %}
+  {{ slide_heading("", "How Governance used to work") }}
+  {{ numbered_steps([
+    {"title": "Written down",
+     "detail": "Binders, wikis, annual attestations. Checked by audit, months after the fact.",
      "accent": "neutral"},
-    {"label": "XACML",
-     "detail": "OASIS standardizes a policy language and an architecture: PAP, PDP, PIP, PEP.",
-     "meta": "2003",
+    {"title": "Checked by a person",
+     "detail": "A review board, a security sign-off, a gate someone has to walk your change through.",
      "accent": "info"},
-    {"label": "Cloud-native",
-     "detail": "Kubernetes admission control; policy engines evaluate every API request.",
-     "meta": "2010s",
+    {"title": "Checked by the platform",
+     "detail": "The infrastructure evaluates every request and refuses the ones that break the rule.",
      "accent": "secondary"},
-    {"label": "Policy as code",
-     "detail": "Policies versioned, reviewed, and tested like software; enforced in PRs and CI.",
-     "meta": "2020s",
+    {"title": "Rules as code",
+     "detail": "Rules versioned, reviewed and tested like software; enforced in pull requests and CI.",
      "accent": "primary"},
-    {"label": "Agent guardrails",
-     "detail": "The same architecture, pointed at what a coding agent is about to do.",
-     "meta": "now",
+    {"title": "Checked in the loop",
+     "detail": "The same rules, pointed at what a coding agent is about to do — before it does it.",
      "accent": "success"},
   ]) }}
-  {{ callout("Fifty years of governance keeps rediscovering one lesson: the
-              cheapest place to enforce anything is the
-              <strong>earliest place you can</strong>.", accent="info") }}
 {%- endcall %}
 {%- endmacro -%}
 

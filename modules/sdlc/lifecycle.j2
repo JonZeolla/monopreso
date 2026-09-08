@@ -47,49 +47,62 @@
 } -%}
 
 
-{#- The four families of control, mapped onto the stage where they first
-    earn their keep. One per stage, deliberately coarse: the slide is a
-    map, not a catalogue. -#}
+{#- The controls this talk actually covered, mapped onto the stage where each
+    one earns its keep. Several stages carry more than one — that is the point:
+    a stage is not owned by a single control, and the ones that matter most
+    (Context files, Human review) show up more than once.
+
+    Feedback and Governance improvement sit on Build and Run because that is
+    the loop the last section is about: what the agent learns while working,
+    and what the organisation learns from watching it. -#}
+{#- One control per line. Two to a line ran the Build column wider than its
+    card and pushed the whole row off the slide; a single stacked list keeps
+    every column as narrow as its longest single control.
+
+    Distribute and Deploy carry controls the talk does not walk through —
+    signing, provenance, admission control, cloud policies. They belong on the
+    picture anyway: the point of the slide is the whole line, and leaving those
+    stages nearly empty would imply the lifecycle ends at code review. -#}
 {%- set AGENTIC = {
-  "Plan":       "Steering Files",
-  "Build":      "Steering Files",
-  "Test":       "Agent Review",
-  "Distribute": "Policy as Code",
-  "Deploy":     "Policy as Code",
-  "Run":        "Feedback Loops",
+  "Plan":       "Context files<br>Research<br>Human review",
+  "Build":      "Context files<br>Hooks<br>Sandboxing<br>Gateways<br>Feedback",
+  "Test":       "Agent review<br>Human review",
+  "Distribute": "Agent review<br>Signing<br>Provenance",
+  "Deploy":     "Human review<br>Admission control<br>Cloud policies",
+  "Run":        "Sandboxing<br>Feedback<br>Governance<br>improvement",
 } -%}
 
 
 {%- macro sdlc() -%}
-{#- The lifecycle, bare. No kicker, no subtitle, no per-stage detail — the
-    six words are the slide, so the next one can redraw them with agents
-    attached and the change is the only thing that moved. -#}
-{%- call content_slide("SDLC") %}
-  {{ slide_heading("", "The Software Development Lifecycle (SDLC)") }}
-  {%- set bare = [] %}
-  {%- for st in STAGES %}
-    {%- set _ = bare.append({"label": st.label, "accent": st.accent}) %}
-  {%- endfor %}
-  {{ pipe(bare) }}
-{%- endcall %}
-{%- endmacro -%}
+{#- ONE slide with an in-place reveal. The six stage cards are there from the
+    start; the control family under each lands together on the next key press
+    and nothing else on the slide moves.
 
+    This is the engine's own `.step` mechanism (see modules/shared/
+    modern_template.j2), the same one the AI-at-work deck uses for its opening
+    questions — NOT two slides. A second slide would scroll-snap, so the whole
+    row would slide up and re-enter rather than the labels simply appearing.
+    `.step` uses `visibility:hidden`, so the space is already reserved and the
+    boxes never move.
 
-{%- macro adlc() -%}
-{#- The same six stages with an agent in each, and the control family that
-    covers it. Same shape as sdlc() on purpose: what changed is what the
-    audience should notice. -#}
-{%- call content_slide("ADLC") %}
-  {{ slide_heading("", "The Agentic Development Lifecycle (ADLC)") }}
-  {%- set agentic = [] %}
+    All six labels share `data-step`, so they reveal as one group on one press
+    rather than needing six.
+
+    No heading: the six words are the slide, and a title above them only
+    competed with the boxes. Labels are plain text — an earlier version put a
+    robot and a checkmark on every column, which read as decoration.
+-#}
+{%- call content_slide("Lifecycle with controls") %}
+  {%- set staged = [] %}
   {%- for st in STAGES %}
-    {%- set _ = agentic.append({
+    {%- set _ = staged.append({
       "label":  st.label,
-      "below":  "&#129302;<br>&#9989; " ~ AGENTIC[st.label],
+      "below":  AGENTIC[st.label],
       "accent": st.accent,
     }) %}
   {%- endfor %}
-  {{ pipe(agentic) }}
+  {#- size="lg": the pipeline is the entire slide, so it carries the type. -#}
+  {{ pipe(staged, reveal=true, size="lg") }}
 {%- endcall %}
 {%- endmacro -%}
 

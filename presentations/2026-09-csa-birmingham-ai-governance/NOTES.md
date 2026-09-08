@@ -5,6 +5,94 @@ When this feels done, revisit each item and turn it into an actual slide/content
 
 ---
 
+## IMPLEMENTED (2026-09-07) — restructured to four parts, 50 minutes
+
+Jon's framing, in his words: *"What's governance. Make rules, process, see if
+following. / Good AI rules / Enforce / See if not following — that's
+observability (detection)."* Plus: use the word **Governance** in headings —
+the CSA audience recognises it — and keep the loading-bar scorecard treatment.
+
+The deck is now 35 slides in four parts (was 37, unstructured). Run time
+target moved 60 → 50 minutes.
+
+**Dropped the XACML vocabulary entirely.** `policy_architecture()` and
+`policy_architecture_today()` (PAP/PDP/PIP/PEP + the CNCF whitepaper figure)
+are no longer imported. They still exist in
+`modules/guardrails/policy-as-code.j2` for a practitioner audience that wants
+the reference model — the module header now says not to mix them with
+`pac_history()`. `monitor_allow_deny()`'s PEP/PDP annotation was rewritten to
+name the three governance steps instead.
+
+**New module `modules/governance/what-is-governance.j2`** (primitive-native):
+- `what_it_is()` — governance in three steps: make the rules → put them in
+  the process → see if they are followed. This is the deck's spine; every
+  later part hangs off one of the three.
+  **Now the boxes and nothing else** — no heading, no subtitle, no callout.
+  Two earlier attempts at a second slide were both cut: "Agents did not add a
+  fourth step" (too argumentative) and then an `ai_native()` layer annotating
+  each step with context files / hooks / logs. The three labels carry the
+  argument; the speaker says the rest. Keep it bare.
+
+## The live-review pass (2026-09-08, during run-through)
+
+Cuts and fixes Jon called while walking the rendered deck:
+
+- **`ten_years_github` lost its callout** ("11× more public commits in 2024
+  than 2015. The reviewer pool didn't grow 11×."). Chart and source line stay.
+  Note this slide is shared with the SANS CSE deck, so it is gone there too.
+- **Titles off the lifecycle slides.** `sdlc()` and `adlc()` no longer render
+  a `slide_heading` — the six stage words are the slide.
+- **The ADLC slide became the reveal step of the SDLC slide.** Same six boxes,
+  titleless; advancing lands the control family under each one. They are now a
+  **pair that must stay adjacent**, same mechanism as any build in this engine
+  (no reveal.js fragments — advancing *is* the click).
+- **Emoji dropped** from the ADLC row (🤖 / ✅ under every column). Plain text.
+- **Governance slide stripped** to the three boxes, vertically centred.
+
+### Two `pipe()` fixes this forced, in all three packs
+
+1. **`has_below`** — mirrors the existing `has_notes`. The below gutter is now
+   reserved whenever any stage merely *defines* `below`, and draws nothing when
+   it is falsy. `sdlc()` gives every stage an empty `below` so the boxes hold
+   position when the layer lands; without it the row jumps and reads as a new
+   diagram rather than an addition.
+2. **Arrow alignment** — the arrows used `align-self:center`, which centred
+   them on the whole column (gutters included) rather than on the card, so any
+   reserved gutter dragged every arrow off the cards' centre line. The arrow is
+   now a column that mirrors the same gutters.
+
+Both are contract-level changes to `pipe()`; `aaif` has no `pipe` so it is
+unaffected. Deck is 34 slides.
+
+**`pac_history()` rewritten** — same five-stage pipe, but the stages are now
+"written down → checked by a person → checked by the platform → rules as code
+→ checked in the loop", with no standards acronyms. Retitled *"Governance has
+been moving toward the work for fifty years"*. No other deck imported it.
+
+**Sixth scorecard added: `sandboxing()`** in
+`modules/guardrails/control-scorecard.j2`. It was the visible hole in the
+flip-through — `sandboxing_nono()` introduces it in Part 3 and it was then
+absent from the comparison. Scored 3/4/4/4/3; its Effectiveness note says
+"bounds the blast radius; judges no diff", because it is the only control on
+the list that limits damage rather than catching mistakes.
+
+**Part 4 is knowingly thin** — `monitor_allow_deny()` is the only true
+post-hoc detection slide in the repo; `four_kinds()`/`coverage()` are
+pre-merge verification doing duty as detection content. Jon: *"We'll flesh out
+part 4, that's fine, but organize it this way."* That is the next content job.
+
+**Benched (still in the repo, pulled if a section runs short):**
+`coding_agent_evolution`, `stages_with_controls`, `context_files_mockup`,
+`deterministic_pci_example`, `weaver_evidence`, `verifiers_are_king`,
+`layered_defense`, `nono_scoped_call`, the three `should_you_*` slides,
+`how_i_run_loops`, `agents_validators_recap`, `improvement_gates`, the
+`guardrail_spectrum` trio, `pick_two`/`agent_loops`/`loops_require_verifiers`.
+
+**Verified:** renders under zenable, unbranded and sans-cloud — 35 slides, no
+PAP/PDP/PIP/PEP/XACML anywhere in the output.
+
+---
+
 ## IMPLEMENTED (2026-08-16) — deck rewritten; everything below is now historical context
 
 The content file was rewritten to the decided structure, plus the live edit

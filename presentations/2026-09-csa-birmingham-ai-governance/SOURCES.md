@@ -36,6 +36,10 @@ you add it. Reconstructing attribution later is far harder than capturing it now
   documentation and launch posts.
 - GitHub volume data (reused via `modules/agents/code-volume.j2`):
   [GH Archive](https://www.gharchive.org/) public-event data queried via
-  ClickHouse Playground, and GitHub's record-acceleration chart from
-  [the April 2026 availability post](https://github.blog/news-insights/company-news/an-update-on-github-availability/)
-  (`modules/agents/img/github-record-acceleration.png`).
+  ClickHouse Playground, and GitHub's own growth charts — 130M merged pull
+  requests, 2.9B commits and 24M new repos per month as of August 2026, with
+  commits doubling from 1.4B since April — from CTO Vlad Fedorov's
+  [&ldquo;The August 17 outage, and the work ahead&rdquo;](https://github.blog/news-insights/company-news/the-august-17-outage-and-the-work-ahead/)
+  (Aug 2026) (`modules/agents/img/github-aug-17-outage-growth.png`).
+  Supersedes the chart from the April 2026 availability post
+  (`github-record-acceleration.png`, still in the repo, now unused).

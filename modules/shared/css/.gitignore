@@ -4,3 +4,8 @@
 # Except the following files
 !asciinema-player.css
 !footer.css
+
+# modern-input.css is the Tailwind SOURCE, not a build artifact — without it
+# `start.sh` fails in any fresh clone or worktree. The compiled output
+# (modern.css) stays ignored, and is regenerated on every render.
+!modern-input.css

@@ -30,6 +30,23 @@
            visibility (not display) so layout space is reserved up front. */
         .step { visibility: hidden; }
         .step.step-visible { visibility: visible; animation: fadeIn 0.4s ease-out; }
+        /* Swap: two blocks stacked in one grid cell. The .swap-out block is
+           the slide as it opens; when the slide's .step lands it fades away
+           and the step takes its place, in the same spot. The cell is as tall
+           as the taller block, so nothing on the slide moves. */
+        .swap-stack { display: grid; }
+        .swap-stack > * { grid-area: 1 / 1; align-self: start; }
+        .swap-out { transition: opacity 0.3s ease; }
+        .slide:has(.step.step-visible) .swap-out { opacity: 0; visibility: hidden; }
+        /* Focus sequence: sibling beats marked .focus-step recede once a LATER
+           one has been revealed, so the beat under discussion is the bright one
+           and the ones already covered stay readable behind it. The first beat
+           is usually .focus-step alone (visible on open); the rest add .step. */
+        .focus-step { transition: opacity 0.3s ease; }
+        .focus-step:has(~ .focus-step.step-visible) { opacity: 0.32; }
+        /* Repeated headings that only exist in the PDF, where a swap becomes
+           two pages and the second page needs its own title. */
+        .print-only { display: none; }
         .nav-dot {
             transition: all 0.3s ease;
             position: relative;
@@ -149,11 +166,35 @@
             .fade-in {
                 animation: none !important;
             }
-            /* Print every step revealed */
+            /* Print every step revealed. For an ADDITIVE slide that is the
+               whole story on one page: the final state, everything shown. */
             .step {
                 visibility: visible !important;
                 animation: none !important;
             }
+            /* A SWAP slide is two states in one grid cell, so printing them
+               revealed would overlap them. Un-stack it and break between the
+               two, so it exports as two pages: the before, then the after. */
+            .slide:has(.swap-stack) {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+            }
+            .swap-stack { display: block !important; }
+            .swap-stack > * { grid-area: auto !important; }
+            .swap-out {
+                opacity: 1 !important;
+                visibility: visible !important;
+            }
+            .swap-stack > .step {
+                page-break-before: always !important;
+                break-before: page !important;
+            }
+            .print-only { display: block !important; }
+            /* Every beat of a focus sequence prints at full strength. */
+            .focus-step { opacity: 1 !important; }
             /* Ensure gradient text prints */
             .gradient-text {
                 background: none !important;
@@ -286,10 +327,21 @@
 
             if (e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
                 e.preventDefault();
-                // Reveal the next hidden step on this slide before advancing
+                // Reveal the next hidden step on this slide before advancing.
+                // A step carrying data-step reveals as a GROUP: every step on
+                // this slide with the same value appears on one press, so a
+                // row of six annotations lands together rather than needing
+                // six presses. Steps without the attribute reveal one by one.
                 var pending = allSlides[targetSlideIndex].querySelectorAll('.step:not(.step-visible)');
                 if (pending.length) {
-                    pending[0].classList.add('step-visible');
+                    var group = pending[0].getAttribute('data-step');
+                    if (group) {
+                        allSlides[targetSlideIndex]
+                            .querySelectorAll('.step[data-step="' + group + '"]:not(.step-visible)')
+                            .forEach(function (el) { el.classList.add('step-visible'); });
+                    } else {
+                        pending[0].classList.add('step-visible');
+                    }
                     return;
                 }
                 var nextIndex = getNextVisibleSlide(targetSlideIndex, 1);
@@ -299,10 +351,20 @@
                 }
             } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
                 e.preventDefault();
-                // Un-reveal the most recent step on this slide before going back
+                // Un-reveal the most recent step on this slide before going
+                // back. Grouped steps (data-step) hide together, so stepping
+                // backwards undoes exactly what the last press revealed.
                 var shown = allSlides[targetSlideIndex].querySelectorAll('.step.step-visible');
                 if (shown.length) {
-                    shown[shown.length - 1].classList.remove('step-visible');
+                    var last = shown[shown.length - 1];
+                    var lastGroup = last.getAttribute('data-step');
+                    if (lastGroup) {
+                        allSlides[targetSlideIndex]
+                            .querySelectorAll('.step.step-visible[data-step="' + lastGroup + '"]')
+                            .forEach(function (el) { el.classList.remove('step-visible'); });
+                    } else {
+                        last.classList.remove('step-visible');
+                    }
                     return;
                 }
                 var prevIndex = getNextVisibleSlide(targetSlideIndex, -1);

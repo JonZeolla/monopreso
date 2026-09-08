@@ -25,11 +25,11 @@ function help() {
 		               local Taskfile.yml); CLI flag wins over env.
 		--engine       Presentation engine: modern (default) or revealjs
 		--list         List the available presentations
-		--port         Host port to serve on (default: 8000). Also honoured via the PORT env var;
-		               CLI flag wins over env.
+		--port         Host port to serve on. Default: the first free port at or above 8000,
+		               so several presentations can run side by side. Also honoured via the
+		               PORT env var; CLI flag wins over env.
 		--preso        The presentation name i.e. --preso=dev_tls
 		--no-open      Don't open the presentation in Chrome automatically
-		--port         Serve on this port instead of auto-selecting a free one
 		--no-cleanup   Disable the cleanup prompt at the end
 		-h|--help      Usage details
 	HEREDOC
@@ -127,11 +127,12 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 SHARED_DIR="modules/shared/"
 JINJA2_TEMPLATE="template.j2"
 RENDERED_PRESENTATION=  # set once the presentation name is known
-PORT=
+# Empty means "auto-select a free port at or above DEFAULT_PORT". An explicit
+# PORT in the environment (or --port below) pins it instead.
+PORT="${PORT:-}"
 DEFAULT_PORT=8000
 BRANDING="${BRANDING:-False}"  # respect env; CLI --branding overrides below
 ENGINE="modern"
-PORT="${PORT:-8000}"  # respect env; CLI --port overrides below
 NO_CLEANUP="False"
 NO_OPEN="False"
 
@@ -157,9 +158,6 @@ while getopts "${OPTSPEC}" optchar; do
         list)
           LIST_PRESENTATIONS="True" ;;
 
-        port)
-          PORT="${OPTARG#*=}"
-          ;;
         no-cleanup)
           NO_CLEANUP="True" ;;
 
