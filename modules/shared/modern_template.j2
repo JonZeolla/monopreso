@@ -367,6 +367,23 @@
                 page-break-before: always !important;
                 break-before: page !important;
             }
+            /* Un-stacking drops the section's own vertical centring, which
+               left each half pinned to the top of its page with the rest
+               blank. Give each half a page-sized box of its own and centre
+               inside it, so both printed pages sit like the slide does on
+               screen. The first half shares its page with the heading, so it
+               gets the smaller box. */
+            .swap-out,
+            .swap-stack > .step {
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+            }
+            /* Sized to what is actually left on each page: the section keeps
+               its 48px padding, page one also carries the heading. Too tall
+               and the block spills into a blank extra page. */
+            .swap-out { min-height: 62vh !important; }
+            .swap-stack > .step { min-height: 78vh !important; }
             .print-only { display: block !important; }
             /* Every beat of a focus sequence prints at full strength. */
             .focus-step { opacity: 1 !important; }
