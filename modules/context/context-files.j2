@@ -5,6 +5,15 @@
     primitive calls so this content renders under any brand. See AGENTS.md. -#}
 
 {%- macro mockup() -%}
+<style>
+  /* The CLAUDE.md card is clipped, and this gradient sells the clip as "there
+     is more below" rather than "the text was cut off". It has to fade to the
+     card's own colour, so it needs a light twin — otherwise it reads as a
+     dark smear across the bottom of a white card. */
+  body.light-mode .cf-fade {
+    background: linear-gradient(transparent, rgba(241,245,249,0.97)) !important;
+  }
+</style>
 <section class="vis-slide" data-label="Context Files">
   <div class="vis-label">LLM Steering</div>
   <div class="vis-title">Context Files &amp; Rules</div>
@@ -32,7 +41,7 @@
           <p style="margin:0 0 4px 0;">- All public functions require docstrings</p>
           <p style="margin:0 0 4px 0;">- Minimum 80% test coverage for new code</p>
           <p style="margin:0 0 0 0;">- Use type hints on all function signatures</p>
-          <div style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(transparent, rgba(30,41,59,0.95));"></div>
+          <div class="cf-fade" style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(transparent, rgba(30,41,59,0.95));"></div>
         </div>
       </div>
     </div>
@@ -58,9 +67,6 @@
         <p class="vis-mono" style="font-size:13px; color:#64748b; margin:0;">... and dozens more</p>
       </div>
     </div>
-  </div>
-  <div class="vis-callout-teal vis-callout" style="margin-top:16px; text-align:center;">
-    <span style="font-weight:600;">Low barrier to entry.</span> Just a markdown file in your repo. Version controlled, reviewable, easy to start.
   </div>
 </section>
 {%- endmacro -%}

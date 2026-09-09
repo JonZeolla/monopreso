@@ -107,21 +107,27 @@ tasks:
         - PRESENTATION
     vars:
       OUTPUT_PDF: '{{.USER_WORKING_DIR}}/{{.PRESENTATION}}.pdf'
+      PDF_PORT: '8399'
     cmds:
-      - defer: { task: stop }
+      # A fixed port, so this task knows where to point Chrome and can stop
+      # exactly what it started — `task stop` with no args would kill any deck
+      # the user happens to be presenting.
+      - defer: { task: stop, vars: { CLI_ARGS: '{{.PDF_PORT}}' } }
       - task: start
         vars:
           PRESENTATION: '{{.PRESENTATION}}'
-          CLI_ARGS: --no-open --no-cleanup
-      # The modern engine serves the deck at /current.html; revealjs serves it at / and needs ?print-pdf
+          CLI_ARGS: --no-open --no-cleanup --port={{.PDF_PORT}}
+      # The modern engine serves each deck at /current-<name>.html; revealjs
+      # serves it at / and needs ?print-pdf.
       - |
-        if curl --fail -s -o /dev/null http://localhost:8000/current.html; then
-          url='http://localhost:8000/current.html'
+        modern="http://localhost:{{.PDF_PORT}}/current-{{.PRESENTATION}}.html"
+        if curl --fail -s -o /dev/null "${modern}"; then
+          url="${modern}"
         else
-          url='http://localhost:8000/?print-pdf'
+          url="http://localhost:{{.PDF_PORT}}/?print-pdf"
         fi
         /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --no-pdf-header-footer \
-          --virtual-time-budget=10000 --print-to-pdf="{{.OUTPUT_PDF}}" "${url}"
+          --virtual-time-budget=15000 --print-to-pdf="{{.OUTPUT_PDF}}" "${url}"
 
   cleanup-pdfs:
     desc: Cleanup the generated PDFs
@@ -129,9 +135,29 @@ tasks:
       - rm -f *.pdf
 
   stop:
-    desc: Shut down any running containers
+    desc: >
+      Shut down running presentations. With no args, stops all of them;
+      pass a port (task stop -- 8001) to stop just that one.
     cmds:
-      - if [[ -r .container_id ]]; then docker kill "$(cat .container_id)" && rm -f .container_id; fi
+      - |
+        shopt -s nullglob
+        args="{{.CLI_ARGS}}"
+        if [ -n "${args}" ]; then
+          files=""
+          for port in ${args}; do files="${files} .container_id.${port}"; done
+        else
+          files=".container_id .container_id.*"
+        fi
+        found=0
+        for f in ${files}; do
+          [ -r "${f}" ] || continue
+          found=1
+          docker kill "$(cat "${f}")" >/dev/null 2>&1 || true
+          rm -f "${f}"
+          port="${f#.container_id}"; port="${port#.}"
+          echo "Stopped presentation${port:+ on port ${port}}"
+        done
+        [ "${found}" -eq 1 ] || echo "No running presentations found"
 
   clean:
     desc: Clean up build artifacts, cache files/directories, temp files, etc.
@@ -139,6 +165,7 @@ tasks:
       - mv -f reveal.js/index.html.bkp reveal.js/index.html 2>/dev/null || true
       - rm -f modules/current.html
               current.html
+              current-*.html
               modules/shared/css/modern.css
               reveal.js/modules 2>/dev/null || true
       - rm -f reveal.js/dist/theme/fonts/bitter
@@ -156,7 +183,10 @@ tasks:
                presentations/2023-09-TechFest/demo/cosign*
                presentations/2023-09-TechFest/demo/Dockerfile 2>/dev/null || true
       - rm -rf presentations/2025-07-BSides-PGH/demo/bsidespgh25 2>/dev/null || true
-      - cd reveal.js && git restore package-lock.json
+      # Legacy-engine housekeeping. The reveal.js submodule is not checked out
+      # in every worktree, and the modern engine never touches it, so a missing
+      # one must not fail the clean that every `start.sh` run begins with.
+      - if [ -e reveal.js/package-lock.json ]; then (cd reveal.js && git restore package-lock.json); fi
       - find {{.TASKFILE_DIR}} -type d -name '*.egg-info' -exec rm -rf {} +
       - find {{.TASKFILE_DIR}} -type d -name 'coverage-reports' -exec rm -rf {} +
       - find {{.TASKFILE_DIR}} -type f -name '.coverage' -delete

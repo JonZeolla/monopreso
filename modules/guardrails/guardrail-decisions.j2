@@ -1,0 +1,156 @@
+{#- modules/guardrails/guardrail-decisions.j2
+    "Should you actually put this guardrail in place?"
+
+    A pros/cons slide answers "what are the tradeoffs of X". These slides
+    answer a harder question: given a specific team, is X worth it *yet*.
+    That means each one has to commit to a recommendation and name the
+    condition under which the recommendation flips — otherwise the audience
+    leaves with a list instead of a decision.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/guardrail-decisions.j2" import
+          decision_frame, should_you_hooks, should_you_agent_review,
+          should_you_blocking_ci with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pros_cons,
+    card_grid,
+    pill_row,
+    callout
+-%}
+
+
+{%- macro decision_frame() -%}
+{#- Sets up the three questions every later decision slide answers, so the
+    audience knows what shape of answer is coming and can apply the frame to
+    controls this talk never mentions. -#}
+{%- call content_slide("How to decide") %}
+  {{ slide_heading("Deciding, not collecting",
+                   "Three questions for any guardrail",
+                   "The answer is rarely &ldquo;no&rdquo;. It is usually &ldquo;not first&rdquo;.") }}
+  {{ card_grid([
+    {"title": "1 · What does it actually stop?",
+     "body": "Name the failure you are buying protection from. If you cannot describe an incident it prevents, you are buying comfort.",
+     "accent": "info"},
+    {"title": "2 · Who pays for it, and when?",
+     "body": "Every control bills someone — usually a developer, usually at the least convenient moment. Know the invoice before you sign.",
+     "accent": "warning"},
+    {"title": "3 · What happens the first time it is wrong?",
+     "body": "A control people route around is worse than no control, because it looks like coverage on a report.",
+     "accent": "danger"},
+  ], cols=3) }}
+  {{ callout("A guardrail nobody can bypass and everybody resents gets
+              disabled in a quarter. Design for the bypass conversation
+              before you ship it.", accent="warning") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro should_you_hooks() -%}
+{%- call content_slide("Should you: hooks") %}
+  {{ slide_heading("Decision",
+                   "Should you run guardrails as hooks?",
+                   "Hooks fire inside the developer's loop — on save, on commit, on tool use.") }}
+  {{ pill_row([
+    {"label": "Verdict: yes, early", "accent": "success"},
+    {"label": "Cheapest feedback you can buy", "accent": "primary"},
+    {"label": "Breaks down when slow", "accent": "warning"},
+  ]) }}
+  {{ pros_cons(
+       benefits=[
+         {"title": "Feedback arrives while context is loaded",
+          "detail": "The developer — or the agent — is still holding the problem. A fix costs seconds, not a context switch."},
+         {"title": "Cheap to add, easy to reverse",
+          "detail": "A hook is a config change. If it turns out to be wrong you delete it, and nothing downstream cared."},
+         {"title": "Works on agents and humans identically",
+          "detail": "An agent that gets told &ldquo;no&rdquo; at tool-use time corrects itself and keeps going, unattended."},
+       ],
+       shortcomings=[
+         {"title": "Local, so trivially bypassed",
+          "detail": "It runs on a machine you do not control. Never count a hook as your enforcement point."},
+         {"title": "Latency is a hard budget",
+          "detail": "Past a couple of seconds, people disable it. A slow hook is a control with a countdown timer."},
+         {"title": "Drifts from the server-side rule",
+          "detail": "Two implementations of one requirement will diverge. Generate both from one source or accept the gap."},
+       ],
+       ben_label="Why you would",
+       short_label="What it costs you") }}
+  {{ callout("Do it — but as the <strong>fast</strong> copy of a rule that is
+              enforced somewhere you control.", accent="success") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro should_you_agent_review() -%}
+{%- call content_slide("Should you: agent review") %}
+  {{ slide_heading("Decision",
+                   "Should you put an AI reviewer on every PR?",
+                   "An agent that reads the diff and comments before a human does.") }}
+  {{ pill_row([
+    {"label": "Verdict: yes, advisory only", "accent": "success"},
+    {"label": "Never as a merge gate", "accent": "danger"},
+    {"label": "Watch the signal-to-noise", "accent": "warning"},
+  ]) }}
+  {{ pros_cons(
+       benefits=[
+         {"title": "Scales with generated code, unlike people",
+          "detail": "Review capacity is the bottleneck the moment agents start writing. This is the only lever that moves with volume."},
+         {"title": "Catches the boring things reliably",
+          "detail": "Missing error handling, unpinned dependency, secret in a log line. Humans skim past these on PR number forty."},
+         {"title": "Teaches while it reviews",
+          "detail": "A comment explaining *why* lands better than a lint failure, and reaches the agent as well as the person."},
+       ],
+       shortcomings=[
+         {"title": "Wrong with total confidence",
+          "detail": "It will flag correct code fluently. Every false positive spends trust you cannot easily earn back."},
+         {"title": "Reviewer fatigue transfers",
+          "detail": "Thirty comments per PR and people stop reading all of them — including the one that mattered."},
+         {"title": "Not evidence",
+          "detail": "&ldquo;An agent reviewed it&rdquo; satisfies no auditor and no post-incident review. Non-deterministic by construction."},
+       ],
+       ben_label="Why you would",
+       short_label="What it costs you") }}
+  {{ callout("Let it comment. Do not let it approve. Tune aggressively for
+              precision — a quiet reviewer people trust beats a thorough one
+              they mute.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro should_you_blocking_ci() -%}
+{%- call content_slide("Should you: blocking CI") %}
+  {{ slide_heading("Decision",
+                   "Should this policy block the merge?",
+                   "The question that decides whether you have governance or reporting.") }}
+  {{ pill_row([
+    {"label": "Verdict: only for the short list", "accent": "warning"},
+    {"label": "Blocking is a budget, not a setting", "accent": "danger"},
+  ]) }}
+  {{ pros_cons(
+       benefits=[
+         {"title": "The only control that actually constrains",
+          "detail": "Everything advisory is a suggestion. If a requirement is genuinely non-negotiable, this is the only honest place to say so."},
+         {"title": "Produces evidence as a side effect",
+          "detail": "A blocking check leaves a record on every change, which is what an audit wants and what a dashboard cannot fake."},
+         {"title": "Unambiguous and self-service",
+          "detail": "The developer sees the rule and the fix without asking anyone. No approval queue, no security office hours."},
+       ],
+       shortcomings=[
+         {"title": "You get a very small budget",
+          "detail": "Every blocking rule spends organisational patience. Spend it on the handful that would end up in an incident report."},
+         {"title": "A false positive stops the business",
+          "detail": "A flaky blocking check during an outage is how exception processes get invented — and exceptions become the norm."},
+         {"title": "Demands an escape hatch you will regret",
+          "detail": "There will be a break-glass path. Design it, log it, and review it, or someone else will design it for you."},
+       ],
+       ben_label="Why you would",
+       short_label="What it costs you") }}
+  {{ callout("Block on the things you would be asked about after an incident.
+              Report on everything else.", accent="danger") }}
+{%- endcall %}
+{%- endmacro -%}

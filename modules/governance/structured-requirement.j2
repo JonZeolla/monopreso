@@ -1,0 +1,168 @@
+{#- modules/governance/structured-requirement.j2
+    The answer to the prose-policy slide: the same intent, written so a machine
+    can act on it.
+
+    Pairs with modules/governance/policy-statement.j2 and should follow it in
+    the deck. That slide takes a real policy paragraph apart a colour at a time;
+    this one shows what replaces it — a statement, the two verdicts that make it
+    testable, the exception that keeps it honest, and the scope that says where
+    it applies.
+
+    ── Why scope is drawn as a chain ───────────────────────────────
+    Scope is the part people have not seen. Drawn as loose labels it reads as
+    metadata; drawn as conditions ANDed together it reads as what it is —
+    targeting. That is the argument this slide exists to make: a requirement is
+    not global, and the targeting is part of the rule, not an afterthought.
+
+    The scope vocabulary is wider than the three shown (global, repository,
+    user, group, organization, file extension, path pattern, repository
+    metadata, integration). Three fits the slide. Repository metadata is the one
+    worth saying out loud, since it is the one nobody expects.
+
+    ── Build ───────────────────────────────────────────────────────
+    Three beats: the statement, then where it applies, then the verdicts.
+    Grouped `.step`s, so each band lands on one press and none of it moves —
+    `visibility:hidden` reserves the space from the start.
+
+    ── Contract note ───────────────────────────────────────────────
+    Shell uses primitives; the chips, snippets and verdict rails are inline
+    styles. Same call as policy-statement.j2 — there is no chip or code-sample
+    primitive, and this needs four distinguishable roles (meets / violates /
+    exception / scope) on one slide.
+
+    Import WITH CONTEXT:
+
+      {%- from "modules/governance/structured-requirement.j2" import
+          structured with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading
+-%}
+
+{%- set MEETS     = "#4ade80" -%}
+{%- set VIOLATES  = "#fb7185" -%}
+{%- set EXCEPTION = "#fbbf24" -%}
+{%- set SCOPE     = "#60a5fa" -%}
+{%- set TEAL      = "#2dd4bf" -%}
+
+{%- set _LABEL = "font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; margin:0 0 8px 0;" -%}
+{%- set _SNIPPET = "font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; line-height:1.7; background:var(--slide-sunken); border:1px solid var(--slide-hairline); border-radius:7px; padding:10px 12px; margin:0; white-space:pre; overflow-x:auto; color:var(--slide-ink);" -%}
+
+
+{%- macro _chip(kind, value, negate=false) -%}
+{#- A typed condition: the key says what KIND of condition it is, so the chip
+    is self-describing rather than a value floating on its own. An excluded
+    condition is drawn in the danger colour, not the scope colour — a carve-out
+    reads as a different KIND of clause, not another item on the same list. -#}
+{%- set edge = "rgba(251,113,133,0.42)" if negate else "rgba(96,165,250,0.38)" -%}
+{%- set keybg = "rgba(251,113,133,0.16)" if negate else "rgba(96,165,250,0.16)" -%}
+{%- set keyfg = VIOLATES if negate else SCOPE -%}
+{%- set valbg = "rgba(251,113,133,0.06)" if negate else "rgba(96,165,250,0.06)" -%}
+{%- set valfg = "#ffe4e6" if negate else "#dbeafe" -%}
+<span style="display:inline-flex; align-items:stretch; border-radius:6px; overflow:hidden; border:1px solid {{ edge }}; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px;">
+  <span style="background:{{ keybg }}; color:{{ keyfg }}; padding:6px 10px; font-weight:700;">{{ kind }}</span>
+  <span style="padding:6px 11px; color:{{ valfg }}; background:{{ valbg }};">{{ value }}</span>
+</span>
+{%- endmacro -%}
+
+{%- macro _op(text) -%}
+<span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:var(--slide-ink-3); font-weight:700; letter-spacing:0.1em;">{{ text|safe }}</span>
+{%- endmacro -%}
+
+{%- macro _verdict(colour, glyph, label, code, why) -%}
+<div style="border:1px solid var(--slide-hairline); border-left:4px solid {{ colour }}; border-radius:8px; padding:14px 16px; background:var(--slide-surface); display:flex; flex-direction:column; gap:9px;">
+  <p style="margin:0; font-size:15px; font-weight:700; color:{{ colour }};">{{ glyph|safe }}&nbsp; {{ label }}</p>
+  <pre style="{{ _SNIPPET }}">{{ code|safe }}</pre>
+  <p style="margin:0; font-size:13px; line-height:1.5; color:var(--slide-ink-2);">{{ why|safe }}</p>
+</div>
+{%- endmacro -%}
+
+
+{%- macro _requirement(nav, title, subtitle, statement, scope, verdicts) -%}
+{%- call content_slide(nav) %}
+  {{ slide_heading("", title, subtitle) }}
+
+  <div style="display:flex; flex-direction:column; gap:16px; margin-top:6px;">
+
+    {#- Beat 1: the rule itself. -#}
+    <div class="step" data-step="req-statement"
+         style="background:rgba(45,212,191,0.06); border:1px solid rgba(45,212,191,0.28); border-radius:10px; padding:18px 22px;">
+      <p style="{{ _LABEL }} color:{{ TEAL }};">Requirement</p>
+      <p style="margin:0; font-size:24px; line-height:1.4; font-weight:500;">{{ statement|safe }}</p>
+    </div>
+
+    {#- Beat 2: where it applies, as a narrowing chain rather than labels. -#}
+    <div class="step" data-step="req-scope"
+         style="border:1px solid rgba(96,165,250,0.24); background:rgba(96,165,250,0.04); border-radius:10px; padding:15px 20px;">
+      <p style="{{ _LABEL }} color:{{ SCOPE }};">Where it applies</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+        <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:var(--slide-ink-2);">every repo</span>
+        {{ _op("&rarr;") }}
+        {%- for cond in scope %}
+        {%- if not loop.first %}{{ _op("AND NOT" if cond.negate else "AND") }}{% endif %}
+        {{ _chip(cond.kind, cond.value, cond.negate | default(false)) }}
+        {%- endfor %}
+        {{ _op("&rarr;") }}
+        <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:13px; color:{{ MEETS }}; font-weight:700;">the files this rule can touch</span>
+      </div>
+    </div>
+
+    {#- Beat 3: what makes it testable — and the exception that keeps it honest. -#}
+    <div class="step" data-step="req-verdicts"
+         style="display:grid; grid-template-columns:repeat(3,1fr); gap:14px;">
+      {{ _verdict(MEETS,     "&#10003;", "Passes",    verdicts.passes.code,    verdicts.passes.why) }}
+      {{ _verdict(VIOLATES,  "&#10007;", "Fails",     verdicts.fails.code,     verdicts.fails.why) }}
+      {{ _verdict(EXCEPTION, "&#9888;",  "Exception", verdicts.exception.code, verdicts.exception.why) }}
+    </div>
+
+  </div>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro structured() -%}
+{{ _requirement(
+   "A structured requirement",
+   "A requirement, not a paragraph",
+   "The same intent &mdash; written so a machine can decide.",
+   "Field validation belongs in the Pydantic DTO &mdash; and nowhere else.",
+   [{"kind": "Repo metadata",   "value": "product = payments"},
+    {"kind": "File extension",  "value": ".py"},
+    {"kind": "Path pattern",    "value": "src/**/models/**"}],
+   {"passes":    {"code": '<span style="color:#c084fc;">class</span> <span style="color:' ~ TEAL ~ ';">User</span>(BaseModel):\n    id: UUID7',
+                  "why":  "The rule lives in one place."},
+    "fails":     {"code": '<span style="color:' ~ TEAL ~ ';">@validates</span>(<span style="color:#fbbf24;">"id"</span>)\n<span style="color:#c084fc;">def</span> <span style="color:' ~ TEAL ~ ';">check</span>(self, k, v): ...',
+                  "why":  "The ORM re-checks what the DTO already guarantees."},
+    "exception": {"code": 'name = <span style="color:' ~ TEAL ~ ';">mapped_column</span>(String(<span style="color:#fbbf24;">255</span>))',
+                  "why":  "Storage shape, not a rule. Permitted."}}) }}
+{%- endmacro -%}
+
+
+{%- macro encryption_at_rest() -%}
+{#- The §3.4.1 policy from the previous slide, rewritten in the same structured
+    form. Deliberately picks up that slide's own four annotations: the CMK is
+    the compliance baseline, AES256 is the "encrypted, but not by you" failure,
+    and the SNS carve-out is the "service can't" the room just read about.
+
+    The AND NOT clause is the "security theatre" annotation from that slide,
+    made operational: public marketing copy is excluded from the rule by scope,
+    rather than by everyone quietly ignoring the rule there. That is the whole
+    argument for putting scope in the requirement. -#}
+{{ _requirement(
+   "Encryption at rest, restructured",
+   "&sect;3.4.1, rewritten",
+   "Same policy. Now it says what passes, what fails, and where it applies.",
+   "Customer data at rest is encrypted with a key we control &mdash; one we can rotate and revoke.",
+   [{"kind": "Repo metadata",  "value": "data-tier = customer"},
+    {"kind": "File extension", "value": ".tf"},
+    {"kind": "Path pattern",   "value": "infra/**"},
+    {"kind": "Path pattern",   "value": "infra/marketing/**", "negate": true}],
+   {"passes":    {"code": 'sse_algorithm     = <span style="color:#fbbf24;">"aws:kms"</span>\nkms_master_key_id = aws_kms_key.customer.arn',
+                  "why":  "A key we hold, rotate and can revoke."},
+    "fails":     {"code": 'sse_algorithm = <span style="color:#fbbf24;">"AES256"</span>',
+                  "why":  "Encrypted &mdash; with a key AWS holds. Meets &ldquo;at rest&rdquo;, not &ldquo;customer-managed&rdquo;."},
+    "exception": {"code": '<span style="color:var(--slide-ink-3);"># SNS: alarms cannot publish to a CMK topic</span>\nkms_master_key_id = <span style="color:#fbbf24;">"alias/aws/sns"</span>',
+                  "why":  "Named, time-boxed, reviewed. The service genuinely cannot."}}) }}
+{%- endmacro -%}

@@ -5,7 +5,6 @@
 
 {%- macro ten_years_github() -%}
 <section class="vis-slide" data-label="10 years of code">
-  <div class="vis-label">The data</div>
   <div class="vis-title">Ten years of public GitHub</div>
   <div class="vis-subtitle">Commits and pull requests opened — all public repositories, 2015 – 2024.</div>
 
@@ -142,12 +141,6 @@
       </svg>
     </div>
 
-    <!-- Caption -->
-    <div class="vis-callout vis-callout-teal" style="text-align:center;">
-      <span style="font-weight:700;">11× more public commits in 2024 than 2015.</span>
-      The reviewer pool didn't grow 11×.
-    </div>
-
     <p style="text-align:center; font-size:10.5px; color:#64748b; margin:0; line-height:1.5;">
       Source: <a href="https://www.gharchive.org/" style="color:#94a3b8;">GH Archive</a> · public events only (private repos excluded; bot accounts not filtered).
       Commits = sum of <span class="vis-mono">PushEvent.payload.distinct_size</span>; PRs = <span class="vis-mono">PullRequestEvent</span> with <span class="vis-mono">action="opened"</span>.
@@ -159,16 +152,16 @@
 
 {%- macro late_2025_inflection() -%}
 <section class="vis-slide" data-label="Record acceleration">
-  <div class="vis-label">Inflection</div>
-  <div class="vis-title">…and then late 2025 happened</div>
-  <div class="vis-subtitle">GitHub's own record-acceleration chart from the April 2026 availability post.</div>
+  <div class="vis-title">&hellip; and then this happened</div>
+  <div class="vis-subtitle">130M merged pull requests, 2.9B commits, 24M new repos — per month. Commits doubled from 1.4B since April.</div>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:14px;">
-    <img src="modules/agents/img/github-record-acceleration.png"
-         alt="GitHub record acceleration: pull requests merged, commits, and new repositories per month, late 2024 through early 2026 — sharp upward inflection beginning H2 2025."
+    <img src="modules/agents/img/github-aug-17-outage-growth.png"
+         alt="Three GitHub growth charts, 2023 through August 2026: merged pull requests per month rising to 130 million, commits per month to 2.9 billion, and new repositories per month to 24 million — each curving sharply upward through 2025 and 2026."
          class="plain"
          style="max-width:90%; max-height:62vh; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.3);"/>
     <p style="text-align:center; font-size:11px; color:#64748b; margin:0; line-height:1.5;">
-      Image source: GitHub — <a href="https://github.blog/news-insights/company-news/an-update-on-github-availability/" style="color:#94a3b8;">github.blog/news-insights/company-news/an-update-on-github-availability/</a>
+      Image source: GitHub CTO Vlad Fedorov, &ldquo;The August 17 outage, and the work ahead&rdquo; (Aug 2026) —
+      <a href="https://github.blog/news-insights/company-news/the-august-17-outage-and-the-work-ahead/" style="color:#94a3b8;">github.blog/news-insights/company-news/the-august-17-outage-and-the-work-ahead/</a>
     </p>
   </div>
 </section>

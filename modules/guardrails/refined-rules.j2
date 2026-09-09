@@ -11,7 +11,7 @@
     <style>
       .rr-win {
         position:absolute;
-        width:380px;
+        width:490px;
         background:rgba(15,23,42,0.97);
         border:1px solid rgba(51,65,85,0.7);
         border-radius:10px;
@@ -21,29 +21,57 @@
       }
       .rr-win-hdr {
         display:flex; align-items:center; gap:8px;
-        padding:8px 12px;
+        padding:11px 16px;
         background:rgba(30,41,59,0.85);
         border-bottom:1px solid rgba(51,65,85,0.6);
         font-family:'Fira Sans',sans-serif;
       }
-      .rr-win-hdr .dot { width:9px; height:9px; border-radius:50%; }
+      .rr-win-hdr .dot { width:11px; height:9px; border-radius:50%; }
       .rr-win-hdr .dot.r { background:#ef4444; } .rr-win-hdr .dot.y { background:#fbbf24; } .rr-win-hdr .dot.g { background:#22c55e; }
-      .rr-win-hdr .file { font-size:11px; color:#cbd5e1; margin-left:6px; }
+      .rr-win-hdr .file { font-size:14px; color:#cbd5e1; margin-left:6px; }
       .rr-win-hdr .tag  {
         margin-left:auto;
-        font-size:9.5px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+        font-size:12px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
         padding:2px 8px; border-radius:999px;
       }
-      .rr-win-body { padding:12px 14px; font-size:11.5px; line-height:1.55; color:#cbd5e1; }
+      .rr-win-body { padding:16px 18px; font-size:15px; line-height:1.55; color:#cbd5e1; }
       .rr-win-body .k { color:#c084fc; }  /* keyword */
       .rr-win-body .s { color:#86efac; }  /* string */
       .rr-win-body .c { color:#64748b; font-style:italic; }  /* comment */
       .rr-win-body .n { color:#fbbf24; }  /* name / identifier */
       .rr-win-body .o { color:#94a3b8; }  /* operator / punctuation */
+
+      /* Light mode. These windows are the one place in the deck that keeps a
+         dark ground in both themes — a syntax palette is its own design, and
+         five code cards re-tuned for white would be a second theme to
+         maintain. So the surfaces only lift slightly and the ink stays as it
+         is; what changes is the slide around them. The engine's light-mode
+         rules cannot reach in here, because these are local classes rather
+         than the vis-* ones the brand pack knows about. */
+      body.light-mode .rr-win {
+        background:#111a2e;
+        border-color:rgba(148,163,184,0.28);
+        box-shadow:0 18px 44px rgba(15,23,42,0.28);
+      }
+      body.light-mode .rr-win-hdr { background:#1b263f; border-bottom-color:rgba(148,163,184,0.22); }
+      body.light-mode .rr-win-hdr .file { color:#e2e8f0 !important; }
+      body.light-mode .rr-win-hdr .tag  { color:inherit; }
+      body.light-mode .rr-win-body,
+      body.light-mode .rr-win-body .o   { color:#cbd5e1 !important; }
+      body.light-mode .rr-win-body .k { color:#c084fc !important; }
+      body.light-mode .rr-win-body .s { color:#86efac !important; }
+      body.light-mode .rr-win-body .c { color:#94a3b8 !important; }
+      body.light-mode .rr-win-body .n { color:#fbbf24 !important; }
+      /* Tool badges keep their bright ink — they sit on their own dark chip. */
+      body.light-mode .rr-win-hdr .tag[style*="color:#5eead4"] { color:#5eead4 !important; }
+      body.light-mode .rr-win-hdr .tag[style*="color:#d8b4fe"] { color:#d8b4fe !important; }
+      body.light-mode .rr-win-hdr .tag[style*="color:#fca5a5"] { color:#fca5a5 !important; }
+      body.light-mode .rr-win-hdr .tag[style*="color:#93c5fd"] { color:#93c5fd !important; }
+      body.light-mode .rr-win-hdr .tag[style*="color:#fcd34d"] { color:#fcd34d !important; }
     </style>
 
     <!-- Centered policy summary (small, top) — gives the tree a root -->
-    <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%); padding:6px 14px; background:rgba(45,212,191,0.10); border:1px solid rgba(45,212,191,0.55); border-radius:999px; font-size:11.5px; color:#5eead4; font-weight:600; white-space:nowrap;">
+    <div style="position:absolute; top:-6px; left:50%; transform:translateX(-50%); padding:8px 18px; background:rgba(45,212,191,0.10); border:1px solid rgba(45,212,191,0.55); border-radius:999px; font-size:15px; color:#5eead4; font-weight:600; white-space:nowrap;">
       §3.4.1 · CloudWatch Alarms → unencrypted SNS topic with documented exception
     </div>
 

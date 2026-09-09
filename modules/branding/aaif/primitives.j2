@@ -213,6 +213,22 @@ Foundation</div>
 
 {# Code card. `lines` is a list of strings; they are escaped, so pass
    plain source rather than pre-highlighted markup. #}
+{%- macro image_slide(src, alt, label="", caption="") -%}
+{# Full-slide image. The picture IS the slide. Unlike the other packs this
+   one keeps the 16:9 stage, so the image sizes against the stage rather
+   than the viewport and stays inside the deck's canvas. #}
+<section class="slide aaif-slide aaif-slide--light aaif-slide--nonumber" data-label="{{ label or alt }}">
+  <div class="aaif-stage"><div class="aaif-canvas" style="display:flex; flex-direction:column; align-items:center; justify-content:center;">
+    <img src="{{ src }}" alt="{{ alt }}"
+         style="display:block; object-fit:contain; max-height:{{ '78%' if caption else '88%' }}; max-width:89%; width:auto; height:auto;">
+    {%- if caption %}
+    <p class="aaif-mono" style="margin:calc(12 * var(--pt)) 0 0 0; font-size:calc(9 * var(--pt)); color:var(--aaif-muted);">{{ caption|safe }}</p>
+    {%- endif %}
+  </div></div>
+</section>
+{%- endmacro -%}
+
+
 {%- macro code_block(filename, lines) -%}
 <div class="aaif-code">
   <div class="aaif-code-bar">

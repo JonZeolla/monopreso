@@ -23,14 +23,12 @@
       </div>
       <div id="ctx-step2" style="display:none; flex-shrink:0;">
         <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.3); border-radius:8px; padding:8px 12px;">
-          <p style="font-size:9px; font-weight:600; color:#f59e0b; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 4px 0;">Startup: MCP Server — GitHub (24 tools)</p>
-          <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0 0 4px 0;">Loading tool schemas into system prompt...</p>
+          <p style="font-size:9px; font-weight:600; color:#f59e0b; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 4px 0;">Startup: MCP servers connected (3)</p>
+          <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0 0 4px 0;">Names and one-line descriptions only — no schemas yet.</p>
           <div style="display:flex; gap:3px; flex-wrap:wrap;">
-            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">create_pr()</span>
-            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">list_issues()</span>
-            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">get_repo()</span>
-            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">search_code()</span>
-            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">+ 20 more</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">github</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">postgres</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">sentry</span>
           </div>
         </div>
       </div>
@@ -38,6 +36,19 @@
         <div style="background:rgba(30,41,59,0.6); border-radius:8px; padding:8px 12px; border-left:2px solid rgba(96,165,250,0.6);">
           <p style="font-size:9px; color:#60a5fa; font-weight:600; margin:0 0 2px 0;">You</p>
           <p class="vis-mono" style="font-size:11px; color:#e2e8f0; margin:0;">Fix the SQL injection vulnerability in our auth service</p>
+        </div>
+      </div>
+      <div id="ctx-step3b" style="display:none; flex-shrink:0;">
+        <div style="background:rgba(245,158,11,0.05); border:1px solid rgba(245,158,11,0.3); border-radius:8px; padding:8px 12px;">
+          <p style="font-size:9px; font-weight:600; color:#f59e0b; text-transform:uppercase; letter-spacing:0.1em; margin:0 0 4px 0;">Loading tool schemas — github (24 tools)</p>
+          <p class="vis-mono" style="font-size:10px; color:#94a3b8; margin:0 0 4px 0;">Full parameter schemas pulled in now the prompt says which server is needed.</p>
+          <div style="display:flex; gap:3px; flex-wrap:wrap;">
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">create_pr()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">list_issues()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">get_repo()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">search_code()</span>
+            <span class="vis-tool-tag" style="background:rgba(245,158,11,0.1); color:#fcd34d; font-size:8px;">+ 20 more</span>
+          </div>
         </div>
       </div>
       <div id="ctx-step4" style="display:none; flex-shrink:0;">
@@ -95,13 +106,21 @@
   <script>
   (function(){
     var step = 0;
+    // [elementId, contextFiles%, mcp%, conversation%, fileReads%, tokens, nextButtonLabel]
+    // System prompt is a static 5% on top, so the counter is (5 + these) × 2,000.
+    // MCP arrives in TWO rounds, which is the point of the slide: connecting a
+    // server costs almost nothing (names and descriptions, 2%), and the
+    // expensive part — full tool schemas, 6% — only lands once the prompt makes
+    // clear which server is needed. Context files up front are the big startup
+    // cost at 11%.
     var steps = [
-      ['ctx-step1', 3,  0,  0, 0, 16000,  'Connect MCP Server ▶'],
-      ['ctx-step2', 3,  33, 0, 0, 76000,  'Send Prompt ▶'],
-      ['ctx-step3', 3,  33, 2, 0, 78400,  'Allow Read ▶'],
-      ['ctx-step4', 3,  33, 3, 0, 80200,  'Allow ▶'],
-      ['ctx-step5', 3,  33, 3, 4, 88000,  'Allow Read ▶'],
-      ['ctx-step6', 3,  33, 3, 10,100200, ''],
+      ['ctx-step1',  11, 0, 0, 0,  32000, 'Connect MCP Servers ▶'],
+      ['ctx-step2',  11, 2, 0, 0,  36000, 'Send Prompt ▶'],
+      ['ctx-step3',  11, 2, 1, 0,  38000, 'Load Tool Schemas ▶'],
+      ['ctx-step3b', 11, 8, 1, 0,  50000, 'Allow Read ▶'],
+      ['ctx-step4',  11, 8, 2, 0,  52000, 'Allow ▶'],
+      ['ctx-step5',  11, 8, 2, 4,  60000, 'Allow Read ▶'],
+      ['ctx-step6',  11, 8, 2, 10, 72000, ''],
     ];
     window.ctxNext = function(){
       if(step >= steps.length) return;
@@ -115,7 +134,7 @@
       document.getElementById('ctx-bar-files').style.height = s[4]+'%';
       document.getElementById('ctx-counter').textContent = s[5].toLocaleString();
       if(s[1]>0) document.getElementById('ctx-pct-ctx').textContent = 'Context files '+s[1]+'%';
-      if(s[2]>0) document.getElementById('ctx-pct-mcp').textContent = 'MCP schemas '+s[2]+'%';
+      if(s[2]>0) document.getElementById('ctx-pct-mcp').textContent = (s[2] > 2 ? 'MCP + schemas ' : 'MCP servers ')+s[2]+'%';
       if(s[3]>0) document.getElementById('ctx-pct-prompt').textContent = 'Conversation '+s[3]+'%';
       if(s[4]>0) document.getElementById('ctx-pct-files').textContent = 'File reads '+s[4]+'%';
       step++;

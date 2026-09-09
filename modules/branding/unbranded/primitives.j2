@@ -132,50 +132,97 @@
 </div>
 {%- endmacro -%}
 
-{%- macro card_grid(items, cols=3, size="md") -%}
+{%- macro card_grid(items, cols=3, size="md", reveal=false) -%}
+{#- `reveal=true` wraps the whole grid in a single `.step`, so every card
+    arrives together on one key press while its space stays reserved — for a
+    slide that states a definition first and shows the taxonomy second. -#}
 {# size="lg" bumps title/body type for slides where the grid IS the slide. #}
-<div class="{% if size == 'lg' %}cards-lg{% endif %}" style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
+{% if reveal %}<div class="step">{% endif %}<div class="{% if size == 'lg' %}cards-lg{% endif %}" style="display:grid; grid-template-columns:repeat({{ cols }},1fr); gap:10px;">
   {%- for item in items %}
     {{ card(item.title, item.body | default(item.detail | default("")), item.accent | default("neutral")) }}
+  {%- endfor %}
+</div>{% if reveal %}</div>{% endif %}
+{%- endmacro -%}
+
+
+{# Vertical numbered list: an accent-coloured circle per step, joined by a
+   connector line, with a title and optional detail beside it. Each item:
+   {title, detail?, accent?}.
+
+   Use this instead of `pipe()` when the sequence is a narrative to be read
+   down the slide rather than a flow to be scanned across it — five stages with
+   a sentence each are unreadable squeezed into horizontal cards, and the
+   numbers make the ordering explicit rather than implied by arrows. #}
+{%- macro numbered_steps(items) -%}
+<div style="display:flex; flex-direction:column; width:100%;">
+  {%- for item in items %}
+  {%- set a = item.accent | default("neutral") %}
+  <div style="display:flex; gap:24px;">
+    <div style="flex:0 0 auto; display:flex; flex-direction:column; align-items:center;">
+      <div style="width:48px; height:48px; flex:0 0 auto; border-radius:999px; border:2px solid {{ _accent_var(a) }}; display:flex; align-items:center; justify-content:center;">
+        <span style="font-size:20px; font-weight:700; color:{{ _accent_var(a) }};">{{ loop.index }}</span>
+      </div>
+      {%- if not loop.last %}<div style="width:2px; flex:1; min-height:20px; background:{{ _accent_var(a) }}; opacity:0.4;"></div>{% endif %}
+    </div>
+    <div style="padding-top:6px;{% if not loop.last %} padding-bottom:28px;{% endif %}">
+      <p style="font-size:24px; font-weight:700; color:var(--unb-text); margin:0; line-height:1.2;">{{ item.title }}</p>
+      {%- if item.detail %}<p style="font-size:16px; color:var(--unb-text-muted); margin:6px 0 0 0; line-height:1.45;">{{ item.detail|safe }}</p>{% endif %}
+    </div>
+  </div>
   {%- endfor %}
 </div>
 {%- endmacro -%}
 
 
-{%- macro pipe(stages) -%}
+{%- macro pipe(stages, reveal=false, size="md") -%}
 {# Left-to-right pipeline of stage cards joined by arrows.
    Each stage: {label, detail?, meta?, accent?, note?, below?}
 
    `note` renders as an annotation hanging above the stage on a dotted
-   connector, so the same stage list can be shown twice — bare, then with
-   controls annotated onto it. #}
+   connector; `below` renders under the card. `size="lg"` scales the type up
+   for slides where the pipeline IS the slide. #}
+{%- set lg = (size == "lg") %}
+{#- reveal: false = static. true / "below" = the below-labels arrive together
+    on one press. "stages" = the cards arrive one at a time with their arrow. -#}
+{%- set reveal_stages = (reveal == "stages") %}
+{%- set reveal_below = (reveal and not reveal_stages) %}
 {%- set has_notes = stages | selectattr("note", "defined") | list | length > 0 %}
-<div style="display:flex; align-items:stretch; justify-content:center; gap:8px; margin:18px 0;">
+{%- set has_below = stages | selectattr("below", "defined") | list | length > 0 %}
+{#- A grid, not a flex row: rows are note gutter (optional), cards, then below
+    labels (optional). Arrows live in the CARD row only, so they centre on the
+    cards however many lines hang under the tallest column. -#}
+{%- set card_row = 2 if has_notes else 1 %}
+<div style="display:grid; justify-content:center; margin:18px 0; align-items:start;
+     grid-template-columns:{% for s in stages %}{% if not loop.first %} auto{% endif %} {{ 'auto' if lg else 'minmax(0,1fr)' }}{% endfor %};
+     column-gap:{{ '16px' if lg else '8px' }};">
   {%- for stage in stages %}
-  {%- if not loop.first %}
-  <div aria-hidden="true" style="flex:0 0 auto; align-self:center; color:var(--unb-text-dim); font-size:22px; line-height:1;">&rarr;</div>
-  {%- endif %}
+  {%- set col = loop.index0 * 2 + 1 %}
   {%- set a = stage.accent | default("neutral") %}
-  <div style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:stretch;">
-    {%- if has_notes %}
-    <div style="min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
-      {%- if stage.note %}
-      <div style="background:var(--unb-surface-strong); border:1px solid {{ _accent_var(a) }}; border-radius:8px; padding:8px 10px; text-align:center;">
-        <p style="font-size:11px; font-weight:700; color:{{ _accent_var(a) }}; margin:0; line-height:1.35;">{{ stage.note|safe }}</p>
-      </div>
-      <div aria-hidden="true" style="width:0; height:14px; border-left:2px dotted {{ _accent_var(a) }};"></div>
-      {%- endif %}
+  {%- if not loop.first %}
+  <div aria-hidden="true" {% if reveal_stages %}class="step" data-step="pipe-stage-{{ loop.index }}" {% endif %}style="grid-column:{{ col - 1 }}; grid-row:{{ card_row }}; align-self:stretch; display:flex; align-items:center; justify-content:center; color:var(--unb-text-dim); font-size:{% if lg %}44px{% else %}26px{% endif %}; line-height:1;">&rarr;</div>
+  {%- endif %}
+  {%- if has_notes %}
+  <div {% if reveal_stages %}class="step" data-step="pipe-stage-{{ loop.index }}" {% endif %}style="grid-column:{{ col }}; grid-row:1; min-height:96px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end;">
+    {%- if stage.note %}
+    <div style="background:var(--unb-surface-strong); border:1px solid {{ _accent_var(a) }}; border-radius:8px; padding:8px 10px; text-align:center;">
+      <p style="font-size:13px; font-weight:700; line-height:1.35; color:{{ _accent_var(a) }}; margin:0;">{{ stage.note|safe }}</p>
     </div>
-    {%- endif %}
-    <div class="unb-card {{ _accent_class(a) }}" style="flex:1; padding:16px 12px; text-align:center; display:flex; flex-direction:column; justify-content:center; gap:6px;">
-      <p class="unb-card-title" style="margin:0; color:{{ _accent_var(a) }};">{{ stage.label }}</p>
-      {%- if stage.detail %}<p class="unb-card-body" style="margin:0;">{{ stage.detail|safe }}</p>{% endif %}
-      {%- if stage.meta %}<p style="margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--unb-text-dim);">{{ stage.meta }}</p>{% endif %}
-    </div>
-    {%- if stage.below %}
-    <p style="margin:8px 0 0 0; text-align:center; font-size:13px; line-height:1.45; color:var(--unb-text-dim);">{{ stage.below|safe }}</p>
+    <div aria-hidden="true" style="width:0; height:14px; border-left:2px dotted {{ _accent_var(a) }};"></div>
     {%- endif %}
   </div>
+  {%- endif %}
+  <div class="unb-card {{ _accent_class(a) }}{% if reveal_stages %} step{% endif %}" {% if reveal_stages %}data-step="pipe-stage-{{ loop.index }}" {% endif %}style="grid-column:{{ col }}; grid-row:{{ card_row }}; {% if lg %}justify-self:center; padding:22px 32px;{% else %}align-self:stretch; padding:16px 12px;{% endif %} text-align:center; display:flex; flex-direction:column; justify-content:center; gap:6px;">
+    <p style="font-size:{% if lg %}30px{% else %}16px{% endif %};{% if lg %} white-space:nowrap;{% endif %} font-weight:700; color:{{ _accent_var(a) }}; margin:0;">{{ stage.label }}</p>
+    {%- if stage.detail %}<p style="font-size:{% if lg %}17px{% else %}13px{% endif %}; color:var(--unb-text-muted); margin:0; line-height:1.45;">{{ stage.detail|safe }}</p>{% endif %}
+    {%- if stage.meta %}<p style="margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--unb-text-dim);">{{ stage.meta }}</p>{% endif %}
+  </div>
+  {%- if has_below %}
+  <div style="grid-column:{{ col }}; grid-row:{{ card_row + 1 }};">
+    {%- if stage.below %}
+    <p class="{% if reveal_below %}step{% endif %}"{% if reveal_below %} data-step="pipe-below"{% endif %} style="margin:8px 0 0 0; text-align:center; font-size:{% if lg %}21px{% else %}15px{% endif %}; line-height:1.45; color:var(--unb-text-muted);">{{ stage.below|safe }}</p>
+    {%- endif %}
+  </div>
+  {%- endif %}
   {%- endfor %}
 </div>
 {%- endmacro -%}
@@ -195,6 +242,23 @@
     <p style="font-size:62px; font-weight:800; line-height:1.15; color:var(--unb-text); margin:0;">{{ line.text|safe }}</p>
     {%- endif %}
     {%- endfor %}
+  </div>
+</section>
+{%- endmacro -%}
+
+
+{%- macro image_slide(src, alt, label="", caption="") -%}
+{# Full-slide image. The picture IS the slide: it scales to the viewport
+   and nothing competes with it. `alt` is required — it is the only thing
+   a screen reader or a failed load has to go on. #}
+<section class="unb-slide" data-label="{{ label or alt }}" style="justify-content:center; align-items:center; text-align:center;">
+  <div>
+    <img src="{{ src }}" alt="{{ alt }}"
+         style="display:block; margin:0 auto; border-radius:12px; object-fit:contain;
+                max-height:calc(100vh - {{ '10rem' if caption else '4rem' }}); max-width:calc(100vw - 4rem); width:auto; height:auto;">
+    {%- if caption %}
+    <p style="font-size:16px; color:var(--unb-text-muted); margin:24px 0 0 0;">{{ caption|safe }}</p>
+    {%- endif %}
   </div>
 </section>
 {%- endmacro -%}
@@ -296,6 +360,50 @@
     {%- endif %}
   </svg>
 </div>
+{%- endmacro -%}
+
+
+{%- macro _score_color(score) -%}
+{# Four-step scorecard ramp: red → orange → yellow → green. Deliberately not
+   part of the accent vocabulary — this is an ordinal scale, not a category,
+   and `warning` vs `danger` carries no ordering. #}
+{%- set m = {
+  1: "var(--unb-danger)",
+  2: "#f97316",
+  3: "var(--unb-warning)",
+  4: "var(--unb-success)",
+} -%}{{- m.get(score, "var(--unb-text-dim)") -}}
+{%- endmacro -%}
+
+{%- macro meter_row(items, scale=4, caption="") -%}
+{# Graded bars on one shared scale, so several slides can be read against
+   each other. Each item: {label, score, note}; `score` is 1..scale where
+   scale is the most favourable. Length and colour encode the same number —
+   redundant on purpose, since colour alone fails on a projector.
+
+   The note column only exists when some item actually carries a note. With
+   no notes the bars span the full width of the slide instead of leaving a
+   dead third column, so they line up with whatever sits above them. #}
+{%- set has_notes = items | selectattr("note") | list | length > 0 %}
+<div style="display:flex; flex-direction:column; gap:16px; margin:40px 0 4px;">
+  {%- for item in items %}
+  {%- set _s = item.score | default(0) %}
+  <div style="display:grid; grid-template-columns:minmax(140px,{% if has_notes %}0.85fr{% else %}210px{% endif %}) {% if has_notes %}minmax(200px,1.6fr) minmax(160px,1.1fr){% else %}1fr{% endif %}; align-items:center; gap:16px;">
+    <p style="font-size:16px; font-weight:600; color:var(--unb-text); margin:0;">{{ item.label }}</p>
+    <div role="img" aria-label="{{ item.label }}: {{ _s }} of {{ scale }}"
+         style="display:flex; gap:5px;">
+      {%- for i in range(1, scale + 1) %}
+      <span style="flex:1; height:16px; border-radius:999px;
+                   background:{% if i <= _s %}{{ _score_color(_s) }}{% else %}var(--unb-border){% endif %};"></span>
+      {%- endfor %}
+    </div>
+    {%- if has_notes %}{% if item.note %}
+    <p style="font-size:12px; color:var(--unb-text-muted); margin:0; line-height:1.4;">{{ item.note|safe }}</p>
+    {%- else %}<span></span>{% endif %}{% endif %}
+  </div>
+  {%- endfor %}
+</div>
+{%- if caption %}<p style="font-size:11px; color:var(--unb-text-dim); margin:10px 0 0; text-align:center;">{{ caption|safe }}</p>{% endif %}
 {%- endmacro -%}
 
 

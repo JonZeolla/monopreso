@@ -1,0 +1,271 @@
+{#- modules/guardrails/control-profile.j2
+    One slide shape, filled in for every control the audience might reach for.
+
+    Context files, hooks, sandboxing, gateways, human
+    review, agent review — each gets the same three bands in the same places,
+    so the slides can be flipped through and compared rather than heard as six
+    consecutive tool pitches. The point is not any single profile: it is that
+    nothing comes out green across the board, and the *shape* of the tradeoff
+    differs per control.
+
+    ── The three bands ─────────────────────────────────────────────
+    1. Name + one line of what it actually is.
+    2. Benefits / Shortcomings — two columns, each item a title plus one
+       sentence. Never a restatement of the bars underneath: the bars score,
+       these explain. Most of this copy is lifted verbatim from slides that
+       already existed elsewhere in the repo (guardrail-decisions.j2 for hooks
+       and agent review, tool-calls.j2 for sandboxing, the coverage() matrix
+       for human review); gateways and the shortcoming halves for sandboxing
+       and human review had no source and are drafted here.
+    3. The six bars, full width, no per-bar notes and no caption, with optional
+       footnotes under them for what a 1-to-4 score cannot carry — where the
+       score is heading, or what it hides. The columns
+       above already said it in words; a third telling would just crowd the
+       slide. With no notes, meter_row drops its note column and the bars span
+       the same width as the two columns above them.
+
+    "Repeatable" is 4 when the control gives the same answer every time it
+    runs. It is the axis that separates a script from a model, and it is why
+    hooks and agent review — similar on every other bar — sit at opposite ends.
+
+    Scoring convention, and the only rule that matters here:
+    **4 is always the favourable end.** Not "high", not "a lot" — favourable.
+    So cheap scores 4 on Cost, and fast feedback scores 4 on Speed. If a bar
+    were ever read as raw magnitude, the whole slide would flip meaning
+    halfway down and the comparison would be worthless.
+
+    Replaces the older control-scorecard.j2, which was bars only.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/control-profile.j2" import
+          context_files, hooks, sandboxing, llm_gateway, human_review,
+          agent_review with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pros_cons,
+    meter_row
+-%}
+
+{%- macro _profile(name, tagline, good, avoid, scores, good_label="Good when", avoid_label="Avoid when", nav="", notes=[]) -%}
+{#- The shared shape. The per-control macros below are data, not markup, so a
+    new control is one dict away and lands in the same layout automatically.
+    The dimension order is fixed for every control — reordering it for one
+    slide would break the flip-through comparison, which is the whole idea. -#}
+{%- call content_slide(nav or name) %}
+  {{ slide_heading("", name, tagline) }}
+  {#- Two beats, one spot. The columns are the slide when it opens; on the next
+      press they are REPLACED in place by the bars. Both blocks share a single
+      grid cell (`.swap-stack`), so the cell is as tall as the columns and
+      nothing else on the slide moves when they trade places. `.swap-stack`,
+      `.swap-out` and `.step` are engine classes (see modules/shared/
+      modern_template.j2), not brand ones. -#}
+  <div class="swap-stack">
+    <div class="swap-out">
+      {{ pros_cons(good, avoid, good_label, avoid_label) }}
+    </div>
+    <div class="step" data-step="profile-bars">
+      {#- Only rendered in the PDF, where this half becomes its own page and
+          would otherwise arrive with no title on it. -#}
+      <div class="print-only">{{ slide_heading("", name, tagline) }}</div>
+      {{ meter_row([
+           {"label": "Setup",         "score": scores.setup},
+           {"label": "Maintenance",   "score": scores.maintenance},
+           {"label": "Cost",          "score": scores.cost},
+           {"label": "Speed",         "score": scores.speed},
+           {"label": "Effectiveness", "score": scores.effectiveness},
+           {"label": "Repeatable",    "score": scores.repeatable},
+         ]) }}
+      {%- if notes %}
+      {#- Footnotes to the bars: the things a 1-to-4 score cannot say. A score
+          is a snapshot; these are where it is heading and what it hides. -#}
+      <ul style="margin:22px 0 0 34px; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px;">
+        {%- for note in notes %}
+        <li style="font-size:15px; line-height:1.5; color:var(--slide-ink-2);">{{ note|safe }}</li>
+        {%- endfor %}
+      </ul>
+      {%- endif %}
+    </div>
+  </div>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro context_files() -%}
+{#- The cheapest thing on the list and the weakest control on the list. Worth
+    saying out loud: a file the model may or may not follow is guidance, not
+    enforcement — which is exactly why it scores well on setup and speed and
+    then bottoms out on effectiveness and repeatability. Cost is 3 rather than
+    4: the file is free, but it spends context-window budget on every single
+    session, which is the tradeoff the degradation slide just made visible.
+
+    Its columns are the long-standing tradeoff list for context files. -#}
+{{ _profile(
+   "Context files",
+   "Rules and conventions the agent reads before it writes",
+   [{"title": "Very little cost",
+     "detail": "Just a markdown file &mdash; though it does add tokens to every session."},
+    {"title": "Version-controlled",
+     "detail": "Reviewed and merged like any other code change."},
+    {"title": "Works everywhere the agent runs",
+     "detail": "One file, picked up by IDE agents, CLI agents, and CI reviewers alike."},
+    {"title": "Reduces variability",
+     "detail": "Across developers and agents &mdash; &ldquo;we do it this way here.&rdquo;"}],
+   [{"title": "Doesn&rsquo;t scale",
+     "detail": "One file per repo &mdash; hundreds of files to update for one policy change."},
+    {"title": "Hard to maintain",
+     "detail": "Projects evolve and files become stale misinformation."},
+    {"title": "Best-effort instructions",
+     "detail": "The agent may downweight or disregard them. No real enforcement."},
+    {"title": "No audit trail",
+     "detail": "No evidence of which rule applied where &mdash; bad for compliance."}],
+   {"setup": 4, "maintenance": 2, "cost": 3, "speed": 4, "effectiveness": 1, "repeatable": 1},
+   good_label="Benefits", avoid_label="Shortcomings",
+   notes=[
+     "More effective as models get smarter and context windows grow.",
+     "Cost starts cheap but can devolve into expensive misinformation.",
+   ]) }}
+{%- endmacro -%}
+
+
+{%- macro hooks() -%}
+{#- Deterministic and blocking, inside the loop, at almost no cost. The catch
+    is scope and authorship: it only binds the agent that honours it, and the
+    languages that do this well are ones almost nobody writes fluently — which
+    is why Setup and Maintenance both score 1. Writing the rule is the hard
+    part, and the rule is never finished.
+
+    The first two shortcomings are lifted from should_you_hooks() in
+    guardrail-decisions.j2; the benefits and the third shortcoming are Jon's. -#}
+{{ _profile(
+   "Hooks",
+   "Deterministic checks on what the agent is about to do",
+   [{"title": "Only adds context when useful",
+     "detail": "If the hook runs and finds nothing, it does not waste any tokens."},
+    {"title": "Static analysis is deterministic",
+     "detail": "Write custom rules for the tools you already own &mdash; Semgrep, Snyk, and the rest."},
+    {"title": "Can evidence a negative",
+     "detail": "You can show that at a point in time, in a given scenario, it absolutely did not have a specific issue."}],
+   [{"title": "Local, so trivially bypassed",
+     "detail": "It runs on a machine you do not control. Never count a hook as your enforcement point."},
+    {"title": "Latency is a hard budget",
+     "detail": "Past a couple of seconds people disable it. A slow hook is a control with a countdown timer."},
+    {"title": "Not flexible, and hard to write",
+     "detail": "The best-equipped languages are very specialised, and even frontier models are bad at writing them. And they have bugs and miss corner cases, like all software."}],
+   {"setup": 1, "maintenance": 1, "cost": 4, "speed": 4, "effectiveness": 3, "repeatable": 4},
+   good_label="Benefits", avoid_label="Shortcomings",
+   nav="Profile: Hooks") }}
+{%- endmacro -%}
+
+
+{%- macro sandboxing() -%}
+{#- The odd one out: it does not judge the change at all, it bounds what the
+    agent can reach while making it. Benefits are lifted from
+    sandboxing_nono() in modules/governance/tool-calls.j2; the shortcomings had
+    no source anywhere in the repo and are drafted here, grounded in that
+    slide's own callout and this deck's NOTES.md. -#}
+{{ _profile(
+   "Sandboxing",
+   "Bounding what the agent can reach, rather than judging what it wrote",
+   [{"title": "Enforced below the agent",
+     "detail": "The kernel, the hypervisor, the platform &mdash; something it cannot talk its way past. Not its own cooperation."},
+    {"title": "Cheap enough to always be on",
+     "detail": "No rules to write and none to maintain. The sandbox nobody turns off is the one that protects you."},
+    {"title": "Deny by default",
+     "detail": "File access, network reach and credentials start at nothing and are granted per task, not per install."}],
+   [{"title": "Slows users down",
+     "detail": "Prompts, denials and re-runs all land on the person. The tighter the box, the more often the work stops to ask."},
+    {"title": "Too tight and it gets removed",
+     "detail": "A sandbox that blocks legitimate work does not get loosened, it gets switched off &mdash; and then you have nothing."},
+    {"title": "Tells you it stopped, not what was wrong",
+     "detail": "A denied call is not a finding. You learn there was a problem, never which one, and there is nothing to hand a reviewer."}],
+   {"setup": 1, "maintenance": 1, "cost": 4, "speed": 4, "effectiveness": 3, "repeatable": 4},
+   good_label="Benefits", avoid_label="Shortcomings") }}
+{%- endmacro -%}
+
+
+{%- macro llm_gateway() -%}
+{#- Expensive to stand up and to run, and the only control here that sees every
+    call regardless of which client made it. That chokepoint is what you are
+    buying; the infrastructure is what you are paying. Both columns are drafted
+    from the per-dimension notes in the retired control-scorecard.j2 (git
+    1b6feb4) — this control had no pros/cons source in the repo. The
+    shortcomings are Jon's: the three ways a gateway fails in practice are
+    coverage, availability and network plumbing, not cost. -#}
+{{ _profile(
+   "Gateways",
+   "Every model call routed through one place you control",
+   [{"title": "Sees every call, whatever made it",
+     "detail": "The one control on this list with no bypass. Logging, redaction and model allowlists apply to every client at once."},
+    {"title": "Decides inline, not after the fact",
+     "detail": "Tens of milliseconds on the request path, so the call is shaped before it happens rather than audited afterwards."},
+    {"title": "One place to change your mind",
+     "detail": "Swap a model, tighten redaction, revoke a provider &mdash; once, for everyone, without touching a repository."}],
+   [{"title": "Every client needs to be configured to use it",
+     "detail": "Miss one IDE, one CI runner, one laptop, and that traffic never reaches the gateway at all."},
+    {"title": "Single point of failure",
+     "detail": "Everything routes through it. When it is down, every agent in the company is down with it."},
+    {"title": "Requires specific network routing",
+     "detail": "Egress rules, proxies and TLS interception all have to agree. That is a network project, not a config change."}],
+   {"setup": 3, "maintenance": 3, "cost": 2, "speed": 3, "effectiveness": 4, "repeatable": 4},
+   good_label="Benefits", avoid_label="Shortcomings") }}
+{%- endmacro -%}
+
+
+{%- macro human_review() -%}
+{#- The control every room already has, and the only one on the list that gets
+    worse as volume goes up — which is the tension the whole talk is about.
+    Both columns are Jon's. Note the hedges are load-bearing: "can catch novel
+    issues" is qualified on experience, and "has more institutional context" is
+    qualified on *today* — the claim is that this advantage is real and
+    shrinking, not that it is permanent. -#}
+{{ _profile(
+   "Human review",
+   "A person reading the change before it lands",
+   [{"title": "Often more cautious",
+     "detail": "A person who is unsure slows down and asks. Nothing else on this list hesitates."},
+    {"title": "Can catch novel issues",
+     "detail": "The failure nobody wrote a rule for and no model had seen &mdash; given a reviewer with the experience to recognise it."},
+    {"title": "Has more institutional context",
+     "detail": "Today. They know what this service is for, who depends on it, and what broke last time."}],
+   [{"title": "Doesn&rsquo;t scale well",
+     "detail": "Capacity does not grow with generated code. It becomes the bottleneck the moment agents start writing."},
+    {"title": "Inconsistent quality",
+     "detail": "Same diff, different verdict &mdash; depending on who is looking and how many they have already read this week."},
+    {"title": "Rubber-stamping is invisible",
+     "detail": "Approval after reading and approval at volume look identical in the record. Nothing distinguishes them afterwards."}],
+   {"setup": 3, "maintenance": 3, "cost": 1, "speed": 1, "effectiveness": 3, "repeatable": 2},
+   good_label="Benefits", avoid_label="Shortcomings") }}
+{%- endmacro -%}
+
+
+{%- macro agent_review() -%}
+{#- Broad coverage, real judgement, and non-deterministic — the profile is
+    almost the inverse of hooks, which is why teams run both.
+    Copy brought over from the "Deterministic + AI" comparison in
+    modules/guardrails/layered-defense.j2, which is where this argument was
+    already made well, and refitted to this slide's title-plus-sentence shape.
+    "Non-deterministic" absorbs the audit consequence that used to be its own
+    row ("Not evidence"), since three items is the shape here. -#}
+{{ _profile(
+   "Agent review",
+   "A second model arguing with the first, on the diff",
+   [{"title": "Reasons about intent and context",
+     "detail": "Reads the diff like a teammate and understands the change, rather than matching it against a pattern."},
+    {"title": "Catches novel issues",
+     "detail": "Finds shapes no rule covers &mdash; including subtle logic flaws nobody thought to write a check for."},
+    {"title": "Suggests fixes",
+     "detail": "Actionable patches, not just flags, and it adapts them to your codebase."}],
+   [{"title": "Non-deterministic",
+     "detail": "The same diff may flag different things on different runs. &ldquo;An agent reviewed it&rdquo; satisfies no auditor."},
+    {"title": "Slower, and costs money",
+     "detail": "LLM compute adds latency to every review and a dollar cost to every pull request."},
+    {"title": "Can hallucinate",
+     "detail": "It may fabricate findings, or miss real ones &mdash; and it will do both fluently."}],
+   {"setup": 4, "maintenance": 3, "cost": 2, "speed": 3, "effectiveness": 3, "repeatable": 2},
+   good_label="Benefits", avoid_label="Shortcomings") }}
+{%- endmacro -%}

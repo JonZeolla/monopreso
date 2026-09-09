@@ -1,0 +1,198 @@
+{# ================================================================
+   AI Governance and Guardrails
+   Cloud Security Alliance (CSA) Birmingham · September 8, 2026
+   Birmingham, AL · 50 minutes · in-person
+
+   Modern-engine orchestration layer. This file chooses the brand and the
+   slide order; it contains no HTML. Every rendered slide comes from a
+   macro under modules/<topic>/ so other decks can reuse it.
+
+   ── Structure (2026-09-07) ──────────────────────────────────────
+   Four parts, in the audience's own words. "Governance" is a word this
+   room already recognises, so the deck uses it rather than teaching a
+   new vocabulary:
+
+     1. What governance is      — make rules, put them in the process,
+                                  see if they are followed
+     2. Good AI rules           — making rules a machine will actually use
+     3. Enforcing them          — putting them in the process
+     4. Seeing when they aren't — detection and observability
+
+   Deliberately NOT in this deck: XACML, PAP/PDP/PIP/PEP, and control-
+   family vocabulary. The reference architecture is real and the macros
+   for it still exist in modules/guardrails/policy-as-code.j2, but naming
+   it here costs the room the thread. See that module's header.
+
+   Part 3 ends with the scorecard flip-through — six controls, five
+   dimensions, one scale — which is the spine of the talk's argument that
+   nothing scores well across the board.
+
+   Part 4 is thinner than parts 1-3 and is known to be; it is the next
+   thing to flesh out.
+
+   50 minutes ≈ 43 of slides + 7 of questions. At 32 slides that is
+   ~80 seconds each. Trim candidates are marked TRIM below.
+
+   Modules that resolve the brand pack themselves are imported WITH CONTEXT
+   — without it `branding` is undefined at load time and the path collapses
+   to modules/branding//primitives.j2. See AGENTS.md.
+   ================================================================ #}
+
+{# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide,
+    section_divider %}
+
+{# ── Shared slides (primitive-native — import with context) ────── #}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
+{%- from "modules/governance/what-is-governance.j2" import
+    what_it_is as governance_what_it_is with context %}
+{%- from "modules/sdlc/lifecycle.j2" import
+    sdlc as lifecycle_with_controls with context %}
+{%- from "modules/governance/policy-statement.j2" import
+    unenforceable as policy_unenforceable with context %}
+{%- from "modules/governance/structured-requirement.j2" import
+    structured          as requirement_structured,
+    encryption_at_rest  as requirement_encryption with context %}
+{%- from "modules/guardrails/control-profile.j2" import
+    context_files as profile_context_files,
+    hooks         as profile_hooks,
+    sandboxing    as profile_sandboxing,
+    llm_gateway   as profile_llm_gateway,
+    human_review  as profile_human_review,
+    agent_review  as profile_agent_review with context %}
+{%- from "modules/verifiers/verifiers.j2" import
+    four_kinds as verifiers_intro,
+    coverage with context %}
+
+{# ── Existing shared slides (vis-* era — no context needed) ────── #}
+{%- from "modules/agents/code-volume.j2"          import
+    ten_years_github     as code_volume_ten_years,
+    late_2025_inflection as code_volume_inflection %}
+{%- from "modules/context/context-files.j2"       import mockup       as context_files_mockup %}
+{%- from "modules/context/context-degradation.j2" import quality_drop as context_degradation_quality_drop %}
+{%- from "modules/guardrails/refined-rules.j2"    import refined_rules %}
+{%- from "modules/hooks/hooks.j2"                 import in_action     as hooks_in_action %}
+{%- from "modules/agents/agent-feedback-loop.j2"  import feedback_loop as agent_feedback_loop %}
+{%- from "modules/guardrails/policy-feedback.j2"  import policy_feedback %}
+{%- from "modules/outro/outro.j2"                 import thank_you %}
+
+
+<!-- ================================================================
+     OPENING
+     Two image beats before any content: the janitor coping, then the
+     janitor not coping. Sets up "this is the job now" without a bio
+     slide, and buys the room a laugh before the volume data.
+     ================================================================ -->
+{{ title_slide("AI Governance and Guardrails",
+               subtitle="Cloud Security Alliance · Birmingham",
+               kicker="Jon Zeolla") }}
+{{ ai_janitor_pair() }}
+{{ code_volume_ten_years() }}
+{{ code_volume_inflection() }}
+
+
+<!-- ================================================================
+     PART 1 — WHAT GOVERNANCE IS
+     The lifecycle everyone half-knows, then the definition: make the
+     rules, enforce the rules, update the rules. Those three phrases are
+     the section dividers for the rest of the deck, so the room always
+     knows which of the three it is currently in.
+     ================================================================ -->
+{# The SDLC / ADLC lifecycle slide was pulled out here — the deck gets to
+   the governance definition faster without it. It still lives in
+   modules/sdlc/lifecycle.j2 if it earns its way back. #}
+{{ governance_what_it_is() }}
+
+
+<!-- ================================================================
+     1 — MAKE THE RULES
+     What the agent is actually working from, and the two failure modes
+     that make most rule files useless: they cost window, and their
+     influence decays as that window fills.
+     ================================================================ -->
+{{ section_divider(1, "Make the rules") }}
+
+{# The rebuilt "Example InfoSec Policy" beat from the 2023/2024 governance
+   talks: three key presses, one failure category each. Sets up why a rule
+   has to be specific before we look at where the agent reads it. #}
+{{ policy_unenforceable() }}
+
+{# Where a rule actually goes so an agent reads it — and the fact that every
+   vendor has its own filename for the same idea. #}
+{{ context_files_mockup() }}
+
+{# The ceiling on all of it: the file costs window, and influence decays as
+   the window fills. #}
+{{ context_degradation_quality_drop() }}
+
+{# The answer to "Example Governance", landed last: same intent, written so a
+   machine can act on it — and scoped, so it is not competing for window
+   everywhere. Three beats — statement, scope, verdicts. #}
+{{ requirement_structured() }}
+
+
+<!-- ================================================================
+     2 — ENFORCE THE RULES
+     The chokepoint, the two mechanisms, then verifiers as the idea that
+     covers all of them, the menu, and the six profiles flipped through
+     so the room compares shapes rather than hearing six tool pitches.
+     "Everything is a tradeoff" is the payoff: nothing scores four across
+     the board.
+     ================================================================ -->
+{{ section_divider(2, "Enforce the rules") }}
+{# "Everything is a tool call" and the "When X, Then Y" mechanism slide both
+   came out here: the scenario slide below carries the same point — a hook
+   fires on a tool call — and shows three real outcomes instead of asserting
+   one. #}
+{{ hooks_in_action() }}
+
+{{ verifiers_intro() }}
+{{ coverage() }}
+
+{# The flip-through. One template, six controls, same three bands in the
+   same places: what it is, two columns of when, then the six bars on one
+   shared scale where four is always the favourable end. #}
+{{ profile_context_files() }}
+{{ profile_hooks() }}
+{{ profile_sandboxing() }}
+{{ profile_llm_gateway() }}
+{{ profile_human_review() }}
+{{ profile_agent_review() }}
+
+
+<!-- ================================================================
+     3 — UPDATE THE RULES
+     The third box, and the one most programs never get to: what the loop
+     tells you about which rules were wrong, and how that gets back into
+     the governance itself.
+     ================================================================ -->
+{{ section_divider(3, "Update the rules") }}
+{# Governance first — the document that has to change — then the loop that
+   tells you what to change, then the whole lifecycle with every control from
+   this talk mapped onto the stage it belongs to. #}
+{{ policy_feedback() }}
+
+{# The same policy, rewritten in the structured form from Part 1 — including
+   the SNS carve-out the previous slide just flagged as a real exception. #}
+{{ requirement_encryption() }}
+
+{# The same §3.4.1 exception, written as a rule in five different engines —
+   lands here because the room has just seen the requirement it enforces. #}
+{{ refined_rules() }}
+{{ agent_feedback_loop() }}
+
+{# The closing picture: the same six stages from the top of the deck, with
+   the controls we spent the hour on hung underneath. Second press lands
+   them all at once. #}
+{{ lifecycle_with_controls() }}
+
+
+<!-- ================================================================
+     CLOSE
+     NOTE: the close is currently just Q&A — "Structure = Speed" was cut
+     and nothing has replaced it yet. Needs a closing beat.
+     ================================================================ -->
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

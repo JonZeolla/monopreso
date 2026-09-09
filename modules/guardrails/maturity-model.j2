@@ -1,0 +1,32 @@
+{#- modules/guardrails/maturity-model.j2
+    The Coding Agents Maturity Model as four named levels.
+
+    Replaces the crawl/walk/run/fly framing, which described how fast the
+    team was moving rather than what it was doing. Steer / Review / Verify /
+    Improve name the work at each level.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/maturity-model.j2" import
+          maturity_overview with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    pipe
+-%}
+
+
+{%- macro maturity_overview() -%}
+{%- call content_slide("Maturity model") %}
+  {{ slide_heading("", "Coding Agents Maturity Model") }}
+  {{ pipe([
+    {"label": "1 &middot; Steer",   "accent": "info"},
+    {"label": "2 &middot; Review",  "accent": "secondary"},
+    {"label": "3 &middot; Verify",  "accent": "primary"},
+    {"label": "4 &middot; Improve", "accent": "success"},
+  ]) }}
+{%- endcall %}
+{%- endmacro -%}

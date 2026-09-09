@@ -1,0 +1,83 @@
+{#- modules/verifiers/self-improvement.j2
+    Verifier Self-Improvement: the closing argument. Verifier output is not
+    just a gate verdict — it is labelled evidence about where the paved road
+    is failing, and feeding it back is what makes the whole system improve.
+
+    Deliberately not framed as a maturity level (no "Level 4", no "Fly"):
+    this deck skips the maturity-model spine, so the close stands on its own.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/verifiers/self-improvement.j2" import
+          verifier_self_improvement, improvement_gates with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid,
+    pipe,
+    callout
+-%}
+
+
+{%- macro verifier_self_improvement() -%}
+{%- call content_slide("Verifier self-improvement") %}
+  {{ slide_heading("",
+                   "Verifier self-improvement",
+                   "Every verifier verdict is a labelled example of what your organisation considers wrong — free training data you are probably discarding.") }}
+  {{ pipe([
+    {"label": "Agent acts",
+     "detail": "Generates code on the paved road it was given",
+     "accent": "info"},
+    {"label": "Verifiers check",
+     "detail": "The ensemble votes — rules, judges, humans",
+     "accent": "warning"},
+    {"label": "Evidence lands",
+     "detail": "What failed, where, how often — recorded, not just blocked",
+     "accent": "danger"},
+    {"label": "Paved road updates",
+     "detail": "Recurring failures become context, rules, and policy",
+     "accent": "secondary"},
+    {"label": "Agent acts",
+     "detail": "With one fewer way to be wrong",
+     "accent": "success"},
+  ]) }}
+  {{ card_grid([
+    {"title": "An unstructured repo forces guessing",
+     "body": "No conventions, no tests, no types. The agent infers house style from whatever file it happened to read, and is wrong at a steady rate.",
+     "accent": "danger"},
+    {"title": "A structured repo answers instead",
+     "body": "Conventions, typed interfaces, fast tests, written architecture. The agent reads the constraint rather than inventing one.",
+     "accent": "info"},
+    {"title": "A failing check is the clearest answer of all",
+     "body": "It states what &ldquo;good&rdquo; means here in a form the agent can act on without asking a human.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("The guardrail is not just the gate. <strong>It is the training
+              signal</strong> — which is why every constraint you write down
+              makes the next attempt faster.", accent="primary") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro improvement_gates() -%}
+{#- The loop changes your rules, so the thresholds for changing them are
+    themselves a control. Left unstated, one annoyed reviewer and one bad
+    run are enough to rewrite how every future agent behaves. -#}
+{%- call content_slide("Improvement gates") %}
+  {{ slide_heading("", "Self-improvement needs its own guardrails") }}
+  {{ card_grid([
+    {"title": "One failure is not a pattern",
+     "body": "It broke for one user, on one model, once. Do you change the rule? Decide that in advance, not while someone is waiting.",
+     "accent": "warning"},
+    {"title": "Name the threshold",
+     "body": "Multiple people? Multiple models? A quarter of runs? Pick the bar that promotes a signal into a rule change, and write it down.",
+     "accent": "info"},
+    {"title": "Data driven decision making",
+     "body": "Change it only when you can measure that it got better. If the new guidance does not move a held-out set of real tasks, it is prose.",
+     "accent": "success"},
+  ], cols=3) }}
+{%- endcall %}
+{%- endmacro -%}

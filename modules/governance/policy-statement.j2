@@ -1,0 +1,92 @@
+{#- modules/governance/policy-statement.j2
+    A real-looking policy statement, marked up live for the things that make
+    it unenforceable.
+
+    Rebuilt from the "Example InfoSec Policy" slide in the 2023 and 2024 "Your
+    Governance Is Broken" talks (modules/governance/governance_intro_simple.html,
+    reveal.js fragments). Same paragraph, same three categories, same speaker
+    beat: read it, agree it sounds fine, then watch it fall apart a colour at
+    a time. The original carried a "— ChatGPT" byline; dropped, because the
+    point is that this reads like every real policy, not that a model wrote it.
+
+    Three key presses, one category each:
+      1. Absolutes      — "all", "every". Nothing is ever all.
+      2. Excessive scope — "or", "and", "the company", "mandatory".
+      3. Undefined terms — "third-party associates". Who?
+
+    ── Why the highlight is a separate element ─────────────────────
+    The engine's `.step` hides with `visibility:hidden`, so putting it on the
+    words themselves would make the text vanish and reappear. Instead each
+    highlight is an absolutely-positioned rectangle BEHIND the word: the
+    sentence is fully readable from the first moment, and only the colour
+    arrives on the press. Every rectangle in a category shares a `data-step`
+    group so the whole category lands on one press.
+
+    ── Contract note ───────────────────────────────────────────────
+    The slide shell uses primitives (`content_slide`, `slide_heading`), but the
+    three highlight colours are inline rgba rather than accent names. There is
+    no highlight primitive, and the whole point is three distinguishable marks
+    on a light document card whose colours must survive a projector. If a
+    `highlight` primitive is ever added, this is its first consumer.
+
+    Import WITH CONTEXT:
+
+      {%- from "modules/governance/policy-statement.j2" import
+          unenforceable with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading
+-%}
+
+{%- set RED    = "rgba(239,68,68,0.38)"  -%}
+{%- set ORANGE = "rgba(249,115,22,0.38)" -%}
+{%- set YELLOW = "rgba(234,179,8,0.42)"  -%}
+
+
+{%- macro _hl(text, colour, group) -%}
+{#- One marked word or phrase. The rectangle is the step; the text is not. -#}
+<span style="position:relative; display:inline-block;"><span class="step" data-step="{{ group }}" style="position:absolute; left:-3px; right:-3px; top:-1px; bottom:-1px; background:{{ colour }}; border-radius:3px;"></span><span style="position:relative;">{{ text }}</span></span>
+{%- endmacro -%}
+
+
+{%- macro _legend(colour, group, label) -%}
+<span class="step" data-step="{{ group }}" style="display:inline-flex; align-items:center; gap:8px;">
+  <span style="width:16px; height:16px; border-radius:4px; background:{{ colour }};"></span>
+  <span>{{ label|safe }}</span>
+</span>
+{%- endmacro -%}
+
+
+{%- macro unenforceable() -%}
+{%- call content_slide("An example policy") %}
+  {{ slide_heading("", "Example Governance") }}
+
+  {#- The document card is deliberately light and serif: it should look like
+      the PDF it came from, not like the rest of the deck. -#}
+  <div style="background:#f6f5f1; color:#1a1a1a; border-radius:10px; padding:32px 40px; max-width:1000px; margin:8px auto 0; box-shadow:0 8px 40px rgba(0,0,0,0.45);">
+    <p style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:#6b7280; margin:0 0 14px 0;">Information Security Policy &middot; v3.4</p>
+    <p style="font-family:Georgia,'Times New Roman',serif; font-size:19px; line-height:2.0; margin:0 0 16px 0;">
+      The scope of this policy extends to {{ _hl("all", RED, "policy-absolute") }} employees, contractors, and
+      {{ _hl("third-party associates", YELLOW, "policy-undefined") }} of FinTech Innovations, Inc. who access, process,
+      {{ _hl("or", ORANGE, "policy-scope") }} store company data. It applies to {{ _hl("all", RED, "policy-absolute") }}
+      forms of data, including electronic and physical formats, and encompasses
+      {{ _hl("all", RED, "policy-absolute") }} systems, networks, applications, {{ _hl("and", ORANGE, "policy-scope") }}
+      devices managed by {{ _hl("the company", ORANGE, "policy-scope") }}.
+    </p>
+    <p style="font-family:Georgia,'Times New Roman',serif; font-size:19px; line-height:2.0; margin:0;">
+      This policy is integral to our overall risk management strategy and is
+      {{ _hl("mandatory", ORANGE, "policy-scope") }} for {{ _hl("all", RED, "policy-absolute") }} personnel to adhere to,
+      ensuring that {{ _hl("every", RED, "policy-absolute") }} individual understands their role in safeguarding the
+      company&rsquo;s information assets.
+    </p>
+  </div>
+
+  <div style="display:flex; justify-content:center; gap:36px; margin-top:22px; font-size:15px; color:var(--slide-ink-2);">
+    {{ _legend(RED,    "policy-absolute",  "<strong>Absolutes</strong> &mdash; nothing is ever <em>all</em>") }}
+    {{ _legend(ORANGE, "policy-scope",     "<strong>Excessive scope</strong> &mdash; unbounded by design") }}
+    {{ _legend(YELLOW, "policy-undefined", "<strong>Undefined terms</strong> &mdash; who, exactly?") }}
+  </div>
+{%- endcall %}
+{%- endmacro -%}

@@ -1,0 +1,47 @@
+{#- modules/agents/running-loops.j2
+    Where agent loops actually run, in practice.
+
+    The rest of the deck argues that loops need verifiers. This slide is the
+    unglamorous other half: something has to fire the loop on a schedule, and
+    the answers people reach for are ordinary infrastructure rather than
+    anything agent-specific. Deliberately a list of real options rather than
+    a recommendation — the point is that the scheduler is a solved problem.
+
+    Kept as a plain grid so entries can be added without reflowing anything.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): no hex
+    colors, no brand class names. Import WITH CONTEXT:
+
+      {%- from "modules/agents/running-loops.j2" import
+          how_i_run_loops with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    card_grid
+-%}
+
+
+{%- macro how_i_run_loops() -%}
+{%- call content_slide("Running loops") %}
+  {{ slide_heading("", "How I run loops today") }}
+  {{ card_grid([
+    {"title": "claude.ai routines",
+     "body": "Scheduled Claude Code runs in the cloud. Nothing of mine has to be awake.",
+     "accent": "primary"},
+    {"title": "Claude Code <code>/schedule</code>",
+     "body": "Cron for the session already in front of me.",
+     "accent": "info"},
+    {"title": "Host cron jobs",
+     "body": "<code>crontab</code> on a machine I already operate. Unfashionable and completely reliable.",
+     "accent": "secondary"},
+    {"title": "EventBridge and Lambda",
+     "body": "Serverless, and event-driven when a schedule is the wrong trigger.",
+     "accent": "warning"},
+    {"title": "Hermes / OpenClaw crons",
+     "body": "Scheduled runs on the Hermes and OpenClaw stack.",
+     "accent": "success"},
+  ], cols=3) }}
+{%- endcall %}
+{%- endmacro -%}

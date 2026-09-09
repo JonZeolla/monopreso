@@ -15,6 +15,9 @@
     tradeoff_triangle %}
 
 {# ── Shared slide content ─────────────────────────────────────── #}
+{%- from "modules/intro/ai-janitor.j2" import
+    janitor as ai_janitor,
+    janitor_hectic as ai_janitor_hectic with context %}
 {%- from "modules/loops/loops.j2" import
     use_cases as loop_use_cases,
     slop_thesis %}
@@ -35,21 +38,10 @@
   </div>
 </section>
 
-<!-- Intro beat 2: AI Janitor -->
-<section class="slide flex items-center justify-center p-8 image-slide" data-label="AI Janitor">
-  <div class="text-center fade-in">
-    <img src="presentations/2026-08-ai-at-work/img/ai_janitor.png" alt="AI Janitor robot tidying a data center"
-         class="mx-auto rounded-xl object-contain" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
-  </div>
-</section>
-
-<!-- Intro beat 3: AI Janitor, hectic -->
-<section class="slide flex items-center justify-center p-8 image-slide" data-label="AI Janitor (hectic)">
-  <div class="text-center fade-in">
-    <img src="presentations/2026-08-ai-at-work/img/ai_janitor_hectic.png" alt="AI Janitor robot, overwhelmed"
-         class="mx-auto rounded-xl object-contain" style="max-height:calc(100vh - 4rem); max-width:calc(100vw - 4rem); width:auto; height:auto;">
-  </div>
-</section>
+<!-- Intro beats 2 and 3: AI Janitor, coping then not.
+     Shared with the CSA Birmingham deck — see modules/intro/ai-janitor.j2 -->
+{{ ai_janitor() }}
+{{ ai_janitor_hectic() }}
 
 <!-- PSA -->
 <section class="slide flex items-center justify-center p-8" data-label="PSA">

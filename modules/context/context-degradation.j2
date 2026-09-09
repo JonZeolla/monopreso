@@ -1,71 +1,92 @@
 {#- modules/context/context-degradation.j2
-    Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
-    valid under branding="sans-cloud". Future work: replace inline markup with
-    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+    Accuracy against how full the context window is.
+
+    Rebuilt from a colour-shaded table into a line chart (Sept 2026). The table
+    made the reader decode a blue heat ramp cell by cell; the whole claim is a
+    SHAPE — every line falls, and none of them recovers — which a table cannot
+    show and a line chart shows instantly.
+
+    X is the context-length bucket, Y is accuracy. Lines stop where the source
+    stops reporting (the table's em-dashes), so a short line means "not tested
+    that far", never "scored zero".
+
+    ── Colour ──────────────────────────────────────────────────────
+    Six-slot categorical palette from the data-viz reference instance, stepped
+    for a dark surface and validated with its checker (lightness band, chroma
+    floor, CVD separation, normal-vision floor, contrast) — all pass. Hues are
+    assigned in fixed order and never cycled.
+
+    ── Known gap ───────────────────────────────────────────────────
+    The source table carried no row labels, so the six series are unnamed and
+    the chart ships without a legend: colour here separates traces, it does not
+    assert an identity we do not have. If the model names turn up, add a legend
+    and direct-label the top and bottom lines.
+
+    Emits its own markup rather than calling primitives — like the other
+    chart-bearing modules in this deck (code-volume.j2, context-window.j2). -#}
+
+{#- Accuracy per context-length bucket. `none` = not reported at that length. -#}
+{%- set BUCKETS = ["0–8K", "8–16K", "16–32K", "32–64K", "64–128K"] -%}
+{%- set SERIES = [
+  {"colour": "#3987e5", "points": [43.0, 26.0, none, none, none]},
+  {"colour": "#d95926", "points": [48.7, 34.0, 16.9, none, none]},
+  {"colour": "#199e70", "points": [53.0, 45.6, 25.8, 22.0, 6.8]},
+  {"colour": "#c98500", "points": [70.9, 60.5, 38.1, 37.2, none]},
+  {"colour": "#d55181", "points": [70.4, 58.1, 28.8, 31.2, 26.4]},
+  {"colour": "#9085e9", "points": [73.5, 58.8, 37.0, 36.7, 29.6]},
+] -%}
+
+{#- Plot geometry. x: 110 → 930 across five buckets (step 205).
+    y: 400 = 0%, 60 = 100%, so y = 400 − 3.4 × value. The axis runs the full
+    0–100% even though nothing reaches 75, because a truncated axis exaggerates
+    a fall — and this fall is dramatic enough without help. -#}
+{%- macro _x(i) -%}{{ 110 + i * 205 }}{%- endmacro -%}
+{%- macro _y(v) -%}{{ (400 - v * 3.4) | round(1) }}{%- endmacro -%}
+
 
 {%- macro quality_drop() -%}
 <section class="vis-slide" data-label="Context Degradation">
-  <div class="vis-label">Why This Matters</div>
   <div class="vis-title">More Context = Worse Performance</div>
-  <div class="vis-subtitle">Semantic Relation Extraction (T2) — accuracy drops dramatically as context length increases.</div>
+  <div class="vis-subtitle">Semantic Relation Extraction (T2). Six models, same benchmark — every one of them falls as the window fills.</div>
   <div style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-    <table style="width:90%; max-width:800px; border-collapse:separate; border-spacing:4px; font-family:'Fira Mono',monospace; font-size:14px; text-align:center;">
-      <thead>
-        <tr>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">0–8K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">8–16K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">16–32K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">32–64K</th>
-          <th style="padding:10px 16px; color:#94a3b8; font-weight:600; font-size:12px;">64–128K</th>
-        </tr>
-      </thead>
-      <tbody style="color:#fff;">
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.55);">43.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.0</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.62);">48.7</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.40);">34.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.18);">16.9</td>
-          <td style="padding:8px; color:#475569;">–</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.68);">53.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.58);">45.6</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">25.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.25);">22.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.07);">6.8</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.92);">70.9</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.78);">60.5</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.48);">38.1</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.2</td>
-          <td style="padding:8px; color:#475569;">–</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.91);">70.4</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.75);">58.1</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.33);">28.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.37);">31.2</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.30);">26.4</td>
-        </tr>
-        <tr>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.95);">73.5</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.76);">58.8</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.47);">37.0</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.46);">36.7</td>
-          <td style="padding:8px; border-radius:6px; background:rgba(59,130,246,0.34);">29.6</td>
-        </tr>
-      </tbody>
-    </table>
-    <p style="font-size:12px; color:#64748b; font-style:italic; margin-top:20px;">
-      <a href="https://arxiv.org/abs/2307.03172" style="color:#64748b;">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024
+    <svg viewBox="0 0 1000 470" preserveAspectRatio="xMidYMid meet" style="width:100%; max-width:1020px; max-height:56vh;"
+         role="img" aria-label="Accuracy against context length for six models. Every model declines as the context window fills: the best falls from 73.5% at 0–8K to 29.6% at 64–128K, and the weakest reaches 6.8%.">
+
+      <!-- Y grid + labels: full 0–100% in steps of 20 -->
+      <g>
+        {%- for v in [0, 20, 40, 60, 80, 100] %}
+        <line x1="110" y1="{{ _y(v) }}" x2="930" y2="{{ _y(v) }}"
+              stroke="var(--slide-rule)" stroke-width="1"{% if v > 0 %} stroke-dasharray="3 5"{% endif %}/>
+        <text x="94" y="{{ (400 - v * 3.4 + 4) | round(1) }}" text-anchor="end"
+              font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14" fill="var(--slide-ink-2)">{{ v }}%</text>
+        {%- endfor %}
+      </g>
+
+      <!-- X labels: how full the window is -->
+      <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="15" fill="var(--slide-ink)" text-anchor="middle">
+        {%- for b in BUCKETS %}
+        <text x="{{ _x(loop.index0) }}" y="432">{{ b }}</text>
+        {%- endfor %}
+      </g>
+      <text x="520" y="462" text-anchor="middle" font-size="14" fill="var(--slide-ink-3)">Context length</text>
+      <text x="34" y="230" text-anchor="middle" font-size="14" fill="var(--slide-ink-3)" transform="rotate(-90 34 230)">Accuracy</text>
+
+      <!-- One polyline per model, stopping where the source stops reporting -->
+      {%- for s in SERIES %}
+      {%- set pts = [] -%}
+      {%- for v in s.points %}{% if v is not none %}{% set _ = pts.append(_x(loop.index0) ~ "," ~ _y(v)) %}{% endif %}{% endfor %}
+      <polyline fill="none" stroke="{{ s.colour }}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"
+                points="{{ pts | join(' ') }}"/>
+      {%- for v in s.points %}{% if v is not none %}
+      <circle cx="{{ _x(loop.index0) }}" cy="{{ _y(v) }}" r="5" fill="{{ s.colour }}" stroke="#0f172a" stroke-width="2"/>
+      {%- endif %}{% endfor %}
+      {%- endfor %}
+    </svg>
+
+    <p style="font-size:13px; color:var(--slide-ink-3); font-style:italic; margin-top:14px;">
+      A line that stops early was not tested at that length &mdash; it did not score zero.
+      &nbsp;&middot;&nbsp;
+      <a href="https://arxiv.org/abs/2307.03172" style="color:var(--slide-ink-3);">Lost in the Middle: How Language Models Use Long Contexts</a>, Liu et al., ACL 2024
     </p>
   </div>
 </section>
