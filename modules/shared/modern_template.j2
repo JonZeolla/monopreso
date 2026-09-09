@@ -289,7 +289,12 @@
         /* Print / PDF export styles */
         @media print {
             @page {
-                size: landscape;
+                /* A real 16:9 page, not letter-landscape. Slides are authored
+                   against a 1920x1080 viewport; printing them onto an 11x8.5in
+                   sheet (~1056px wide) is a 45% squeeze, which clipped the
+                   wider slides off both edges. Matching the page to the
+                   authoring viewport makes the PDF a true copy of the deck. */
+                size: 1920px 1080px;
                 margin: 0;
             }
             html, body {
@@ -366,6 +371,10 @@
             /* Every beat of a focus sequence prints at full strength. */
             .focus-step { opacity: 1 !important; }
             .theme-toggle { display: none !important; }
+            /* Autofit scales to the SCREEN viewport, which is not the print
+               box — a slide sized to fill 1920x1080 overflows the page and
+               gets clipped. Print at the authored size instead. */
+            .scroll-container > section > * { zoom: 1 !important; }
             /* Light mode prints on white, not on the dark deck background. */
             body.light-mode { background: #ffffff !important; }
             /* Ensure gradient text prints */
