@@ -73,7 +73,10 @@
 } -%}
 
 
-{%- macro sdlc() -%}
+{%- macro sdlc(exclude=[]) -%}
+{#- `exclude`: control names to leave off the picture, for a deck that does
+    not cover them (DevCon 2026 drops "Sandboxing"). Matched exactly against
+    the entries in AGENTIC. -#}
 {#- ONE slide with an in-place reveal. The six stage cards are there from the
     start; the control family under each lands together on the next key press
     and nothing else on the slide moves.
@@ -95,9 +98,10 @@
 {%- call content_slide("Lifecycle with controls") %}
   {%- set staged = [] %}
   {%- for st in STAGES %}
+    {%- set kept = AGENTIC[st.label].split("<br>") | reject("in", exclude) | list %}
     {%- set _ = staged.append({
       "label":  st.label,
-      "below":  AGENTIC[st.label],
+      "below":  kept | join("<br>"),
       "accent": st.accent,
     }) %}
   {%- endfor %}

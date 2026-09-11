@@ -8,15 +8,16 @@
    See AGENTS.md for the primitive contract.
 
    ── Structure ───────────────────────────────────────────────────
-   Same spine as the CSA Birmingham governance deck — make the rules,
-   enforce the rules, update the rules — reframed as a production line
-   for a developer audience at large, regulated companies. The opening
-   tension is "great... in theory": the whiteboard factory vs. the
-   auditor, the regulator, and three platform teams. The close is the
-   compounding argument: structure is speed.
+   This is the CSA Birmingham governance deck
+   (2026-09-csa-birmingham-ai-governance) with two changes:
 
-   First cut, planned against 45 minutes (~30 content slides). See
-   IDEAS.md for the run of show and the three slides still to write.
+     - the abstract's first line as a statement slide after the title
+     - the SkillOpt "Context and Skills" slide added to Part 1, to
+       deliver the abstract's "how do you measure if they're even
+       working?" line
+
+   Same three parts: make the rules, enforce the rules, update the
+   rules. See that deck's NOTES.md for the reasoning behind each cut.
 
    Modules that resolve the brand pack themselves are imported WITH
    CONTEXT — without it `branding` is undefined at load time and the
@@ -42,19 +43,17 @@
 {%- from "modules/governance/structured-requirement.j2" import
     structured          as requirement_structured,
     encryption_at_rest  as requirement_encryption with context %}
+{%- from "modules/context/skill-optimization.j2" import
+    context_and_skills as skillopt_context_and_skills with context %}
 {%- from "modules/guardrails/control-profile.j2" import
     context_files as profile_context_files,
     hooks         as profile_hooks,
-    sandboxing    as profile_sandboxing,
     llm_gateway   as profile_llm_gateway,
     human_review  as profile_human_review,
     agent_review  as profile_agent_review with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     four_kinds as verifiers_intro,
     coverage with context %}
-{%- from "modules/guardrails/structure-enables-speed.j2" import
-    structure_is_speed,
-    the_loop as structure_the_loop with context %}
 
 {# ── Existing shared slides (vis-* era — no context needed) ────── #}
 {%- from "modules/agents/code-volume.j2"          import
@@ -75,7 +74,7 @@
      then the volume data: output grew 11× and the reviewer pool did not.
      ================================================================ -->
 {{ title_slide("Building a Software Factory",
-               subtitle="DevCon",
+               subtitle="DevCon · Pittsburgh",
                kicker="Jon Zeolla") }}
 {{ statement([
      {"text": "Software factories are great",  "muted": false},
@@ -87,33 +86,39 @@
 
 
 <!-- ================================================================
-     WHAT A FACTORY ACTUALLY IS
-     The three boxes: make the rules, put them in the process, see if
-     they are followed. These are the section dividers for the rest of
-     the deck, so the room always knows which loop it is in.
+     WHAT GOVERNANCE IS
+     Make the rules, put them in the process, see if they are followed.
+     These three phrases are the section dividers for the rest of the
+     deck, so the room always knows which of the three it is in.
      ================================================================ -->
 {{ governance_what_it_is() }}
 
 
 <!-- ================================================================
      1 — MAKE THE RULES
-     The spec has to be written where the machine reads it, and it has
-     to be specific enough to act on. Two ceilings: rules cost window,
-     and their influence decays as the window fills.
+     What the agent is actually working from, the two failure modes
+     that make most rule files useless (they cost window, and their
+     influence decays as it fills), how to measure a change to them,
+     and the structured requirement as the answer.
      ================================================================ -->
 {{ section_divider(1, "Make the rules") }}
 {{ policy_unenforceable() }}
 {{ context_files_mockup() }}
 {{ context_degradation_quality_drop() }}
+
+{# New for DevCon: how do you know a change to your context helped?
+   Bounded edits plus a held-out gate descend validation error; ad hoc
+   edits jump to a suboptimal skill. #}
+{{ skillopt_context_and_skills() }}
+
 {{ requirement_structured() }}
-{# TODO "Compliance is a tolerance" bridge slide — see IDEAS.md #}
 
 
 <!-- ================================================================
      2 — ENFORCE THE RULES
-     The station where a defect is cheapest to catch. Hooks in action,
-     verifiers, coverage, then the six profiles on one scale. Payoff:
-     nothing scores four across the board, so pick stations on purpose.
+     The chokepoint, the two mechanisms, verifiers as the idea that
+     covers all of them, then the six profiles flipped through so the
+     room compares shapes rather than hearing six tool pitches.
      ================================================================ -->
 {{ section_divider(2, "Enforce the rules") }}
 {{ hooks_in_action() }}
@@ -121,34 +126,25 @@
 {{ coverage() }}
 {{ profile_context_files() }}
 {{ profile_hooks() }}
-{{ profile_sandboxing() }}
 {{ profile_llm_gateway() }}
 {{ profile_human_review() }}
 {{ profile_agent_review() }}
-{# TODO "Evidence for the auditor" slide — the abstract promises it and
-   nothing in the repo shows it yet. See IDEAS.md. #}
 
 
 <!-- ================================================================
      3 — UPDATE THE RULES
-     The defect data feeding back into the next revision of the line.
-     Policy first, then the rewritten requirement, the rule in five
-     engines, the agent loop, and the lifecycle with every control from
-     the talk hung under its stage.
+     What the loop tells you about which rules were wrong, and how that
+     gets back into the governance itself.
      ================================================================ -->
 {{ section_divider(3, "Update the rules") }}
 {{ policy_feedback() }}
 {{ requirement_encryption() }}
 {{ refined_rules() }}
 {{ agent_feedback_loop() }}
-{{ lifecycle_with_controls() }}
+{{ lifecycle_with_controls(exclude=["Sandboxing"]) }}
 
 
 <!-- ================================================================
-     CLOSE — STRUCTURE IS SPEED
-     The claim most people resist, landed last: every constraint written
-     down is a decision the agent no longer has to make wrong.
+     CLOSE
      ================================================================ -->
-{{ structure_is_speed() }}
-{{ structure_the_loop() }}
 {{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
