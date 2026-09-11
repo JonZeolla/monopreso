@@ -3,10 +3,9 @@
 - **Event:** DevCon
 - **Date:** October 13, 2026
 - **Location:** BNY Offices, Pittsburgh, PA
-- **Duration:** TODO
-- **Format:** TODO (in-person / virtual / hybrid)
-- **Audience:** TODO — assumed developers and platform engineers at large,
-  regulated companies, with a few security and compliance people in the room
+- **Duration:** 60 minutes
+- **Format:** in-person
+- **Audience:** developers at BNY DevCon
 
 ## Narrative
 
