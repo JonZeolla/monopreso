@@ -1,0 +1,105 @@
+{# ================================================================
+   Agent Security
+   BNY Cyber Spark · October 23, 2026
+   Virtual · 30 minutes
+
+   Modern-engine orchestration layer. This file chooses the brand and the
+   slide order; it contains no HTML. Every rendered slide comes from a
+   macro under modules/<topic>/ so other decks can reuse it.
+
+   Framing: how do we apply our controls in an agent-first ecosystem?
+
+   Structure:
+     Open        — title, About, the janitor beats, code volume
+     1. Identity — OAuth 2.1, AAuth (and what it adds), DPoP, A2A trust, EMA
+     2. Verifiers — the four kinds, and how they compare
+     3. Classifiers and clustering — applied to agent activity
+     Close
+
+   Opening comes from 2026-09-csa-birmingham-ai-governance. Policy-as-code,
+   context engineering, vuln management and least privilege are deliberately
+   out of this talk.
+
+   Modules that resolve the brand pack themselves are imported WITH CONTEXT
+   — without it `branding` is undefined at load time. See AGENTS.md.
+   ================================================================ #}
+
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide,
+    section_divider %}
+
+{%- from "modules/intro/about-speaker.j2" import about as about_speaker with context %}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
+{%- from "modules/identity/oauth-21.j2" import
+    baseline as oauth21_baseline,
+    gaps_for_agents as oauth21_gaps with context %}
+{%- from "modules/identity/aauth.j2" import
+    what_it_is as aauth_what,
+    versus_oauth as aauth_versus_oauth,
+    access_modes as aauth_modes with context %}
+{%- from "modules/identity/dpop.j2" import
+    how_it_works as dpop_how,
+    what_it_refuses as dpop_refuses with context %}
+{%- from "modules/identity/a2a-trust.j2" import
+    agent_cards as a2a_cards,
+    three_identities as a2a_identities,
+    rogue_card as a2a_rogue with context %}
+{%- from "modules/identity/ema.j2" import
+    problem as ema_problem,
+    id_jag_flow as ema_flow with context %}
+{%- from "modules/verifiers/verifiers.j2" import
+    four_kinds as verifiers_intro,
+    coverage as verifiers_coverage with context %}
+{%- from "modules/verifiers/classifiers.j2" import
+    classify_actions,
+    cluster_activity,
+    apply_to_agents with context %}
+{%- from "modules/agents/code-volume.j2" import
+    ten_years_github     as code_volume_ten_years,
+    late_2025_inflection as code_volume_inflection %}
+{%- from "modules/outro/outro.j2" import thank_you %}
+
+
+<!-- OPENING -->
+{{ title_slide("Agent Security",
+               subtitle="BNY Cyber Spark",
+               kicker="Jon Zeolla") }}
+{{ about_speaker() }}
+{{ ai_janitor_pair() }}
+{{ code_volume_ten_years() }}
+{{ code_volume_inflection() }}
+
+
+<!-- 1 — IDENTITY -->
+{{ section_divider(1, "Identity", "Who is acting, and how do we know") }}
+{{ oauth21_baseline() }}
+{{ oauth21_gaps() }}
+{{ aauth_what() }}
+{{ aauth_versus_oauth() }}
+{{ aauth_modes() }}
+{{ dpop_how() }}
+{{ dpop_refuses() }}
+{{ a2a_cards() }}
+{{ a2a_identities() }}
+{{ a2a_rogue() }}
+{{ ema_problem() }}
+{{ ema_flow() }}
+
+
+<!-- 2 — VERIFIERS -->
+{{ section_divider(2, "Verifiers", "Checking what agents do") }}
+{{ verifiers_intro() }}
+{{ verifiers_coverage() }}
+
+
+<!-- 3 — CLASSIFIERS AND CLUSTERING -->
+{{ section_divider(3, "Classifiers and clustering", "Seeing patterns in agent activity") }}
+{{ classify_actions() }}
+{{ cluster_activity() }}
+{{ apply_to_agents() }}
+
+
+<!-- CLOSE -->
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

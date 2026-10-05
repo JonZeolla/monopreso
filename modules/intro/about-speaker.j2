@@ -1,0 +1,31 @@
+{# ================================================================
+   About the speaker — one slide: who is talking and what they build.
+
+   Primitive-native. Imports the brand pack itself, so whatever
+   imports this module must do so WITH CONTEXT. See AGENTS.md.
+   ================================================================ #}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading, card_grid, pill_row %}
+
+{%- macro about() -%}
+{%- call content_slide("About") %}
+{{ slide_heading("", "Jon Zeolla",
+                 "I build governance-first software factories") }}
+{{ card_grid([
+    {"title": "Self-improving software",
+     "body": "Systems that learn from their own findings and tighten their own rules.",
+     "accent": "primary"},
+    {"title": "Verifiers",
+     "body": "Checks that confirm an agent's work instead of trusting it.",
+     "accent": "success"},
+    {"title": "Harness integrations",
+     "body": "Hooks and feedback loops that put those checks inside the agent's own loop.",
+     "accent": "info"},
+], cols=3, size="lg") }}
+{{ pill_row([
+    {"label": "Founder, AI startup", "accent": "primary"},
+    {"label": "Agentic AI Foundation Ambassador", "accent": "secondary"},
+    {"label": "SANS Instructor", "accent": "neutral"},
+]) }}
+{%- endcall %}
+{%- endmacro -%}

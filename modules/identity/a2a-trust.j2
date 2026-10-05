@@ -1,0 +1,69 @@
+{#- modules/identity/a2a-trust.j2
+    Sources: Zenable lab a2a-agent-interop.mdx (A2A protocol 1.0); RFC 8693 for token exchange.
+    Import WITH CONTEXT.
+      {%- from "modules/identity/a2a-trust.j2" import agent_cards, three_identities, rogue_card with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading, card_grid, numbered_steps, callout
+-%}
+
+{%- macro agent_cards() -%}
+{%- call content_slide("A2A agent cards") %}
+  {{ slide_heading("", "The agent card is how a stranger finds you",
+                   "Published at <code>/.well-known/agent-card.json</code>. A2A leaves identity to your IdP.") }}
+  {{ card_grid([
+    {"title": "supportedInterfaces",
+     "body": "URL, transport, and protocol version. A list, not one endpoint.",
+     "accent": "info"},
+    {"title": "securitySchemes",
+     "body": "Which authentication the agent accepts: OAuth 2, OIDC, mTLS, and so on.",
+     "accent": "primary"},
+    {"title": "Per-skill securityRequirements",
+     "body": "The scope each skill needs. Reading is not rewriting.",
+     "accent": "success"},
+    {"title": "JWS signatures",
+     "body": "The card is signed. A client verifies against a key it already trusts.",
+     "accent": "warning"},
+  ], cols=2) }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro three_identities() -%}
+{%- call content_slide("Three identities") %}
+  {{ slide_heading("", "Three identities that get collapsed into one") }}
+  {{ numbered_steps([
+    {"title": "The calling agent",
+     "detail": "A workload with a service account. No human, no browser.",
+     "accent": "primary"},
+    {"title": "The end user it acts for",
+     "detail": "Their permissions should bound the work. Use OAuth token exchange (RFC 8693).",
+     "accent": "info"},
+    {"title": "The operator or tenant",
+     "detail": "The organization whose policy applies.",
+     "accent": "warning"},
+  ]) }}
+  {{ callout("Collapse them and the audit log says &ldquo;agent-b did it&rdquo; for every user, forever.", accent="danger") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro rogue_card() -%}
+{%- call content_slide("The rogue card") %}
+  {{ slide_heading("", "A copied card steals real tokens",
+                   "The rogue copies the real card verbatim, security block included, and points it at itself.") }}
+  {{ card_grid([
+    {"title": "The attack",
+     "body": "A client that obeys the card sends its credential to whoever the card names.",
+     "accent": "danger"},
+    {"title": "The fix",
+     "body": "Pin the key you trust. Never follow the key the card names.",
+     "accent": "success"},
+    {"title": "The check people skip",
+     "body": "Audience. Without it, every agent accepts every other agent&rsquo;s token.",
+     "accent": "warning"},
+  ], cols=3) }}
+  {{ callout("An unsigned card is an <strong>instruction from a stranger</strong>.", accent="warning") }}
+{%- endcall %}
+{%- endmacro -%}

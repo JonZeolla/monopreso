@@ -1,0 +1,54 @@
+{#- modules/identity/oauth-21.j2
+    Sources: draft-ietf-oauth-v2-1 (an IETF DRAFT, not yet a standard) for the baseline;
+    gaps framing from the Zenable labs (mcp-authorization-101, aauth-agent-authorization).
+    Primitive-native: import WITH CONTEXT.
+      {%- from "modules/identity/oauth-21.j2" import baseline, gaps_for_agents with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading, card_grid, callout
+-%}
+
+{%- macro baseline() -%}
+{%- call content_slide("OAuth 2.1 baseline") %}
+  {{ slide_heading("", "What OAuth 2.1 consolidates",
+                   "A draft that folds a decade of security guidance into the core spec.") }}
+  {{ card_grid([
+    {"title": "PKCE for every code flow",
+     "body": "Required for all authorization-code grants, not just public clients.",
+     "accent": "primary"},
+    {"title": "Risky grants removed",
+     "body": "Implicit and resource-owner password grants are gone.",
+     "accent": "danger"},
+    {"title": "Stricter redirects and transport",
+     "body": "Exact redirect-URI matching. Bearer tokens never in query strings.",
+     "accent": "info"},
+    {"title": "Safer refresh tokens",
+     "body": "Public clients get rotation or sender-constraint.",
+     "accent": "success"},
+  ], cols=2) }}
+  {{ callout("Still a draft. It is best practice written down, not a new trust model.", accent="neutral") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro gaps_for_agents() -%}
+{%- call content_slide("OAuth 2.1 gaps") %}
+  {{ slide_heading("", "What it still leaves for agents",
+                   "Hardened for human-driven apps. Four assumptions break when the caller is an agent.") }}
+  {{ card_grid([
+    {"title": "Bearer tokens are still replayable",
+     "body": "Whoever holds the bytes wins. Logs, crash dumps, and proxies all hold copies.",
+     "accent": "danger"},
+    {"title": "Clients must be pre-registered",
+     "body": "A new agent meeting a new service has no registration to lean on.",
+     "accent": "warning"},
+    {"title": "Consent assumes a human at a browser",
+     "body": "Headless agents have nobody to click the screen.",
+     "accent": "info"},
+    {"title": "No per-call attribution",
+     "body": "The token names a client, not which agent acted on which call.",
+     "accent": "secondary"},
+  ], cols=2) }}
+{%- endcall %}
+{%- endmacro -%}

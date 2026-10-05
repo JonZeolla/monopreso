@@ -121,10 +121,11 @@ Topic directories currently in use:
 | Hooks | `modules/hooks/` | `hooks.j2` |
 | Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `refined-rules.j2`, `policy-feedback.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`†, `maturity-model.j2`†, `control-scorecard.j2`† |
 | Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
-| Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`† |
+| Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`†, `classifiers.j2`† |
+| Agent identity | `modules/identity/` | `oauth-21.j2`†, `aauth.j2`†, `dpop.j2`†, `a2a-trust.j2`†, `ema.j2`† |
 | Agent governance | `modules/governance/` | `tool-calls.j2`†, `what-is-governance.j2`† (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
-| Intro | `modules/intro/` | `ai-janitor.j2`† |
+| Intro | `modules/intro/` | `ai-janitor.j2`†, `about-speaker.j2`† |
 | Outro | `modules/outro/` | `outro.j2` |
 
 

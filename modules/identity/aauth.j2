@@ -1,0 +1,91 @@
+{#- modules/identity/aauth.j2
+    Sources: Zenable lab aauth-agent-authorization.mdx; IETF Internet-Draft
+    draft-hardt-oauth-aauth-protocol (Dick Hardt) -- a LIVE PROPOSAL, not a standard.
+    The OAuth 2.1 column is the draft-ietf-oauth-v2-1 baseline. Import WITH CONTEXT.
+      {%- from "modules/identity/aauth.j2" import what_it_is, versus_oauth, access_modes with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading, card_grid, matrix, pipe, callout
+-%}
+
+{%- macro what_it_is() -%}
+{%- call content_slide("What AAuth is") %}
+  {{ slide_heading("", "AAuth: a signature instead of a key",
+                   "An IETF Internet-Draft by Dick Hardt. A live proposal, not a standard.") }}
+  {{ card_grid([
+    {"title": "The agent holds a private key",
+     "body": "The public half is published at a URL the agent controls. Publishing it is the enrollment.",
+     "accent": "primary"},
+    {"title": "Every request is signed",
+     "body": "The signature covers method, target, and selected headers. No shared secret on the wire.",
+     "accent": "info"},
+    {"title": "A person is added only when needed",
+     "body": "A Person Server vouches for who the agent acts for and collects consent.",
+     "accent": "success"},
+  ], cols=3) }}
+  {{ callout("A signature answers <strong>who is calling</strong>. Whether they may do it is a separate question.", accent="warning") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro versus_oauth() -%}
+{%- call content_slide("AAuth versus OAuth 2.1") %}
+  {{ slide_heading("", "What AAuth does that OAuth 2.1 does not") }}
+  {{ matrix(
+       headers=[
+         {"label": "OAuth 2.1", "sub": "draft"},
+         {"label": "AAuth",     "sub": "proposal"},
+       ],
+       rows=[
+         {"label": "Caller identity",
+          "cells": [
+            {"level": "partial", "text": "a registered client"},
+            {"level": "strong",  "text": "the agent itself"},
+          ]},
+         {"label": "Credential on the wire",
+          "cells": [
+            {"level": "weak",   "text": "bearer token"},
+            {"level": "strong", "text": "a per-request signature"},
+          ]},
+         {"label": "Registration",
+          "cells": [
+            {"level": "weak",   "text": "pre-registered client"},
+            {"level": "strong", "text": "publish a key, no registration"},
+          ]},
+         {"label": "Per-request binding",
+          "cells": [
+            {"level": "weak",   "text": "none by default"},
+            {"level": "strong", "text": "method and target signed"},
+          ]},
+         {"label": "Authorization timing",
+          "cells": [
+            {"level": "partial", "text": "consent up front"},
+            {"level": "strong",  "text": "in the moment, even per call"},
+          ]},
+         {"label": "Hand-off between parties",
+          "cells": [
+            {"level": "partial", "text": "separate trust per server"},
+            {"level": "strong",  "text": "across orgs via Access Server"},
+          ]},
+       ],
+       caption="● strong &nbsp;·&nbsp; ◐ partial &nbsp;·&nbsp; ○ weak") }}
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro access_modes() -%}
+{%- call content_slide("AAuth access modes") %}
+  {{ slide_heading("", "Six modes, each adding one party",
+                   "Adopt them incrementally. The first needs only a keypair.") }}
+  {{ pipe([
+    {"label": "Identity Based",       "detail": "Replaces an API key",                  "accent": "info"},
+    {"label": "Resource Managed",     "detail": "Resource&rsquo;s own session token",   "accent": "primary"},
+    {"label": "Person Identity",      "detail": "Who the agent acts for",               "accent": "secondary"},
+    {"label": "Person Server Managed","detail": "Person&rsquo;s side decides access",   "accent": "warning"},
+    {"label": "Federated",            "detail": "Access Server across orgs",            "accent": "danger"},
+    {"label": "Per-Call",             "detail": "Consent to one call&rsquo;s parameters","accent": "success"},
+  ]) }}
+  {{ callout("Per-call is the newest layer, so expect its details to move the most.", accent="neutral") }}
+{%- endcall %}
+{%- endmacro -%}
