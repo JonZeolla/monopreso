@@ -11,8 +11,7 @@
 
 {%- macro what_it_is() -%}
 {%- call content_slide("What AAuth is") %}
-  {{ slide_heading("", "AAuth: a signature instead of a key",
-                   "An IETF Internet-Draft by Dick Hardt. A live proposal, not a standard.") }}
+  {{ slide_heading("", "AAuth: a signature instead of a key") }}
   {{ card_grid([
     {"title": "The agent holds a private key",
      "body": "The public half is published at a URL the agent controls. Publishing it is the enrollment.",
@@ -50,7 +49,7 @@
           ]},
          {"label": "Registration",
           "cells": [
-            {"level": "weak",   "text": "pre-registered client"},
+            {"level": "weak",   "text": "pre-registered or DCR"},
             {"level": "strong", "text": "publish a key, no registration"},
           ]},
          {"label": "Per-request binding",
@@ -75,17 +74,18 @@
 
 
 {%- macro access_modes() -%}
-{%- call content_slide("AAuth access modes") %}
-  {{ slide_heading("", "Six modes, each adding one party",
-                   "Adopt them incrementally. The first needs only a keypair.") }}
-  {{ pipe([
-    {"label": "Identity Based",       "detail": "Replaces an API key",                  "accent": "info"},
-    {"label": "Resource Managed",     "detail": "Resource&rsquo;s own session token",   "accent": "primary"},
-    {"label": "Person Identity",      "detail": "Who the agent acts for",               "accent": "secondary"},
-    {"label": "Person Server Managed","detail": "Person&rsquo;s side decides access",   "accent": "warning"},
-    {"label": "Federated",            "detail": "Access Server across orgs",            "accent": "danger"},
-    {"label": "Per-Call",             "detail": "Consent to one call&rsquo;s parameters","accent": "success"},
-  ]) }}
-  {{ callout("Per-call is the newest layer, so expect its details to move the most.", accent="neutral") }}
+{%- call content_slide("AAuth use cases") %}
+  {{ slide_heading("", "AAuth use cases") }}
+  {#- Six modes, each adding one capability to the one before it (aauth.dev).
+      Identity Based and Person Identity differ in WHO the resource learns
+      about: the agent, or the person the agent acts for. -#}
+  {{ card_grid([
+    {"title": "Which agent is calling",       "body": "", "accent": "neutral"},
+    {"title": "Resource-issued session",      "body": "", "accent": "neutral"},
+    {"title": "Which person it acts for",     "body": "", "accent": "neutral"},
+    {"title": "Person Server decides access", "body": "", "accent": "neutral"},
+    {"title": "Federated across orgs",        "body": "", "accent": "neutral"},
+    {"title": "Consent per call",             "body": "", "accent": "neutral"},
+  ], cols=3, size="lg") }}
 {%- endcall %}
 {%- endmacro -%}

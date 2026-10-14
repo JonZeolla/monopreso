@@ -13,7 +13,6 @@
      Open        — title, About, the janitor beats, code volume
      1. Identity — OAuth 2.1, AAuth (and what it adds), DPoP, A2A trust, EMA
      2. Verifiers — the four kinds, and how they compare
-     3. Classifiers and clustering — applied to agent activity
      Close
 
    Opening comes from 2026-09-csa-birmingham-ai-governance. Policy-as-code,
@@ -27,9 +26,12 @@
 {%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
     title_slide,
-    section_divider %}
+    statement %}
 
-{%- from "modules/intro/about-speaker.j2" import about as about_speaker with context %}
+{%- from "modules/intro/about-speaker.j2" import
+    profile as about_profile,
+    activity as about_activity with context %}
+{%- from "modules/intro/mission.j2" import venn as mission_venn with context %}
 {%- from "modules/intro/ai-janitor.j2" import
     both as ai_janitor_pair with context %}
 {%- from "modules/identity/oauth-21.j2" import
@@ -52,10 +54,6 @@
 {%- from "modules/verifiers/verifiers.j2" import
     four_kinds as verifiers_intro,
     coverage as verifiers_coverage with context %}
-{%- from "modules/verifiers/classifiers.j2" import
-    classify_actions,
-    cluster_activity,
-    apply_to_agents with context %}
 {%- from "modules/agents/code-volume.j2" import
     ten_years_github     as code_volume_ten_years,
     late_2025_inflection as code_volume_inflection %}
@@ -66,14 +64,16 @@
 {{ title_slide("Agent Security",
                subtitle="BNY Cyber Spark",
                kicker="Jon Zeolla") }}
-{{ about_speaker() }}
+{{ about_profile() }}
+{{ about_activity() }}
+{{ mission_venn() }}
 {{ ai_janitor_pair() }}
 {{ code_volume_ten_years() }}
 {{ code_volume_inflection() }}
 
 
 <!-- 1 — IDENTITY -->
-{{ section_divider(1, "Identity", "Who is acting, and how do we know") }}
+{{ statement([{"text": "Let&rsquo;s talk Agent Identity"}]) }}
 {{ oauth21_baseline() }}
 {{ oauth21_gaps() }}
 {{ aauth_what() }}
@@ -89,16 +89,9 @@
 
 
 <!-- 2 — VERIFIERS -->
-{{ section_divider(2, "Verifiers", "Checking what agents do") }}
+{{ statement([{"text": "Verifiers"}]) }}
 {{ verifiers_intro() }}
 {{ verifiers_coverage() }}
-
-
-<!-- 3 — CLASSIFIERS AND CLUSTERING -->
-{{ section_divider(3, "Classifiers and clustering", "Seeing patterns in agent activity") }}
-{{ classify_actions() }}
-{{ cluster_activity() }}
-{{ apply_to_agents() }}
 
 
 <!-- CLOSE -->

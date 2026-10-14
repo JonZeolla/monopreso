@@ -11,8 +11,7 @@
 
 {%- macro problem() -%}
 {%- call content_slide("Per-server OAuth") %}
-  {{ slide_heading("", "Why per-server OAuth breaks in an enterprise",
-                   "Every developer authenticates and consents at every MCP server.") }}
+  {{ slide_heading("", "Why per-server OAuth breaks in an enterprise") }}
   {{ numbered_steps([
     {"title": "The user is the policy decision point",
      "detail": "The consent screen asks the developer, not your admins.", "accent": "danger"},
@@ -29,8 +28,7 @@
 
 {%- macro id_jag_flow() -%}
 {%- call content_slide("Enterprise-Managed Authorization") %}
-  {{ slide_heading("", "Enterprise-Managed Authorization",
-                   "The admin&rsquo;s IdP makes the decision. The ID-JAG grant carries it.") }}
+  {{ slide_heading("", "Enterprise-Managed Authorization") }}
   {{ pipe([
     {"label": "Sign in once",
      "detail": "Corporate SSO at the IdP. No per-vendor consent screen.",
@@ -42,6 +40,6 @@
      "detail": "Present it to the vendor&rsquo;s server (RFC 7523) for a token bound to one MCP server (RFC 8707).",
      "accent": "success"},
   ]) }}
-  {{ callout("Admin policy is the <strong>scope ceiling</strong>. The ID-JAG format is still an IETF draft.", accent="primary") }}
+  <p class="step" style="margin-top:2rem; font-size:2em; font-weight:700; text-align:center;">(also a draft)</p>
 {%- endcall %}
 {%- endmacro -%}

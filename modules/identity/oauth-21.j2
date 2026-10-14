@@ -11,44 +11,36 @@
 
 {%- macro baseline() -%}
 {%- call content_slide("OAuth 2.1 baseline") %}
-  {{ slide_heading("", "What OAuth 2.1 consolidates",
-                   "A draft that folds a decade of security guidance into the core spec.") }}
+  {{ slide_heading("", "OAuth 2.1 is the current Agent foundation") }}
   {{ card_grid([
-    {"title": "PKCE for every code flow",
-     "body": "Required for all authorization-code grants, not just public clients.",
-     "accent": "primary"},
-    {"title": "Risky grants removed",
-     "body": "Implicit and resource-owner password grants are gone.",
-     "accent": "danger"},
-    {"title": "Stricter redirects and transport",
-     "body": "Exact redirect-URI matching. Bearer tokens never in query strings.",
-     "accent": "info"},
-    {"title": "Safer refresh tokens",
-     "body": "Public clients get rotation or sender-constraint.",
-     "accent": "success"},
-  ], cols=2) }}
-  {{ callout("Still a draft. It is best practice written down, not a new trust model.", accent="neutral") }}
+    {"title": "Incorporates good practices like PKCE for every flow", "body": "", "accent": "primary"},
+    {"title": "Strengthens redirect and transport security by being more strict", "body": "", "accent": "info"},
+    {"title": "Removes high-risk grants like implicit and resource owner", "body": "", "accent": "danger"},
+  ], cols=1, size="lg") }}
+  <p class="step" style="margin-top:2rem; font-size:2em; font-weight:700; text-align:center;">But it&rsquo;s still a draft?!</p>
 {%- endcall %}
 {%- endmacro -%}
 
 
 {%- macro gaps_for_agents() -%}
 {%- call content_slide("OAuth 2.1 gaps") %}
-  {{ slide_heading("", "What it still leaves for agents",
-                   "Hardened for human-driven apps. Four assumptions break when the caller is an agent.") }}
+  {{ slide_heading("", "Downsides when used with Agents") }}
   {{ card_grid([
-    {"title": "Bearer tokens are still replayable",
-     "body": "Whoever holds the bytes wins. Logs, crash dumps, and proxies all hold copies.",
+    {"title": "Bearer tokens can be replayed by default",
+     "body": "<em>&sect;1.4.2: usable &ldquo;in any way that any other party in possession of it can.&rdquo; Fix: sender-constrain it (&sect;1.4.3).</em>",
      "accent": "danger"},
-    {"title": "Clients must be pre-registered",
-     "body": "A new agent meeting a new service has no registration to lean on.",
+    {"title": "Clients need pre-registration or DCR",
+     "body": "<em>&sect;2: &ldquo;the client must have established an identifier.&rdquo; DCR (RFC 7591) does it at runtime, no pre-registration.</em>",
      "accent": "warning"},
-    {"title": "Consent assumes a human at a browser",
-     "body": "Headless agents have nobody to click the screen.",
+    {"title": "Approvals expect a human in the loop",
+     "body": "<em>&sect;4.1: the server talks to the resource owner &ldquo;to get consent for resource access.&rdquo;</em>",
      "accent": "info"},
-    {"title": "No per-call attribution",
-     "body": "The token names a client, not which agent acted on which call.",
-     "accent": "secondary"},
+    {"title": "Attribution per call is per client, not per agent",
+     "body": "<em>&sect;1.4: a token is &ldquo;an authorization issued to the client.&rdquo; &sect;2.2: the client_id names the client.</em>",
+     "accent": "primary"},
   ], cols=2) }}
+  <p style="margin-top:1.5rem; text-align:center; font-size:0.9em;">
+    Section numbers: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-15" target="_blank" rel="noopener" style="text-decoration:underline;">draft-ietf-oauth-v2-1-15 (March 2026)</a>
+  </p>
 {%- endcall %}
 {%- endmacro -%}

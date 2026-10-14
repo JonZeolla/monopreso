@@ -286,6 +286,10 @@ if [[ "${ENGINE,,}" == "modern" ]]; then
   # Modern engine path
   ##############################################################################
 
+  # 0. Refresh the GitHub contribution calendar used by the about-me slide.
+  #    Never fatal: on failure the previous file is kept, or the slide is empty.
+  uv run python3 scripts/github_activity.py || true
+
   # 1. Render Jinja2 — content macros first, then main template
   echo -n "."
   _qout=$(mktemp)

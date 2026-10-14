@@ -5,47 +5,40 @@
 -#}
 
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    content_slide, slide_heading, pipe, card_grid, callout
+    content_slide, slide_heading, pipe, pros_cons
 -%}
 
 {%- macro how_it_works() -%}
 {%- call content_slide("DPoP") %}
-  {{ slide_heading("", "DPoP: a token that knows whose it is",
-                   "RFC 9449. A stolen token is useless without the key.") }}
+  {{ slide_heading("", "Demonstrating Proof of Possession (DPoP)") }}
   {{ pipe([
-    {"label": "Bind at issuance",
-     "detail": "The token endpoint stamps the key thumbprint into the token as <code>cnf.jkt</code>.",
+    {"label": "Bind a token to a key when it&rsquo;s issued",
      "accent": "primary"},
-    {"label": "Prove per request",
-     "detail": "The agent signs a fresh proof JWT with <code>htm</code>, <code>htu</code>, <code>ath</code>, <code>jti</code>, <code>iat</code>.",
+    {"label": "During each request, re-sign the JWT using the private key",
      "accent": "info"},
-    {"label": "Check at the resource",
-     "detail": "The resource server verifies the proof against the token. Rollout is here, not at the IdP.",
+    {"label": "Verify at the resource server (not the IdP)",
      "accent": "success"},
   ]) }}
-  {{ callout("Separate question, separate tool: <strong>SD-JWT (RFC 9901)</strong> lets an agent disclose only the claims each verifier needs.", accent="secondary") }}
 {%- endcall %}
 {%- endmacro -%}
 
 
 {%- macro what_it_refuses() -%}
-{%- call content_slide("What DPoP refuses") %}
-  {{ slide_heading("", "What a bound token refuses",
-                   "Each proof claim closes one attack.") }}
-  {{ card_grid([
-    {"title": "Replay",
-     "body": "A repeated <code>jti</code>, or a stale <code>iat</code>.",
-     "accent": "success"},
-    {"title": "Wrong target or token",
-     "body": "Mismatched <code>htu</code> or <code>htm</code>. An <code>ath</code> for a different token.",
-     "accent": "success"},
-    {"title": "Algorithm tricks",
-     "body": "Symmetric-algorithm confusion fails an allowlist. Denylists fail open.",
-     "accent": "success"},
-    {"title": "Downgrade",
-     "body": "An unbound token on a strict endpoint.",
-     "accent": "success"},
-  ], cols=2) }}
-  {{ callout("Honest limit: DPoP does not stop <strong>forged</strong> tokens. Storm-0558 stole a signing key and minted its own.", accent="warning") }}
+{%- call content_slide("When to use DPoP") %}
+  {{ slide_heading("", "When to use this") }}
+  {{ pros_cons(
+    benefits=[
+      {"title": "Replay of a stolen token", "detail": "A repeated <code>jti</code> or a stale <code>iat</code> is refused."},
+      {"title": "Wrong target or token", "detail": "Mismatched <code>htu</code>, <code>htm</code>, or <code>ath</code>."},
+      {"title": "Algorithm tricks", "detail": "Symmetric-algorithm confusion fails an allowlist."},
+      {"title": "Downgrade", "detail": "An unbound token on a strict endpoint."},
+    ],
+    shortcomings=[
+      {"title": "Forged tokens", "detail": "Storm-0558 stole a signing key and minted its own."},
+      {"title": "A stolen private key", "detail": "Whoever holds the key can sign valid proofs."},
+      {"title": "A misbehaving agent", "detail": "It still holds a valid key and token."},
+    ],
+    ben_label="What DPoP prevents",
+    short_label="What it doesn&rsquo;t") }}
 {%- endcall %}
 {%- endmacro -%}

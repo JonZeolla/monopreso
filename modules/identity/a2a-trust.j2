@@ -9,23 +9,48 @@
 -%}
 
 {%- macro agent_cards() -%}
-{%- call content_slide("A2A agent cards") %}
-  {{ slide_heading("", "The agent card is how a stranger finds you",
-                   "Published at <code>/.well-known/agent-card.json</code>. A2A leaves identity to your IdP.") }}
-  {{ card_grid([
-    {"title": "supportedInterfaces",
-     "body": "URL, transport, and protocol version. A list, not one endpoint.",
-     "accent": "info"},
-    {"title": "securitySchemes",
-     "body": "Which authentication the agent accepts: OAuth 2, OIDC, mTLS, and so on.",
-     "accent": "primary"},
-    {"title": "Per-skill securityRequirements",
-     "body": "The scope each skill needs. Reading is not rewriting.",
-     "accent": "success"},
-    {"title": "JWS signatures",
-     "body": "The card is signed. A client verifies against a key it already trusts.",
-     "accent": "warning"},
-  ], cols=2) }}
+{%- call content_slide("A2A Agent Cards") %}
+  {{ slide_heading("", "A2A Agent Cards") }}
+  {#- An illustrative A2A 1.0 card, built from the Zenable a2a lab and the
+      A2A spec fields a security reviewer reads first. Each outlined box is one
+      click: who owns it, where it listens, how callers authenticate, what each
+      skill needs, and whether the card is signed. Box positions are line
+      numbers x 1.5em, so edit the card and the boxes together. -#}
+  <div style="position:relative; margin-top:1.25rem; font-size:0.9em;">
+  <pre style="margin:0; padding:1.1em 1.5em; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; line-height:1.5; border:1px solid rgba(128,128,128,0.35); background:rgba(128,128,128,0.08); border-radius:0.75rem; overflow:hidden;">{% raw %}{
+  "name": "Forecast Agent",
+  "provider": { "organization": "Example Corp", "url": "https://example.com" },
+  "supportedInterfaces": [
+    { "url": "https://forecast.example.com/",
+      "protocolBinding": "JSONRPC",
+      "protocolVersion": "1.0" }
+  ],
+  "capabilities": { "streaming": true, "pushNotifications": false },
+  "securitySchemes": {
+    "idp": { "openIdConnectSecurityScheme": {
+      "openIdConnectUrl": "https://idp.example.com/.well-known/openid-configuration" } }
+  },
+  "securityRequirements": [
+    { "schemes": { "idp": { "list": ["forecast:read"] } } }
+  ],
+  "skills": [
+    { "id": "forecast",
+      "securityRequirements": [
+        { "schemes": { "idp": { "list": ["forecast:read"] } } } ] },
+    { "id": "update_model",
+      "securityRequirements": [
+        { "schemes": { "idp": { "list": ["forecast:write"] } } } ] }
+  ],
+  "signatures": [
+    { "protected": "eyJhbGciOiJFUzI1NiIs...", "signature": "MEUCIQ..." }
+  ]
+}{% endraw %}</pre>
+    <div class="step" style="position:absolute; left:0.5em; right:0.5em; top:calc(1.1em + 2*1.5em - 0.1em); height:calc(1*1.5em + 0.2em); border:2px solid currentColor; border-radius:0.5rem; pointer-events:none;"></div>
+    <div class="step" style="position:absolute; left:0.5em; right:0.5em; top:calc(1.1em + 3*1.5em - 0.1em); height:calc(5*1.5em + 0.2em); border:2px solid currentColor; border-radius:0.5rem; pointer-events:none;"></div>
+    <div class="step" style="position:absolute; left:0.5em; right:0.5em; top:calc(1.1em + 9*1.5em - 0.1em); height:calc(4*1.5em + 0.2em); border:2px solid currentColor; border-radius:0.5rem; pointer-events:none;"></div>
+    <div class="step" style="position:absolute; left:0.5em; right:0.5em; top:calc(1.1em + 17*1.5em - 0.1em); height:calc(6*1.5em + 0.2em); border:2px solid currentColor; border-radius:0.5rem; pointer-events:none;"></div>
+    <div class="step" style="position:absolute; left:0.5em; right:0.5em; top:calc(1.1em + 24*1.5em - 0.1em); height:calc(3*1.5em + 0.2em); border:2px solid currentColor; border-radius:0.5rem; pointer-events:none;"></div>
+  </div>
 {%- endcall %}
 {%- endmacro -%}
 
@@ -44,15 +69,13 @@
      "detail": "The organization whose policy applies.",
      "accent": "warning"},
   ]) }}
-  {{ callout("Collapse them and the audit log says &ldquo;agent-b did it&rdquo; for every user, forever.", accent="danger") }}
 {%- endcall %}
 {%- endmacro -%}
 
 
 {%- macro rogue_card() -%}
 {%- call content_slide("The rogue card") %}
-  {{ slide_heading("", "A copied card steals real tokens",
-                   "The rogue copies the real card verbatim, security block included, and points it at itself.") }}
+  {{ slide_heading("", "A copied card steals real tokens") }}
   {{ card_grid([
     {"title": "The attack",
      "body": "A client that obeys the card sends its credential to whoever the card names.",
@@ -64,6 +87,5 @@
      "body": "Audience. Without it, every agent accepts every other agent&rsquo;s token.",
      "accent": "warning"},
   ], cols=3) }}
-  {{ callout("An unsigned card is an <strong>instruction from a stranger</strong>.", accent="warning") }}
 {%- endcall %}
 {%- endmacro -%}
