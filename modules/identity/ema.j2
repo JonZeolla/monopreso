@@ -36,7 +36,7 @@
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
     content_slide, slide_heading, numbered_steps
 -%}
-{%- from "modules/identity/morph-kit.j2" import picto, sentinels, crumbs, styles, stage_pages, arrowhead, ah -%}
+{%- from "modules/identity/morph-kit.j2" import picto, sentinels, crumbs, styles, stage_pages, arrowhead, ah, num -%}
 
 {%- macro problem() -%}
 {%- call content_slide("Per-server OAuth") %}
@@ -65,19 +65,11 @@
 {%- endmacro -%}
 
 
-{#- A step numeral set larger than its label and pulled down so both centre on
-    one line: dy is in the tspan's own em, so .15em at 2.1× is .32 base-em, and
-    the label tspan takes the same .32em back. -#}
-{%- macro _step(n, text) -%}
-<tspan class="ema-n" dy=".15em">{{ n }}</tspan><tspan dy="-.32em"> {{ text }}</tspan>
-{%- endmacro -%}
-
 {%- macro morph() -%}
 {%- call content_slide("Enterprise-Managed Authorization") %}
 {{ styles("ema", 4, moves=[
   {"cls": "ema-policy", "from": "translate(1412px, 106px)", "at": 1, "to": "translate(305px, 106px)"},
 ], pages=true) }}
-<style>.ema text .ema-n { font-size: 2.1em; font-weight: 700; }</style>
 {%- call(stage) stage_pages("ema", 4) %}
   {{ sentinels("ema", 4, stage) }}
   {{ slide_heading("", "Enterprise-Managed Authorization (EMA)") }}
@@ -98,19 +90,19 @@
     {#- Developer ↕ Enterprise IdP: SSO once -#}
     <g class="mk-arrow ema-v on1 on2 on3 hot1">
       <path d="M250,240 L250,440" marker-start="{{ ah("ema", stage) }}" marker-end="{{ ah("ema", stage) }}"/>
-      <text x="264" y="346">{{ _step("&#9312;", "login, get ID token") }}</text>
+      <text x="264" y="346">{{ num("&#9312;", "login, get ID token") }}</text>
     </g>
 
     {#- MCP client ↔ Enterprise IdP: leg 1 -#}
     <g class="mk-arrow ema-v on1 on2 on3 hot1">
       <path d="M722,447 L298,150" marker-start="{{ ah("ema", stage) }}" marker-end="{{ ah("ema", stage) }}"/>
-      <text x="566" y="330">{{ _step("&#9313;", "ID token &#8594; ID-JAG") }}</text>
+      <text x="566" y="330">{{ num("&#9313;", "ID token &#8594; ID-JAG") }}</text>
     </g>
 
     {#- MCP client ↔ Vendor AS: per-server OAuth today, leg 2 under EMA -#}
     <g class="mk-arrow ema-v on0 on2 on3 hot2">
       <path d="M812,447 L1291,140" marker-start="{{ ah("ema", stage) }}" marker-end="{{ ah("ema", stage) }}"/>
-      <text class="ema-v on2 on3" x="1040" y="268" text-anchor="end">{{ _step("&#9314;", "ID-JAG &#8594; access token") }}</text>
+      <text class="ema-v on2 on3" x="1040" y="268" text-anchor="end">{{ num("&#9314;", "ID-JAG &#8594; access token") }}</text>
     </g>
 
     {#- Vendor AS → Enterprise IdP, today: the vendor's login federates to the
@@ -137,7 +129,7 @@
     <g class="mk-arrow ema-v on0 on3 bad0 hot3">
       <path d="M818,482 L1296,482" marker-end="{{ ah("ema", stage) }}"/>
       <text class="ema-v on0" x="1057" y="466" text-anchor="middle">Bearer token</text>
-      <text class="ema-v on3" x="1057" y="466" text-anchor="middle">{{ _step("&#9315;", "normal access token") }}</text>
+      <text class="ema-v on3" x="1057" y="466" text-anchor="middle">{{ num("&#9315;", "normal access token") }}</text>
     </g>
 
     {#- ── parties ────────────────────────────────────────────────── -#}

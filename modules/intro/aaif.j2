@@ -74,7 +74,8 @@
 </style>
 {{ slide_heading("", "Agentic AI Foundation") }}
 <div class="af-grid">
-  {%- for p in _anchors %}{{ _tile(p, "lg", "anchors") }}{% endfor %}
+  {#- MCP and A2A are on the slide as it opens; one press brings the rest. -#}
+  {%- for p in _anchors %}{{ _tile(p, "lg") }}{% endfor %}
   {%- for p in _rest if not p.new %}{{ _tile(p, "sm", "rest") }}{% endfor %}
   <div class="af-new step" data-step="rest">
     {%- for p in _rest if p.new %}{{ _tile(p, "sm") }}{% endfor %}

@@ -55,7 +55,7 @@
 -#}
 
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
-{%- from "modules/identity/morph-kit.j2" import picto, glyph, sentinels, crumbs, styles, stage_pages, arrowhead, ah -%}
+{%- from "modules/identity/morph-kit.j2" import picto, glyph, sentinels, crumbs, styles, stage_pages, arrowhead, ah, num -%}
 
 {%- macro morph() -%}
 {%- call content_slide("Missions") %}
@@ -88,7 +88,7 @@
     <g class="mk-arrow msn-v on1 on2 on3 on4 hot1 hot3">
       <path d="M250,240 L250,440" marker-start="{{ ah("msn", stage) }}" marker-end="{{ ah("msn", stage) }}"/>
       <text class="msn-v on1 on2" x="264" y="346">signs in, consents</text>
-      <text class="msn-v on3" x="264" y="346">&#9314; approves it</text>
+      <text class="msn-v on3" x="264" y="346">{{ num("&#9314;", "approves it") }}</text>
       <text class="msn-v on4" x="264" y="346">asked only if needed</text>
     </g>
 
@@ -113,14 +113,14 @@
     {#- Person → Agent: the ask, along the bottom -#}
     <g class="mk-arrow msn-v on3 on4 dim4 hot3">
       <path d="M309,500 L701,500" marker-end="{{ ah("msn", stage) }}"/>
-      <text x="505" y="484" text-anchor="middle">&#9312; asks for something</text>
+      <text x="505" y="484" text-anchor="middle">{{ num("&#9312;", "asks for something") }}</text>
     </g>
 
     {#- Agent → Person Server: the mission; then the token trade -#}
     <g class="mk-arrow msn-v on3 on4 hot3 hot4">
       <path class="msn-v on3" d="M722,447 L298,150" marker-end="{{ ah("msn", stage) }}"/>
       <path class="msn-v on4" d="M722,447 L298,150" marker-start="{{ ah("msn", stage) }}" marker-end="{{ ah("msn", stage) }}"/>
-      <text class="msn-v on3" x="566" y="320">&#9313; proposes a mission</text>
+      <text class="msn-v on3" transform="translate(392,210) rotate(35)">{{ num("&#9313;", "proposes a mission") }}</text>
       <text class="msn-v on4" x="576" y="320">gets approval</text>
           </g>
 

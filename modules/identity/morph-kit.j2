@@ -19,7 +19,8 @@
       badN  danger-coloured at stage N
     `moves` slides a badge: [{cls, from, at, to}] = class, resting transform,
     the stage it moves at, the transform it moves to.
-    `crumbs(ns, labels)` renders the clickable stage strip.
+    `crumbs(ns, labels)` renders the clickable stage strip. `num(n, text)`
+    sets a big step numeral in front of an arrow label.
 
     Printing. The engine reveals `.step` by CSS in print, never by class, so
     the `:has(.step-visible)` stage rules see stage 0 on paper. Two ways out:
@@ -136,6 +137,13 @@
 </div>
 {%- endmacro -%}
 
+{#- A step numeral (①②③…) set at 2.1× its label and pulled down so both centre
+    on one line. dy is in the tspan's own em: .15em at 2.1× is .32 base-em,
+    which the label tspan takes back. Use inside an .mk-arrow <text>. -#}
+{%- macro num(n, text) -%}
+<tspan class="mk-n" dy=".15em">{{ n }}</tspan><tspan dy="-.32em"> {{ text }}</tspan>
+{%- endmacro -%}
+
 {%- macro styles(ns, n, moves=[], pages=false) -%}
 {%- set R = "." ~ ns %}
 <style>
@@ -171,6 +179,7 @@
   {{ R }} .mk-arrow path { fill:none; stroke: var(--mk-c); stroke-width: 3; transition: stroke 1.6s; }
   {{ R }} .mk-arrow path.dashed { stroke-dasharray: 8 8; }
   {{ R }} .mk-arrow text { fill: var(--mk-c); font-size: 18px; font-weight: 600; transition: fill 1.6s, opacity 1.4s; }
+  {{ R }} .mk-arrow text .mk-n { font-size: 2.1em; font-weight: 700; }
   {{ R }} .mk-tag rect { fill: var(--slide-sunken); stroke: var(--mk-c); stroke-width: 2; transition: stroke 1.6s; }
   {{ R }} .mk-tag text { fill: var(--mk-c); font-size: 13px; font-weight: 700; letter-spacing: .06em;
                         text-transform: uppercase; transition: fill 1.6s; }
