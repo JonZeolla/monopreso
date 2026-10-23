@@ -123,8 +123,8 @@ Topic directories currently in use:
 | Hooks | `modules/hooks/` | `hooks.j2` |
 | Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `refined-rules.j2`, `policy-feedback.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`†, `maturity-model.j2`†, `control-scorecard.j2`† |
 | Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
-| Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`†, `classifiers.j2`† |
-| Agent identity | `modules/identity/` | `oauth-21.j2`†, `agents-different.j2`† (build-time → run-time axis, and OAuth's access token fanning out into AAuth's five), `aauth.j2`†, `missions.j2`† and `ema.j2`† (each a diagram that steps from the old flow to the new one in place, built on `morph-kit.j2`: shapes, stage CSS, clickable crumbs, one print page per stage), `dpop.j2`†, `a2a-trust.j2`†, `spec-sprawl.j2`† (the AuthZEN / OAuth / WIMSE / individual-draft landscape as a wall of names; sources in its header) |
+| Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`† |
+| Agent identity | `modules/identity/` | `oauth-21.j2`†, `agents-different.j2`† (build-time → run-time axis, and OAuth's access token fanning out into AAuth's five), `missions.j2`† and `ema.j2`† (each a diagram that steps from the old flow to the new one in place, built on `morph-kit.j2`: shapes, stage CSS, clickable crumbs, one print page per stage), `dpop.j2`†, `a2a-trust.j2`†, `spec-sprawl.j2`† (the AuthZEN / OAuth / WIMSE / individual-draft landscape as a wall of names; sources in its header) |
 | Agent governance | `modules/governance/` | `tool-calls.j2`†, `what-is-governance.j2`† (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
 | Intro | `modules/intro/` | `ai-janitor.j2`†, `about-speaker.j2`†, `aaif.j2`† (the foundation's projects as logos; sources and trademark notice in its header) |
