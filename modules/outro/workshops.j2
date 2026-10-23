@@ -18,8 +18,10 @@
   .wk-list li { display:flex; gap: .8rem; align-items: baseline; }
   .wk-list li::before { content: "\2713"; font-weight: 800; color: var(--accent-primary); flex: none; }
   .wk-more { margin: 1.1rem 0 0; font-size: 1.15rem; color: var(--slide-ink-3); font-style: italic; }
+  .wk-cta { margin: 2rem 0 0; font-size: 1.35rem; color: var(--slide-ink-2); }
+  .wk-cta a { color: var(--accent-primary); text-decoration: underline; text-underline-offset: .2em; font-weight: 600; }
 </style>
-{{ slide_heading("", "I also run workshops") }}
+{{ slide_heading("", "Workshops") }}
 <ul class="wk-list">
   {%- for lab in [
     "Agentic protocols like A2A, ACP, and MCP",
@@ -37,5 +39,6 @@
   {%- endfor %}
 </ul>
 <p class="wk-more">&hellip;and dozens more</p>
+<p class="wk-cta">Follow <a href="https://luma.com/aaif-pittsburgh" target="_blank" rel="noopener">luma.com/aaif-pittsburgh</a> for free events, or reach out for private 2-day classes</p>
 {%- endcall %}
 {%- endmacro -%}

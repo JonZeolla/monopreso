@@ -12,13 +12,13 @@
    the calendar slide renders nothing.
    ================================================================ #}
 
-{%- macro profile() -%}
+{%- macro profile(img="modules/shared/img/jon-zeolla.png") -%}
 <section class="slide flex items-center justify-center p-8" data-label="About">
   <div class="max-w-6xl w-full fade-in">
     <h3 class="text-5xl font-bold text-white mb-1">Jon Zeolla</h3>
     <p class="text-xl italic font-medium bg-gradient-to-r from-zenable-teal to-zenable-blue bg-clip-text text-transparent mb-8">Founder &amp; CEO, Zenable</p>
     <div class="flex gap-10 items-start">
-      <img src="modules/shared/img/jon-zeolla.png" alt="Jon Zeolla"
+      <img src="{{ img }}" alt="Jon Zeolla"
            class="w-56 h-56 rounded-2xl object-cover shrink-0 border-2 border-zenable-teal/30">
       <div class="flex-1 min-w-0">
         <ul class="space-y-3 mb-6">

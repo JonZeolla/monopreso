@@ -1,0 +1,175 @@
+{#- modules/identity/agents-different.j2
+    Two slides on why agent identity is not client identity.
+
+    whats_different() — a build-time → run-time axis over three before/after
+    pairs, one key press per pair.
+      aauth.dev "What Changed": "Software used to know at build time what it
+        would call and what it would need. Now agents decide in the moment,
+        against services they've never seen — the old protocols assumed
+        neither." / "Clients used to be written. Now agents assemble them at
+        runtime." / "Agents pick their tool chain at runtime, one call at a
+        time." / under "Scopes Don't Capture Intent": "A scope is standing
+        permission, not per-call intent. `mail.read` looks the same whether the
+        agent is summarizing or scraping — policy can't tell them apart."
+      aauth.dev "Why AAuth?": "In OAuth and OIDC, a client has no independent
+        identity — a client_id at Google is meaningless at GitHub." / "It gives
+        every HTTP client its own cryptographic identity and carries identity
+        claims and authorization claims in the same token. It coexists with
+        OAuth 2.0 and OpenID Connect rather than replacing them."
+      draft-hardt-oauth-aauth-protocol-11 §1.2 "Agents Are Different":
+        "Traditional software knows at build time what services it will call
+        and what permissions it needs." / "Registration, key provisioning, and
+        scope configuration happen before the first request." / "They discover
+        resources at runtime." §1.3: "none needs pre-registration, so the first
+        API call is the registration."
+      draft-hardt-aauth-r3-00 (Status: Exploratory Draft) §3: "Each vocabulary
+        corresponds to an API description format (MCP, OpenAPI, gRPC, GraphQL,
+        AsyncAPI, WSDL, OData)." aauth.dev Specs card: "Vocabulary-based
+        authorization using formats agents already understand (MCP, OpenAPI,
+        gRPC, GraphQL), plus per-call proposals for operations authorized one
+        call at a time."
+
+    tokens() — OAuth's access token fans out into AAuth's five, then the
+    refresh token has no counterpart. Two key presses.
+      aauth.dev "How AAuth Works" glossary: "agent_token establishes the agent's
+        identity / person_token names the person the agent acts for, at one
+        resource / resource_token describes the access needed / auth_token
+        grants an agent access to a resource / session-token issued by a
+        resource for its own consumption, opaque to the agent".
+      draft-hardt-oauth-aauth-protocol-11 §3 token definitions; §7.9 "AAuth has
+        no refresh token. When an auth token expires, the agent obtains a fresh
+        resource token from the resource and submits it to the PS, the same flow
+        as the initial authorization."; Appendix C.4.5 "Bearer tokens: OAuth
+        access tokens are bearer credentials — anyone who holds the token can
+        use it. AAuth binds every token to a signing key"; §6.3 the session
+        token "MAY be an existing OAuth access token".
+      OAuth 2.1 draft-ietf-oauth-v2-1-16 §1.4 "An access token is a string
+        representing an authorization issued to the client."
+      The ID-token → person_token likeness is the speaker's analogy; the draft
+      never maps its tokens onto OAuth's. person_token is drawn dashed for that
+      reason.
+
+    Import WITH CONTEXT.
+      {%- from "modules/identity/agents-different.j2" import whats_different, tokens with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+
+{%- macro whats_different() -%}
+{%- call content_slide("What's different") %}
+<style>
+  .ad-axis { position: relative; height: 4px; border-radius: 2px; margin: 3rem 0 1.75rem;
+             background: linear-gradient(90deg, var(--slide-ink-3), var(--accent-primary)); }
+  .ad-axis span { position: absolute; top: -1.75rem; font-size: .85rem; font-weight: 700;
+                  letter-spacing: .2em; color: var(--slide-ink-3); }
+  .ad-axis .r { right: 0; color: var(--accent-primary); }
+  .ad-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.5rem; }
+  .ad-card { padding: 1.1rem 1.4rem; border-radius: 1rem; background: var(--slide-surface);
+             border: 1.5px solid var(--slide-hairline); }
+  .ad-card.on { border-color: var(--accent-primary);
+                background: color-mix(in srgb, var(--accent-primary) 8%, var(--slide-surface)); }
+  .ad-card b { display: block; font-size: 1.7rem; font-weight: 800; line-height: 1.15; color: var(--slide-ink); }
+  .ad-card small { display: block; margin-top: .4rem; font-size: 1.1rem; line-height: 1.3; color: var(--slide-ink-3); }
+  .ad-card code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
+</style>
+{{ slide_heading("", "How Agents are different") }}
+<div class="ad-axis"><span>BUILD TIME</span><span class="r">RUN TIME</span></div>
+<div class="ad-grid">
+  {#- Titles only; the supporting lines live in the header comment, not on the slide.
+      "Per resource": strictly a client_id is issued by each authorization server;
+      per resource is the audience-level reading (each service you call hands you
+      its own). aauth.dev: "a client_id at Google is meaningless at GitHub". -#}
+  {%- for pair in [
+    ("r1", "It knew what it would call", "It decides in the moment"),
+    ("r2", "A Client ID, issued per resource", "Its own cryptographic identity"),
+    ("r3", "Scopes granted up front", "Intent approved per call"),
+  ] %}
+  <div class="ad-card step" data-step="{{ pair[0] }}"><b>{{ pair[1] }}</b></div>
+  <div class="ad-card on step" data-step="{{ pair[0] }}"><b>{{ pair[2] }}</b></div>
+  {%- endfor %}
+</div>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro tokens() -%}
+{%- call content_slide("One token became five") %}
+<style>
+  .tk { display: grid; grid-template-columns: 20rem 7rem 1fr; grid-template-rows: auto auto;
+        column-gap: 0; row-gap: 2.5rem; align-items: center; margin-top: 2rem; }
+  .tk-card { display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+             font-size: 1.45rem; font-weight: 600; padding: .6rem 1.2rem; border-radius: .75rem;
+             color: var(--slide-ink); background: var(--slide-surface); border: 1.5px solid var(--slide-rule);
+             white-space: nowrap; }
+  .tk-big { font-size: 2rem; padding: .9rem 1.5rem; }
+  .tk-new { border-color: var(--accent-primary);
+            background: color-mix(in srgb, var(--accent-primary) 8%, var(--slide-surface)); }
+  .tk-analogy { border-style: dashed; border-color: var(--accent-secondary); }
+  .tk-none { border-style: dashed; border-color: var(--slide-ink-3); color: var(--slide-ink-3); }
+  .tk-sub { font-size: 1.1rem; line-height: 1.3; color: var(--slide-ink-3); }
+  .tk-left { text-align: center; }
+  .tk-left .tk-card { display: block; } /* fill the column so the connectors meet the card edge */
+  .tk-left .tk-sub { margin-top: .6rem; }
+  .tk-stack { display: grid; row-gap: .9rem; }
+  .tk-row { display: grid; grid-template-columns: 16rem 1fr; column-gap: 1.25rem; align-items: center; }
+  .tk-row .tk-card { justify-self: start; }
+  .tk svg { align-self: stretch; width: 100%; height: 100%; overflow: visible; }
+  .tk svg path { fill: none; stroke: var(--accent-primary); stroke-width: 2; vector-effect: non-scaling-stroke; }
+  .tk-refresh { position: relative; }
+  .tk-refresh .tk-card { transition: opacity 1.4s; }
+  .tk-refresh:has(.tk-x.step-visible) .tk-card { opacity: .18; }
+  /* .tk .tk-x outranks the .tk svg connector rules above. Centred with margins,
+     not transform: the engine's fadeIn keyframes animate transform, so a
+     transform here would make the cross slide in from the wrong place. */
+  .tk .tk-x { position: absolute; left: 50%; top: 50%; width: 7rem; height: 7rem; margin: -3.5rem 0 0 -3.5rem;
+              overflow: visible; }
+  .tk .tk-x.step-visible { animation: tk-fade .4s ease-out; } /* fade in place; the engine's fadeIn also slides up */
+  @keyframes tk-fade { from { opacity: 0; } to { opacity: 1; } }
+  .tk .tk-x path { fill: none; stroke: var(--accent-danger); stroke-width: 9; stroke-linecap: round; stroke-linejoin: round;
+                   vector-effect: none; }
+  @media print { .tk-refresh .tk-card { opacity: .18 !important; } }
+</style>
+{{ slide_heading("", "More tokens!") }}
+<div class="tk">
+  <div class="tk-left">
+    <span class="tk-card tk-big">access token</span>
+  </div>
+  {#- Connectors: viewBox maps 0..100 onto the middle cell, which is as tall as
+      the stack, so row i of five is centred at (2i+1)*10. Fans from the access
+      card's centre (0,50); non-scaling-stroke keeps the lines crisp despite
+      preserveAspectRatio="none". -#}
+  <svg class="step" data-step="split" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {%- for y in [10, 30, 50, 70, 90] %}
+    <path d="M0,50 C50,50 50,{{ y }} 100,{{ y }}"/>
+    {%- endfor %}
+  </svg>
+  <div class="tk-stack">
+    {%- for name, sub, cls in [
+      ("agent_token", "establishes the agent&rsquo;s identity", ""),
+      ("person_token", "names the person the agent acts for, at one resource", " tk-analogy"),
+      ("resource_token", "describes the access needed", ""),
+      ("auth_token", "grants an agent access to a resource", ""),
+      ("session token", "issued by the resource for its own use, opaque to the agent", ""),
+    ] %}
+    <div class="tk-row step" data-step="split"><span class="tk-card tk-new{{ cls }}">{{ name }}</span><span class="tk-sub">{{ sub }}</span></div>
+    {%- endfor %}
+  </div>
+
+  {#- Press 2: the refresh token greys out under a red cross. §7.9: "AAuth has
+      no refresh token." The grey-out keys on the step's own .step-visible, so
+      it lands with the cross; print forces both, like every other step. -#}
+  <div class="tk-left tk-refresh">
+    <span class="tk-card">refresh token</span>
+    {#- A scrawled X: two uneven curved strokes, not a glyph, so it reads as
+        struck out by hand and centres exactly on the card. -#}
+    <svg class="tk-x step" data-step="refresh" viewBox="0 0 100 100" role="img" aria-label="no refresh token in AAuth">
+      <g transform="rotate(-7 50 50)">
+        <path d="M16,20 C34,36 52,56 86,84"/>
+        <path d="M82,14 C64,30 46,54 14,88"/>
+      </g>
+    </svg>
+  </div>
+  <div></div><div></div>
+</div>
+{%- endcall %}
+{%- endmacro -%}

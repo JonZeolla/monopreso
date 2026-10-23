@@ -31,33 +31,40 @@
 {%- from "modules/intro/about-speaker.j2" import
     profile as about_profile,
     activity as about_activity with context %}
-{%- from "modules/intro/mission.j2" import venn as mission_venn with context %}
+{%- from "modules/intro/aaif.j2" import projects as aaif_projects with context %}
 {%- from "modules/intro/ai-janitor.j2" import
     both as ai_janitor_pair with context %}
 {%- from "modules/identity/oauth-21.j2" import
     baseline as oauth21_baseline,
     gaps_for_agents as oauth21_gaps with context %}
-{%- from "modules/identity/oauth-to-aauth.j2" import
-    morph as oauth_to_aauth with context %}
+{%- from "modules/identity/agents-different.j2" import
+    whats_different as agents_whats_different,
+    tokens as agents_tokens with context %}
+{%- from "modules/identity/missions.j2" import morph as missions with context %}
 {%- from "modules/identity/dpop.j2" import dpop with context %}
 {%- from "modules/identity/a2a-trust.j2" import agent_cards as a2a_cards with context %}
 {%- from "modules/identity/ema.j2" import
     problem as ema_problem,
     morph as ema_morph with context %}
+{%- from "modules/identity/spec-sprawl.j2" import more_specs with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     four_kinds as verifiers_intro,
     coverage as verifiers_coverage with context %}
 {%- from "modules/outro/workshops.j2" import lab_checklist as workshops with context %}
 {%- from "modules/outro/outro.j2" import thank_you %}
+{%- from "modules/context/context-layers.j2" import
+    layers as context_layers,
+    scope_filter as context_scope_filter,
+    same_context_two_models with context %}
 
 
 <!-- OPENING -->
 {{ title_slide("Agent Security",
                subtitle="BNY Cyber Spark",
                kicker="Jon Zeolla") }}
-{{ about_profile() }}
+{{ about_profile(img="modules/shared/img/jon-zeolla-2026.jpg") }}
+{{ aaif_projects() }}
 {{ about_activity() }}
-{{ mission_venn() }}
 {{ ai_janitor_pair() }}
 
 
@@ -65,11 +72,14 @@
 {{ statement([{"text": "Let&rsquo;s talk Agent Identity"}]) }}
 {{ oauth21_baseline() }}
 {{ oauth21_gaps() }}
-{{ oauth_to_aauth() }}
+{{ agents_whats_different() }}
+{{ agents_tokens() }}
+{{ missions() }}
 {{ dpop() }}
 {{ a2a_cards() }}
 {{ ema_problem() }}
 {{ ema_morph() }}
+{{ more_specs() }}
 
 
 <!-- 2 — VERIFIERS -->
@@ -80,3 +90,9 @@
 <!-- CLOSE -->
 {{ workshops() }}
 {{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
+
+
+<!-- APPENDIX — only if the Q&A goes there. Ported from the Zenable Foundation lab deck. -->
+{{ context_layers() }}
+{{ context_scope_filter() }}
+{{ same_context_two_models() }}

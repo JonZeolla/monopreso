@@ -1,7 +1,7 @@
 {#- modules/identity/morph-kit.j2
     Shared machinery for a "morphing architecture diagram" slide: one SVG whose
     parties stay put while labels, arrows and badges change in place, one key
-    press per stage. Used by oauth-to-aauth.j2 and ema.j2.
+    press per stage. Used by missions.j2, ema.j2 and dpop.j2.
 
     Parties are drawn literally, not symbolically: a person, an IDE window, a
     login form, a server rack, an employee badge, a key, a clipboard. Colour is
@@ -19,8 +19,26 @@
       badN  danger-coloured at stage N
     `moves` slides a badge: [{cls, from, at, to}] = class, resting transform,
     the stage it moves at, the transform it moves to.
-    `crumbs(ns, labels)` renders the clickable stage strip. Print forces the
-    final stage, since the engine reveals steps by CSS there, not by class.
+    `crumbs(ns, labels)` renders the clickable stage strip.
+
+    Printing. The engine reveals `.step` by CSS in print, never by class, so
+    the `:has(.step-visible)` stage rules see stage 0 on paper. Two ways out:
+      - styles(..., pages=false): print forces the FINAL stage (one page).
+        Right for an additive build such as dpop.j2.
+      - stage_pages(ns, n) + styles(..., pages=true): the slide body is
+        rendered once live and once per stage for print, each print copy with
+        its sentinels pre-lit, each on its own page. Right for a morph whose
+        stages replace each other. Usage:
+          {%- call(stage) stage_pages("ema", 4) %}
+            {{ sentinels("ema", 4, stage) }}
+            {{ slide_heading("", "…") }}
+            {{ crumbs("ema", [...], stage) }}
+            <svg …>{{ arrowhead("ema", stage) }} … marker-end="{{ ah("ema", stage) }}" …</svg>
+          {%- endcall %}
+        `stage` is none for the live copy and 0..n-1 for the print copies;
+        pass it through so sentinels are lit, crumbs are static, and SVG
+        marker ids stay unique per copy (a marker inside a display:none copy
+        does not paint).
 -#}
 
 {#- 24-unit monoline glyphs, for small marks inside a pictogram. -#}
@@ -71,18 +89,22 @@
 <g class="{{ cls }}">{{ PICTO[name] }}</g>
 {%- endmacro -%}
 
-{%- macro sentinels(ns, n) -%}
-{%- for i in range(1, n) %}<span class="step {{ ns }}-s{{ i }}"></span>{% endfor -%}
+{#- Live copy: n-1 real `.step` spans the engine reveals one per press.
+    Print copy for stage `lit`: the same class hooks, pre-lit, and NOT `.step`,
+    so the engine's key handling never counts them. -#}
+{%- macro sentinels(ns, n, lit=none) -%}
+{%- for i in range(1, n) %}<span class="{{ 'step' if lit is none else 'mk-static' }} {{ ns }}-s{{ i }}{{ ' step-visible' if lit is not none and i <= lit }}"></span>{% endfor -%}
 {%- endmacro -%}
 
-{%- macro crumbs(ns, labels) -%}
+{%- macro crumbs(ns, labels, stage=none) -%}
 <div class="mk-crumbs">
   {%- for label in labels %}
   <button type="button" class="mk-crumb">{{ label }}</button>
   {%- endfor %}
 </div>
+{%- if stage is none %}
 <script>
-  document.querySelectorAll('.{{ ns }} .mk-crumb').forEach(function (crumb, stage) {
+  document.querySelectorAll('.{{ ns }}.mk-live .mk-crumb').forEach(function (crumb, stage) {
     crumb.addEventListener('click', function () {
       crumb.closest('.{{ ns }}').querySelectorAll('.step').forEach(function (s, j) {
         s.classList.toggle('step-visible', j < stage);
@@ -91,11 +113,34 @@
     });
   });
 </script>
+{%- endif %}
 {%- endmacro -%}
 
-{%- macro styles(ns, n, moves=[]) -%}
+{#- Arrowhead marker with a per-copy id, and the url() that references it. -#}
+{%- macro ah(ns, stage=none) -%}url(#{{ ns }}-ah{{ '' if stage is none else '-p' ~ stage }}){%- endmacro -%}
+{%- macro arrowhead(ns, stage=none) -%}
+<defs>
+  <marker id="{{ ns }}-ah{{ '' if stage is none else '-p' ~ stage }}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/>
+  </marker>
+</defs>
+{%- endmacro -%}
+
+{#- Renders the caller once live (stage=none) and once per stage for print. -#}
+{%- macro stage_pages(ns, n) -%}
+<div class="mk-pages">
+  <div class="{{ ns }} mk-live" style="position:relative;">{{ caller(none) }}</div>
+  {%- for k in range(n) %}
+  <div class="{{ ns }} mk-print-page" aria-hidden="true">{{ caller(k) }}</div>
+  {%- endfor %}
+</div>
+{%- endmacro -%}
+
+{%- macro styles(ns, n, moves=[], pages=false) -%}
 {%- set R = "." ~ ns %}
 <style>
+  {{ R }} .mk-static { position:absolute; width:0; height:0; }
+  .mk-print-page { display: none; }
   {{ R }} .mk-crumbs { display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem .35rem;
                       margin:.25rem 0 .9rem; font-size:1rem; }
   {{ R }} .mk-crumb { padding:.3rem .85rem; border:1px solid var(--slide-hairline); border-radius:999px;
@@ -152,6 +197,22 @@
   {%- endfor %}
 
   @media print {
+  {%- if pages %}
+    /* One page per stage: hide the live copy, show the pre-lit copies.
+       The stage rules above do the rest, since each copy's sentinels carry
+       .step-visible statically. Heights stay short of a full page on
+       purpose: the section keeps its padding, and a copy that spills makes
+       a blank page (see "Printing to PDF" in AGENTS.md). */
+    .slide:has({{ R }}.mk-live) { height: auto !important; min-height: 0 !important; overflow: visible !important;
+                                  page-break-inside: auto !important; break-inside: auto !important; }
+    {{ R }}.mk-live { display: none !important; }
+    {{ R }}.mk-print-page { display: flex !important; flex-direction: column; justify-content: center;
+                            height: 92vh; box-sizing: border-box; position: relative;
+                            page-break-after: always; break-after: page; break-inside: avoid; }
+    {{ R }}.mk-print-page:last-child { page-break-after: auto; break-after: auto; }
+    {{ R }} * { transition: none !important; }
+    {{ R }} .mk-party .shape { filter: none !important; }
+  {%- else %}
     {{ R }} .{{ ns }}-v { opacity: 0 !important; }
     {{ R }} .on{{ n - 1 }} { opacity: 1 !important; }
     {{ R }} .mk-arrow, {{ R }} .mk-tag { --mk-c: var(--slide-ink-2) !important; }
@@ -165,6 +226,7 @@
     {%- endfor %}
     {{ R }} .mk-crumb { color: var(--slide-ink-2) !important; border-color: var(--slide-hairline) !important; }
     {{ R }} .mk-crumb:nth-child({{ n }}) { color: var(--slide-ink) !important; border-color: var(--accent-primary) !important; }
+  {%- endif %}
   }
 </style>
 {%- endmacro -%}

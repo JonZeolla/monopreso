@@ -32,7 +32,7 @@ Tailwind is compiled once per render from `modules/shared/css/modern-input.css` 
 
 ## Printing to PDF
 
-`task generate-pdf PRESENTATION=<deck>` (or `task generate-pdfs` for all of them) drives headless Chrome against a fixed port and writes `<deck>.pdf` into the directory you ran it from. The export is **not** a screenshot of the running deck, and four things had to be made deliberate to get it right. Change any of them and check the PDF, not the browser.
+`task generate-pdf PRESENTATION=<deck>` (or `task generate-pdfs` for all of them) drives headless Chrome against a fixed port and writes `<deck>.pdf` into the directory you ran it from. **Set the brand**: the task starts its own render without `--branding`, so from the repo root run `BRANDING=zenable task generate-pdf …` (or `task root:generate-pdf …` from inside the deck directory, whose Taskfile sets it). An unbranded export looks almost right and is the usual reason the PDF's colours "don't match". Headless Chrome is also given `--window-size=1920,1080`; without it the layout viewport is 800px wide, every `max-w-*` container lands at the left edge of the page and the full-bleed image slides spill into a blank page each. The export is **not** a screenshot of the running deck, and four things had to be made deliberate to get it right. Change any of them and check the PDF, not the browser.
 
 1. **The page is 1920×1080, not letter-landscape.** `@page { size: 1920px 1080px }` in `modern_template.j2`. Slides are authored against a 1920-wide viewport; printing them onto an 11×8.5in sheet (~1056px) is a 45% squeeze that silently clips the wider slides off *both* edges — the lifecycle diagram simply lost its first stage. The PDF comes out 1440×810pt, a true 16:9 deck.
 
@@ -41,6 +41,8 @@ Tailwind is compiled once per render from `modules/shared/css/modern-input.css` 
 3. **Builds print revealed, and swap slides print as two pages.** An additive slide (`.step`) prints once with everything shown — that is the whole story on one page. A **swap** slide (`.swap-stack`) holds two states in one grid cell, so printing them both revealed would overlap them; the print block un-stacks it and forces a page break between the halves. The second half carries a `.print-only` copy of the heading, since it lands on a page of its own and would otherwise arrive untitled.
 
 4. **Each swap half is centred by hand.** Un-stacking drops the section's own vertical centring, which leaves each half pinned to the top of its page. Both halves get a page-sized flex box (`62vh` for the first, which shares its page with the heading; `78vh` for the second). These are deliberately short of a full page — the section keeps its padding, and a first attempt at `96vh` overflowed into a blank extra page per profile, turning 34 pages into 40.
+
+5. **A morph prints one page per stage.** A slide built on `modules/identity/morph-kit.j2` whose stages *replace* each other (the EMA and Missions diagrams) wraps its body in `{% call(stage) stage_pages(ns, n) %}` and passes `pages=true` to `styles()`. The body is rendered once live and once per stage with its sentinels pre-lit and its SVG marker ids suffixed; the print block hides the live copy and gives each stage copy a `92vh` page. An additive build (DPoP) keeps `pages=false` and prints its final stage once. The kit's header comment has the exact usage.
 
 **How to check a PDF change.** Page count is the fastest signal that something overflowed. Text-position APIs are not useful here — `pypdf`'s text visitor reports coordinates in a global space, not per page — so rasterise the page and look at it:
 
@@ -116,16 +118,16 @@ Topic directories currently in use:
 
 | Topic | Path | Slide modules |
 |---|---|---|
-| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2`, `context-rules-intro.j2`†, `skill-optimization.j2`† |
+| Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2`, `context-rules-intro.j2`†, `skill-optimization.j2`†, `context-layers.j2`† (three slides ported from the Zenable Foundation lab deck: context layers into the agent, the scope funnel, same context / two models) |
 | AI / agent review | `modules/agents/` | `agent-review.j2` |
 | Hooks | `modules/hooks/` | `hooks.j2` |
 | Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `refined-rules.j2`, `policy-feedback.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`†, `maturity-model.j2`†, `control-scorecard.j2`† |
 | Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
 | Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`†, `classifiers.j2`† |
-| Agent identity | `modules/identity/` | `oauth-21.j2`†, `aauth.j2`†, `oauth-to-aauth.j2`† and `ema.j2`† (each a diagram that steps from the old flow to the new one in place, built on `morph-kit.j2`: shapes, stage CSS, clickable crumbs, print), `dpop.j2`†, `a2a-trust.j2`† |
+| Agent identity | `modules/identity/` | `oauth-21.j2`†, `agents-different.j2`† (build-time → run-time axis, and OAuth's access token fanning out into AAuth's five), `aauth.j2`†, `missions.j2`† and `ema.j2`† (each a diagram that steps from the old flow to the new one in place, built on `morph-kit.j2`: shapes, stage CSS, clickable crumbs, one print page per stage), `dpop.j2`†, `a2a-trust.j2`†, `spec-sprawl.j2`† (the AuthZEN / OAuth / WIMSE / individual-draft landscape as a wall of names; sources in its header) |
 | Agent governance | `modules/governance/` | `tool-calls.j2`†, `what-is-governance.j2`† (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
-| Intro | `modules/intro/` | `ai-janitor.j2`†, `about-speaker.j2`† |
+| Intro | `modules/intro/` | `ai-janitor.j2`†, `about-speaker.j2`†, `aaif.j2`† (the foundation's projects as logos; sources and trademark notice in its header) |
 | Outro | `modules/outro/` | `outro.j2`, `workshops.j2`† (the zenable.io/workshops lab checklist) |
 
 
@@ -309,7 +311,7 @@ If a slide needs a primitive that isn't implemented, implement it in **every** b
 Everything below lives in the `@media`-free light block of `modules/shared/modern_template.j2`.
 
 - **Take text colours from the slide tokens** — `--slide-ink`, `--slide-ink-2`, `--slide-ink-3`, `--slide-surface`, `--slide-sunken`, `--slide-hairline`, `--slide-rule`. They flip with the theme, so a slide written against them needs no light-mode CSS at all.
-- **Take accent colours from `--accent-primary` / `-secondary` / `-success` / `-warning` / `-danger` / `-info`.** The engine ships dark and light defaults; every brand pack overrides at least primary and secondary in its theme. This is how a shared slide that draws its own SVG highlights something without a hex code — `modules/identity/oauth-to-aauth.j2` is the worked example. A pack's override wins in dark mode; in light mode the engine's darker defaults win, by specificity, which is deliberate.
+- **Take accent colours from `--accent-primary` / `-secondary` / `-success` / `-warning` / `-danger` / `-info`.** The engine ships dark and light defaults; every brand pack overrides at least primary and secondary in its theme. This is how a shared slide that draws its own SVG highlights something without a hex code — `modules/identity/missions.j2` is the worked example. A pack's override wins in dark mode; in light mode the engine's darker defaults win, by specificity, which is deliberate.
 - **A stage-driven slide keys its CSS on `:has(.step-visible)`.** Zero-size `.step` sentinels count presses; everything visible is CSS that reads which sentinel is lit. Print reveals steps by CSS, not by class, so such a slide must carry its own `@media print` block forcing the stage it wants on paper.
 - **Accents are remapped, not inverted.** Every accent in this repo is tuned for a dark ground and lands at 1.6–2.6:1 on white. The engine remaps the known hex values to the same hue several steps darker; fills and borders keep the bright value, only text changes. Use an existing accent hex and you inherit that for free.
 - **Specificity: the brand pack is included *after* the head styles** and ships `body.font-sans { background: … !important }`. A bare `body.light-mode` rule loses the tie on document order — write `body.light-mode.font-sans` for anything that fights the pack. This is the single most likely reason a light-mode rule "does nothing".

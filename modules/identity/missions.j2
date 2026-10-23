@@ -1,0 +1,199 @@
+{#- modules/identity/missions.j2
+    Sending Agents on Missions: one diagram that walks from OAuth 2.1 to AAuth's
+    Person Server managed mode, one key press per stage. The parties stay put;
+    labels, arrows and two badges change in place.
+
+    Evidence, by stage. Sources: draft-ietf-oauth-v2-1-16 (OAuth 2.1) and
+    draft-hardt-oauth-aauth-protocol-11 (AAuth, an individual Internet-Draft,
+    not a standard). Nothing below is on the slide.
+
+      0 "OAuth 2.1"  OAuth 2.1 §1.1: "OAuth defines four roles" — resource owner,
+        resource server, client, authorization server. The AS is "The server
+        issuing access tokens to the client after successfully authenticating
+        the resource owner and obtaining authorization"; "The authorization
+        server may be the same server as the resource server or a separate
+        entity." No separate identity provider is a role, so none is drawn.
+      1 "Split the server"  AAuth Appendix C.4.5: "OAuth's authorization server
+        is always the resource owner's server. AAuth separates the person server
+        (user's choice) from the access server (resource's choice) and defines
+        how they federate." C.3.1: "The PS represents the person — it handles
+        consent, identity, mission supervision, and audit. The AS represents the
+        resource — it evaluates policy and issues tokens." §3 PS: "The person
+        chooses their PS; it is not imposed by any other party."
+      2 "The agent"  §5.1: "An agent MUST obtain an agent token from its agent
+        provider before participating in the AAuth protocol." §5: "the agent
+        token binds the agent's identifier to its signing key". §1.3: "none
+        needs pre-registration, so the first API call is the registration."
+        The access server ghosts out because §4.2.4 (PS authorization): "The
+        resource has no access server. It accepts identity and consent asserted
+        by whichever PS issued the person token it verified, and applies its
+        own policy"; §3 Resource: "A resource MAY enforce access policy itself
+        or delegate policy evaluation to an access server."
+      3 "The mission"  §4.5.1: "A mission is a Markdown description of what the
+        agent intends to accomplish, proposed by the agent and approved by the
+        person at the PS." §8: "Missions are OPTIONAL. The protocol operates in
+        all modes without missions." §3 Person: "on whose behalf an agent acts
+        and who is accountable for the agent's actions". §4.5: "the PS evaluates
+        every token request against the mission". The spec does not describe
+        how a person tasks an agent; "asks for something" is the deck's
+        framing, outside the protocol.
+      4 "The call"  §6.5: the 401 carries
+        `AAuth-Requirement: requirement=auth-token; resource-token="…"`. §3
+        Resource Token: "Issued by a resource to describe the access the agent
+        needs". §7.2.1: the agent POSTs resource_token (+ presented_token) to
+        the PS auth_token_endpoint; §7.2.2: 200 with auth_token, or 202
+        requirement=interaction when the person must be asked. §6.5: the agent
+        "retries, presenting the auth token via Signature-Key". §11.3.3.1: the
+        HTTP Message Signature covers @method, @authority, @path,
+        signature-key. §7.9: "AAuth has no refresh token." The two passes
+        (signed request → 401, then signed request + auth_token) share one
+        arrow, relabelled.
+
+    Machinery (pictograms, stage CSS, clickable crumbs, one print page per
+    stage) lives in morph-kit.j2. Primitive-native: import WITH CONTEXT.
+      {%- from "modules/identity/missions.j2" import morph with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+{%- from "modules/identity/morph-kit.j2" import picto, glyph, sentinels, crumbs, styles, stage_pages, arrowhead, ah -%}
+
+{%- macro morph() -%}
+{%- call content_slide("Missions") %}
+{{ styles("msn", 5, moves=[
+  {"cls": "msn-consent", "from": "translate(1412px, 134px)", "at": 1, "to": "translate(305px, 106px)"},
+  {"cls": "msn-policy",  "from": "translate(1412px, 106px)", "at": 2, "to": "translate(1412px, 486px)"},
+], pages=true) }}
+<style>
+  /* From stage 2 the Access Server is a ghost: an outline the resource could add. */
+  .msn:has(.msn-s2.step-visible) .msn-ghost .shape { stroke-dasharray: 6 6; fill-opacity: 0; }
+</style>
+{%- call(stage) stage_pages("msn", 5) %}
+  {{ sentinels("msn", 5, stage) }}
+  {{ slide_heading("", "Sending Agents on Missions") }}
+  {{ crumbs("msn", ["OAuth 2.1", "Split the server", "The agent", "The mission", "The call"], stage) }}
+
+  <svg viewBox="0 -15 1600 665" role="img"
+       aria-label="Architecture diagram that steps from OAuth 2.1 to AAuth: the authorization server splits into the person's server and the resource's, the client becomes an agent with its own key, the person approves a mission at their server, and the agent trades the resource's challenge for an auth token checked against that mission.">
+    {{ arrowhead("msn", stage) }}
+
+    {#- ── arrows ─────────────────────────────────────────────────── -#}
+
+    {#- Person → Authorization Server, stage 0: up the left and across -#}
+    <g class="mk-arrow msn-v on0">
+      <path d="M250,440 L250,140 Q250,120 270,120 L1291,120" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="770" y="104" text-anchor="middle">signs in, consents</text>
+    </g>
+
+    {#- Person ↕ Person Server, from stage 1 -#}
+    <g class="mk-arrow msn-v on1 on2 on3 on4 hot1 hot3">
+      <path d="M250,240 L250,440" marker-start="{{ ah("msn", stage) }}" marker-end="{{ ah("msn", stage) }}"/>
+      <text class="msn-v on1 on2" x="264" y="346">signs in, consents</text>
+      <text class="msn-v on3" x="264" y="346">&#9314; approves it</text>
+      <text class="msn-v on4" x="264" y="346">asked only if needed</text>
+    </g>
+
+    {#- Client ↔ Authorization / Access Server: gone once the agent arrives -#}
+    <g class="mk-arrow msn-v on0 on1 dim1">
+      <path d="M812,447 L1291,140" marker-start="{{ ah("msn", stage) }}" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="1010" y="302" text-anchor="end">code &#8644; token</text>
+    </g>
+
+    {#- Resource Server → Authorization Server -#}
+    <g class="mk-arrow msn-v on0 on1">
+      <path d="M1350,440 L1350,240" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="1364" y="346">validates</text>
+    </g>
+
+    {#- Agent Provider → Agent -#}
+    <g class="mk-arrow msn-v on2 on3 on4 hot2">
+      <path d="M760,240 L760,440" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="774" y="346">its identity</text>
+    </g>
+
+    {#- Person → Agent: the ask, along the bottom -#}
+    <g class="mk-arrow msn-v on3 on4 dim4 hot3">
+      <path d="M309,500 L701,500" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="505" y="484" text-anchor="middle">&#9312; asks for something</text>
+    </g>
+
+    {#- Agent → Person Server: the mission; then the token trade -#}
+    <g class="mk-arrow msn-v on3 on4 hot3 hot4">
+      <path class="msn-v on3" d="M722,447 L298,150" marker-end="{{ ah("msn", stage) }}"/>
+      <path class="msn-v on4" d="M722,447 L298,150" marker-start="{{ ah("msn", stage) }}" marker-end="{{ ah("msn", stage) }}"/>
+      <text class="msn-v on3" x="566" y="320">&#9313; proposes a mission</text>
+      <text class="msn-v on4" x="576" y="320">gets approval</text>
+          </g>
+
+    {#- Client / Agent → Resource: the call itself -#}
+    <g class="mk-arrow msn-v on0 on1 on4 bad0 bad1 hot4">
+      <path d="M818,482 L1296,482" marker-end="{{ ah("msn", stage) }}"/>
+      <text class="msn-v on0 on1" x="1057" y="466" text-anchor="middle">Bearer token</text>
+      <text class="msn-v on4" x="1057" y="466" text-anchor="middle">makes the call</text>
+    </g>
+
+    {#- Resource → Agent: the 401 with a resource_token -#}
+    <g class="mk-arrow msn-v on4 hot4">
+      <path d="M1296,520 L820,520" marker-end="{{ ah("msn", stage) }}"/>
+      <text x="1057" y="548" text-anchor="middle">what approval it needs</text>
+    </g>
+
+    {#- ── parties ────────────────────────────────────────────────── -#}
+
+    <g class="mk-party side-p hot3" transform="translate(250,500)">
+      {{ picto("person") }}
+      <text class="t" y="85">Person</text>
+    </g>
+
+    {#- The client is an IDE; from stage 2 an agent lives in it -#}
+    <g class="mk-party side-a hot2" transform="translate(760,500)">
+      {{ picto("ide") }}
+      {{ glyph("agent", 28, 26, 1.4, "ic msn-v on2 on3 on4") }}
+      <text class="t msn-v on0 on1" y="85">Client</text>
+      <text class="t msn-v on2 on3 on4" y="85">Agent</text>
+      <g class="mk-tag msn-v on2 on3 on4 hot2" transform="translate(-172,22)">
+        <rect width="110" height="24" rx="12"/>
+        <text x="55" y="16.5" text-anchor="middle">private key</text>
+      </g>
+    </g>
+
+    <g class="mk-party side-r hot4" transform="translate(1350,500)">
+      {{ picto("rack") }}
+      <text class="t msn-v on0 on1" y="85">Resource Server</text>
+      <text class="t msn-v on2 on3 on4" y="85">Resource</text>
+    </g>
+
+    <g class="mk-party side-p msn-v on1 on2 on3 on4 hot1 hot3" transform="translate(250,120)">
+      {{ picto("badge") }}
+      <text class="t" y="85">Person Server</text>
+    </g>
+
+    <g class="mk-party side-a msn-v on2 on3 on4 hot2" transform="translate(760,120)">
+      {{ picto("key") }}
+      <text class="t" y="85">Agent Provider</text>
+    </g>
+
+    {#- A login form while it is the OAuth authorization server; a policy
+        clipboard once it is an Access Server; a ghost once the resource
+        keeps policy itself -#}
+    <g class="mk-party side-r hot1 dim2 dim3 dim4" transform="translate(1350,120)">
+      {{ picto("login", "msn-v on0") }}
+      {{ picto("clipboard", "msn-ghost msn-v on1 on2 on3 on4") }}
+      <text class="t msn-v on0" y="85">Authorization Server</text>
+      <text class="t msn-v on1 on2 on3 on4" y="85">Access Server</text>
+    </g>
+
+    {#- consent: beside the Authorization Server until stage 1, then it slides
+        to the Person Server. policy: stays until stage 2, then drops to the
+        Resource. The two slides ARE the split. -#}
+    <g class="mk-tag msn-consent hot1">
+      <rect width="100" height="24" rx="12"/>
+      <text x="50" y="16.5" text-anchor="middle">consent</text>
+    </g>
+    <g class="mk-tag msn-policy hot2">
+      <rect width="90" height="24" rx="12"/>
+      <text x="45" y="16.5" text-anchor="middle">policy</text>
+    </g>
+  </svg>
+{%- endcall %}
+{%- endcall %}
+{%- endmacro -%}

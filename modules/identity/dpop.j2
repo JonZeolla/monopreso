@@ -22,7 +22,7 @@
   .dp .side-x { --mk-side: var(--accent-danger); }
   .dp .dp-bad { --mk-c: var(--accent-danger); }
   .dp .dp-lbl { fill: var(--slide-ink-3); font-size: 15px; font-weight: 700; letter-spacing: .16em; text-anchor: middle; }
-  .dp .ok { fill: var(--accent-success); } .dp .no { fill: var(--accent-danger); }
+  .dp .ok { fill: var(--accent-success); } .dp .bad { fill: var(--accent-danger); }  /* colour = outcome; glyph = what the resource did */
   .dp .verdict { font-size: 34px; font-weight: 800; text-anchor: middle; }
   .dp .divider { stroke: var(--slide-rule); stroke-width: 2; stroke-dasharray: 4 10; }
 </style>
@@ -66,7 +66,7 @@
       <text x="318" y="400" style="font-size:16px">a leaked copy</text>
       <path d="M418,520 L578,296" marker-end="url(#dp-ah)"/>
     </g>
-    <text class="verdict ok dp-v on1 on2 on3" x="640" y="430">&#10003;</text>
+    <text class="verdict bad dp-v on1 on2 on3" x="640" y="430">&#10003;</text>
     <g class="mk-tag dp-bad dp-v on1 on2 on3" transform="translate(478,466)">
       <rect width="100" height="30" rx="15"/><text x="50" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token</text>
     </g>
@@ -101,7 +101,7 @@
       <text x="1118" y="400" style="font-size:16px">a leaked copy</text>
       <path d="M1218,520 L1378,296" marker-end="url(#dp-ah)"/>
     </g>
-    <text class="verdict no dp-v on3" x="1440" y="430">&#10007;</text>
+    <text class="verdict ok dp-v on3" x="1440" y="430">&#10007;</text>
     <g class="mk-tag dp-bad dp-v on3" transform="translate(1278,466)">
       <rect width="100" height="30" rx="15"/><text x="50" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token</text>
     </g>

@@ -1,0 +1,88 @@
+{#- modules/identity/spec-sprawl.j2
+    One slide: the agent identity / authorization spec landscape as a wall of
+    names, to make the point that AAuth, DPoP, EMA and A2A cards are a handful
+    among dozens. Names are shortened from the documents' titles; nothing here
+    is invented. Checked 23 Oct 2026 against:
+
+      OpenID AuthZEN WG — https://openid.net/wg/authzen/specifications/
+        Authorization API 1.0 (Final, Jan 2026); working group drafts: COAZ
+        Framework 1.0, COAZ-MCP Binding 1.0, Access Request and Approval
+        Profile 1.0, Obligations Profile 1.0.
+      IETF OAuth WG — https://datatracker.ietf.org/wg/oauth/documents/
+        draft-ietf-oauth-v2-1, -identity-assertion-authz-grant (ID-JAG),
+        -transaction-tokens, -identity-chaining (RFC Ed queue),
+        -client-id-metadata-document, -attestation-based-client-auth,
+        -spiffe-client-auth, -deferred-token-response, -first-party-apps.
+      IETF WIMSE WG — https://datatracker.ietf.org/wg/wimse/documents/
+        draft-ietf-wimse-arch, -identifier, -wpt, -http-signature,
+        -mutual-tls, -workload-creds, -aims.
+      Individual Internet-Drafts (not WG-adopted), all on datatracker:
+        draft-hardt-oauth-aauth-protocol, draft-hardt-aauth-{r3,budgets,events,
+        bootstrap}, draft-hamr-oauth-agent-delegation, draft-mishra-oauth-agent-
+        grants, draft-mw-oauth-actor-chain, draft-mcguinness-oauth-{actor-profile,
+        actor-proofs,actor-receipts,mission,ai-agent-instance}, draft-chen-oauth-
+        agent-{intent-token,revocation,authz-use-cases}, draft-niyikiza-oauth-
+        attenuating-agent-tokens, draft-araut-oauth-transaction-tokens-for-agents,
+        draft-jia-oauth-scope-aggregation, draft-jiang-oauth-intent-admission,
+        draft-watts-oauth-agent-revocation-closure, draft-alla-agent-identity-
+        document, draft-jovancevic-saip, draft-pidlisnyi-aps, draft-sharif-x509-
+        agent-identity-profile, draft-sharif-openid-agent-identity, draft-nelson-
+        agent-delegation-receipts, draft-schrock-ep-{authorization-receipts,quorum},
+        draft-ni-wimse-ai-agent-identity, draft-sweeney-wimse-credential-delegation,
+        draft-kavian-agent-enrollment-protocol, draft-narvaneni-agent-uri,
+        draft-sato-soos-mjwt, draft-saha-aadp, draft-oauth-ai-agents-on-behalf-of-
+        user (expired).
+      "50+": a datatracker search for active drafts named "agent" is capped at
+      200 results and hits the cap.
+
+    Primitive-native. Import WITH CONTEXT.
+      {%- from "modules/identity/spec-sprawl.j2" import more_specs with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+
+{%- macro more_specs() -%}
+{%- call content_slide("50+ more specs") %}
+<style>
+  .sp { display: grid; grid-template-columns: 1fr 1.1fr 1fr 3.1fr; gap: 1.5rem 2rem; margin-top: 1.5rem; }
+  .sp h5 { margin: 0 0 .6rem; font-size: .8rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+           color: var(--accent-primary); border-bottom: 1px solid var(--slide-hairline); padding-bottom: .4rem; }
+  .sp ul { list-style: none; margin: 0; padding: 0; font-size: 1rem; line-height: 1.45; color: var(--slide-ink-2); }
+  .sp li { padding-left: 1rem; text-indent: -1rem; }
+  .sp li::before { content: "\2022"; color: var(--slide-ink-3); margin-right: .55rem; }
+  .sp .wide ul { columns: 3; column-gap: 1.75rem; }
+  .sp .wide li { break-inside: avoid; }
+  .sp .muted { color: var(--slide-ink-3); }
+</style>
+{{ slide_heading("", "and 50+ more possible specs?!") }}
+<div class="sp">
+  {%- set cols = [
+    ("OpenID AuthZEN", "", [
+      "Authorization API 1.0", "COAZ Framework", "COAZ-MCP Binding",
+      "Access Request &amp; Approval", "Obligations Profile"]),
+    ("IETF OAuth WG", "", [
+      "OAuth 2.1", "ID-JAG", "Transaction Tokens", "Identity &amp; Authz Chaining",
+      "Client ID Metadata Document", "Attestation Client Auth", "SPIFFE Client Auth",
+      "Deferred Token Response", "First-Party Apps"]),
+    ("IETF WIMSE WG", "", [
+      "WIMSE Architecture", "Workload Identifier", "Workload Proof Token", "HTTP Signatures",
+      "Mutual TLS", "Workload Credentials", "AI Identity Management System"]),
+    ("Individual drafts", "wide", [
+      "AAuth + R3, Budgets, Events", "Attenuated Agent Delegation", "Delegated AI Agent Authz",
+      "OAuth Actor Chain", "Actor Profile, Proofs, Receipts", "Mission-Bound Authorization",
+      "Intent Token", "Attenuating Agent Tokens", "Transaction Tokens for Agents",
+      "Scope Aggregation", "Agent Revocation Closure", "On-Behalf-Of for AI Agents",
+      "Agent Identity Document", "Signed Agent Identity Protocol", "Agent Passport System",
+      "X.509 Agent Identity Profile", "OIDC Agent Identity Claims", "Agent Enrollment Protocol",
+      "Mandate JWT", "Agent Delegation Receipts", "Authorization Receipts",
+      "Multi-Party Quorum Authz", "WIMSE for AI Agents", "Credential Delegation for Agents",
+      "<span class=\"muted\">&hellip;</span>"]),
+  ] %}
+  {%- for title, cls, items in cols %}
+  <div class="{{ cls }}"><h5>{{ title }}</h5><ul>
+    {%- for it in items %}<li>{{ it }}</li>{% endfor %}
+  </ul></div>
+  {%- endfor %}
+</div>
+{%- endcall %}
+{%- endmacro -%}

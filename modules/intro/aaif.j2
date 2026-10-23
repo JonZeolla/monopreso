@@ -1,0 +1,84 @@
+{#- modules/intro/aaif.j2
+    The Agentic AI Foundation's projects as logos: two anchors (MCP, A2A) on
+    the first press, the other eight on the second, the four announced this
+    week carried on a rounded highlight. Nothing on the slide but the names.
+
+    Sources
+      Project list: https://aaif.io/projects
+      Founding projects MCP, goose, AGENTS.md — Linux Foundation, Dec 9, 2025,
+        https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation
+      agentgateway joined Jun 4, 2026; A2A Aug 17, 2026; Agent Router Sep 9,
+        2026 — the respective https://aaif.io/blog posts.
+      Agent Skills, Open Responses, OpenEnv, OpenSandbox — Linux Foundation,
+        Oct 22, 2026, "Agentic AI Foundation Announces Four New Projects",
+        https://www.linuxfoundation.org/press/agentic-ai-foundation-announces-four-new-projects-agent-skills-open-responses-openenv-and-opensandbox
+
+    Logos (presentations/2026-10-agent-security/assets/aaif/) are each
+    project's own mark, used only to identify the project. Eight are the
+    projects' GitHub organisation avatars; agent-skills.svg and
+    open-responses.png come from aaif.io. AAIF and the AAIF logo design are
+    registered trademarks of the Linux Foundation; see
+    https://www.linuxfoundation.org/legal/trademark-usage.
+
+    Primitive-native: import WITH CONTEXT.
+      {%- from "modules/intro/aaif.j2" import projects as aaif_projects with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+
+{%- set _dir = "presentations/2026-10-agent-security/assets/aaif/" -%}
+{%- set _anchors = [
+  {"name": "Model Context Protocol", "file": "mcp.png"},
+  {"name": "Agent2Agent",            "file": "a2a.png"},
+] -%}
+{#- founding first, then by join date; `new` = announced Oct 22, 2026 -#}
+{%- set _rest = [
+  {"name": "goose",          "file": "goose.png"},
+  {"name": "AGENTS.md",      "file": "agents-md.png"},
+  {"name": "agentgateway",   "file": "agentgateway.png"},
+  {"name": "Agent Router",   "file": "agent-router.png"},
+  {"name": "Agent Skills",   "file": "agent-skills.svg",   "new": true},
+  {"name": "Open Responses", "file": "open-responses.png", "new": true},
+  {"name": "OpenEnv",        "file": "openenv.png",        "new": true},
+  {"name": "OpenSandbox",    "file": "opensandbox.png",    "new": true},
+] -%}
+
+{%- macro _tile(p, size, group="") -%}
+<figure class="af-tile {{ size }}{% if group %} step{% endif %}"{% if group %} data-step="{{ group }}"{% endif %}>
+  <span class="af-logo"><img src="{{ _dir }}{{ p.file }}" alt="{{ p.name }} logo"></span>
+  <figcaption>{{ p.name }}</figcaption>
+</figure>
+{%- endmacro -%}
+
+{%- macro projects() -%}
+{%- call content_slide("Agentic AI Foundation") %}
+<style>
+  .af-grid { display: grid; grid-template-columns: repeat(4, 13rem); justify-content: center;
+             gap: 1rem; margin-top: 1.5rem; }
+  .af-grid .lg { grid-column: span 2; }
+  .af-tile { display: flex; flex-direction: column; align-items: center; justify-content: center;
+             gap: .6rem; margin: 0; padding: .6rem; color: var(--slide-ink); text-align: center; }
+  .af-tile figcaption { font-weight: 700; line-height: 1.15; white-space: nowrap; }
+  .af-logo { display: block; background: #fff; border-radius: 22%; padding: 10%;
+             box-shadow: 0 0 0 1px var(--slide-hairline); }
+  .af-logo img { display: block; width: 100%; height: 100%; object-fit: contain; border-radius: 12%; }
+  .af-tile.lg { gap: 1rem; }
+  .af-tile.lg .af-logo { width: 11rem; height: 11rem; }
+  .af-tile.lg figcaption { font-size: 1.6rem; }
+  .af-tile.sm .af-logo { width: 5.25rem; height: 5.25rem; }
+  .af-tile.sm figcaption { font-size: .95rem; }
+  /* one band around the whole newest row; subgrid keeps its cells on the columns above */
+  .af-new { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding: .6rem;
+            border-radius: 1.25rem;
+            background: color-mix(in srgb, var(--accent-primary) 12%, transparent); }
+</style>
+{{ slide_heading("", "Agentic AI Foundation") }}
+<div class="af-grid">
+  {%- for p in _anchors %}{{ _tile(p, "lg", "anchors") }}{% endfor %}
+  {%- for p in _rest if not p.new %}{{ _tile(p, "sm", "rest") }}{% endfor %}
+  <div class="af-new step" data-step="rest">
+    {%- for p in _rest if p.new %}{{ _tile(p, "sm") }}{% endfor %}
+  </div>
+</div>
+{%- endcall %}
+{%- endmacro -%}
