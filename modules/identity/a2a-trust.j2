@@ -5,11 +5,11 @@
     signatures). Signing is a MAY (§8.4), JWS over the JCS-canonical card (§8.4.1); the key
     comes from the header's jku or a trusted key store (§8.4.3). RFC 8693 for token exchange.
     Import WITH CONTEXT.
-      {%- from "modules/identity/a2a-trust.j2" import agent_cards, three_identities, rogue_card with context %}
+      {%- from "modules/identity/a2a-trust.j2" import agent_cards with context %}
 -#}
 
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    content_slide, slide_heading, card_grid, numbered_steps, callout
+    content_slide, slide_heading
 -%}
 
 {%- macro agent_cards() -%}
@@ -87,41 +87,5 @@
     </div>
   </div>
 </div>
-{%- endcall %}
-{%- endmacro -%}
-
-
-{%- macro three_identities() -%}
-{%- call content_slide("Three identities") %}
-  {{ slide_heading("", "Three identities that get collapsed into one") }}
-  {{ numbered_steps([
-    {"title": "The calling agent",
-     "detail": "A workload with a service account. No human, no browser.",
-     "accent": "primary"},
-    {"title": "The end user it acts for",
-     "detail": "Their permissions should bound the work. Use OAuth token exchange (RFC 8693).",
-     "accent": "info"},
-    {"title": "The operator or tenant",
-     "detail": "The organization whose policy applies.",
-     "accent": "warning"},
-  ]) }}
-{%- endcall %}
-{%- endmacro -%}
-
-
-{%- macro rogue_card() -%}
-{%- call content_slide("The rogue card") %}
-  {{ slide_heading("", "A copied card steals real tokens") }}
-  {{ card_grid([
-    {"title": "The attack",
-     "body": "A client that obeys the card sends its credential to whoever the card names.",
-     "accent": "danger"},
-    {"title": "The fix",
-     "body": "Pin the key you trust. Never follow the key the card names.",
-     "accent": "success"},
-    {"title": "The check people skip",
-     "body": "Audience. Without it, every agent accepts every other agent&rsquo;s token.",
-     "accent": "warning"},
-  ], cols=3) }}
 {%- endcall %}
 {%- endmacro -%}
