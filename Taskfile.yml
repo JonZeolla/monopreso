@@ -126,7 +126,7 @@ tasks:
         else
           url="http://localhost:{{.PDF_PORT}}/?print-pdf"
         fi
-        /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --no-pdf-header-footer \
+        /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --headless --no-pdf-header-footer --window-size=1920,1080 \
           --virtual-time-budget=15000 --print-to-pdf="{{.OUTPUT_PDF}}" "${url}"
 
   cleanup-pdfs:

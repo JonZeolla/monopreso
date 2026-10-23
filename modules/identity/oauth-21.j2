@@ -1,0 +1,68 @@
+{#- modules/identity/oauth-21.j2
+    Sources: draft-ietf-oauth-v2-1-16 (3 Sept 2026; an IETF DRAFT, not yet a standard).
+    Baseline: PKCE MUST is §4.1.1 (authorization code only, §7.5.1 exemption); exact
+    redirect matching §2.3.1; no tokens in query strings §5.1; implicit/ROPC "not
+    specified" §1.8. Gap quotes are verbatim from the cited sections (unchanged -15→-16).
+    Primitive-native: import WITH CONTEXT.
+      {%- from "modules/identity/oauth-21.j2" import baseline, gaps_for_agents with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading, card_grid, callout
+-%}
+
+{%- macro baseline() -%}
+{%- call content_slide("OAuth 2.1 baseline") %}
+  {{ slide_heading("", "OAuth 2.1") }}
+  {#- A drawn check in a soft success disc, not the emoji: the only job of the
+      mark is to say "these are good things" without shouting. All three cards
+      take the success accent so no bar reads as a warning. -#}
+  <style>.o21-base .w-1 { display: none; }</style>
+  {#- display:inline-block: Tailwind's preflight makes every svg a block, which
+      would drop the title onto its own line under the tick. -#}
+  {%- set tick = '<svg viewBox="0 0 24 24" aria-hidden="true" style="display:inline-block;width:1em;height:1em;vertical-align:-.12em;margin-right:.45rem;">'
+      ~ '<circle cx="12" cy="12" r="11" fill="var(--accent-success)" fill-opacity=".18" stroke="var(--accent-success)" stroke-width="1.6"/>'
+      ~ '<path d="M7 12.5l3.2 3.2L17 9" fill="none" stroke="var(--accent-success)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' %}
+  <div class="o21-base">
+  {{ card_grid([
+    {"title": tick ~ "Requires PKCE for the authorization code flow", "body": "", "accent": "success"},
+    {"title": tick ~ "Safer by default (stricter URI matching, fewer places to put tokens)", "body": "", "accent": "success"},
+    {"title": tick ~ "Drops the implicit and resource owner password grants", "body": "", "accent": "success"},
+  ], cols=1, size="lg") }}
+  </div>
+  <p class="step" style="margin-top:2rem; font-size:2em; font-weight:700; text-align:center;">But it&rsquo;s still a draft?!</p>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro gaps_for_agents() -%}
+{%- call content_slide("OAuth 2.1 gaps") %}
+  {{ slide_heading("", "Downsides when used with Agents") }}
+  {#- No accent bars: the four are not graded against each other. Titles carry
+      the slide, so they are set larger; the section quotes stay as evidence. -#}
+  <style>
+    .o21-gaps .w-1 { display: none; }
+    .o21-gaps h4 { font-size: 1.55rem; line-height: 1.15; white-space: nowrap; }
+    .o21-gaps p { font-size: 1.1rem; margin-top: .5rem; }
+  </style>
+  <div class="o21-gaps">
+  {{ card_grid([
+    {"title": "Bearer tokens can be replayed by default",
+     "body": "<em>&sect;1.4.2: usable &ldquo;in any way that any other party in possession of it can.&rdquo; Fix: sender-constrain it (&sect;1.4.3).</em>",
+     "accent": "danger"},
+    {"title": "Clients need pre-registration or DCR",
+     "body": "<em>&sect;2: &ldquo;the client must have established an identifier.&rdquo; DCR (RFC 7591) does it at runtime, no pre-registration.</em>",
+     "accent": "warning"},
+    {"title": "Approvals expect a human in the loop",
+     "body": "<em>&sect;4.1: the server talks to the resource owner &ldquo;to get consent for resource access.&rdquo;</em>",
+     "accent": "info"},
+    {"title": "No concept of agent identity",
+     "body": "<em>&sect;1.4: a token is &ldquo;an authorization issued to the client.&rdquo; &sect;2.2: the client_id names the client.</em>",
+     "accent": "primary"},
+  ], cols=2) }}
+  </div>
+  <p style="margin-top:1.5rem; text-align:center; font-size:0.9em;">
+    Section numbers: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-16" target="_blank" rel="noopener" style="text-decoration:underline;">draft-ietf-oauth-v2-1-16 (September 2026)</a>
+  </p>
+{%- endcall %}
+{%- endmacro -%}

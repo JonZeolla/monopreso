@@ -1,0 +1,33 @@
+{# ================================================================
+   Mission — "Correct, Observable, Conformant" as a three-circle Venn.
+
+   Each circle and its label are one `.step`: three key presses build it. Drawn in SVG with
+   currentColor / opacity only: no hex, no brand classes.
+
+   Primitive-native: import WITH CONTEXT.
+   ================================================================ #}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide, slide_heading %}
+
+{%- macro venn() -%}
+{%- call content_slide("Mission") %}
+{{ slide_heading("", "I'm on a mission to make AI") }}
+<svg viewBox="0 0 800 520" style="width:min(100%, 105vh); margin:1rem auto 0; display:block; overflow:visible;"
+     role="img" aria-label="Venn diagram: Correct, Observable, Conformant">
+  {#- One step per circle: the circle and its label land together. Labels sit
+      in the part of each circle that no other circle overlaps. -#}
+  {%- for cx, cy, lx, ly, label in [
+    (400, 170, 400, 125, "Correct"),
+    (285, 360, 256, 405, "Observable"),
+    (515, 360, 544, 405, "Conformant"),
+  ] %}
+  <g class="step">
+    <circle cx="{{ cx }}" cy="{{ cy }}" r="150" fill="currentColor" fill-opacity="0.12"
+            stroke="currentColor" stroke-opacity="0.7" stroke-width="3"/>
+    <text x="{{ lx }}" y="{{ ly }}" fill="currentColor" font-weight="700" font-size="27"
+          text-anchor="middle">{{ label }}</text>
+  </g>
+  {%- endfor %}
+</svg>
+{%- endcall %}
+{%- endmacro -%}

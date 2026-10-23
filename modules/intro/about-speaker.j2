@@ -1,0 +1,63 @@
+{# ================================================================
+   About the speaker — instructor profile, then the contribution calendar.
+
+   Layout and type are lifted from the Zenable labs kickoff deck
+   (services/ui_frontend, InstructorSlide + the "I'm addicted" slide), so
+   this deliberately uses Tailwind utilities and the zenable colour tokens
+   rather than brand primitives. It matches the zenable pack; under other
+   packs it will look unstyled.
+
+   The calendar is built on every `task start` by scripts/github_activity.py
+   into modules/shared/generated/github-activity.svg; if that file is absent
+   the calendar slide renders nothing.
+   ================================================================ #}
+
+{%- macro profile(img="modules/shared/img/jon-zeolla.png") -%}
+<section class="slide flex items-center justify-center p-8" data-label="About">
+  <div class="max-w-6xl w-full fade-in">
+    <h3 class="text-5xl font-bold text-white mb-1">Jon Zeolla</h3>
+    <p class="text-xl italic font-medium bg-gradient-to-r from-zenable-teal to-zenable-blue bg-clip-text text-transparent mb-8">Founder &amp; CEO, Zenable</p>
+    <div class="flex gap-10 items-start">
+      <img src="{{ img }}" alt="Jon Zeolla"
+           class="w-56 h-56 rounded-2xl object-cover shrink-0 border-2 border-zenable-teal/30">
+      <div class="flex-1 min-w-0">
+        <ul class="space-y-3 mb-6">
+          {%- for line in [
+            "20 years building software, tooling, and infrastructure",
+            "Agentic AI Foundation Ambassador",
+            "Working in Machine Learning since 2014",
+            "Building AI Verifiers full time since late 2023",
+          ] %}
+          <li class="flex items-start gap-3 text-xl text-slate-200">
+            <span class="mt-2.5 h-2 w-2 shrink-0 rounded-full bg-zenable-teal"></span>
+            <span>{{ line }}</span>
+          </li>
+          {%- endfor %}
+        </ul>
+        <div class="flex flex-wrap gap-5">
+          <a class="text-sm text-zenable-blue" href="https://github.com/JonZeolla">@JonZeolla on GitHub</a>
+          <a class="text-sm text-zenable-blue" href="https://www.linkedin.com/in/jonzeolla">Jon Zeolla on LinkedIn</a>
+          <a class="text-sm text-zenable-blue" href="https://jonzeolla.com">jonzeolla.com</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}
+
+{%- macro activity() -%}
+<section class="slide flex items-center justify-center p-8" data-label="Contribution activity">
+  <div class="max-w-6xl w-full fade-in">
+    <h3 class="text-4xl font-bold text-white mb-6">I&rsquo;m addicted</h3>
+    <div class="rounded-2xl border border-slate-700/50 bg-slate-800/40 p-6">
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <span class="text-xs font-semibold uppercase tracking-[0.2em] text-zenable-teal">Contribution activity</span>
+        <a class="text-sm text-zenable-blue" href="https://github.com/JonZeolla">github.com/JonZeolla</a>
+      </div>
+      <div class="rounded-lg bg-[#0d1117] p-4">
+        {%- include "modules/shared/generated/github-activity.svg" ignore missing %}
+      </div>
+    </div>
+  </div>
+</section>
+{%- endmacro -%}

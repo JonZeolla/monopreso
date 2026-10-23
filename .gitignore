@@ -65,3 +65,6 @@ tags
 current-*.html
 .container_id
 .container_id.*
+
+# Built on every task start by scripts/github_activity.py
+modules/shared/generated/

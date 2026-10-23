@@ -59,8 +59,24 @@
           --slide-sunken:   rgba(2,6,23,0.55);
           --slide-hairline: rgba(148,163,184,0.16);
           --slide-rule:     rgba(100,116,139,0.28);
+          /* Semantic accents for slides that paint their own SVG/CSS. These
+             are the engine defaults; each brand pack overrides the ones it
+             owns (primary/secondary at least) in its theme. Same vocabulary
+             as the primitives' `accent` argument. */
+          --accent-primary:   #38bdf8;
+          --accent-secondary: #c084fc;
+          --accent-success:   #34d399;
+          --accent-warning:   #fbbf24;
+          --accent-danger:    #fb7185;
+          --accent-info:      #60a5fa;
         }
         body.light-mode {
+          --accent-primary:   #0369a1;
+          --accent-secondary: #7e22ce;
+          --accent-success:   #047857;
+          --accent-warning:   #b45309;
+          --accent-danger:    #be123c;
+          --accent-info:      #0369a1;
           --slide-ink:      #0f172a;
           --slide-ink-2:    #475569;
           --slide-ink-3:    #64748b;
