@@ -1,6 +1,8 @@
 {#- modules/identity/oauth-21.j2
-    Sources: draft-ietf-oauth-v2-1 (an IETF DRAFT, not yet a standard) for the baseline;
-    gaps framing from the Zenable labs (mcp-authorization-101, aauth-agent-authorization).
+    Sources: draft-ietf-oauth-v2-1-16 (3 Sept 2026; an IETF DRAFT, not yet a standard).
+    Baseline: PKCE MUST is §4.1.1 (authorization code only, §7.5.1 exemption); exact
+    redirect matching §2.3.1; no tokens in query strings §5.1; implicit/ROPC "not
+    specified" §1.8. Gap quotes are verbatim from the cited sections (unchanged -15→-16).
     Primitive-native: import WITH CONTEXT.
       {%- from "modules/identity/oauth-21.j2" import baseline, gaps_for_agents with context %}
 -#}
@@ -13,9 +15,9 @@
 {%- call content_slide("OAuth 2.1 baseline") %}
   {{ slide_heading("", "OAuth 2.1 is the current Agent foundation") }}
   {{ card_grid([
-    {"title": "Incorporates good practices like PKCE for every flow", "body": "", "accent": "primary"},
-    {"title": "Strengthens redirect and transport security by being more strict", "body": "", "accent": "info"},
-    {"title": "Removes high-risk grants like implicit and resource owner", "body": "", "accent": "danger"},
+    {"title": "Requires PKCE for the authorization code flow", "body": "", "accent": "primary"},
+    {"title": "Exact redirect URI matching, no bearer tokens in URLs", "body": "", "accent": "info"},
+    {"title": "Drops the implicit and resource owner password grants", "body": "", "accent": "danger"},
   ], cols=1, size="lg") }}
   <p class="step" style="margin-top:2rem; font-size:2em; font-weight:700; text-align:center;">But it&rsquo;s still a draft?!</p>
 {%- endcall %}
@@ -40,7 +42,7 @@
      "accent": "primary"},
   ], cols=2) }}
   <p style="margin-top:1.5rem; text-align:center; font-size:0.9em;">
-    Section numbers: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-15" target="_blank" rel="noopener" style="text-decoration:underline;">draft-ietf-oauth-v2-1-15 (March 2026)</a>
+    Section numbers: <a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-16" target="_blank" rel="noopener" style="text-decoration:underline;">draft-ietf-oauth-v2-1-16 (September 2026)</a>
   </p>
 {%- endcall %}
 {%- endmacro -%}

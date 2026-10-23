@@ -1,0 +1,170 @@
+{#- modules/identity/morph-kit.j2
+    Shared machinery for a "morphing architecture diagram" slide: one SVG whose
+    parties stay put while labels, arrows and badges change in place, one key
+    press per stage. Used by oauth-to-aauth.j2 and ema.j2.
+
+    Parties are drawn literally, not symbolically: a person, an IDE window, a
+    login form, a server rack, an employee badge, a key, a clipboard. Colour is
+    by side: .side-p (person / enterprise), .side-a (agent / client), .side-r
+    (resource / vendor). Inside a pictogram, `.shape` is the outline that takes
+    the fill, stroke and the hot glow; `.d` is a detail stroke; `.f` a detail fill.
+
+    Mechanics: `sentinels(ns, n)` emits n-1 zero-size `.step` spans; the engine's
+    key handling reveals them one per press. `styles(ns, n, moves)` keys every
+    rule on `:has(.{ns}-sN.step-visible)`, so stage N is live when sentinel N is
+    lit and N+1 is not. Elements opt in with classes:
+      onN   visible at stage N (default hidden; needs .{ns}-v)
+      dimN  faded at stage N
+      hotN  highlighted at stage N (accent on arrows / badges; glow on parties)
+      badN  danger-coloured at stage N
+    `moves` slides a badge: [{cls, from, at, to}] = class, resting transform,
+    the stage it moves at, the transform it moves to.
+    `crumbs(ns, labels)` renders the clickable stage strip. Print forces the
+    final stage, since the engine reveals steps by CSS there, not by class.
+-#}
+
+{#- 24-unit monoline glyphs, for small marks inside a pictogram. -#}
+{%- set ICON = {
+  "person": '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>',
+  "agent":  '<rect x="5" y="8" width="14" height="11" rx="3"/><circle class="dot" cx="9.5" cy="13.5" r="1.2"/><circle class="dot" cx="14.5" cy="13.5" r="1.2"/><path d="M12 8V4M9 4h6"/>',
+} -%}
+
+{%- macro glyph(name, x=0, y=0, s=1.85, cls="ic") -%}
+<g class="{{ cls }}" transform="translate({{ x - 12 * s }},{{ y - 12 * s }}) scale({{ s }})">{{ ICON[name] }}</g>
+{%- endmacro -%}
+
+{#- Pictograms, each centred on (0,0) and no taller than ±55 / wider than ±55,
+    so arrows can be aimed at a 110px box regardless of which one is drawn. -#}
+{%- set PICTO = {
+  "person": '<circle class="shape" r="55"/>' ~ glyph("person"),
+  "ide": '<rect class="shape" x="-55" y="-50" width="110" height="100" rx="10"/>
+    <path class="d" d="M-55,-32 H55 M-25,-32 V50"/>
+    <circle class="f" cx="-44" cy="-41" r="3"/><circle class="f" cx="-34" cy="-41" r="3"/><circle class="f" cx="-24" cy="-41" r="3"/>
+    <path class="d thin" d="M-47,-18 h14 M-47,-6 h10 M-47,6 h14 M-47,18 h8"/>
+    <path class="d" d="M-14,-18 h40 M-14,-6 h26 M-14,6 h48 M-14,18 h34 M-14,30 h20"/>',
+  "login": '<rect class="shape" x="-55" y="-50" width="110" height="100" rx="10"/>
+    <path class="d" d="M-55,-34 H55"/>
+    <circle class="f" cx="-44" cy="-42" r="3"/><circle class="f" cx="-34" cy="-42" r="3"/>
+    <circle class="d" cx="0" cy="-18" r="8"/>
+    <rect class="d thin" x="-38" y="-4" width="76" height="12" rx="3"/>
+    <rect class="d thin" x="-38" y="14" width="76" height="12" rx="3"/>
+    <rect class="f" x="-38" y="32" width="76" height="12" rx="4"/>',
+  "rack": '<rect class="shape" x="-50" y="-48" width="100" height="28" rx="5"/>
+    <rect class="shape" x="-50" y="-14" width="100" height="28" rx="5"/>
+    <rect class="shape" x="-50" y="20" width="100" height="28" rx="5"/>
+    <circle class="f" cx="-38" cy="-34" r="3.5"/><circle class="f" cx="-38" cy="0" r="3.5"/><circle class="f" cx="-38" cy="34" r="3.5"/>
+    <path class="d" d="M-24,-34 H36 M-24,0 H36 M-24,34 H36"/>',
+  "badge": '<path class="d" d="M-10,-58 V-40 M10,-58 V-40"/>
+    <rect class="f" x="-16" y="-64" width="32" height="10" rx="3"/>
+    <rect class="shape" x="-45" y="-40" width="90" height="90" rx="8"/>
+    <circle class="d" cx="0" cy="-12" r="13"/>
+    <path class="d" d="M-28,12 H28 M-18,26 H18"/>',
+  "key": '<circle class="shape" cx="-22" cy="0" r="24"/>
+    <circle class="d" cx="-22" cy="0" r="8"/>
+    <path class="d bold" d="M2,0 H50 M38,0 V15 M48,0 V11"/>',
+  "clipboard": '<rect class="shape" x="-42" y="-44" width="84" height="94" rx="8"/>
+    <rect class="f" x="-16" y="-50" width="32" height="12" rx="4"/>
+    <path class="d" d="M-28,-14 l6,6 l10,-12 M-6,-10 H28 M-28,12 l6,6 l10,-12 M-6,16 H28"/>',
+} -%}
+
+{%- macro picto(name, cls="") -%}
+<g class="{{ cls }}">{{ PICTO[name] }}</g>
+{%- endmacro -%}
+
+{%- macro sentinels(ns, n) -%}
+{%- for i in range(1, n) %}<span class="step {{ ns }}-s{{ i }}"></span>{% endfor -%}
+{%- endmacro -%}
+
+{%- macro crumbs(ns, labels) -%}
+<div class="mk-crumbs">
+  {%- for label in labels %}
+  <button type="button" class="mk-crumb">{{ label }}</button>
+  {%- endfor %}
+</div>
+<script>
+  document.querySelectorAll('.{{ ns }} .mk-crumb').forEach(function (crumb, stage) {
+    crumb.addEventListener('click', function () {
+      crumb.closest('.{{ ns }}').querySelectorAll('.step').forEach(function (s, j) {
+        s.classList.toggle('step-visible', j < stage);
+      });
+      crumb.blur();
+    });
+  });
+</script>
+{%- endmacro -%}
+
+{%- macro styles(ns, n, moves=[]) -%}
+{%- set R = "." ~ ns %}
+<style>
+  {{ R }} .mk-crumbs { display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem .35rem;
+                      margin:.25rem 0 .9rem; font-size:1rem; }
+  {{ R }} .mk-crumb { padding:.3rem .85rem; border:1px solid var(--slide-hairline); border-radius:999px;
+                     color:var(--slide-ink-3); transition:color 1.4s, border-color 1.4s; white-space:nowrap;
+                     cursor:pointer; background:none; font:inherit; }
+  {{ R }} .mk-crumb:hover { color: var(--slide-ink-2); }
+  {{ R }} .mk-crumb + .mk-crumb::before { content:"\2192"; margin:0 .6rem 0 -0.25rem; color:var(--slide-ink-3); }
+  {{ R }} svg { display:block; width:100%; height:auto; overflow:visible; font-family: inherit; }
+  {{ R }} .step { position:absolute; width:0; height:0; }
+
+  {{ R }} .side-p { --mk-side: var(--accent-primary); }
+  {{ R }} .side-a { --mk-side: var(--accent-secondary); }
+  {{ R }} .side-r { --mk-side: var(--accent-warning); }
+  {{ R }} .mk-party { transition: opacity 1.6s; }
+  {{ R }} .mk-party .shape { fill: var(--mk-side); fill-opacity: .12; stroke: var(--mk-side); stroke-width: 2.5;
+                            transition: stroke-width 1.6s, filter 1.6s; }
+  {{ R }} .mk-party .d { fill: none; stroke: var(--mk-side); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  {{ R }} .mk-party .d.thin { stroke-width: 2; opacity: .7; }
+  {{ R }} .mk-party .d.bold { stroke-width: 6; }
+  {{ R }} .mk-party .f { fill: var(--mk-side); stroke: none; }
+  {{ R }} .mk-party .ic { fill: none; stroke: var(--mk-side); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round;
+                         transition: opacity 1.4s; }
+  {{ R }} .mk-party .ic .dot { fill: var(--mk-side); stroke: none; }
+  {{ R }} .mk-party .t { fill: var(--slide-ink); font-size: 24px; font-weight: 700; text-anchor: middle; transition: fill 1.6s, opacity 1.4s; }
+  {{ R }} .mk-party .s { fill: var(--slide-ink-2); font-size: 16px; text-anchor: middle; }
+
+  {{ R }} .mk-arrow, {{ R }} .mk-tag { --mk-c: var(--slide-ink-2); transition: opacity 1.6s; }
+  {{ R }} .mk-arrow path { fill:none; stroke: var(--mk-c); stroke-width: 3; transition: stroke 1.6s; }
+  {{ R }} .mk-arrow path.dashed { stroke-dasharray: 8 8; }
+  {{ R }} .mk-arrow text { fill: var(--mk-c); font-size: 18px; font-weight: 600; transition: fill 1.6s, opacity 1.4s; }
+  {{ R }} .mk-tag rect { fill: var(--slide-sunken); stroke: var(--mk-c); stroke-width: 2; transition: stroke 1.6s; }
+  {{ R }} .mk-tag text { fill: var(--mk-c); font-size: 13px; font-weight: 700; letter-spacing: .06em;
+                        text-transform: uppercase; transition: fill 1.6s; }
+  {{ R }} .{{ ns }}-v { opacity: 0; transition: opacity 1.4s; }
+  {%- for m in moves %}
+  {{ R }} .{{ m.cls }} { transform: {{ m.from }}; transition: transform 2.8s cubic-bezier(.4,0,.2,1), opacity 1.6s; }
+  {%- endfor %}
+
+  {%- for s in range(n) %}
+  {%- set sel = R
+        ~ (":has(." ~ ns ~ "-s" ~ s ~ ".step-visible)" if s else "")
+        ~ (":not(:has(." ~ ns ~ "-s" ~ (s + 1) ~ ".step-visible))" if s < n - 1 else "") %}
+  {{ sel }} .on{{ s }} { opacity: 1; }
+  {{ sel }} .dim{{ s }} { opacity: .22; }
+  {{ sel }} .hot{{ s }} { --mk-c: var(--accent-primary); }
+  {{ sel }} .hot{{ s }} .shape { stroke-width: 4.5; filter: drop-shadow(0 0 10px var(--mk-side)); }
+  {{ sel }} .hot{{ s }} .t { fill: var(--mk-side); }
+  {{ sel }} .bad{{ s }} { --mk-c: var(--accent-danger); }
+  {{ sel }} .mk-crumb:nth-child(-n+{{ s }}) { color: var(--slide-ink-2); }
+  {{ sel }} .mk-crumb:nth-child({{ s + 1 }}) { color: var(--slide-ink); border-color: var(--accent-primary); }
+  {%- for m in moves if s >= m.at %}
+  {{ sel }} .{{ m.cls }} { transform: {{ m.to }}; }
+  {%- endfor %}
+  {%- endfor %}
+
+  @media print {
+    {{ R }} .{{ ns }}-v { opacity: 0 !important; }
+    {{ R }} .on{{ n - 1 }} { opacity: 1 !important; }
+    {{ R }} .mk-arrow, {{ R }} .mk-tag { --mk-c: var(--slide-ink-2) !important; }
+    {{ R }} .mk-party .shape { stroke-width: 2.5 !important; filter: none !important; }
+    {{ R }} .mk-party .t { fill: var(--slide-ink) !important; }
+    {{ R }} .hot{{ n - 1 }} { --mk-c: var(--accent-primary) !important; }
+    {{ R }} .hot{{ n - 1 }} .shape { stroke-width: 4.5 !important; }
+    {{ R }} .hot{{ n - 1 }} .t { fill: var(--mk-side) !important; }
+    {%- for m in moves %}
+    {{ R }} .{{ m.cls }} { transform: {{ m.to }} !important; }
+    {%- endfor %}
+    {{ R }} .mk-crumb { color: var(--slide-ink-2) !important; border-color: var(--slide-hairline) !important; }
+    {{ R }} .mk-crumb:nth-child({{ n }}) { color: var(--slide-ink) !important; border-color: var(--accent-primary) !important; }
+  }
+</style>
+{%- endmacro -%}

@@ -176,11 +176,13 @@
    down the slide rather than a flow to be scanned across it — five stages with
    a sentence each are unreadable squeezed into horizontal cards, and the
    numbers make the ordering explicit rather than implied by arrows. #}
-{%- macro numbered_steps(items) -%}
+{%- macro numbered_steps(items, reveal=false) -%}
+{#- reveal="focus": items arrive one per key press and each earlier item recedes
+    as the next lands (the engine's .focus-step sequence). -#}
 <div class="flex flex-col w-full">
   {%- for item in items %}
   {%- set tw = _accent_tw(item.accent | default("neutral")) %}
-  <div class="flex gap-6">
+  <div class="flex gap-6{% if reveal %} focus-step{% if not loop.first %} step{% endif %}{% endif %}">
     <div class="flex-none flex flex-col items-center">
       <div class="w-12 h-12 flex-none rounded-full border-2 border-{{ tw }} flex items-center justify-center">
         <span class="text-xl font-bold text-{{ tw }}">{{ loop.index }}</span>

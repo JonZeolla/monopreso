@@ -37,26 +37,17 @@
 {%- from "modules/identity/oauth-21.j2" import
     baseline as oauth21_baseline,
     gaps_for_agents as oauth21_gaps with context %}
-{%- from "modules/identity/aauth.j2" import
-    what_it_is as aauth_what,
-    versus_oauth as aauth_versus_oauth,
-    access_modes as aauth_modes with context %}
-{%- from "modules/identity/dpop.j2" import
-    how_it_works as dpop_how,
-    what_it_refuses as dpop_refuses with context %}
-{%- from "modules/identity/a2a-trust.j2" import
-    agent_cards as a2a_cards,
-    three_identities as a2a_identities,
-    rogue_card as a2a_rogue with context %}
+{%- from "modules/identity/oauth-to-aauth.j2" import
+    morph as oauth_to_aauth with context %}
+{%- from "modules/identity/dpop.j2" import dpop with context %}
+{%- from "modules/identity/a2a-trust.j2" import agent_cards as a2a_cards with context %}
 {%- from "modules/identity/ema.j2" import
     problem as ema_problem,
-    id_jag_flow as ema_flow with context %}
+    morph as ema_morph with context %}
 {%- from "modules/verifiers/verifiers.j2" import
     four_kinds as verifiers_intro,
     coverage as verifiers_coverage with context %}
-{%- from "modules/agents/code-volume.j2" import
-    ten_years_github     as code_volume_ten_years,
-    late_2025_inflection as code_volume_inflection %}
+{%- from "modules/outro/workshops.j2" import lab_checklist as workshops with context %}
 {%- from "modules/outro/outro.j2" import thank_you %}
 
 
@@ -68,31 +59,24 @@
 {{ about_activity() }}
 {{ mission_venn() }}
 {{ ai_janitor_pair() }}
-{{ code_volume_ten_years() }}
-{{ code_volume_inflection() }}
 
 
 <!-- 1 — IDENTITY -->
 {{ statement([{"text": "Let&rsquo;s talk Agent Identity"}]) }}
 {{ oauth21_baseline() }}
 {{ oauth21_gaps() }}
-{{ aauth_what() }}
-{{ aauth_versus_oauth() }}
-{{ aauth_modes() }}
-{{ dpop_how() }}
-{{ dpop_refuses() }}
+{{ oauth_to_aauth() }}
+{{ dpop() }}
 {{ a2a_cards() }}
-{{ a2a_identities() }}
-{{ a2a_rogue() }}
 {{ ema_problem() }}
-{{ ema_flow() }}
+{{ ema_morph() }}
 
 
 <!-- 2 — VERIFIERS -->
-{{ statement([{"text": "Verifiers"}]) }}
 {{ verifiers_intro() }}
 {{ verifiers_coverage() }}
 
 
 <!-- CLOSE -->
+{{ workshops() }}
 {{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}

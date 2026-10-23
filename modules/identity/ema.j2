@@ -1,45 +1,179 @@
 {#- modules/identity/ema.j2
-    Sources: Zenable lab mcp-authorization-101.mdx; MCP Enterprise-Managed Authorization
-    extension; ID-JAG is an IETF draft (draft-ietf-oauth-identity-assertion-authz-grant);
-    RFC 8693, RFC 7523, RFC 8707. Import WITH CONTEXT.
-      {%- from "modules/identity/ema.j2" import problem, id_jag_flow with context %}
+    Enterprise-Managed Authorization for MCP.
+
+    Sources, in order of authority: the EMA extension spec
+    (modelcontextprotocol.io/extensions/auth/enterprise-managed-authorization,
+    promoted to Stable 2026-06-17); draft-ietf-oauth-identity-assertion-authz-grant-04
+    (ID-JAG, an IETF WG draft); RFC 8693 (token exchange, leg 1), RFC 7523
+    (jwt-bearer, leg 2), RFC 9728 (protected resource metadata); the MCP base
+    authorization spec (2025-06-18) for what the MCP server must check. The
+    problem slide's wording is the EMA docs page's own "What it is" list.
+
+    What the diagram asserts, and where it comes from:
+      - Leg 1 is a token exchange at the ENTERPRISE IdP (EMA §4): ID token in,
+        ID-JAG out. ID-JAG claims (draft §3.1): typ oauth-id-jag+jwt, `aud` = the
+        Resource Authorization Server's issuer, `resource` = the MCP server
+        (RFC 8707 form), `client_id` = the client's id AT THE RESOURCE AS (may
+        differ from its IdP id), `jti` unique, `scope` as granted by admin policy
+        (EMA §4.1, §7.2). Response token_type is "N_A" (EMA §4.2). Neither spec
+        says the ID-JAG is single-use.
+      - Leg 2 presents the ID-JAG as the `assertion` of a jwt-bearer grant at the
+        Resource (vendor's) Authorization Server (EMA §5), which already trusts the
+        enterprise IdP as issuer (draft §2.1) and mints an access token that MUST be
+        audience-restricted to the MCP server (EMA §5.1). The client authenticates
+        there with registered credentials or a Client ID Metadata Document (EMA §5).
+      - The MCP server MUST reject tokens not issued for it (MCP base auth spec,
+        "Token Audience Binding and Validation"). Issuer/scope checks are ordinary
+        resource-server behaviour, not an EMA MUST.
+      - No redirect to the vendor AS's authorization endpoint and no user-approval
+        step there (draft §3). SSO to the enterprise IdP still happens in a browser
+        (EMA §3).
+
+    Import WITH CONTEXT.
+      {%- from "modules/identity/ema.j2" import problem, morph with context %}
 -#}
 
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    content_slide, slide_heading, numbered_steps, pipe, callout
+    content_slide, slide_heading, numbered_steps
 -%}
+{%- from "modules/identity/morph-kit.j2" import picto, sentinels, crumbs, styles -%}
 
 {%- macro problem() -%}
 {%- call content_slide("Per-server OAuth") %}
   {{ slide_heading("", "Why per-server OAuth breaks in an enterprise") }}
   {{ numbered_steps([
-    {"title": "The user is the policy decision point",
-     "detail": "The consent screen asks the developer, not your admins.", "accent": "danger"},
-    {"title": "Deprovisioning does not propagate",
-     "detail": "Disable someone in the IdP and tokens at each vendor live on until they expire.", "accent": "warning"},
-    {"title": "Access cannot be enumerated",
-     "detail": "The grants sit in vendor databases you do not control.", "accent": "info"},
-    {"title": "Nowhere to configure it centrally, and users choose scopes",
-     "detail": "Each vendor is set up per user, and the developer picks what to approve.", "accent": "secondary"},
-  ]) }}
+    {"title": "Each employee authorizes each MCP server, individually",
+     "detail": "Onboarding means manually authorizing dozens of services.", "accent": "danger"},
+    {"title": "Offboarding is per service",
+     "detail": "Revoking access means every service, one at a time.", "accent": "warning"},
+    {"title": "No consistent policy",
+     "detail": "Security teams cannot enforce access policy when each user authorizes independently.", "accent": "info"},
+    {"title": "No visibility or control over which servers are in use",
+     "detail": "The grants live at the vendors, not with your admins.", "accent": "secondary"},
+  ], reveal="focus") }}
 {%- endcall %}
 {%- endmacro -%}
 
 
-{%- macro id_jag_flow() -%}
+{%- macro morph() -%}
 {%- call content_slide("Enterprise-Managed Authorization") %}
-  {{ slide_heading("", "Enterprise-Managed Authorization") }}
-  {{ pipe([
-    {"label": "Sign in once",
-     "detail": "Corporate SSO at the IdP. No per-vendor consent screen.",
-     "accent": "info"},
-    {"label": "Get an ID-JAG",
-     "detail": "Token exchange (RFC 8693) at the IdP. Scopes capped by admin policy.",
-     "accent": "primary"},
-    {"label": "Redeem it",
-     "detail": "Present it to the vendor&rsquo;s server (RFC 7523) for a token bound to one MCP server (RFC 8707).",
-     "accent": "success"},
-  ]) }}
-  <p class="step" style="margin-top:2rem; font-size:2em; font-weight:700; text-align:center;">(also a draft)</p>
+{{ styles("ema", 4, moves=[
+  {"cls": "ema-policy", "from": "translate(1412px, 106px)", "at": 1, "to": "translate(305px, 106px)"},
+]) }}
+<div class="ema" style="position:relative;">
+  {{ sentinels("ema", 4) }}
+  {{ slide_heading("", "Enterprise-Managed Authorization (EMA)") }}
+  {{ crumbs("ema", ["Per-server OAuth", "Leg 1: ID-JAG", "Leg 2: access token", "The call"]) }}
+
+  <svg viewBox="0 -15 1600 665" role="img"
+       aria-label="Architecture diagram that steps from per-server OAuth to Enterprise-Managed Authorization: the policy decision moves from the vendor's consent screen to the enterprise identity provider, which issues an ID-JAG that the vendor's authorization server redeems for an audience-bound access token.">
+    <defs>
+      <marker id="ema-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/>
+      </marker>
+    </defs>
+
+    {#- ── arrows ─────────────────────────────────────────────────── -#}
+
+    {#- Developer → MCP client, today: the human is the policy decision point -#}
+    <g class="mk-arrow ema-v on0 bad0">
+      <path d="M309,500 L701,500" marker-end="url(#ema-ah)"/>
+      <text x="505" y="484" text-anchor="middle">logs in and consents, per server</text>
+    </g>
+
+    {#- Developer ↕ Enterprise IdP: SSO once -#}
+    <g class="mk-arrow ema-v on1 on2 on3 hot1">
+      <path d="M250,240 L250,440" marker-start="url(#ema-ah)" marker-end="url(#ema-ah)"/>
+      <text x="264" y="346">corporate SSO, once</text>
+    </g>
+
+    {#- MCP client ↔ Enterprise IdP: leg 1 -#}
+    <g class="mk-arrow ema-v on1 on2 on3 hot1">
+      <path d="M722,447 L298,150" marker-start="url(#ema-ah)" marker-end="url(#ema-ah)"/>
+      <text x="566" y="320">ID token &#8644; ID-JAG</text>
+      <text x="598" y="346">token exchange, RFC 8693</text>
+      <text x="630" y="372">scope capped by admin policy</text>
+    </g>
+
+    {#- MCP client ↔ Vendor AS: per-server OAuth today, leg 2 under EMA -#}
+    <g class="mk-arrow ema-v on0 on2 on3 hot2">
+      <path d="M812,447 L1291,140" marker-start="url(#ema-ah)" marker-end="url(#ema-ah)"/>
+      <text class="ema-v on0" x="1010" y="290" text-anchor="end">browser redirect, consent screen,</text>
+      <text class="ema-v on0" x="1010" y="314" text-anchor="end">code &#8644; Bearer token</text>
+      <text class="ema-v on2 on3" x="1040" y="244" text-anchor="end">ID-JAG as the assertion</text>
+      <text class="ema-v on2 on3" x="1040" y="268" text-anchor="end">&#8644; access token</text>
+      <text class="ema-v on2 on3" x="1040" y="292" text-anchor="end">jwt-bearer grant, RFC 7523</text>
+    </g>
+
+    {#- Vendor AS → Enterprise IdP: the trust boundary, configured once -#}
+    <g class="mk-arrow ema-v on2 on3 hot2">
+      <path class="dashed" d="M1297,70 C1297,-20 298,-20 298,78" marker-end="url(#ema-ah)"/>
+      <text x="800" y="44" text-anchor="middle">already trusts the enterprise IdP as issuer &nbsp;&middot;&nbsp; validates against its JWKS</text>
+    </g>
+
+    {#- MCP server → Vendor AS: validation -#}
+    <g class="mk-arrow ema-v on0 on3">
+      <path d="M1350,240 L1350,440" marker-end="url(#ema-ah)"/>
+      <text x="1364" y="346">validates (JWKS)</text>
+    </g>
+
+    {#- MCP client → MCP server: the call -#}
+    <g class="mk-arrow ema-v on0 on3 bad0 hot3">
+      <path d="M818,482 L1296,482" marker-end="url(#ema-ah)"/>
+      <text class="ema-v on0" x="1057" y="466" text-anchor="middle">Bearer token</text>
+      <text class="ema-v on3" x="1057" y="466" text-anchor="middle">access token, aud = this server</text>
+    </g>
+
+    {#- ── parties ────────────────────────────────────────────────── -#}
+
+    <g class="mk-party side-p" transform="translate(250,500)">
+      {{ picto("person") }}
+      <text class="t" y="85">Developer</text>
+      <text class="s ema-v on0" y="108">authorizes each vendor themself</text>
+      <text class="s ema-v on1 on2" y="108">signs in once</text>
+      <text class="s ema-v on3" y="108">no approval step at the vendor</text>
+    </g>
+
+    <g class="mk-party side-a" transform="translate(760,500)">
+      {{ picto("ide") }}
+      <text class="t" y="85">MCP Client</text>
+      <text class="s ema-v on0" y="108">authorized by each user, at each vendor</text>
+      <text class="s ema-v on1 on2 on3" y="108">authorized by admin policy, at the IdP</text>
+    </g>
+
+    <g class="mk-party side-r hot3" transform="translate(1350,500)">
+      {{ picto("rack") }}
+      <text class="t" y="85">MCP Server</text>
+      <text class="s ema-v on0 on1 on2" y="108">trusts its vendor&rsquo;s authorization server</text>
+      <text class="s ema-v on3" y="108">must reject tokens not issued for it</text>
+    </g>
+
+    <g class="mk-party side-p dim0 hot1" transform="translate(250,120)">
+      {{ picto("badge") }}
+      <text class="t" y="85">Enterprise IdP</text>
+      <text class="s ema-v on0" y="108">not part of the decision</text>
+      <text class="s ema-v on1 on2 on3" y="108">runs admin policy, issues the ID-JAG</text>
+    </g>
+
+    <g class="mk-party side-r dim1 hot2" transform="translate(1350,120)">
+      {{ picto("login") }}
+      <text class="t" y="85">Vendor&rsquo;s Auth Server</text>
+      <text class="s ema-v on0" y="108">login and consent, per vendor</text>
+      <text class="s ema-v on1" y="108">waiting</text>
+      <text class="s ema-v on2 on3" y="108">redeems the ID-JAG, mints its own token</text>
+      <g class="mk-tag ema-v on0" transform="translate(62,14)">
+        <rect width="100" height="24" rx="12"/>
+        <text x="50" y="16.5" text-anchor="middle">consent</text>
+      </g>
+    </g>
+
+    {#- The policy badge: at the vendor until press 1, then it slides to the
+        enterprise IdP. That slide is the whole point of EMA. -#}
+    <g class="mk-tag ema-policy hot1">
+      <rect width="90" height="24" rx="12"/>
+      <text x="45" y="16.5" text-anchor="middle">policy</text>
+    </g>
+  </svg>
+</div>
 {%- endcall %}
 {%- endmacro -%}

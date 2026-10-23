@@ -1,44 +1,115 @@
 {#- modules/identity/dpop.j2
-    Sources: Zenable lab agent-identity-dpop-sdjwt.mdx; RFC 9449 (DPoP), RFC 9901 (SD-JWT).
+    DPoP (RFC 9449) as one picture: the same token stolen twice. Left, a bearer
+    token leaks and the resource accepts the copy (§1.4.2 of OAuth 2.1). Right, the
+    token is bound to the client's key (cnf.jkt, §6.1) and every request carries a
+    unique proof (§4); the resource checks the proof key matches the token (§7.1).
+    The thief's copy has no key, so no proof, so no entry. §2: "DPoP renders
+    exfiltrated tokens alone unusable" (if the key is non-extractable; a captured
+    proof can still be replayed inside its freshness window, §11.1).
+
+    Sources: RFC 9449 only. Pictograms and stage CSS come from morph-kit.j2.
     Import WITH CONTEXT.
-      {%- from "modules/identity/dpop.j2" import how_it_works, what_it_refuses with context %}
+      {%- from "modules/identity/dpop.j2" import dpop with context %}
 -#}
 
-{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    content_slide, slide_heading, pipe, pros_cons
--%}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+{%- from "modules/identity/morph-kit.j2" import picto, sentinels, styles -%}
 
-{%- macro how_it_works() -%}
+{%- macro dpop() -%}
 {%- call content_slide("DPoP") %}
+{{ styles("dp", 4) }}
+<style>
+  .dp .side-x { --mk-side: var(--accent-danger); }
+  .dp .dp-bad { --mk-c: var(--accent-danger); }
+  .dp .dp-lbl { fill: var(--slide-ink-3); font-size: 15px; font-weight: 700; letter-spacing: .16em; text-anchor: middle; }
+  .dp .ok { fill: var(--accent-success); } .dp .no { fill: var(--accent-danger); }
+  .dp .verdict { font-size: 34px; font-weight: 800; text-anchor: middle; }
+  .dp .divider { stroke: var(--slide-rule); stroke-width: 2; stroke-dasharray: 4 10; }
+</style>
+<div class="dp" style="position:relative;">
+  {{ sentinels("dp", 4) }}
   {{ slide_heading("", "Demonstrating Proof of Possession (DPoP)") }}
-  {{ pipe([
-    {"label": "Bind a token to a key when it&rsquo;s issued",
-     "accent": "primary"},
-    {"label": "During each request, re-sign the JWT using the private key",
-     "accent": "info"},
-    {"label": "Verify at the resource server (not the IdP)",
-     "accent": "success"},
-  ]) }}
-{%- endcall %}
-{%- endmacro -%}
 
+  <svg viewBox="0 60 1600 630" role="img"
+       aria-label="Two scenes. Left: a client sends a bearer token to a resource; a thief copies the token from a log and the resource accepts the copy. Right: the client holds a private key and sends the token with a fresh proof; the thief's copy of the token has no proof and is refused.">
+    <defs>
+      <marker id="dp-ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/>
+      </marker>
+    </defs>
 
-{%- macro what_it_refuses() -%}
-{%- call content_slide("When to use DPoP") %}
-  {{ slide_heading("", "When to use this") }}
-  {{ pros_cons(
-    benefits=[
-      {"title": "Replay of a stolen token", "detail": "A repeated <code>jti</code> or a stale <code>iat</code> is refused."},
-      {"title": "Wrong target or token", "detail": "Mismatched <code>htu</code>, <code>htm</code>, or <code>ath</code>."},
-      {"title": "Algorithm tricks", "detail": "Symmetric-algorithm confusion fails an allowlist."},
-      {"title": "Downgrade", "detail": "An unbound token on a strict endpoint."},
-    ],
-    shortcomings=[
-      {"title": "Forged tokens", "detail": "Storm-0558 stole a signing key and minted its own."},
-      {"title": "A stolen private key", "detail": "Whoever holds the key can sign valid proofs."},
-      {"title": "A misbehaving agent", "detail": "It still holds a valid key and token."},
-    ],
-    ben_label="What DPoP prevents",
-    short_label="What it doesn&rsquo;t") }}
+    <path class="divider" d="M800,70 V670"/>
+    <text class="dp-lbl" x="420" y="90">BEARER</text>
+    <text class="dp-lbl dp-v on2 on3" x="1220" y="90">DPoP</text>
+
+    {#- ── left: bearer ─────────────────────────────────────────── -#}
+    <g class="mk-arrow">
+      <path d="M282,210 H562" marker-end="url(#dp-ah)"/>
+    </g>
+    <g class="mk-tag" transform="translate(372,180)">
+      <rect width="100" height="30" rx="15"/><text x="50" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token</text>
+    </g>
+    <text class="verdict ok" x="700" y="222">&#10003;</text>
+
+    <g class="mk-party side-a" transform="translate(220,230)">
+      {{ picto("ide") }}
+      <text class="t" y="85">Client</text>
+    </g>
+    <g class="mk-party side-r" transform="translate(620,230)">
+      {{ picto("rack") }}
+      <text class="t" y="-72">Resource</text>
+    </g>
+
+    {#- the theft -#}
+    <g class="mk-arrow dp-bad dp-v on1 on2 on3">
+      <path class="dashed" d="M300,300 C300,420 300,450 326,478" marker-end="url(#dp-ah)"/>
+      <text x="318" y="400" style="font-size:16px">a leaked copy</text>
+      <path d="M418,520 L578,296" marker-end="url(#dp-ah)"/>
+    </g>
+    <text class="verdict ok dp-v on1 on2 on3" x="640" y="430">&#10003;</text>
+    <g class="mk-tag dp-bad dp-v on1 on2 on3" transform="translate(478,466)">
+      <rect width="100" height="30" rx="15"/><text x="50" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token</text>
+    </g>
+    <g class="mk-party side-x dp-v on1 on2 on3" transform="translate(370,540)">
+      {{ picto("person") }}
+      <text class="t" y="85">Thief</text>
+    </g>
+
+    {#- ── right: DPoP ──────────────────────────────────────────── -#}
+    <g class="mk-arrow dp-v on2 on3 hot2 hot3">
+      <path d="M1082,210 H1362" marker-end="url(#dp-ah)"/>
+    </g>
+    <g class="mk-tag dp-v on2 on3 hot2 hot3" transform="translate(1142,180)">
+      <rect width="160" height="30" rx="15"/><text x="80" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token + fresh proof</text>
+    </g>
+    <text class="verdict ok dp-v on2 on3" x="1500" y="222">&#10003;</text>
+
+    <g class="mk-party side-a dp-v on2 on3 hot2" transform="translate(1020,230)">
+      {{ picto("ide") }}
+      <g class="side-p" transform="translate(52,-50) scale(.45)">{{ picto("key") }}</g>
+      <text class="t" y="85">Client</text>
+      <text class="s" y="108">holds a private key; the token names it</text>
+    </g>
+    <g class="mk-party side-r dp-v on2 on3" transform="translate(1420,230)">
+      {{ picto("rack") }}
+      <text class="t" y="-72">Resource</text>
+    </g>
+
+    {#- the theft, again -#}
+    <g class="mk-arrow dp-bad dp-v on3">
+      <path class="dashed" d="M1100,300 C1100,420 1100,450 1126,478" marker-end="url(#dp-ah)"/>
+      <text x="1118" y="400" style="font-size:16px">a leaked copy</text>
+      <path d="M1218,520 L1378,296" marker-end="url(#dp-ah)"/>
+    </g>
+    <text class="verdict no dp-v on3" x="1440" y="430">&#10007;</text>
+    <g class="mk-tag dp-bad dp-v on3" transform="translate(1278,466)">
+      <rect width="100" height="30" rx="15"/><text x="50" y="20" text-anchor="middle" style="font-size:15px;text-transform:none;letter-spacing:0">token</text>
+    </g>
+    <g class="mk-party side-x dp-v on3" transform="translate(1170,540)">
+      {{ picto("person") }}
+      <text class="t" y="85">Thief</text>
+    </g>
+  </svg>
+</div>
 {%- endcall %}
 {%- endmacro -%}
