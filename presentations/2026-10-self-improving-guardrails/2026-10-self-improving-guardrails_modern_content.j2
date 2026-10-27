@@ -38,7 +38,8 @@
 
 {# ── Background ───────────────────────────────────────────────── #}
 {%- from "modules/context/context-layers.j2" import
-    layers as context_layers with context %}
+    layers as context_layers,
+    scope_filter as context_scope_filter with context %}
 {%- from "modules/context/context-files.j2" import
     mockup as context_files_mockup %}
 {%- from "modules/context/context-degradation.j2" import
@@ -80,6 +81,7 @@
      BACKGROUND — context, hooks, verifiers, review agents
      ================================================================ -->
 {{ context_layers() }}
+{{ context_scope_filter() }}
 {{ context_files_mockup() }}
 {{ context_degradation_quality_drop() }}
 {{ hooks_when_x_then_y() }}
