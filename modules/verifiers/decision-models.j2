@@ -1,0 +1,113 @@
+{#- modules/verifiers/decision-models.j2
+    Decision models (System One models): what comes back, and how fast.
+
+    Both slides are built from the Zenable "Decision models" lab on main
+    (services/ui_frontend labs/decision-models.mdx, October 2026): one support
+    ticket sent to a chat model held to a JSON enum and to Jev asked a Choice,
+    then the lab's 30-ticket benchmark of Jev, Claude Haiku 5.5 and a local
+    Laya on accuracy, latency, cost and calibration. Numbers are the lab's
+    own output, unchanged.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): colours
+    come from the engine's --slide-* and --accent-* tokens, so light mode and
+    other packs need nothing extra. Import WITH CONTEXT:
+
+      {%- from "modules/verifiers/decision-models.j2" import
+          probability_not_prose, speed with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading,
+    callout
+-%}
+
+{%- set _STYLE %}
+<style>
+  .dm { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 8px 0 18px; }
+  .dm-ask { font-size: 20px; color: var(--slide-ink-2); margin: 0 0 14px; }
+  .dm-ask strong { color: var(--slide-ink); }
+  .dm-k { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slide-ink-3); margin: 0 0 8px; }
+  .dm-k.on { color: var(--accent-success); }
+  .dm-code { margin: 0; padding: 16px 18px; border-radius: 12px; background: var(--slide-sunken); border: 1px solid var(--slide-hairline); color: var(--slide-ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 17px; line-height: 1.45; white-space: pre; }
+  .dm-note { font-size: 17px; color: var(--slide-ink-2); margin: 10px 0 0; }
+  .dm-src { font-size: 11px; color: var(--slide-ink-3); margin: 10px 0 0; text-align: right; }
+  .dms { width: 100%; max-height: 42vh; display: block; margin: 6px 0 10px; }
+  .dms text { fill: var(--slide-ink); font-size: 24px; font-weight: 700; }
+  .dms .sub { fill: var(--slide-ink-2); font-size: 15px; font-weight: 400; }
+  .dms .ms { font-size: 26px; }
+  .dms .axis { stroke: var(--slide-rule); stroke-width: 1; }
+  .dms .jev { fill: var(--accent-success); }
+  .dms .haiku { fill: var(--accent-info); }
+  .dms .laya { fill: var(--slide-ink-3); }
+  .dms .p95 { opacity: 0.35; }
+  .dms .legend { fill: var(--slide-ink-3); font-size: 13px; font-weight: 400; }
+</style>
+{%- endset %}
+
+
+{%- macro probability_not_prose() -%}
+{%- call content_slide("Decision models") %}
+  {{ _STYLE }}
+  {{ slide_heading("", "Decision models",
+                   "A System One model answers a question with a probability per option. A chat model held to a schema answers with a label.") }}
+  <p class="dm-ask"><strong>Ticket:</strong> &ldquo;Our billing admin can&rsquo;t sign in any more. The reset link says the token is invalid. Nothing to do with the bill itself, she just can&rsquo;t get in.&rdquo; &nbsp;<strong>Which department?</strong> account &middot; billing &middot; sales &middot; technical</p>
+  <div class="dm">
+    <div>
+      <p class="dm-k">Chat model, held to a JSON enum</p>
+<pre class="dm-code">{
+  "department": "account"
+}</pre>
+      <p class="dm-note">A valid label. Nothing to threshold, and nothing to measure calibration with.</p>
+    </div>
+    <div>
+      <p class="dm-k on">Decision model, asked a Choice</p>
+<pre class="dm-code">{
+  "choice": "account",
+  "confidence": 1.00,
+  "probabilities": {
+    "account":   1.00,
+    "billing":   0.00,
+    "sales":     0.00,
+    "technical": 0.00
+  }
+}</pre>
+      <p class="dm-note">p(account) = 1.00. Above a 0.90 floor we route automatically; below it a person looks.</p>
+    </div>
+  </div>
+  {{ callout("Yes or no &rarr; <code>noul</code> &middot; pick one &rarr; <code>choice</code> &middot; rate against a rubric &rarr; <code>score</code>. Every answer is a probability your code can threshold, with no text to parse.", accent="primary") }}
+  <p class="dm-src">Ticket #2 of the Zenable decision-models lab: Jev 1.14 (223 ms, $0.00002) and Claude Haiku 5.5 (1,190 ms, $0.000054). Sources: docs.typesafe.ai &middot; artificialanalysis.ai/methodology/decision-index</p>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro speed() -%}
+{#- Bars are to one scale: 1000 px for 3,600 ms, so p95 of the slowest fits.
+    The darker bar is the median, the pale extension runs out to p95. -#}
+{%- set rows = [
+  ("jev",   "Jev 1.14",          "hosted decision model",      159,  224, "29/30 correct &middot; $0.0006 for 30 &middot; Brier 0.022"),
+  ("haiku", "Claude Haiku 5.5",  "chat model, JSON enum",     1102, 1503, "30/30 correct &middot; $0.0016 for 30 &middot; no probability to score"),
+  ("laya",  "Laya",              "decision model, local CPU", 3011, 3504, "15/30 correct &middot; $0 &middot; Brier 0.576"),
+] %}
+{%- call content_slide("Decision model speed") %}
+  {{ _STYLE }}
+  {{ slide_heading("", "Same 30 tickets, three backends",
+                   "Latency per decision. Jev and Laya take the same question schema; Haiku is held to a JSON enum.") }}
+  <svg class="dms" viewBox="0 0 1400 320" role="img"
+       aria-label="Median latency per decision: Jev 159 ms, Claude Haiku 5.5 1,102 ms, Laya on a two-core CPU 3,011 ms. Pale extensions show the 95th percentile: 224, 1,503 and 3,504 ms.">
+    {%- for cls, name, kind, p50, p95, meta in rows %}
+    {%- set y = 20 + loop.index0 * 100 %}
+    <text x="0" y="{{ y + 30 }}">{{ name }}</text>
+    <text class="sub" x="0" y="{{ y + 54 }}">{{ kind }}</text>
+    <rect class="{{ cls }} p95" x="340" y="{{ y + 10 }}" width="{{ (p95 * 1000 / 3600) | round(1) }}" height="48" rx="8"/>
+    <rect class="{{ cls }}" x="340" y="{{ y + 10 }}" width="{{ (p50 * 1000 / 3600) | round(1) }}" height="48" rx="8"/>
+    <text class="ms" x="{{ 340 + (p95 * 1000 / 3600) | round(1) + 16 }}" y="{{ y + 42 }}">{{ "{:,}".format(p50) }} ms</text>
+    <text class="sub" x="340" y="{{ y + 82 }}">{{ meta }}</text>
+    {%- endfor %}
+    <line class="axis" x1="340" y1="0" x2="340" y2="300"/>
+    <text class="legend" x="1400" y="312" text-anchor="end">solid bar: median &nbsp;&middot;&nbsp; pale bar: 95th percentile</text>
+  </svg>
+  {{ callout("The chat model was <strong>seven times slower</strong> at the median, <strong>2.7&times; the cost</strong>, and the only backend with nothing to threshold.", accent="success") }}
+  <p class="dm-src">Zenable decision-models lab, October 2026. Laya&rsquo;s README reports about 33 ms per question on a T4 GPU; the three seconds here is the two-core lab CPU.</p>
+{%- endcall %}
+{%- endmacro -%}

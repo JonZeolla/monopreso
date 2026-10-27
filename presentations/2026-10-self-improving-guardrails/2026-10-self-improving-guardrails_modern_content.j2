@@ -50,6 +50,9 @@
 {%- from "modules/verifiers/verifiers.j2" import
     four_kinds as verifiers_four_kinds,
     coverage as verifiers_coverage with context %}
+{%- from "modules/verifiers/decision-models.j2" import
+    probability_not_prose as decision_models,
+    speed as decision_model_speed with context %}
 {%- from "modules/agents/agent-review.j2" import layered_ai_review %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import
     pci_example as deterministic_pci_example %}
@@ -94,6 +97,8 @@
 {{ hooks_when_x_then_y() }}
 {{ hooks_in_action() }}
 {{ verifiers_four_kinds() }}
+{{ decision_models() }}
+{{ decision_model_speed() }}
 {{ verifiers_coverage() }}
 {{ layered_ai_review() }}
 {{ deterministic_pci_example() }}
