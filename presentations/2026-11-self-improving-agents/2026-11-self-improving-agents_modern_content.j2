@@ -1,0 +1,108 @@
+{# ================================================================
+   Self-Improving Coding Agents
+   TODO event · TODO date · TODO location · TODO duration
+
+   Modern-engine orchestration layer. This file chooses the brand and
+   the slide order; it contains no HTML. Every rendered slide comes
+   from a macro under modules/<topic>/ so other decks can reuse it.
+   See AGENTS.md for the primitive contract.
+
+   Structure:
+     Open         — title, About, contribution calendar, mission Venn,
+                    the janitor beats, code volume
+     Background   — context, hooks, verifiers, review agents
+     Self-improve — what runs on a loop, the two feedback loops
+     Context evals — SkillOpt
+     Close
+
+   Every slide is an existing macro, assembled unchanged. Modules that
+   resolve the brand pack themselves are imported WITH CONTEXT — without
+   it `branding` is undefined at load time. See AGENTS.md.
+   ================================================================ #}
+
+{# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide %}
+
+{# ── Opening ──────────────────────────────────────────────────── #}
+{%- from "modules/intro/about-speaker.j2" import
+    profile as about_profile,
+    activity as about_activity with context %}
+{%- from "modules/intro/mission.j2" import venn as mission_venn with context %}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
+{%- from "modules/agents/code-volume.j2" import
+    ten_years_github as code_volume_ten_years,
+    late_2025_inflection as code_volume_inflection %}
+
+{# ── Background ───────────────────────────────────────────────── #}
+{%- from "modules/context/context-layers.j2" import
+    layers as context_layers with context %}
+{%- from "modules/context/context-files.j2" import
+    mockup as context_files_mockup %}
+{%- from "modules/context/context-degradation.j2" import
+    quality_drop as context_degradation_quality_drop %}
+{%- from "modules/hooks/hooks.j2" import
+    when_x_then_y as hooks_when_x_then_y,
+    in_action as hooks_in_action %}
+{%- from "modules/verifiers/verifiers.j2" import
+    four_kinds as verifiers_four_kinds,
+    coverage as verifiers_coverage with context %}
+{%- from "modules/agents/agent-review.j2" import layered_ai_review %}
+
+{# ── Self-improvement ─────────────────────────────────────────── #}
+{%- from "modules/loops/loops.j2" import use_cases as loop_use_cases %}
+{%- from "modules/agents/agent-feedback-loop.j2" import
+    feedback_loop as agent_feedback_loop %}
+
+{# ── Context evals ────────────────────────────────────────────── #}
+{%- from "modules/context/skill-optimization.j2" import
+    context_and_skills with context %}
+
+{# ── Close ────────────────────────────────────────────────────── #}
+{%- from "modules/outro/outro.j2" import thank_you %}
+
+
+<!-- ================================================================
+     OPENING
+     ================================================================ -->
+{{ title_slide("Self-Improving Coding Agents", kicker="Jon Zeolla") }}
+{{ about_profile(img="modules/shared/img/jon-zeolla-2026.jpg") }}
+{{ about_activity() }}
+{{ mission_venn() }}
+{{ ai_janitor_pair() }}
+{{ code_volume_ten_years() }}
+{{ code_volume_inflection() }}
+
+
+<!-- ================================================================
+     BACKGROUND — context, hooks, verifiers, review agents
+     ================================================================ -->
+{{ context_layers() }}
+{{ context_files_mockup() }}
+{{ context_degradation_quality_drop() }}
+{{ hooks_when_x_then_y() }}
+{{ hooks_in_action() }}
+{{ verifiers_four_kinds() }}
+{{ verifiers_coverage() }}
+{{ layered_ai_review() }}
+
+
+<!-- ================================================================
+     SELF-IMPROVEMENT
+     ================================================================ -->
+{{ loop_use_cases() }}
+{{ agent_feedback_loop() }}
+
+
+<!-- ================================================================
+     CONTEXT EVALS
+     ================================================================ -->
+{{ context_and_skills() }}
+
+
+<!-- ================================================================
+     CLOSE
+     ================================================================ -->
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
