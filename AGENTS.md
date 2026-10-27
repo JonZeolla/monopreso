@@ -125,7 +125,7 @@ Topic directories currently in use:
 | Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |
 | Verifiers | `modules/verifiers/` | `verifiers.j2`†, `self-improvement.j2`† |
 | Agent identity | `modules/identity/` | `oauth-21.j2`†, `agents-different.j2`† (build-time → run-time axis, and OAuth's access token fanning out into AAuth's five), `missions.j2`† and `ema.j2`† (each a diagram that steps from the old flow to the new one in place, built on `morph-kit.j2`: shapes, stage CSS, clickable crumbs, one print page per stage), `dpop.j2`†, `a2a-trust.j2`†, `spec-sprawl.j2`† (the AuthZEN / OAuth / WIMSE / individual-draft landscape as a wall of names; sources in its header) |
-| Agent governance | `modules/governance/` | `tool-calls.j2`†, `what-is-governance.j2`† (legacy revealjs HTML also lives here) |
+| Agent governance | `modules/governance/` | `tool-calls.j2`†, `what-is-governance.j2`†, `requirements-evolve.j2`† (the nine events that should change a requirement, from the AI-Native lab deck) (legacy revealjs HTML also lives here) |
 | CI/CD enforcement | `modules/ci-cd/` | `cicd-enforcement.j2`, `server-side-review.j2` |
 | Intro | `modules/intro/` | `ai-janitor.j2`†, `about-speaker.j2`†, `aaif.j2`† (the foundation's projects as logos; sources and trademark notice in its header) |
 | Outro | `modules/outro/` | `outro.j2`, `workshops.j2`† (the zenable.io/workshops lab checklist) |
