@@ -82,7 +82,7 @@
 
 
 {%- macro speed() -%}
-{#- Bars are to one scale: 1000 px for 3,600 ms, so p95 of the slowest fits.
+{#- Bars are to one scale: 900 px for 3,600 ms, so p95 of the slowest and its label fit.
     The darker bar is the median, the pale extension runs out to p95. -#}
 {%- set rows = [
   ("jev",   "Jev 1.14",          "hosted decision model",      159,  224, "29/30 correct &middot; $0.0006 for 30 &middot; Brier 0.022"),
@@ -99,9 +99,9 @@
     {%- set y = 20 + loop.index0 * 100 %}
     <text x="0" y="{{ y + 30 }}">{{ name }}</text>
     <text class="sub" x="0" y="{{ y + 54 }}">{{ kind }}</text>
-    <rect class="{{ cls }} p95" x="340" y="{{ y + 10 }}" width="{{ (p95 * 1000 / 3600) | round(1) }}" height="48" rx="8"/>
-    <rect class="{{ cls }}" x="340" y="{{ y + 10 }}" width="{{ (p50 * 1000 / 3600) | round(1) }}" height="48" rx="8"/>
-    <text class="ms" x="{{ 340 + (p95 * 1000 / 3600) | round(1) + 16 }}" y="{{ y + 42 }}">{{ "{:,}".format(p50) }} ms</text>
+    <rect class="{{ cls }} p95" x="340" y="{{ y + 10 }}" width="{{ (p95 * 900 / 3600) | round(1) }}" height="48" rx="8"/>
+    <rect class="{{ cls }}" x="340" y="{{ y + 10 }}" width="{{ (p50 * 900 / 3600) | round(1) }}" height="48" rx="8"/>
+    <text class="ms" x="{{ 340 + (p95 * 900 / 3600) | round(1) + 16 }}" y="{{ y + 42 }}">{{ "{:,}".format(p50) }} ms</text>
     <text class="sub" x="340" y="{{ y + 82 }}">{{ meta }}</text>
     {%- endfor %}
     <line class="axis" x1="340" y1="0" x2="340" y2="300"/>
