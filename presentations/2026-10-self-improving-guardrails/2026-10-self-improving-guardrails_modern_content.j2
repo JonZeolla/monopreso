@@ -56,20 +56,17 @@
 {%- from "modules/agents/agent-review.j2" import layered_ai_review %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import
     pci_example as deterministic_pci_example %}
+{%- from "modules/guardrails/semgrep-rule.j2" import
+    house_rule as semgrep_house_rule with context %}
 
 {# ── Self-improvement ─────────────────────────────────────────── #}
 {%- from "modules/loops/loops.j2" import use_cases as loop_use_cases %}
 {%- from "modules/agents/agent-feedback-loop.j2" import
     feedback_loop as agent_feedback_loop %}
-{%- from "modules/governance/requirements-evolve.j2" import
-    triggers as requirements_evolve with context %}
-{%- from "modules/verifiers/self-improvement.j2" import
-    verifier_self_improvement with context %}
 
 {# ── Context evals ────────────────────────────────────────────── #}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
-{%- from "modules/context/context-refinement.j2" import evaluation_design %}
 
 {# ── Close ────────────────────────────────────────────────────── #}
 {%- from "modules/outro/outro.j2" import thank_you %}
@@ -97,11 +94,10 @@
 {{ hooks_when_x_then_y() }}
 {{ hooks_in_action() }}
 {{ verifiers_four_kinds() }}
-{{ decision_models() }}
-{{ decision_model_speed() }}
 {{ verifiers_coverage() }}
 {{ layered_ai_review() }}
 {{ deterministic_pci_example() }}
+{{ semgrep_house_rule() }}
 
 
 <!-- ================================================================
@@ -109,20 +105,14 @@
      ================================================================ -->
 {{ loop_use_cases() }}
 {{ agent_feedback_loop() }}
+{{ decision_models() }}
+{{ decision_model_speed() }}
 
 
 <!-- ================================================================
      CONTEXT EVALS
      ================================================================ -->
 {{ context_and_skills() }}
-
-
-<!-- ================================================================
-     ADDED FOR GROOMING — maturity, evolution, evals
-     ================================================================ -->
-{{ requirements_evolve() }}
-{{ verifier_self_improvement() }}
-{{ evaluation_design() }}
 
 
 <!-- ================================================================

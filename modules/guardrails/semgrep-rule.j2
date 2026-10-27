@@ -1,0 +1,84 @@
+{#- modules/guardrails/semgrep-rule.j2
+    A house Semgrep rule: the requirement in one sentence, the YAML that
+    enforces it, and the code it catches next to the code it wants.
+
+    Ported from the AI-Augmented lab deck on main (services/ui_frontend
+    slides/ai-augmented.tsx, "Policy as Code: Semgrep Rules"), copy unchanged.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): colours
+    come from the engine's --slide-* and --accent-* tokens. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/semgrep-rule.j2" import house_rule with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading
+-%}
+
+
+{%- macro house_rule() -%}
+{%- call content_slide("Semgrep rule") %}
+  <style>
+    .sg { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 10px; }
+    .sg-col { display: flex; flex-direction: column; gap: 14px; }
+    .sg-k { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slide-ink-3); margin: 0; }
+    .sg-win { border: 1px solid var(--slide-hairline); border-radius: 12px; background: var(--slide-sunken); overflow: hidden; }
+    .sg-win.warn { border-color: var(--accent-warning); }
+    .sg-win.bad  { border-color: var(--accent-danger); }
+    .sg-win.good { border-color: var(--accent-success); }
+    .sg-hdr { padding: 8px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--slide-hairline); color: var(--slide-ink-2); }
+    .sg-win.bad  .sg-hdr { color: var(--accent-danger); }
+    .sg-win.good .sg-hdr { color: var(--accent-success); }
+    .sg-win.warn .sg-hdr { color: var(--accent-warning); }
+    .sg-code { margin: 0; padding: 14px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; line-height: 1.5; color: var(--slide-ink); white-space: pre; }
+    .sg-code .c { color: var(--slide-ink-3); }
+  </style>
+  {{ slide_heading("", "Semgrep: pattern-based static analysis",
+                   "&ldquo;All external API calls must go through our API Gateway service with circuit breakers&rdquo;") }}
+  <div class="sg">
+    <div class="sg-col">
+      <p class="sg-k">Semgrep rule (YAML)</p>
+      <div class="sg-win warn">
+        <div class="sg-hdr">use-api-gateway.yaml</div>
+<pre class="sg-code">rules:
+  - id: use-api-gateway
+    patterns:
+      - pattern-either:
+          - pattern: requests.$METHOD($URL, ...)
+          - pattern: httpx.$METHOD($URL, ...)
+      - metavariable-regex:
+          metavariable: $URL
+          regex: ^f?["']https?://
+    message: |
+      External API calls go through our API Gateway
+      service, so they get circuit breakers and timeouts.
+      Use api_gateway.call(service=..., endpoint=...).
+    languages: [python]
+    severity: ERROR</pre>
+      </div>
+    </div>
+    <div class="sg-col">
+      <p class="sg-k">Code it catches</p>
+      <div class="sg-win bad">
+        <div class="sg-hdr">&#x2717; Calls the API directly</div>
+<pre class="sg-code">async def fetch_weather(city):
+    response = await requests.get(
+        f"https://api.weather.com/v1/{city}"
+    )
+    return response.json()</pre>
+      </div>
+      <div class="sg-win good">
+        <div class="sg-hdr">&#x2713; Goes through our gateway</div>
+<pre class="sg-code">async def fetch_weather(city):
+    return await api_gateway.call(
+        service="weather",
+        endpoint=f"/v1/{city}",
+        circuit_breaker=True,
+        timeout=5000,
+    )</pre>
+      </div>
+    </div>
+  </div>
+{%- endcall %}
+{%- endmacro -%}
