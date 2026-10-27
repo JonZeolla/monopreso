@@ -1,11 +1,11 @@
-# Self-Improving Coding Agents
+# Self Improving Guardrails for Coding Agents
 
-- **Event:** TODO
-- **Date:** TODO
+- **Event:** TODO (venue not yet recorded)
+- **Date:** Wednesday, October 28, 2026, 6:30–7:30 PM
 - **Location:** TODO
-- **Duration:** TODO
-- **Format:** TODO (in-person / virtual / hybrid)
-- **Audience:** TODO
+- **Duration:** 60 minutes
+- **Format:** in-person
+- **Audience:** security practitioners and engineers adopting coding agents
 
 ## Narrative
 

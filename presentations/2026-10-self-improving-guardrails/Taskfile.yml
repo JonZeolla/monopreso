@@ -32,6 +32,6 @@ tasks:
     deps: [start]
 
   start:
-    desc: "Start Self-Improving Coding Agents (default brand: zenable)"
+    desc: "Start Self Improving Guardrails for Coding Agents (default brand: zenable)"
     cmds:
       - task: root:start
