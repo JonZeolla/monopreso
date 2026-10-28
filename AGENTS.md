@@ -119,7 +119,7 @@ Topic directories currently in use:
 | Topic | Path | Slide modules |
 |---|---|---|
 | Context engineering | `modules/context/` | `context-files.j2`, `context-window.j2`, `context-degradation.j2`, `context-injection.j2`, `context-refinement.j2`, `context-rules-intro.j2`†, `skill-optimization.j2`†, `context-layers.j2`† (three slides ported from the Zenable Foundation lab deck: context layers into the agent, the scope funnel, same context / two models) |
-| AI / agent review | `modules/agents/` | `agent-review.j2` |
+| AI / agent review | `modules/agents/` | `agent-review.j2`, `common-mistake.j2`† (a PR review thread where a bot shames the coding agent and the agent dismisses it; three stages on `morph-kit.j2`) |
 | Hooks | `modules/hooks/` | `hooks.j2` |
 | Guardrails | `modules/guardrails/` | `ai-coding-maturity.j2`, `deterministic-guardrails.j2`, `layered-defense.j2`, `refined-rules.j2`, `policy-feedback.j2`, `deterministic-vs-llm.j2`†, `guardrail-decisions.j2`†, `structure-enables-speed.j2`†, `guardrail-spectrum.j2`†, `policy-as-code.j2`†, `maturity-model.j2`†, `control-scorecard.j2`†, `semgrep-rule.j2`† (a house Semgrep rule with the code it catches, from the AI-Augmented lab deck) |
 | Delivery lifecycle | `modules/sdlc/` | `lifecycle.j2`† |

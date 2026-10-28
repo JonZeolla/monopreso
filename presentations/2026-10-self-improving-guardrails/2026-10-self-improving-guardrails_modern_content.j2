@@ -62,6 +62,8 @@
 {%- from "modules/loops/loops.j2" import use_cases as loop_use_cases %}
 {%- from "modules/agents/agent-feedback-loop.j2" import
     feedback_loop as agent_feedback_loop %}
+{%- from "modules/agents/common-mistake.j2" import
+    shame_review as common_mistake_shame_review with context %}
 
 {# ── Context evals ────────────────────────────────────────────── #}
 {%- from "modules/context/skill-optimization.j2" import
@@ -112,6 +114,7 @@
      SELF-IMPROVEMENT
      ================================================================ -->
 {{ agent_feedback_loop() }}
+{{ common_mistake_shame_review() }}
 
 
 <!-- ================================================================
