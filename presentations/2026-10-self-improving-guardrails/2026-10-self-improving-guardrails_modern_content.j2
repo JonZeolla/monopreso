@@ -51,7 +51,6 @@
     four_kinds as verifiers_four_kinds,
     coverage as verifiers_coverage with context %}
 {%- from "modules/verifiers/decision-models.j2" import
-    probability_not_prose as decision_models,
     speed as decision_model_speed with context %}
 {%- from "modules/agents/agent-review.j2" import layered_ai_review %}
 {%- from "modules/guardrails/deterministic-guardrails.j2" import
@@ -102,9 +101,10 @@
 {{ hooks_when_x_then_y() }}
 {{ hooks_in_action() }}
 {{ verifiers_four_kinds() }}
+{{ semgrep_house_rule() }}
+{{ decision_model_speed() }}
 {{ layered_ai_review() }}
 {{ deterministic_pci_example() }}
-{{ semgrep_house_rule() }}
 {{ verifiers_coverage() }}
 
 
@@ -113,8 +113,6 @@
      ================================================================ -->
 {{ loop_use_cases() }}
 {{ agent_feedback_loop() }}
-{{ decision_models() }}
-{{ decision_model_speed() }}
 
 
 <!-- ================================================================
