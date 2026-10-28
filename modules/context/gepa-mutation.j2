@@ -1,0 +1,105 @@
+{#- modules/context/gepa-mutation.j2
+    How GEPA works, one press per step: run the parent prompt on a small
+    training batch, reflect on the traces and feedback, rewrite one module's
+    prompt, then test the edit against its parent on the same minibatch
+    before it is validated and pooled. Ported from the GEPA lab deck's
+    "Reflective Prompt Mutation" slide; the later steps sit ghosted until
+    their press.
+
+    Source: Agrawal et al., "GEPA: Reflective Prompt Evolution Can Outperform
+    Reinforcement Learning" (2025), §3, Algorithm 1, Appendix C.
+    https://arxiv.org/abs/2507.19457
+
+    Stage mechanics come from morph-kit.j2; the build is additive, so print
+    shows the final stage once. Colours are the engine's --slide-* and
+    --accent-* tokens. Import WITH CONTEXT:
+      {%- from "modules/context/gepa-mutation.j2" import reflective_mutation with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+{%- from "modules/identity/morph-kit.j2" import sentinels, crumbs, styles, arrowhead, ah -%}
+
+{%- macro reflective_mutation() -%}
+{%- call content_slide("Reflective prompt mutation") %}
+{{ styles("rpm", 4) }}
+<style>
+  .rpm .rpm-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .rpm .rpm-top .mk-crumbs { margin: 0 0 10px; flex: none; }
+  .rpm svg { max-height: 70vh; }
+  .rpm .box { fill: var(--slide-surface); stroke: var(--slide-rule); }
+  .rpm .dia { fill: var(--slide-sunken); stroke: var(--slide-rule); }
+  .rpm .pri { fill: color-mix(in srgb, var(--accent-primary) 12%, transparent); stroke: var(--accent-primary); stroke-width: 2; }
+  .rpm .inf { fill: color-mix(in srgb, var(--accent-info) 12%, transparent); stroke: var(--accent-info); stroke-width: 2; }
+  .rpm .t1 { fill: var(--slide-ink); } .rpm .t2 { fill: var(--slide-ink-2); } .rpm .t3 { fill: var(--slide-ink-3); }
+  .rpm .warn { fill: var(--accent-warning); } .rpm .pri-t { fill: var(--accent-primary); } .rpm .inf-t { fill: var(--accent-info); }
+  .rpm .tt { font-size: 24px; font-weight: 600; fill: var(--slide-ink); }
+  .rpm .ar { fill: none; stroke: var(--slide-ink-3); stroke-width: 2; }
+  .rpm .gh { opacity: .12; transition: opacity .6s; }   /* lit by the kit's onN rules */
+  .rpm .rpm-src { font-size: 13px; color: var(--slide-ink-3); margin: 10px 0 0; }
+  .rpm .rpm-src a { color: var(--accent-primary); text-decoration: none; }
+</style>
+<div class="rpm mk-live" style="position:relative;">
+  {{ sentinels("rpm", 4) }}
+  <div class="rpm-top">
+    <div>{{ slide_heading("", "Reflective Prompt Mutation") }}</div>
+    {{ crumbs("rpm", ["Run", "Reflect", "Rewrite", "Test"]) }}
+  </div>
+
+  <svg viewBox="0 0 1120 590" role="img"
+       aria-label="A reflection model reads the current prompt, training traces, scores and feedback, rewrites one prompt, and the variant is checked against its parent on the same training minibatch.">
+    {{ arrowhead("rpm") }}
+    <text class="tt rpm-v on0" x="0" y="28">Run the parent on a small training batch</text>
+    <text class="tt rpm-v on1" x="0" y="28">Reflect on what happened and why</text>
+    <text class="tt rpm-v on2" x="0" y="28">Rewrite one module&rsquo;s prompt</text>
+    <text class="tt rpm-v on3" x="0" y="28">Test the edit before keeping it</text>
+
+    <rect class="box" x="0" y="75" width="315" height="120" rx="14"/>
+    <text class="t2" x="22" y="108" font-size="17">Current prompt</text>
+    <text class="t1" x="22" y="148" font-size="23">&ldquo;Summarise the alert.&rdquo;</text>
+    <rect class="box" x="0" y="225" width="315" height="160" rx="14"/>
+    <text class="t2" x="22" y="258" font-size="17">Inputs &middot; outputs &middot; scores &middot; feedback</text>
+    <text class="warn" x="22" y="294" font-size="21" font-weight="600">Score: 4/10</text>
+    <text class="t1" x="22" y="325" font-size="21">&ldquo;The summary omitted</text>
+    <text class="t1" x="22" y="354" font-size="21">the affected system.&rdquo;</text>
+
+    <g class="gh on1 on2 on3">
+      <path class="ar" d="M 315 135 C 370 135 370 188 435 188" marker-end="{{ ah('rpm') }}"/>
+      <path class="ar" d="M 315 292 C 370 292 370 230 435 230" marker-end="{{ ah('rpm') }}"/>
+      <circle class="pri" cx="550" cy="210" r="108"/>
+      <text class="pri-t" x="550" y="197" font-size="30" font-weight="600" text-anchor="middle">Reflect</text>
+      <text class="t1" x="550" y="231" font-size="18" text-anchor="middle">What should change?</text>
+    </g>
+
+    <g class="gh on2 on3">
+      <path class="ar" d="M 658 210 H 795" marker-end="{{ ah('rpm') }}"/>
+      <rect class="inf" x="805" y="120" width="315" height="180" rx="14"/>
+      <text class="inf-t" x="827" y="153" font-size="18">New prompt</text>
+      <text class="t1" x="827" y="196" font-size="20">&ldquo;Include the affected system,</text>
+      <text class="t1" x="827" y="228" font-size="20">supporting evidence,</text>
+      <text class="t1" x="827" y="260" font-size="20">and recommended action.&rdquo;</text>
+    </g>
+
+    <g class="gh on3">
+      <path class="ar" d="M 962 300 V 385 H 505 V 410" marker-end="{{ ah('rpm') }}"/>
+      <rect class="box" x="355" y="420" width="300" height="70" rx="12"/>
+      <text class="t1" x="505" y="448" font-size="21" font-weight="600" text-anchor="middle">Old vs new</text>
+      <text class="t2" x="505" y="472" font-size="16" text-anchor="middle">Same training minibatch</text>
+      <path class="ar" d="M 655 455 H 710" marker-end="{{ ah('rpm') }}"/>
+      <path class="dia" d="M 770 416 L 830 455 L 770 494 L 710 455 Z"/>
+      <text class="t1" x="770" y="461" font-size="17" text-anchor="middle">Better?</text>
+      <path class="ar" d="M 830 455 H 900" marker-end="{{ ah('rpm') }}"/>
+      <text class="pri-t" x="862" y="443" font-size="15" text-anchor="middle">Yes</text>
+      <rect class="pri" x="906" y="424" width="210" height="62" rx="12"/>
+      <text class="pri-t" x="1011" y="451" font-size="19" text-anchor="middle">Validate</text>
+      <text class="pri-t" x="1011" y="473" font-size="16" text-anchor="middle">+ add to pool</text>
+      <path class="ar" d="M 770 494 V 526" marker-end="{{ ah('rpm') }}"/>
+      <text class="t2" x="792" y="514" font-size="15">No</text>
+      <text class="t2" x="770" y="552" font-size="18" text-anchor="middle">Discard</text>
+    </g>
+
+    <text class="t3" x="0" y="578" font-size="15">Illustrative prompt edit &middot; model weights stay fixed</text>
+  </svg>
+  <p class="rpm-src"><a href="https://arxiv.org/abs/2507.19457" target="_blank" rel="noopener noreferrer">GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning</a> &middot; &sect;3, Algorithm 1, Appendix C</p>
+</div>
+{%- endcall %}
+{%- endmacro -%}

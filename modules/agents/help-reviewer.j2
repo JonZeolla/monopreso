@@ -1,0 +1,166 @@
+{#- modules/agents/help-reviewer.j2
+    The other approach to a review finding: help the reviewer. One IDE
+    window, in the deterministic-guardrails style, four stages one key press
+    each: the hook fires and injects the triage protocol as one message; the
+    finding lands; the agent declines through the CLI with context, evidence
+    and a confidence; the request leaves for the API as three boxes, what
+    came from the model, what the CLI added from git and the session, and
+    the bearer token the server resolves to tenant, user and email. Each
+    finished section dims a little as the next one lands. No vendor is named.
+
+    Stage mechanics come from morph-kit.j2 (sentinels, crumbs, stage CSS).
+    The build is additive, so print shows the final stage once. Colours are
+    the engine's --slide-* and --accent-* tokens. Import WITH CONTEXT:
+
+      {%- from "modules/agents/help-reviewer.j2" import help_reviewer with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+{%- from "modules/identity/morph-kit.j2" import sentinels, crumbs, styles -%}
+
+{%- macro help_reviewer() -%}
+{%- call content_slide("Help the reviewer") %}
+{{ styles("hrv", 4) }}
+<style>
+  .hrv { --hrv-mono: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .hrv .hrv-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .hrv .hrv-top .mk-crumbs { margin: 0 0 10px; flex: none; }
+  .hrv .hrv-grid { display: grid; grid-template-columns: 1fr 1.05fr; gap: 22px; align-items: stretch; }
+  .hrv .hrv-mono { font-family: var(--hrv-mono); }
+  .hrv .hrv-win { border: 1px solid var(--slide-hairline); border-radius: 12px; background: var(--slide-sunken); overflow: hidden;
+                  display: flex; flex-direction: column; }
+  .hrv .hrv-bar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--slide-hairline);
+                  font-family: var(--hrv-mono); font-size: 13px; color: var(--slide-ink-2); }
+  .hrv .hrv-dots { display: inline-flex; gap: 5px; margin-right: 4px; }
+  .hrv .hrv-dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .hrv .hrv-dots i:nth-child(1) { background: var(--accent-danger); }
+  .hrv .hrv-dots i:nth-child(2) { background: var(--accent-warning); }
+  .hrv .hrv-dots i:nth-child(3) { background: var(--accent-success); }
+  .hrv .hrv-chat { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .hrv .hrv-code { margin: 0; padding: 8px 12px; border-radius: 6px; background: var(--slide-surface); font-family: var(--hrv-mono);
+                   font-size: 12.5px; line-height: 1.55; white-space: pre; overflow: hidden; color: var(--slide-ink); }
+  .hrv .hrv-code .c { color: var(--slide-ink-3); } .hrv .hrv-code .k { color: var(--accent-secondary); } .hrv .hrv-code .s { color: var(--accent-info); }
+  .hrv .hrv-code .pr { color: var(--slide-ink-3); } .hrv .hrv-code .fl { color: var(--accent-info); } .hrv .hrv-code .val { color: var(--accent-primary); }
+  .hrv .hrv-blk { border: 1px solid var(--slide-hairline); border-radius: 8px; padding: 10px 13px; font-size: 14px; line-height: 1.45;
+                  color: var(--slide-ink); background: var(--slide-surface); }
+  .hrv .hrv-blk.hook { border-color: color-mix(in srgb, var(--accent-primary) 40%, transparent); background: color-mix(in srgb, var(--accent-primary) 7%, transparent); }
+  .hrv .hrv-blk.finding { border-color: color-mix(in srgb, var(--accent-danger) 40%, transparent); background: color-mix(in srgb, var(--accent-danger) 8%, transparent); }
+  .hrv .hrv-lbl { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 700; letter-spacing: .04em; margin-bottom: 5px; }
+  .hrv .hook .hrv-lbl { color: var(--accent-primary); } .hrv .finding .hrv-lbl { color: var(--accent-danger); } .hrv .agent .hrv-lbl { color: var(--accent-secondary); }
+  .hrv .hrv-msg { white-space: pre-line; }
+  .hrv .hrv-hl { padding: 0 3px; border-radius: 3px; background: color-mix(in srgb, var(--accent-primary) 20%, transparent); }
+  .hrv .agent .hrv-code { margin-top: 8px; }
+  /* the request: three boxes, one per source */
+  .hrv .hrv-req { padding: 10px 12px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .hrv .hrv-box { position: relative; border: 1px solid; border-radius: 7px; padding: 8px 12px 7px; }
+  .hrv .hrv-box .hrv-code { padding: 0; background: none; line-height: 1.45; }
+  .hrv .hrv-cap { position: absolute; top: -9px; right: 10px; padding: 0 6px; background: var(--slide-sunken); font-size: 11.5px; font-weight: 600; letter-spacing: .04em; }
+  .hrv .hrv-box.model { border-color: color-mix(in srgb, var(--accent-primary) 60%, transparent); background: color-mix(in srgb, var(--accent-primary) 5%, transparent); }
+  .hrv .hrv-box.model .hrv-cap { color: var(--accent-primary); }
+  .hrv .hrv-box.cli { border-color: color-mix(in srgb, var(--accent-info) 60%, transparent); background: color-mix(in srgb, var(--accent-info) 5%, transparent); }
+  .hrv .hrv-box.cli .hrv-cap { color: var(--accent-info); }
+  .hrv .hrv-box.token { border-color: color-mix(in srgb, var(--accent-secondary) 60%, transparent); background: color-mix(in srgb, var(--accent-secondary) 5%, transparent); }
+  .hrv .hrv-box.token .hrv-cap { color: var(--accent-secondary); }
+  /* the send: a line from the CLI command to the API, labelled, ending in a cloud */
+  .hrv .hrv-right { display: flex; flex-direction: column; visibility: hidden; }
+  .hrv .hrv-flow { display: flex; align-items: center; gap: 10px; margin: auto 0 0 -22px; padding-top: 12px; font-family: var(--hrv-mono); font-size: 13px;
+                   font-weight: 600; letter-spacing: .06em; color: var(--slide-ink-3); }
+  .hrv .hrv-ln { flex: 1; height: 3px; background: var(--slide-rule); position: relative; }
+  .hrv .hrv-ln.end::after { content: ""; position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+                            border: 7px solid transparent; border-left: 11px solid var(--slide-rule); border-right: 0; }
+  .hrv .hrv-cloud { width: 58px; height: auto; flex: none; fill: none; stroke: var(--slide-ink-3); stroke-width: 3; stroke-linejoin: round; }
+  /* stages */
+  .hrv .hrv-g { display: none; }
+  .hrv:has(.hrv-s1.step-visible) .hrv-g1, .hrv:has(.hrv-s2.step-visible) .hrv-g2 { display: block; }
+  .hrv:has(.hrv-s3.step-visible) .hrv-right { visibility: visible; }
+  .hrv [class*="hrv-d"] { transition: opacity .35s; }
+  .hrv:has(.hrv-s1.step-visible) .hrv-d0, .hrv:has(.hrv-s2.step-visible) .hrv-d1, .hrv:has(.hrv-s3.step-visible) .hrv-d2 { opacity: .55; }
+  .hrv:has(.hrv-s3.step-visible) .hrv-flow { color: var(--accent-info); }
+  .hrv:has(.hrv-s3.step-visible) .hrv-ln { background: var(--accent-info); }
+  .hrv:has(.hrv-s3.step-visible) .hrv-ln.end::after { border-left-color: var(--accent-info); }
+  .hrv:has(.hrv-s3.step-visible) .hrv-cloud { stroke: var(--accent-info); fill: color-mix(in srgb, var(--accent-info) 16%, transparent); }
+  @media print {
+    .hrv .hrv-g { display: block !important; }
+    .hrv .hrv-right { visibility: visible !important; }
+    .hrv .hrv-d0, .hrv .hrv-d1, .hrv .hrv-d2 { opacity: .55 !important; }
+    .hrv .hrv-flow { color: var(--accent-info) !important; }
+    .hrv .hrv-ln { background: var(--accent-info) !important; }
+    .hrv .hrv-ln.end::after { border-left-color: var(--accent-info) !important; }
+    .hrv .hrv-cloud { stroke: var(--accent-info) !important; }
+  }
+</style>
+<div class="hrv mk-live" style="position:relative;">
+  {{ sentinels("hrv", 4) }}
+  <div class="hrv-top">
+    <div>{{ slide_heading("", "Help the reviewer") }}</div>
+    {{ crumbs("hrv", ["Hook", "Finding", "Response", "Sent"]) }}
+  </div>
+
+  <div class="hrv-grid">
+    {#- the IDE -#}
+    <div class="hrv-win">
+      <div class="hrv-bar"><span class="hrv-dots"><i></i><i></i><i></i></span>payments/export.py<span style="margin-left:auto; font-family:inherit; font-weight:600; color:var(--slide-ink-3);">Agent Chat</span></div>
+      <div class="hrv-chat">
+<pre class="hrv-code hrv-d0"><span class="c">40</span>  rows = <span class="k">await</span> db.query(
+<span class="c">41</span>      <span class="s">"SELECT … WHERE user_uid=$1"</span>, uid)  <span class="c"># was "…user_uid=" + uid</span></pre>
+        <div class="hrv-blk hook hrv-d0">
+          <div class="hrv-lbl">&#x26A1; hook triage</div>
+          <div class="hrv-msg">The requirements are real but <span class="hrv-hl">don't always fit the code in front of you</span>.
+Act on it, or <span class="hrv-hl">teach the reviewer why it doesn't</span>.
+Name the file, symbol, or value; never restate the rule. <span class="hrv-hl">The reader has none of your context.</span></div>
+        </div>
+        <div class="hrv-blk finding hrv-g hrv-g1 hrv-d1">
+          <div class="hrv-lbl">&#x26A0; Finding <span class="hrv-mono">f_c4p7</span> · <span class="hrv-mono">sql/no-string-concat</span></div>
+          <div class="hrv-msg"><span class="hrv-mono">payments/export.py:41</span> builds a SQL string with <span class="hrv-mono">+</span>. Bind the value instead of concatenating it.</div>
+        </div>
+        <div class="hrv-blk agent hrv-g hrv-g2 hrv-d2">
+          <div class="hrv-lbl">Claude</div>
+          <div class="hrv-msg">Declining. Line 41 already binds <span class="hrv-mono">$1</span>; the <span class="hrv-mono">+</span> only appears in the trailing comment. Telling the reviewer why:</div>
+<pre class="hrv-code"><span class="pr">$</span> cli finding feedback <span class="fl">--finding</span>=<span class="val">f_c4p7</span> \
+    <span class="fl">--verdict</span>=<span class="val">declined</span> <span class="fl">--reason</span>=<span class="val">rule_too_broad</span> \
+    <span class="fl">--context</span>=<span class="val">"query is parameterized; the + is only…"</span> \
+    <span class="fl">--evidence</span>=<span class="val">"catch: Query('…user_uid=' + id). not: …"</span> \
+    <span class="fl">--confidence</span>=<span class="val">9</span></pre>
+        </div>
+      </div>
+    </div>
+
+    {#- the wire: what actually leaves the machine -#}
+    <div class="hrv-right">
+      <div class="hrv-win">
+        <div class="hrv-bar">request</div>
+        <div class="hrv-req">
+          <div class="hrv-box model"><span class="hrv-cap">from the model</span>
+<pre class="hrv-code">"finding":    "f_c4p7",
+"verdict":    "declined",
+"reason":     "rule_too_broad",
+"context":    "query is parameterized; the + is only
+               in a trailing comment",
+"evidence":   "catch: Query('…user_uid=' + id).
+               not: Query('…user_uid=$1', id).
+               the + sits in the string, not a comment.",
+"confidence": 9</pre></div>
+          <div class="hrv-box cli"><span class="hrv-cap">CLI additions</span>
+<pre class="hrv-code">"repository_name": "acme/billing",
+"branch":          "feat/payment-export",
+"commit_sha":      "3f9c2e1",
+"git_dirty":       false,
+"session_id":      "7c1e-…",
+"ide_name":        "claude-code",
+"cli_version":     "1.42.0"</pre></div>
+          <div class="hrv-box token"><span class="hrv-cap">from the token</span>
+<pre class="hrv-code">Authorization: Bearer eyJhbGciOiJSUzI1NiIs…
+tenant  acme
+user    u_8f21
+email   dev@acme.example</pre></div>
+        </div>
+      </div>
+      <div class="hrv-flow">
+        <span class="hrv-ln"></span><span>POST /feedback</span><span class="hrv-ln end"></span>
+        <svg class="hrv-cloud" viewBox="0 0 64 40" role="img" aria-label="the API"><path d="M17 35 H47 A9.5 9.5 0 0 0 48.5 16.1 A13.5 13.5 0 0 0 22.5 12.6 A12 12 0 0 0 17 35 Z"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+{%- endcall %}
+{%- endmacro -%}

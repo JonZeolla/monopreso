@@ -1,7 +1,15 @@
 {#- modules/agents/agent-feedback-loop.j2
     Shared slide content. Currently emits sans-cloud-flavored HTML (vis-* classes);
     valid under branding="sans-cloud". Future work: replace inline markup with
-    brand-pack primitive calls so this content renders under any brand. See AGENTS.md. -#}
+    brand-pack primitive calls so this content renders under any brand. See AGENTS.md.
+
+    Motion: balls of light ride each loop (SMIL animateMotion, no script) and
+    pass behind a pill on the path — LEARN on the outer loop, VERIFY on the
+    inner one — whose outline lights as each ball goes by. The inner loop laps
+    several times faster than the outer: that cadence is the point. Balls are
+    cut out wherever a card or pill sits (one mask), so no colour has to match
+    the slide ground and the effect survives light mode. Print and
+    reduced-motion get the still diagram. -#}
 
 {%- macro feedback_loop() -%}
 <section class="vis-slide" data-label="Feedback Loop">
@@ -40,6 +48,12 @@
   body.light-mode .afl-svg marker path[fill="#c084fc"] { fill: #7e22ce; }
   body.light-mode .afl-svg marker path[fill="#60a5fa"] { fill: #0369a1; }
   body.light-mode .afl-svg marker path[fill="#4ade80"] { fill: #15803d; }
+  /* A white core vanishes on a light ground; the bloom still shows. */
+  body.light-mode .afl-svg .afl-core { fill: #1d4ed8; }
+  .afl-svg .afl-pill-text { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 0.24em; }
+  @media print, (prefers-reduced-motion: reduce) {
+    .afl-svg .afl-ball, .afl-svg .afl-rim { display: none; }
+  }
 </style>
 <svg class="afl-svg" viewBox="0 0 1400 720" preserveAspectRatio="xMidYMid meet"
          style="width:100%; max-height:78vh;"
@@ -61,7 +75,112 @@
         <marker id="afl-arrow-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
           <path d="M0,0 L10,5 L0,10 z" fill="#4ade80"/>
         </marker>
+
+        <!-- The light: a white core inside a wide, soft blue bloom. -->
+        <radialGradient id="afl-glow">
+          <stop offset="0%"   stop-color="#ffffff"/>
+          <stop offset="22%"  stop-color="#ffffff"/>
+          <stop offset="34%"  stop-color="#bfdbfe" stop-opacity="0.9"/>
+          <stop offset="52%"  stop-color="#60a5fa" stop-opacity="0.45"/>
+          <stop offset="76%"  stop-color="#60a5fa" stop-opacity="0.12"/>
+          <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="afl-rim-glow">
+          <stop offset="0%"   stop-color="#ffffff"/>
+          <stop offset="35%"  stop-color="#93c5fd"/>
+          <stop offset="70%"  stop-color="#93c5fd" stop-opacity="0"/>
+        </radialGradient>
+
+        <!-- Motion tracks. The outer one is the full orbit the four arcs sit on;
+             the inner one closes through the IDE card, where it is hidden. -->
+        <path id="afl-track-outer" d="M 1240,350 a 540,260 0 1 1 -1080,0 a 540,260 0 1 1 1080,0"/>
+        <path id="afl-track-inner" d="M 645,165 A 146,146 0 1 0 755,165 L 755,120 L 645,120 Z"/>
+
+        <!-- Everything the balls must pass behind: the four cards and both pills. -->
+        <mask id="afl-under" maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="720">
+          <rect width="1400" height="720" fill="#fff"/>
+          <rect x="570"  y="15"  width="260" height="150" rx="10" fill="#000"/>
+          <rect x="1120" y="285" width="240" height="130" rx="10" fill="#000"/>
+          <rect x="570"  y="519" width="260" height="182" rx="4"  fill="#000"/>
+          <rect x="20"   y="180" width="300" height="340" rx="12" fill="#000"/>
+          <rect x="-75" y="-17" width="150" height="34" rx="17" fill="#000" transform="translate(1080,535) rotate(-25.5)"/>
+          <rect x="635" y="429" width="130" height="34" rx="17" fill="#000"/>
+        </mask>
+        <!-- Rings traced on each pill's outline, so only the border lights as a ball passes. -->
+        <mask id="afl-rim-learn" maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="720">
+          <rect x="-75" y="-17" width="150" height="34" rx="17" fill="none" stroke="#fff" stroke-width="3" transform="translate(1080,535) rotate(-25.5)"/>
+        </mask>
+        <mask id="afl-rim-verify" maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="720">
+          <rect x="635" y="429" width="130" height="34" rx="17" fill="none" stroke="#fff" stroke-width="3"/>
+        </mask>
+        <!-- The loop lines stop at each pill's edge, as if running underneath it. -->
+        <mask id="afl-cut-pills" maskUnits="userSpaceOnUse" x="0" y="0" width="1400" height="720">
+          <rect width="1400" height="720" fill="#fff"/>
+          <rect x="-75" y="-17" width="150" height="34" rx="17" fill="#000" transform="translate(1080,535) rotate(-25.5)"/>
+          <rect x="635" y="429" width="130" height="34" rx="17" fill="#000"/>
+        </mask>
       </defs>
+
+      <!-- ── Loop arrows — true elliptical arcs that follow the orbit (rx=540, ry=260, cx=700, cy=350) ── -->
+      <g mask="url(#afl-cut-pills)">
+
+      <!-- IDE → Feedback (upper-right arc) -->
+      <path d="M 830,97.7 A 540,260 0 0 1 1222.9,285"
+            stroke="#60a5fa" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-blue)"/>
+      <text x="1104" y="150" font-size="14" fill="#93c5fd" text-anchor="middle" font-weight="600">signals</text>
+
+      <!-- Feedback → Knowledge DB (lower-right arc); the LEARN pill sits on it -->
+      <path d="M 1222.9,415 A 540,260 0 0 1 830,602.3"
+            stroke="#2dd4bf" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-teal)"/>
+
+      <!-- Knowledge DB → Verifiers (lower-left arc) -->
+      <path d="M 570,602.3 A 540,260 0 0 1 293,518"
+            stroke="#fbbf24" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-amber)"/>
+      <text x="430" y="602" font-size="14" fill="#fcd34d" text-anchor="middle" font-weight="600">pulls from</text>
+
+      <!-- Verifiers → IDE (upper-left arc) -->
+      <path d="M 293,182 A 540,260 0 0 1 570,97.7"
+            stroke="#c084fc" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-purple)"/>
+      <text x="430" y="108" font-size="14" fill="#d8b4fe" text-anchor="middle" font-weight="600">findings</text>
+
+      <!-- ── Inner self-loop: IDE → IDE (agent loop verifiers), a circle centred on (700,300); the VERIFY pill sits at its bottom (700,446) ── -->
+      <path d="M 645,165 A 146,146 0 1 0 755,165"
+            stroke="#4ade80" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-green)"/>
+      <text x="700" y="300" font-size="14" fill="#86efac" text-anchor="middle" font-weight="600">Agent Loop Verifiers</text>
+      <text x="700" y="320" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">every turn</text>
+      </g>
+
+      <!-- ── The balls. Outer: three, one lap per 10s. Inner: four, one lap per 1.2s. ── -->
+      <g class="afl-ball" mask="url(#afl-under)">
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="10s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="10s" begin="-3.33s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="10s" begin="-6.67s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="1.2s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion>
+        </g>
+        <g>
+          <circle r="30" fill="url(#afl-glow)"/><circle class="afl-core" r="8" fill="#fff"/>
+          <animateMotion dur="1.2s" begin="-0.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion>
+        </g>
+      </g>
 
       <!-- ── 12 o'clock: IDE (centered at 700,90; 260x150) ─────────── -->
       <g>
@@ -132,33 +251,30 @@
         <text x="170" y="495" font-size="11" fill="#94a3b8" text-anchor="middle">AWS SCP · Azure Policy · GCP Org Policy</text>
       </g>
 
-      <!-- ── Loop arrows — true elliptical arcs that follow the orbit (rx=540, ry=260, cx=700, cy=350) ── -->
+      <!-- ── Pills. Unfilled: the balls are already cut out beneath them. ── -->
+      <g transform="translate(1080,535) rotate(-25.5)">
+        <rect x="-75" y="-17" width="150" height="34" rx="17" fill="none" stroke="#2dd4bf" stroke-width="1.5"/>
+        <text class="afl-pill-text" x="0" y="0" dx="0.12em" font-size="13" font-weight="700" fill="#5eead4"
+              text-anchor="middle" dominant-baseline="central">LEARN</text>
+      </g>
+      <g>
+        <rect x="635" y="429" width="130" height="34" rx="17" fill="none" stroke="#4ade80" stroke-width="1.5"/>
+        <text class="afl-pill-text" x="700" y="446" dx="0.12em" font-size="13" font-weight="700" fill="#86efac"
+              text-anchor="middle" dominant-baseline="central">VERIFY</text>
+      </g>
 
-      <!-- IDE → Feedback (upper-right arc) -->
-      <path d="M 830,97.7 A 540,260 0 0 1 1222.9,285"
-            stroke="#60a5fa" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-blue)"/>
-      <text x="1104" y="150" font-size="14" fill="#93c5fd" text-anchor="middle" font-weight="600">signals</text>
-
-      <!-- Feedback → Knowledge DB (lower-right arc) -->
-      <path d="M 1222.9,415 A 540,260 0 0 1 830,602.3"
-            stroke="#2dd4bf" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-teal)"/>
-      <text x="1104" y="558" font-size="14" fill="#5eead4" text-anchor="middle" font-weight="600">updates</text>
-
-      <!-- Knowledge DB → Verifiers (lower-left arc) -->
-      <path d="M 570,602.3 A 540,260 0 0 1 293,518"
-            stroke="#fbbf24" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-amber)"/>
-      <text x="430" y="602" font-size="14" fill="#fcd34d" text-anchor="middle" font-weight="600">pulls from</text>
-
-      <!-- Verifiers → IDE (upper-left arc) -->
-      <path d="M 293,182 A 540,260 0 0 1 570,97.7"
-            stroke="#c084fc" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-purple)"/>
-      <text x="430" y="108" font-size="14" fill="#d8b4fe" text-anchor="middle" font-weight="600">findings</text>
-
-      <!-- ── Inner self-loop: IDE → IDE (agent loop verifiers) ── -->
-      <path d="M 645,165 C 440,430 960,430 755,165"
-            stroke="#4ade80" stroke-width="2.8" fill="none" marker-end="url(#afl-arrow-green)"/>
-      <text x="700" y="300" font-size="14" fill="#86efac" text-anchor="middle" font-weight="600">Agent Loop Verifiers</text>
-      <text x="700" y="320" font-size="11" fill="#64748b" text-anchor="middle" font-style="italic">every turn</text>
+      <!-- ── The same balls again, seen only through each pill's outline. ── -->
+      <g class="afl-rim" mask="url(#afl-rim-learn)">
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="10s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion></circle>
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="10s" begin="-3.33s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion></circle>
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="10s" begin="-6.67s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-outer"/></animateMotion></circle>
+      </g>
+      <g class="afl-rim" mask="url(#afl-rim-verify)">
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="1.2s" begin="0s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion></circle>
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="1.2s" begin="-0.3s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion></circle>
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="1.2s" begin="-0.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion></circle>
+        <circle r="34" fill="url(#afl-rim-glow)"><animateMotion dur="1.2s" begin="-0.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#afl-track-inner"/></animateMotion></circle>
+      </g>
     </svg>
   </div>
 </section>

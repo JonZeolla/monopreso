@@ -1,0 +1,157 @@
+{# ================================================================
+   Self Improving Guardrails for Coding Agents
+   Wednesday, October 28, 2026 · 6:30–7:30 PM · in person · 60 minutes
+
+   Modern-engine orchestration layer. This file chooses the brand and
+   the slide order; it contains no HTML. Every rendered slide comes
+   from a macro under modules/<topic>/ so other decks can reuse it.
+   See AGENTS.md for the primitive contract.
+
+   Structure:
+     Open         — title, About, contribution calendar, mission Venn,
+                    the janitor beats, code volume
+     Background   — context, hooks, verifiers, review agents
+     Self-improve — what runs on a loop, the two feedback loops
+     Context evals — SkillOpt
+     Close
+
+   Every slide is an existing macro, assembled unchanged. Modules that
+   resolve the brand pack themselves are imported WITH CONTEXT — without
+   it `branding` is undefined at load time. See AGENTS.md.
+   ================================================================ #}
+
+{# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
+{%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    title_slide, image_slide %}
+
+{# ── Opening ──────────────────────────────────────────────────── #}
+{%- from "modules/intro/about-speaker.j2" import
+    profile as about_profile,
+    activity as about_activity with context %}
+{%- from "modules/intro/mission.j2" import venn as mission_venn with context %}
+{%- from "modules/intro/ai-janitor.j2" import
+    both as ai_janitor_pair with context %}
+{%- from "modules/agents/code-volume.j2" import
+    ten_years_github as code_volume_ten_years,
+    late_2025_inflection as code_volume_inflection %}
+
+{# ── Background ───────────────────────────────────────────────── #}
+{%- from "modules/context/context-layers.j2" import
+    layers as context_layers,
+    scope_filter as context_scope_filter with context %}
+{%- from "modules/context/context-files.j2" import
+    mockup as context_files_mockup %}
+{%- from "modules/context/context-degradation.j2" import
+    quality_drop as context_degradation_quality_drop %}
+{%- from "modules/hooks/hooks.j2" import
+    when_x_then_y as hooks_when_x_then_y,
+    in_action as hooks_in_action %}
+{%- from "modules/verifiers/verifiers.j2" import
+    four_kinds as verifiers_four_kinds,
+    coverage as verifiers_coverage with context %}
+{%- from "modules/verifiers/decision-models.j2" import
+    speed as decision_model_speed with context %}
+{%- from "modules/agents/agent-review.j2" import layered_ai_review %}
+{%- from "modules/guardrails/deterministic-guardrails.j2" import
+    pci_example as deterministic_pci_example %}
+{%- from "modules/guardrails/semgrep-rule.j2" import
+    house_rule as semgrep_house_rule with context %}
+
+{# ── Self-improvement ─────────────────────────────────────────── #}
+{%- from "modules/loops/loops.j2" import use_cases as loop_use_cases %}
+{%- from "modules/agents/agent-feedback-loop.j2" import
+    feedback_loop as agent_feedback_loop %}
+{%- from "modules/agents/common-mistake.j2" import
+    shame_review as common_mistake_shame_review with context %}
+{%- from "modules/agents/help-reviewer.j2" import help_reviewer with context %}
+
+{# ── Context evals ────────────────────────────────────────────── #}
+{%- from "modules/context/eccentric-prompts.j2" import
+    star_trek as eccentric_prompts with context %}
+{%- from "modules/context/skill-optimization.j2" import
+    context_and_skills with context %}
+{%- from "modules/context/gepa-mutation.j2" import
+    reflective_mutation as gepa_reflective_mutation with context %}
+
+{# ── Governance close (the CSA Birmingham "make / update the rules" arc) ── #}
+{%- from "modules/governance/policy-statement.j2" import
+    unenforceable as policy_unenforceable with context %}
+{%- from "modules/guardrails/policy-feedback.j2" import policy_feedback %}
+{%- from "modules/governance/structured-requirement.j2" import
+    encryption_at_rest as requirement_encryption with context %}
+{%- from "modules/guardrails/refined-rules.j2" import refined_rules %}
+
+{# ── Close ────────────────────────────────────────────────────── #}
+{%- from "modules/outro/outro.j2" import thank_you %}
+
+
+<!-- ================================================================
+     OPENING
+     ================================================================ -->
+{{ title_slide("Self Improving Guardrails for Coding Agents", kicker="Jon Zeolla") }}
+{{ about_profile(img="modules/shared/img/jon-zeolla-2026.jpg") }}
+{{ about_activity() }}
+{{ mission_venn() }}
+{{ ai_janitor_pair() }}
+{{ code_volume_ten_years() }}
+{{ code_volume_inflection() }}
+
+
+<!-- ================================================================
+     BACKGROUND — context, hooks, verifiers, review agents
+     ================================================================ -->
+{{ context_files_mockup() }}
+{{ context_layers() }}
+{{ context_degradation_quality_drop() }}
+{{ context_scope_filter() }}
+{{ hooks_when_x_then_y() }}
+{{ hooks_in_action() }}
+{{ verifiers_four_kinds() }}
+{{ semgrep_house_rule() }}
+{{ deterministic_pci_example() }}
+{{ decision_model_speed() }}
+{{ layered_ai_review() }}
+{{ verifiers_coverage() }}
+
+
+<!-- ================================================================
+     SELF-IMPROVEMENT
+     ================================================================ -->
+{{ agent_feedback_loop() }}
+{{ common_mistake_shame_review() }}
+{{ eccentric_prompts() }}
+{{ help_reviewer() }}
+{{ gepa_reflective_mutation() }}
+
+
+<!-- ================================================================
+     CONTEXT EVALS
+     ================================================================ -->
+{{ image_slide("modules/shared/img/llms-as-optimizers-table.png",
+               "Table 1 comparing GSM8K zero-shot test accuracy of baseline and automatically optimised instructions, all scored by pre-trained PaLM 2-L.",
+               label="LLMs as optimizers",
+               caption='Table 1 from <a href="https://arxiv.org/abs/2309.03409" target="_blank" rel="noopener noreferrer">Large Language Models as Optimizers</a> (Yang et al., 2023): GSM8K zero-shot accuracy, baseline vs. optimised instructions') }}
+{{ context_and_skills() }}
+
+
+<!-- ================================================================
+     GOVERNANCE CLOSE — a prose policy, the pushback, the rule that
+     learned an exception, and the static analysis that keeps up
+     ================================================================ -->
+{{ policy_unenforceable() }}
+{{ policy_feedback() }}
+{{ requirement_encryption() }}
+{{ refined_rules() }}
+
+
+<!-- ================================================================
+     CLOSE
+     ================================================================ -->
+{{ thank_you(name="Jon Zeolla", linkedin_url="linkedin.com/in/jonzeolla") }}
+
+
+<!-- ================================================================
+     APPENDIX
+     ================================================================ -->
+{{ loop_use_cases() }}

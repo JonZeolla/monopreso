@@ -1,0 +1,103 @@
+{#- modules/guardrails/semgrep-rule.j2
+    A house Semgrep rule: the requirement in one sentence, the YAML that
+    enforces it, and the code it catches next to the code it wants.
+
+    Layout follows the AI-Augmented lab deck's "Policy as Code: Semgrep
+    Rules" slide. The rule itself is an authorization guardrail for FastAPI
+    (/admin routes must carry Depends(require_role("admin")) in the
+    signature), checked against positive and negative samples with Semgrep
+    1.181 before it went on the slide.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): colours
+    come from the engine's --slide-* and --accent-* tokens. Import WITH CONTEXT:
+
+      {%- from "modules/guardrails/semgrep-rule.j2" import house_rule with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading
+-%}
+
+
+{%- macro house_rule() -%}
+{%- call content_slide("Semgrep rule") %}
+  <style>
+    .sg { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; margin-top: 6px; }
+    .sg-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .sg-k { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slide-ink-3); margin: 0; }
+    .sg-win { border: 1px solid var(--slide-hairline); border-radius: 12px; background: var(--slide-sunken); overflow: hidden; }
+    .sg-win.warn { border-color: var(--accent-warning); }
+    .sg-win.bad  { border-color: var(--accent-danger); }
+    .sg-win.good { border-color: var(--accent-success); }
+    .sg-hdr { padding: 8px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; font-weight: 600; border-bottom: 1px solid var(--slide-hairline); color: var(--slide-ink-2); }
+    .sg-win.bad  .sg-hdr { color: var(--accent-danger); }
+    .sg-win.good .sg-hdr { color: var(--accent-success); }
+    .sg-win.warn .sg-hdr { color: var(--accent-warning); }
+    .sg-code { margin: 0; padding: 10px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.4; color: var(--slide-ink); white-space: pre; overflow: hidden; }
+    .sg-note { font-size: 14px; line-height: 1.4; color: var(--slide-ink-2); margin: 0; }
+    .sg-note code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  </style>
+  {{ slide_heading("", "Semgrep: pattern-based static analysis",
+                   "&ldquo;Every route under /admin requires the admin role, enforced in the route signature, not in the handler&rdquo;") }}
+  <div class="sg">
+    <div class="sg-col">
+      <p class="sg-k">Semgrep rule (YAML)</p>
+      <div class="sg-win warn">
+        <div class="sg-hdr">admin-route-requires-admin-role.yaml</div>
+<pre class="sg-code">rules:
+  - id: admin-route-requires-admin-role
+    languages: [python]
+    severity: ERROR
+    patterns:
+      - pattern: |
+          @$APP.$METHOD($PATH, ...)
+          def $FUNC(...):
+            ...
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(get|post|put|patch|delete)$
+      - metavariable-regex:
+          metavariable: $PATH
+          regex: ^["']/admin(/|["'])
+      - pattern-not: |
+          @$APP.$METHOD($PATH, ...)
+          def $FUNC(..., $U = Depends(require_role("admin")), ...):
+            ...
+      - pattern-not: |
+          @$APP.$METHOD($PATH, ...,
+              dependencies=[..., Depends(require_role("admin")), ...],
+              ...)
+          def $FUNC(...):
+            ...
+    message: |
+      /admin routes enforce the admin role in the signature,
+      where FastAPI runs it before the handler.
+      A check in the body is easy to skip.</pre>
+      </div>
+    </div>
+    <div class="sg-col">
+      <p class="sg-k">Code it catches</p>
+      <div class="sg-win bad">
+        <div class="sg-hdr">&#x2717; Authenticated, never authorized</div>
+<pre class="sg-code">@app.post("/admin/users/{user_id}/roles")
+async def set_roles(
+    user_id: str, roles: list[str],
+    user: User = Depends(current_user),
+):
+    return await repo.set_roles(user_id, roles)</pre>
+      </div>
+      <div class="sg-win good">
+        <div class="sg-hdr">&#x2713; Role required before the handler runs</div>
+<pre class="sg-code">@app.post("/admin/users/{user_id}/roles")
+async def set_roles(
+    user_id: str, roles: list[str],
+    user: User = Depends(require_role("admin")),
+):
+    return await repo.set_roles(user_id, roles)</pre>
+      </div>
+      <p class="sg-note">Any signed-in user could grant themselves admin. The rule reads the decorator path, the HTTP method and the parameter list; a check buried in the body does not satisfy it. Verified with Semgrep 1.181: two unguarded <code>/admin</code> routes flagged, three guarded ones and <code>/administrivia</code> passed.</p>
+    </div>
+  </div>
+{%- endcall %}
+{%- endmacro -%}

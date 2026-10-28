@@ -1,0 +1,40 @@
+{#- modules/context/eccentric-prompts.j2
+    The Star Trek prompt: the system message and answer prefix that an
+    automatic prompt optimiser found beat sober instructions on GSM8K.
+    One figure, two labelled blocks, the paper as the caption. Ported from
+    the GEPA lab deck's "Surprising Prompting Techniques" slide.
+
+    Source: Battle & Gollapudi, "The Unreasonable Effectiveness of Eccentric
+    Automatic Prompts" (2024), https://arxiv.org/abs/2402.10949
+
+    Written against the brand-pack primitive contract. Import WITH CONTEXT:
+      {%- from "modules/context/eccentric-prompts.j2" import star_trek with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+
+{%- macro star_trek() -%}
+{%- call content_slide("Eccentric prompts") %}
+  <style>
+    .ecp { border: 1px solid var(--slide-hairline); border-radius: 16px; background: var(--slide-surface); padding: 32px 36px;
+           display: flex; flex-direction: column; gap: 28px; margin-top: 8px; }
+    .ecp .ecp-k { font-size: 14px; font-weight: 700; letter-spacing: .04em; margin: 0 0 8px; }
+    .ecp .ecp-k.sys { color: var(--accent-primary); } .ecp .ecp-k.pre { color: var(--accent-secondary); }
+    .ecp p { font-size: 24px; line-height: 1.5; color: var(--slide-ink); margin: 0; }
+    .ecp-src { font-size: 14px; color: var(--slide-ink-3); margin: 14px 0 0; }
+    .ecp-src a { color: var(--accent-primary); text-decoration: none; }
+  </style>
+  {{ slide_heading("", "Surprising Prompting Techniques") }}
+  <figure class="ecp" style="margin:0;">
+    <div>
+      <p class="ecp-k sys">System Message:</p>
+      <p>&laquo;Command, we need you to plot a course through this turbulence and locate the source of the anomaly. Use all available data and your expertise to guide us through this challenging situation.&raquo;</p>
+    </div>
+    <div>
+      <p class="ecp-k pre">Answer Prefix:</p>
+      <p>Captain&rsquo;s Log, Stardate [insert date here]: We have successfully plotted a course through the turbulence and are now approaching the source of the anomaly.</p>
+    </div>
+  </figure>
+  <p class="ecp-src"><a href="https://arxiv.org/abs/2402.10949" target="_blank" rel="noopener noreferrer">The Unreasonable Effectiveness of Eccentric Automatic Prompts</a> &middot; Battle &amp; Gollapudi, 2024</p>
+{%- endcall %}
+{%- endmacro -%}

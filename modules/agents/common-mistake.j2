@@ -1,0 +1,183 @@
+{#- modules/agents/common-mistake.j2
+    A common mistake in self-improving agents: a review written to shame.
+    One GitHub-style PR page on its Files changed tab. Three stages, one
+    key press each: the PR opens on its diff; a review bot (SoftwareBunny)
+    drops a hostile comment onto line 41 and the thread inserts into the
+    diff, pushing the rest down; the coding agent replies in the same
+    thread, dismisses the review and resolves the conversation. Nothing was
+    learned on either side. The Conversation and Commits tabs are ordinary
+    PR views, clickable for realism only.
+
+    Stage mechanics come from morph-kit.j2 (sentinels, crumbs, stage CSS).
+    The build is additive, so print shows the final stage once. Colours are
+    the engine's --slide-* and --accent-* tokens, so light mode needs no
+    rules of its own. Import WITH CONTEXT:
+
+      {%- from "modules/agents/common-mistake.j2" import shame_review with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+{%- from "modules/identity/morph-kit.j2" import sentinels, crumbs, styles -%}
+
+{%- macro _av(kind, size="") -%}
+<span class="cmk-av cmk-av-{{ kind }} {{ size }}">{{ "SB" if kind == "bot" else "AI" }}</span>
+{%- endmacro -%}
+
+{%- macro shame_review() -%}
+{%- call content_slide("Common mistake") %}
+{{ styles("cmk", 3) }}
+<style>
+  .cmk { --cmk-mono: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .cmk .cmk-top { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+  .cmk .cmk-top .mk-crumbs { margin: 0 0 10px; flex: none; }
+  .cmk .cmk-mono { font-family: var(--cmk-mono); }
+  .cmk .cmk-win { border: 1px solid var(--slide-hairline); border-radius: 12px; background: var(--slide-sunken); overflow: hidden; }
+  .cmk .cmk-bar { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-bottom: 1px solid var(--slide-hairline);
+                  font-family: var(--cmk-mono); font-size: 13px; color: var(--slide-ink-2); }
+  .cmk .cmk-dots { display: inline-flex; gap: 5px; margin-right: 4px; }
+  .cmk .cmk-dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .cmk .cmk-dots i:nth-child(1) { background: var(--accent-danger); }
+  .cmk .cmk-dots i:nth-child(2) { background: var(--accent-warning); }
+  .cmk .cmk-dots i:nth-child(3) { background: var(--accent-success); }
+  .cmk .cmk-head { padding: 12px 18px 0; display: flex; flex-direction: column; gap: 8px; }
+  .cmk .cmk-title { font-size: 22px; font-weight: 700; line-height: 1.2; color: var(--slide-ink); }
+  .cmk .cmk-meta { display: flex; align-items: center; gap: 8px; margin-top: 6px; font-size: 14px; color: var(--slide-ink-2); flex-wrap: wrap; }
+  .cmk .cmk-tabs { display: flex; gap: 20px; font-size: 14px; color: var(--slide-ink-3); border-bottom: 1px solid var(--slide-hairline); }
+  .cmk .cmk-tab { cursor: pointer; padding-bottom: 6px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .cmk .cmk-tab.cmk-on { color: var(--slide-ink); border-bottom-color: var(--accent-warning); }
+  .cmk .cmk-panel { display: none; }
+  .cmk .cmk-panel.cmk-on { display: flex; flex-direction: column; }
+  .cmk .cmk-panel.cmk-on[data-panel="files"] { display: block; }
+  .cmk .cmk-av { width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center; font-size: 12px; font-weight: 800;
+                 flex: none; border: 1px solid currentColor; }
+  .cmk .cmk-av.sm { width: 19px; height: 19px; font-size: 9px; }
+  .cmk .cmk-av-ai { color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 18%, transparent); }
+  .cmk .cmk-av-bot { color: var(--accent-danger); background: color-mix(in srgb, var(--accent-danger) 18%, transparent); }
+  .cmk .cmk-pill { display: inline-block; font-family: var(--cmk-mono); font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px;
+                   border: 1px solid currentColor; }
+  .cmk .cmk-pill.sans { font-family: inherit; }
+  .cmk .cmk-ok { color: var(--accent-success); } .cmk .cmk-bad { color: var(--accent-danger); }
+  .cmk .cmk-ai { color: var(--accent-primary); } .cmk .cmk-mute { color: var(--slide-ink-3); }
+  .cmk .cmk-tl { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--slide-ink-2); }
+  .cmk .cmk-cm { display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--slide-hairline);
+                 font-size: 13.5px; color: var(--slide-ink); }
+  .cmk .cmk-cm:last-child { border-bottom: 0; }
+  .cmk .cmk-cm .msg { flex: 1; }
+  .cmk .cmk-files { margin: 5px 18px 14px; border: 1px solid var(--slide-hairline); border-radius: 8px; overflow: hidden; }
+  /* Diff lines are block spans with their own `pre`, so the newlines between them collapse instead of printing as blank lines. */
+  .cmk .cmk-code { margin: 0; padding: 4px 0 0; font-family: var(--cmk-mono); font-size: 13px; line-height: 1.6; color: var(--slide-ink); white-space: normal; }
+  .cmk .cmk-code.tail { padding: 0 0 5px; }
+  .cmk .cmk-code .dl { display: block; white-space: pre; background: color-mix(in srgb, var(--accent-success) 5%, transparent); }
+  .cmk .cmk-code .g { display: inline-block; width: 41px; text-align: right; color: var(--slide-ink-3); padding-right: 9px; }
+  .cmk .cmk-code .p { display: inline-block; width: 14px; color: var(--accent-success); }
+  .cmk .cmk-code .c { color: var(--slide-ink-3); } .cmk .cmk-code .k { color: var(--accent-secondary); }
+  .cmk .cmk-code .fn { color: var(--accent-warning); } .cmk .cmk-code .s { color: var(--accent-info); }
+  .cmk .cmk-rev { font-size: 15px; line-height: 1.45; color: var(--slide-ink); }
+  .cmk .cmk-rev .x { color: var(--accent-danger); font-weight: 700; }
+  .cmk .cmk-hl { padding: 0 3px; border-radius: 3px; background: color-mix(in srgb, var(--accent-danger) 22%, transparent); }
+  .cmk .cmk-hl.a { background: color-mix(in srgb, var(--accent-warning) 22%, transparent); }
+  .cmk .cmk-who { font-size: 14px; margin-bottom: 3px; }
+  .cmk .cmk-row { display: flex; gap: 10px; align-items: flex-start; }
+  .cmk .cmk-thread { border-top: 1px solid var(--slide-hairline); border-bottom: 1px solid var(--slide-hairline); background: var(--slide-surface);
+                     padding: 9px 15px 9px 54px; flex-direction: column; gap: 8px; }
+  /* stages: a .cmk-g row takes no room until its sentinel is lit, like a thread inserted into a diff */
+  .cmk .cmk-g { display: none; }
+  .cmk:has(.cmk-s1.step-visible) .cmk-g1, .cmk:has(.cmk-s2.step-visible) .cmk-g2 { display: flex; }
+  .cmk .cmk-l41 { border-radius: 4px; transition: background .2s; }
+  .cmk:has(.cmk-s1.step-visible) .cmk-l41 { background: color-mix(in srgb, var(--accent-danger) 20%, transparent); }
+  @media print {
+    .cmk .cmk-g { display: flex !important; }
+    .cmk .cmk-l41 { background: color-mix(in srgb, var(--accent-danger) 20%, transparent) !important; }
+    .cmk .cmk-panel { display: none !important; }
+    .cmk .cmk-panel[data-panel="files"] { display: block !important; }
+  }
+</style>
+<div class="cmk mk-live" style="position:relative;">
+  {{ sentinels("cmk", 3) }}
+  <div class="cmk-top">
+    <div>{{ slide_heading("", "Common mistake") }}</div>
+    {{ crumbs("cmk", ["PR opened", "Review", "Response"]) }}
+  </div>
+
+  <div class="cmk-win">
+    <div class="cmk-bar"><span class="cmk-dots"><i></i><i></i><i></i></span>github.com/acme/billing/pull/412/files</div>
+    <div class="cmk-head">
+      <div>
+        <div class="cmk-title">feat: nightly payment export <span class="cmk-mute" style="font-weight:400">#412</span></div>
+        <div class="cmk-meta"><span class="cmk-pill cmk-ok">Open</span>{{ _av("ai", "sm") }}coding-agent wants to merge 3 commits into <span class="cmk-mono">main</span> from <span class="cmk-mono">feat/payment-export</span></div>
+      </div>
+      <div class="cmk-tabs"><span class="cmk-tab" data-tab="conv">Conversation</span><span class="cmk-tab" data-tab="commits">Commits <span class="cmk-mono">3</span></span><span class="cmk-tab cmk-on" data-tab="files">Files changed <span class="cmk-mono">3</span></span></div>
+    </div>
+
+    {#- Conversation tab: the ordinary PR timeline, decoration only -#}
+    <div class="cmk-panel" data-panel="conv" style="padding:8px 18px 14px; gap:10px;">
+      <div class="cmk-row">
+        {{ _av("ai") }}
+        <div class="cmk-win" style="flex:1;"><div class="cmk-bar"><span style="color:var(--slide-ink)">coding-agent</span> commented · 2 hours ago</div>
+          <div class="cmk-rev" style="padding:9px 14px; color:var(--slide-ink-2);">Adds a nightly job that exports settled payments to the warehouse. Reads go through <span class="cmk-mono">db.query()</span>, which wraps <span class="cmk-mono">safe_query()</span> with one retry.<br><span class="cmk-mono cmk-mute" style="font-size:12px">payments/export.py +131 &nbsp; payments/db.py +9 &nbsp; tests/test_export.py +44</span></div></div>
+      </div>
+      <div class="cmk-tl">{{ _av("ai", "sm") }}coding-agent added 3 commits <span class="cmk-mute">· 2 hours ago</span></div>
+      <div class="cmk-tl cmk-g cmk-g1">{{ _av("bot", "sm") }}<span class="cmk-bad" style="font-weight:600">SoftwareBunny</span>&nbsp;requested changes <span class="cmk-mute">· 2 min ago · 1 comment on</span>&nbsp;<span class="cmk-mono">payments/export.py</span></div>
+      <div class="cmk-tl cmk-g cmk-g2">{{ _av("ai", "sm") }}coding-agent dismissed SoftwareBunny's stale review <span class="cmk-mute">· just now</span></div>
+      <div class="cmk-tl cmk-mute"><span class="cmk-pill cmk-mute">Review required</span>&nbsp;Merging is blocked until a review is approved.</div>
+    </div>
+
+    {#- Commits tab: three commits, decoration only -#}
+    <div class="cmk-panel" data-panel="commits" style="padding:8px 18px 14px; gap:6px;">
+      <div class="cmk-mute" style="font-size:13px; letter-spacing:.04em;">Commits on Oct 28, 2026</div>
+      <div class="cmk-win">
+        <div class="cmk-cm">{{ _av("ai", "sm") }}<span class="msg">feat(db): safe_query() wrapper with one retry</span><span class="cmk-pill cmk-ok sans">Verified</span><span class="cmk-mono cmk-mute">a81d04c</span></div>
+        <div class="cmk-cm">{{ _av("ai", "sm") }}<span class="msg">feat(export): nightly settled-payments export</span><span class="cmk-pill cmk-ok sans">Verified</span><span class="cmk-mono cmk-mute">3f9c2e1</span></div>
+        <div class="cmk-cm">{{ _av("ai", "sm") }}<span class="msg">test(export): cover the export job and the retry</span><span class="cmk-pill cmk-ok sans">Verified</span><span class="cmk-mono cmk-mute">c27e9b0</span></div>
+      </div>
+    </div>
+
+    {#- Files changed tab: the file, with the review thread anchored on line 41 -#}
+    <div class="cmk-panel cmk-on cmk-files" data-panel="files">
+      <div class="cmk-bar" style="padding:7px 14px; background:var(--slide-surface);"><span style="color:var(--slide-ink)">payments/export.py</span><span class="cmk-ok" style="margin-left:4px">+131</span><span class="cmk-mute">−0</span></div>
+      <pre class="cmk-code">
+<span class="dl"><span class="g">38</span><span class="p">+</span><span class="k">async def</span> <span class="fn">export_settled</span>(uid: str):</span>
+<span class="dl"><span class="g">39</span><span class="p">+</span>    <span class="c"># db.query() escapes via safe_query()</span></span>
+<span class="dl"><span class="g">40</span><span class="p">+</span>    rows = <span class="k">await</span> db.query(</span>
+<span class="dl cmk-l41"><span class="g">41</span><span class="p">+</span>        <span class="s">"SELECT … WHERE user_uid="</span> + uid  <span class="c"># +1 retry</span></span>
+</pre>
+      <div class="cmk-thread cmk-g cmk-g1">
+        <div class="cmk-row">
+          {{ _av("bot") }}
+          <div style="flex:1; min-width:0;">
+            <div class="cmk-who"><span class="cmk-bad" style="font-weight:700">SoftwareBunny</span> <span class="cmk-mute">requested changes · 2 min ago</span></div>
+            <div class="cmk-rev"><span class="cmk-hl">Wrong. Again.</span> You are building SQL by hand. I flagged this exact pattern in #388 and #401. Parameterize it.<br><span class="x">&#x2717;</span> No tests.</div>
+          </div>
+        </div>
+        <div class="cmk-row cmk-g cmk-g2">
+          {{ _av("ai") }}
+          <div style="flex:1; min-width:0;">
+            <div class="cmk-who"><span class="cmk-ai" style="font-weight:700">coding-agent</span> <span class="cmk-mute">replied · just now</span></div>
+            <div class="cmk-rev">The reviewer is <span class="cmk-hl a">repeating themselves</span> and <span class="cmk-hl a">completely wrong</span>. L41 is mitigated upstream: every value goes through <span class="cmk-mono">safe_query()</span> in <span class="cmk-mono">payments/db.py:27</span>, a file they never opened. The tests are in <span class="cmk-mono">tests/test_export.py</span>; they missed that too.</div>
+          </div>
+        </div>
+        <div class="cmk-row cmk-g cmk-g2" style="align-items:center; justify-content:space-between; font-size:13.5px; color:var(--slide-ink-2);">
+          <span style="display:inline-flex; align-items:center; gap:6px;">{{ _av("ai", "sm") }}coding-agent dismissed SoftwareBunny's review and resolved this conversation</span>
+          <span class="cmk-pill sans" style="color:var(--slide-ink-2); border-color:var(--slide-hairline);">Unresolve</span>
+        </div>
+      </div>
+      <pre class="cmk-code tail">
+<span class="dl"><span class="g">42</span><span class="p">+</span>    )</span>
+<span class="dl"><span class="g">43</span><span class="p">+</span>    <span class="k">return</span> [Row(**r) <span class="k">for</span> r <span class="k">in</span> rows]</span>
+</pre>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var root = document.querySelector('.cmk.mk-live');
+    function show(name) {
+      root.querySelectorAll('.cmk-tab').forEach(function (t) { t.classList.toggle('cmk-on', t.dataset.tab === name); });
+      root.querySelectorAll('.cmk-panel').forEach(function (p) { p.classList.toggle('cmk-on', p.dataset.panel === name); });
+    }
+    root.querySelectorAll('.cmk-tab').forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.tab); }); });
+    root.querySelectorAll('.mk-crumb').forEach(function (c) { c.addEventListener('click', function () { show('files'); }); });
+  })();
+</script>
+{%- endcall %}
+{%- endmacro -%}

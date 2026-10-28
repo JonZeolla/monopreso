@@ -1,0 +1,113 @@
+{#- modules/verifiers/decision-models.j2
+    Decision models (System One models): what comes back, and how fast.
+
+    Both slides are built from the Zenable "Decision models" lab on main
+    (services/ui_frontend labs/decision-models.mdx, October 2026): one support
+    ticket sent to a chat model held to a JSON enum and to Jev asked a Choice,
+    then the lab's 30-ticket benchmark of Jev and Claude Haiku 5.5 on accuracy,
+    latency, cost and calibration. Those numbers are the lab's own output,
+    unchanged. The Claude Opus 5.5 row was measured separately on the same 30
+    tickets through the Claude API (claude -p, effort low, 27 October 2026);
+    the footnote on the slide says so.
+
+    Written against the brand-pack primitive contract (see AGENTS.md): colours
+    come from the engine's --slide-* and --accent-* tokens, so light mode and
+    other packs need nothing extra. Import WITH CONTEXT:
+
+      {%- from "modules/verifiers/decision-models.j2" import
+          probability_not_prose, speed with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
+    content_slide,
+    slide_heading
+-%}
+
+{%- set _STYLE %}
+<style>
+  .dm { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin: 8px 0 18px; }
+  .dm-ask { font-size: 19px; line-height: 1.4; color: var(--slide-ink-2); margin: 0 0 14px; }
+  .dm-ask strong { color: var(--slide-ink); }
+  .dm-k { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slide-ink-3); margin: 0 0 8px; }
+  .dm-k.on { color: var(--accent-success); }
+  .dm-code { margin: 0; padding: 16px 18px; border-radius: 12px; background: var(--slide-sunken); border: 1px solid var(--slide-hairline); color: var(--slide-ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 17px; line-height: 1.45; white-space: pre; }
+  .dm-note { font-size: 17px; color: var(--slide-ink-2); margin: 10px 0 0; }
+  .dm-src { font-size: 11px; color: var(--slide-ink-3); margin: 10px 0 0; text-align: right; }
+  .dms { width: 100%; max-height: 48vh; display: block; margin: 6px 0 10px; }
+  .dms text { fill: var(--slide-ink); font-size: 26px; font-weight: 700; }
+  .dms .sub { fill: var(--slide-ink-2); font-size: 17px; font-weight: 500; }
+  .dms .sub .sep { fill: var(--slide-ink-3); }
+  .dms .ms { font-size: 26px; }
+  .dms .axis { stroke: var(--slide-rule); stroke-width: 1; }
+  .dms .jev { fill: var(--accent-success); }
+  .dms .haiku { fill: var(--accent-info); }
+  .dms .opus { fill: var(--accent-warning); }
+  .dms .p95 { opacity: 0.35; }
+  .dms .legend { fill: var(--slide-ink-3); font-size: 13px; font-weight: 400; }
+</style>
+{%- endset %}
+
+
+{%- macro probability_not_prose() -%}
+{%- call content_slide("Decision model output") %}
+  {{ _STYLE }}
+  {{ slide_heading("", "Probability, not prose",
+                   "A System One model answers a question with a probability per option. A chat model held to a schema answers with a label.") }}
+  <p class="dm-ask"><strong>Ticket:</strong> &ldquo;Hi. Long story. We migrated our SSO from Okta to Entra in March, everything worked, then in April we added a second domain, which also worked. Last week our admin rotated the signing certificate per your docs and now every user who logs in sees a blank white page after the redirect. Sorry for the essay. Can you check your side?&rdquo; &nbsp;<strong>Which department?</strong> account &middot; billing &middot; sales &middot; technical</p>
+  <div class="dm">
+    <div>
+      <p class="dm-k">Chat model, held to a JSON enum</p>
+<pre class="dm-code">{
+  "department": "technical"
+}</pre>
+      <p class="dm-note">A valid label. Nothing to threshold, and nothing to measure calibration with.</p>
+    </div>
+    <div>
+      <p class="dm-k on">Decision model, asked a Choice</p>
+<pre class="dm-code">{
+  "choice": "technical",
+  "confidence": 0.35,
+  "probabilities": {
+    "account":   0.49,
+    "billing":   0.00,
+    "sales":     0.00,
+    "technical": 0.51
+  }
+}</pre>
+      <p class="dm-note">p(technical) = 0.51. Below a 0.90 floor nobody touches the SSO config on autopilot: a person looks first.</p>
+    </div>
+  </div>
+  <p class="dm-src">Jev 1.14 (198 ms) and Claude Haiku 5.5 (1,284 ms). Sources: docs.typesafe.ai &middot; artificialanalysis.ai/methodology/decision-index</p>
+{%- endcall %}
+{%- endmacro -%}
+
+
+{%- macro speed() -%}
+{#- Bars share one scale: the slowest p95 spans 900 px, so its label still fits.
+    The darker bar is the median, the pale extension runs out to p95.
+    (cls, name, p50, p95, [facts]) -#}
+{%- set rows = [
+  ("jev",   "Jev 1.14",          159,  224, ["29/30 correct", "$0.0006 for 30", "calibration error (Brier) 0.022"]),
+  ("haiku", "Claude Haiku 5.5", 1102, 1503, ["30/30 correct", "$0.0016 for 30", "no probability to score"]),
+  ("opus",  "Claude Opus 5.5",  1238, 3271, ["30/30 correct", "$0.11 for 30", "no probability to score"]),
+] %}
+{%- set px = 900 / (rows | map(attribute=3) | max) %}
+{%- call content_slide("Decision models") %}
+  {{ _STYLE }}
+  {{ slide_heading("", "Decision Models") }}
+  <svg class="dms" viewBox="0 0 1400 330" role="img"
+       aria-label="Median latency per decision on the same 30 tickets: {% for cls, name, p50, p95, facts in rows %}{{ name }} {{ '{:,}'.format(p50) }} ms{{ ', ' if not loop.last }}{% endfor %}. Pale extensions show the 95th percentile.">
+    {%- for cls, name, p50, p95, facts in rows %}
+    {%- set y = 16 + loop.index0 * 104 %}
+    <text x="0" y="{{ y + 42 }}">{{ name }}</text>
+    <rect class="{{ cls }} p95" x="340" y="{{ y + 10 }}" width="{{ (p95 * px) | round(1) }}" height="48" rx="8"/>
+    <rect class="{{ cls }}" x="340" y="{{ y + 10 }}" width="{{ (p50 * px) | round(1) }}" height="48" rx="8"/>
+    <text class="ms" x="{{ 340 + (p95 * px) | round(1) + 16 }}" y="{{ y + 42 }}">{{ "{:,}".format(p50) }} ms</text>
+    <text class="sub" x="340" y="{{ y + 86 }}">{% for f in facts %}{{ f }}{% if not loop.last %} <tspan class="sep">&nbsp;&middot;&nbsp;</tspan> {% endif %}{% endfor %}</text>
+    {%- endfor %}
+    <line class="axis" x1="340" y1="0" x2="340" y2="316"/>
+    <text class="legend" x="1400" y="326" text-anchor="end">solid bar: median &nbsp;&middot;&nbsp; pale bar: 95th percentile</text>
+  </svg>
+  <p class="dm-src">Jev and Haiku: Zenable decision-models lab, October 2026 (Haiku via OpenRouter, reasoning off). Opus 5.5: the same 30 tickets and prompt through the Claude API on 27 October 2026, effort low; Haiku re-run the same way came in at 1,260 ms median.</p>
+{%- endcall %}
+{%- endmacro -%}
