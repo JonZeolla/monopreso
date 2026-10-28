@@ -71,6 +71,8 @@
     star_trek as eccentric_prompts with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
+{%- from "modules/context/gepa-mutation.j2" import
+    reflective_mutation as gepa_reflective_mutation with context %}
 
 {# ── Governance close (the CSA Birmingham "make / update the rules" arc) ── #}
 {%- from "modules/governance/policy-statement.j2" import
@@ -118,18 +120,19 @@
      ================================================================ -->
 {{ agent_feedback_loop() }}
 {{ common_mistake_shame_review() }}
+{{ eccentric_prompts() }}
 {{ help_reviewer() }}
 
 
 <!-- ================================================================
      CONTEXT EVALS
      ================================================================ -->
-{{ eccentric_prompts() }}
 {{ image_slide("modules/shared/img/llms-as-optimizers-table.png",
                "Table 1 comparing GSM8K zero-shot test accuracy of baseline and automatically optimised instructions, all scored by pre-trained PaLM 2-L.",
                label="LLMs as optimizers",
                caption='Table 1 from <a href="https://arxiv.org/abs/2309.03409" target="_blank" rel="noopener noreferrer">Large Language Models as Optimizers</a> (Yang et al., 2023): GSM8K zero-shot accuracy, baseline vs. optimised instructions') }}
 {{ context_and_skills() }}
+{{ gepa_reflective_mutation() }}
 
 
 <!-- ================================================================
