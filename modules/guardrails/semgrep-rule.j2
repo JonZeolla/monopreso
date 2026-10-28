@@ -23,8 +23,8 @@
 {%- macro house_rule() -%}
 {%- call content_slide("Semgrep rule") %}
   <style>
-    .sg { display: grid; grid-template-columns: 1.1fr 1fr; gap: 28px; margin-top: 10px; }
-    .sg-col { display: flex; flex-direction: column; gap: 14px; }
+    .sg { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 24px; margin-top: 6px; }
+    .sg-col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
     .sg-k { font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slide-ink-3); margin: 0; }
     .sg-win { border: 1px solid var(--slide-hairline); border-radius: 12px; background: var(--slide-sunken); overflow: hidden; }
     .sg-win.warn { border-color: var(--accent-warning); }
@@ -34,9 +34,8 @@
     .sg-win.bad  .sg-hdr { color: var(--accent-danger); }
     .sg-win.good .sg-hdr { color: var(--accent-success); }
     .sg-win.warn .sg-hdr { color: var(--accent-warning); }
-    .sg-code { margin: 0; padding: 14px 16px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 15px; line-height: 1.5; color: var(--slide-ink); white-space: pre; }
-    .sg-code .c { color: var(--slide-ink-3); }
-    .sg-note { font-size: 15px; color: var(--slide-ink-2); margin: 0; }
+    .sg-code { margin: 0; padding: 10px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; line-height: 1.4; color: var(--slide-ink); white-space: pre; overflow: hidden; }
+    .sg-note { font-size: 14px; line-height: 1.4; color: var(--slide-ink-2); margin: 0; }
     .sg-note code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
   </style>
   {{ slide_heading("", "Semgrep: pattern-based static analysis",
@@ -66,13 +65,15 @@
           def $FUNC(..., $U = Depends(require_role("admin")), ...):
             ...
       - pattern-not: |
-          @$APP.$METHOD($PATH, ..., dependencies=[..., Depends(require_role("admin")), ...], ...)
+          @$APP.$METHOD($PATH, ...,
+              dependencies=[..., Depends(require_role("admin")), ...],
+              ...)
           def $FUNC(...):
             ...
     message: |
       /admin routes enforce the admin role in the signature,
-      where FastAPI runs it before the handler and a reviewer
-      can see it. A check inside the body is easy to skip.</pre>
+      where FastAPI runs it before the handler.
+      A check in the body is easy to skip.</pre>
       </div>
     </div>
     <div class="sg-col">
@@ -80,18 +81,22 @@
       <div class="sg-win bad">
         <div class="sg-hdr">&#x2717; Authenticated, never authorized</div>
 <pre class="sg-code">@app.post("/admin/users/{user_id}/roles")
-async def set_roles(user_id: str, roles: list[str],
-                    user: User = Depends(current_user)):
+async def set_roles(
+    user_id: str, roles: list[str],
+    user: User = Depends(current_user),
+):
     return await repo.set_roles(user_id, roles)</pre>
       </div>
       <div class="sg-win good">
         <div class="sg-hdr">&#x2713; Role required before the handler runs</div>
 <pre class="sg-code">@app.post("/admin/users/{user_id}/roles")
-async def set_roles(user_id: str, roles: list[str],
-                    user: User = Depends(require_role("admin"))):
+async def set_roles(
+    user_id: str, roles: list[str],
+    user: User = Depends(require_role("admin")),
+):
     return await repo.set_roles(user_id, roles)</pre>
       </div>
-      <p class="sg-note">Any signed-in user could grant themselves admin. The rule reads the decorator path, the HTTP method, and the parameter list; a check buried in the body does not satisfy it. Verified with Semgrep 1.181: two unguarded <code>/admin</code> routes flagged, three guarded ones and <code>/administrivia</code> passed.</p>
+      <p class="sg-note">Any signed-in user could grant themselves admin. The rule reads the decorator path, the HTTP method and the parameter list; a check buried in the body does not satisfy it. Verified with Semgrep 1.181: two unguarded <code>/admin</code> routes flagged, three guarded ones and <code>/administrivia</code> passed.</p>
     </div>
   </div>
 {%- endcall %}
