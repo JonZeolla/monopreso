@@ -23,7 +23,7 @@
 {# ── Brand pack, resolved by start.sh into `branding` ──────────── #}
 {%- include "modules/branding/" ~ branding ~ "/theme.html.j2" %}
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
-    title_slide %}
+    title_slide, image_slide %}
 
 {# ── Opening ──────────────────────────────────────────────────── #}
 {%- from "modules/intro/about-speaker.j2" import
@@ -125,6 +125,10 @@
      CONTEXT EVALS
      ================================================================ -->
 {{ eccentric_prompts() }}
+{{ image_slide("modules/shared/img/llms-as-optimizers-table.png",
+               "Table 1 comparing GSM8K zero-shot test accuracy of baseline and automatically optimised instructions, all scored by pre-trained PaLM 2-L.",
+               label="LLMs as optimizers",
+               caption='Table 1 from <a href="https://arxiv.org/abs/2309.03409" target="_blank" rel="noopener noreferrer">Large Language Models as Optimizers</a> (Yang et al., 2023): GSM8K zero-shot accuracy, baseline vs. optimised instructions') }}
 {{ context_and_skills() }}
 
 
