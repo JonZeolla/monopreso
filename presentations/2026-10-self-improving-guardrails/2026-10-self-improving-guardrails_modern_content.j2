@@ -67,6 +67,8 @@
 {%- from "modules/agents/help-reviewer.j2" import help_reviewer with context %}
 
 {# ── Context evals ────────────────────────────────────────────── #}
+{%- from "modules/context/eccentric-prompts.j2" import
+    star_trek as eccentric_prompts with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 
@@ -122,6 +124,7 @@
 <!-- ================================================================
      CONTEXT EVALS
      ================================================================ -->
+{{ eccentric_prompts() }}
 {{ context_and_skills() }}
 
 
