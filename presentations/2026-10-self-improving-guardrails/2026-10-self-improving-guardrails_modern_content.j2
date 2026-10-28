@@ -75,8 +75,6 @@
 {%- from "modules/governance/structured-requirement.j2" import
     encryption_at_rest as requirement_encryption with context %}
 {%- from "modules/guardrails/refined-rules.j2" import refined_rules %}
-{%- from "modules/sdlc/lifecycle.j2" import
-    sdlc as lifecycle_with_controls with context %}
 
 {# ── Close ────────────────────────────────────────────────────── #}
 {%- from "modules/outro/outro.j2" import thank_you %}
@@ -127,14 +125,12 @@
 
 <!-- ================================================================
      GOVERNANCE CLOSE — a prose policy, the pushback, the rule that
-     learned an exception, the static analysis that keeps up, and where
-     every control attaches
+     learned an exception, and the static analysis that keeps up
      ================================================================ -->
 {{ policy_unenforceable() }}
 {{ policy_feedback() }}
 {{ requirement_encryption() }}
 {{ refined_rules() }}
-{{ lifecycle_with_controls() }}
 
 
 <!-- ================================================================
