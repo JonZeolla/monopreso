@@ -1,7 +1,7 @@
 # Self Improving Guardrails for Coding Agents
 
 - **Event:** SANS Raleigh 2026 (Nov 2–7, 2026)
-- **Date:** TODO — talk date/time within Nov 2–7, 2026
+- **Date:** Tuesday, November 3, 2026, 5:30–6:30 PM
 - **Location:** Embassy Suites by Hilton Raleigh-Durham Research Triangle, Cary, NC
 - **Duration:** 60 minutes
 - **Format:** in-person
