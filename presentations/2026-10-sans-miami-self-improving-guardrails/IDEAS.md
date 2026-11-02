@@ -1,6 +1,6 @@
 # Self Improving Guardrails for Coding Agents
 
-- **Event:** TODO (venue not yet recorded)
+- **Event:** SANS Miami 2026 (SANS@Night)
 - **Date:** Wednesday, October 28, 2026, 6:30–7:30 PM
 - **Location:** TODO
 - **Duration:** 60 minutes
