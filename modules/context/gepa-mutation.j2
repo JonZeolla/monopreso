@@ -19,26 +19,6 @@
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
 {%- from "modules/identity/morph-kit.j2" import sentinels, crumbs, styles, arrowhead, ah -%}
 
-{#- gepa_loop(): the "GEPA" slide from the GEPA lab deck, verbatim.
-    gepa-loop.svg is the SVG jon.zenable.app renders for GEPA_CHART in
-    next-gen-governance services/ui_frontend/src/lib/labs/content/slides/
-    gepa-prompt-evolution.tsx, captured from the live page with its id
-    renamed. Re-capture it from there rather than editing it by hand. -#}
-{%- macro gepa_loop() -%}
-{%- call content_slide("GEPA") %}
-<style>
-  .gl svg { max-height: 52vh; width: 100%; }
-  .gl .gl-src { font-size: 14px; margin: 12px 0 0; }
-  .gl .gl-src a { color: var(--accent-primary); text-decoration: none; }
-</style>
-<div class="gl">
-  {{ slide_heading("", "GEPA") }}
-  {% include "modules/context/gepa-loop.svg" %}
-  <p class="gl-src"><a href="https://arxiv.org/pdf/2507.19457v2" target="_blank" rel="noopener noreferrer">GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning</a></p>
-</div>
-{%- endcall %}
-{%- endmacro -%}
-
 {%- macro reflective_mutation() -%}
 {%- call content_slide("Reflective prompt mutation") %}
 {{ styles("rpm", 4) }}

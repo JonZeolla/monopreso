@@ -72,8 +72,8 @@
     star_trek as eccentric_prompts with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
-{%- from "modules/context/gepa-mutation.j2" import
-    gepa_loop with context %}
+{%- from "modules/context/gepa-pareto.j2" import
+    selection_walkthrough as gepa_pareto_walkthrough with context %}
 
 {# ── Governance close (the CSA Birmingham "make / update the rules" arc) ── #}
 {%- from "modules/governance/policy-statement.j2" import
@@ -123,7 +123,7 @@
 {{ common_mistake_shame_review() }}
 {{ eccentric_prompts() }}
 {{ help_reviewer() }}
-{{ gepa_loop() }}
+{{ gepa_pareto_walkthrough() }}
 
 
 <!-- ================================================================

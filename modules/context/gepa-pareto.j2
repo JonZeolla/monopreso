@@ -1,0 +1,202 @@
+{#- modules/context/gepa-pareto.j2
+    "Pareto Selection, Step by Step" from the GEPA lab deck, ported verbatim:
+    next-gen-governance services/ui_frontend/src/lib/labs/content/slides/
+    gepa-candidate-selection.tsx (candidateSelectionWalkthroughSlide). Same
+    tree, scores, stage captions, colours and click-to-explore behaviour; keep
+    it in sync with that file rather than editing the data here.
+
+    Six stages. Five zero-size `.step` sentinels count key presses; the script
+    redraws the SVG for however many are lit, so forward and back both work.
+    Clicking a node inspects it and offers "Show mutation", as in the source.
+
+    Colours are the source's own hex, deliberately: the brief was an exact copy
+    of a dark-only slide. In light mode the diagram keeps its dark ground.
+    Print shows the final stage. Import WITH CONTEXT:
+      {%- from "modules/context/gepa-pareto.j2" import selection_walkthrough with context %}
+-#}
+
+{%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
+
+{%- macro selection_walkthrough() -%}
+{%- call content_slide("Pareto Selection, Step by Step") %}
+<style>
+  .pss svg { width: 100%; height: auto; max-height: 68vh; font-family: Arial, sans-serif; }
+  .pss .pss-sent { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .pss .node { cursor: pointer; outline: none; }
+  .pss .node .ring { opacity: 0; }
+  .pss .node.sel .ring, .pss .node:focus-visible .ring { opacity: 1; }
+  .pss .btn { cursor: pointer; }
+  .pss .stage { animation: pssFade .4s ease-out; }
+  @keyframes pssFade { from { opacity: 0; } to { opacity: 1; } }
+  .pss .pss-src { margin: 16px 0 0; font-size: 12px; color: #64748b; }
+  .pss .pss-src a { color: #14E0CC; text-decoration: none; }
+  .pss .pss-src a:hover { text-decoration: underline; }
+  body.light-mode.font-sans .pss svg { background: #0c0c1d; border-radius: 12px; }
+</style>
+<div class="pss" style="position:relative;">
+  {%- for i in range(5) %}<span class="step pss-sent" aria-hidden="true"></span>{% endfor %}
+  {{ slide_heading("", "Pareto Selection, Step by Step") }}
+  <svg viewBox="0 0 1120 660" role="group"></svg>
+  <p class="pss-src">Illustrative &middot; builds group several iterations &middot; click a node to explore &middot;
+    <a href="https://arxiv.org/pdf/2507.19457v2#page=6" target="_blank" rel="noopener noreferrer">GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning</a>
+    &middot; Algorithms 1&ndash;2, &sect;3.1</p>
+</div>
+<script>
+(function () {
+  var root = document.currentScript.previousElementSibling;
+  var svg = root.querySelector('svg');
+  var sentinels = root.querySelectorAll('.pss-sent');
+
+  var CANDIDATES = [
+    { id: "Seed", scores: [50, 50, 50, 50], x: 560, y: 85, appears: 0 },
+    { id: "A", parent: "Seed", scores: [60, 76, 76, 76], x: 560, y: 185, appears: 1 },
+    { id: "B", parent: "A", scores: [100, 76, 72, 72], x: 140, y: 295, appears: 2 },
+    { id: "G", parent: "A", scores: [60, 100, 70, 66], x: 420, y: 295, appears: 2 },
+    { id: "H", parent: "A", scores: [70, 70, 64, 100], x: 980, y: 295, appears: 2 },
+    { id: "C", parent: "A", scores: [60, 60, 100, 52], x: 700, y: 295, appears: 2 },
+    { id: "D", parent: "C", scores: [92, 100, 97, 55], x: 730, y: 405, appears: 4 },
+    { id: "E", parent: "B", scores: [100, 84, 68, 80], x: 110, y: 405, appears: 4 },
+    { id: "I", parent: "G", scores: [75, 100, 75, 70], x: 390, y: 405, appears: 4 },
+    { id: "J", parent: "H", scores: [80, 75, 73, 100], x: 1010, y: 405, appears: 4 },
+    { id: "F", parent: "D", scores: [100, 100, 96, 76], x: 730, y: 515, appears: 5 },
+    { id: "M", parent: "E", scores: [100, 88, 88, 80], x: 110, y: 515, appears: 5 }
+  ];
+  var STAGES = [
+    { title: "Start with a prompt", caption: "Each circle is a candidate. Click any node to explore it.", parents: ["Seed"] },
+    { title: "Create a better version", caption: "Reflect on feedback, edit the prompt, and evaluate A.", parents: ["Seed"] },
+    { title: "Explore four paths", caption: "Several iterations produce four candidates, each leading on a different example.", parents: ["A"] },
+    { title: "Sample different strengths", caption: "C scores 68 overall, but leads on Example 3. It can also be selected.", parents: ["C"] },
+    { title: "Grow several useful branches", caption: "Across several iterations, sample useful parents and create new candidates.", parents: ["B", "G", "C", "H"] },
+    { title: "Keep improving across the tree", caption: "F reaches 93. Other candidates stay useful on different examples.", parents: ["D", "E"] }
+  ];
+  var C = { best: "#14E0CC", useful: "#4AA3F0", selected: "#fbbf24", archived: "#64748b" };
+
+  function quality(c) { return Math.round(c.scores.reduce(function (s, v) { return s + v; }, 0) / c.scores.length); }
+  function pool(cands) {
+    var best = cands[0].scores.map(function (_, i) { return Math.max.apply(null, cands.map(function (c) { return c.scores[i]; })); });
+    var winners = cands.filter(function (c) { return c.scores.some(function (s, i) { return s === best[i]; }); });
+    var eligible = winners.filter(function (c) {
+      return !winners.some(function (o) {
+        return o.scores.every(function (s, i) { return s >= c.scores[i]; }) && o.scores.some(function (s, i) { return s > c.scores[i]; });
+      });
+    });
+    return { best: best, ids: eligible.map(function (c) { return c.id; }) };
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;"); }
+
+  var state = { step: -1, focusedId: null, revealedIds: [] };
+  var printing = false;
+
+  function currentStep() {
+    if (printing) return STAGES.length - 1;
+    return root.querySelectorAll('.pss-sent.step-visible').length;
+  }
+
+  function render() {
+    var step = currentStep();
+    var stepChanged = step !== state.step;
+    if (stepChanged) state = { step: step, focusedId: null, revealedIds: [] };
+    var stage = STAGES[step];
+    var cands = CANDIDATES.filter(function (c) { return c.appears <= step || state.revealedIds.indexOf(c.id) >= 0; });
+    var p = pool(cands), best = p.best;
+    var hi = Math.max.apply(null, cands.map(quality));
+    var focused = cands.filter(function (c) { return c.id === state.focusedId; })[0];
+    var eligible = focused && p.ids.indexOf(focused.id) >= 0;
+    var nextChild = focused && eligible ? CANDIDATES.filter(function (c) {
+      return c.parent === focused.id && !cands.some(function (v) { return v.id === c.id; });
+    })[0] : undefined;
+    var leads = function (c) { return c.scores.reduce(function (a, s, i) { if (s === best[i]) a.push(i + 1); return a; }, []); };
+
+    var h = '<g class="stage">';
+    h += '<title>' + esc(stage.title) + '</title>';
+    h += '<text x="0" y="28" fill="#e2e8f0" font-size="24" font-weight="600">' + esc(stage.title) + '</text>';
+    h += '<text x="1120" y="28" text-anchor="end" fill="#94a3b8" font-size="17">Quality / 100 ↑</text>';
+
+    cands.forEach(function (c) {
+      var par = cands.filter(function (e) { return e.id === c.parent; })[0];
+      if (!par) return;
+      var newest = c.appears === step || state.revealedIds.indexOf(c.id) >= 0;
+      var dx = c.x - par.x, dy = c.y - par.y, len = Math.hypot(dx, dy);
+      h += '<path d="M ' + (par.x + dx / len * 38) + ' ' + (par.y + dy / len * 38) + ' L ' + (c.x - dx / len * 42) + ' ' + (c.y - dy / len * 42) +
+           '" fill="none" stroke="' + (newest ? C.selected : "#475569") + '" stroke-width="' + (newest ? 3 : 2) +
+           '" marker-end="url(#pss-' + (newest ? "new" : "old") + ')"/>';
+    });
+    h += '<defs>' + [["new", C.selected], ["old", "#475569"]].map(function (m) {
+      return '<marker id="pss-' + m[0] + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="' + m[1] + '"/></marker>';
+    }).join("") + '</defs>';
+
+    cands.forEach(function (c) {
+      var selected = focused ? c.id === focused.id : stage.parents.indexOf(c.id) >= 0;
+      var useful = p.ids.indexOf(c.id) >= 0;
+      var top = quality(c) === hi;
+      var col = top ? C.best : useful ? C.useful : C.archived;
+      var ex = useful ? leads(c) : [];
+      var strength = ex.length === c.scores.length ? "Best on all examples" : ex.length === 1 ? "Best on Example " + ex[0] : "Best on examples " + ex.join(", ");
+      var label = ["Candidate " + c.id + ". Quality " + quality(c) + " out of 100.", useful ? strength + "." : "Earlier candidate.", selected ? "Selected candidate." : ""].join(" ");
+      h += '<g class="node' + (selected ? ' sel' : '') + '" data-id="' + c.id + '" role="button" tabindex="0" aria-label="' + esc(label) + '" aria-pressed="' + (focused && focused.id === c.id) + '">';
+      h += '<title>' + esc(label) + '</title>';
+      h += '<circle class="ring" cx="' + c.x + '" cy="' + c.y + '" r="45" fill="none" stroke="' + C.selected + '" stroke-width="3" aria-hidden="true"/>';
+      h += '<circle cx="' + c.x + '" cy="' + c.y + '" r="35" fill="' + (top ? "#113533" : useful ? "#142b45" : "#1e293b") + '" stroke="' + col + '" stroke-width="' + (top ? 3 : 2) + '"/>';
+      h += '<text x="' + c.x + '" y="' + (c.y - 13) + '" text-anchor="middle" fill="#cbd5e1" font-size="13" font-weight="600">' + c.id + '</text>';
+      h += '<text x="' + c.x + '" y="' + (c.y + 19) + '" text-anchor="middle" fill="' + col + '" font-size="28" font-weight="700">' + quality(c) + '</text>';
+      if (useful) {
+        h += '<rect x="' + (c.x - 84) + '" y="' + (c.y + 40) + '" width="168" height="23" rx="7" fill="#0c0c1d"/>';
+        h += '<text x="' + c.x + '" y="' + (c.y + 56) + '" text-anchor="middle" fill="' + col + '" font-size="13">' +
+             (ex.length === c.scores.length ? "All examples" : (ex.length === 1 ? "Example" : "Examples") + " " + ex.join(", ")) + '</text>';
+      }
+      h += '</g>';
+    });
+
+    if (focused) {
+      h += '<g role="group" aria-label="Candidate ' + focused.id + ' details">';
+      h += '<rect x="0" y="55" width="280" height="' + (nextChild ? 166 : 130) + '" rx="12" fill="#142033" stroke="#334155"/>';
+      h += '<text x="18" y="83" fill="#e2e8f0" font-size="18" font-weight="600">' + focused.id + ' · Quality ' + quality(focused) + '</text>';
+      h += '<text x="18" y="110" fill="#94a3b8" font-size="15">' + (focused.parent ? "Created from " + focused.parent : "Starting prompt") + '</text>';
+      h += '<text x="18" y="137" fill="' + (eligible ? C.useful : "#94a3b8") + '" font-size="15">' + (eligible ? "Available for Pareto sampling" : "Earlier candidate; kept in the tree") + '</text>';
+      h += '<text x="18" y="163" fill="#94a3b8" font-size="14">' + (eligible ? "Leads on example " + leads(focused).join(", ") : "Explore another candidate to continue.") + '</text>';
+      if (nextChild) {
+        h += '<g class="btn" role="button" tabindex="0" aria-label="Show mutation ' + nextChild.id + ' from ' + focused.id + '" data-reveal="' + nextChild.id + '">';
+        h += '<rect x="18" y="178" width="244" height="30" rx="7" fill="#00BAAE"/>';
+        h += '<text x="140" y="198" text-anchor="middle" fill="#0c0c1d" font-size="15" font-weight="600">Show mutation → ' + nextChild.id + '</text></g>';
+      }
+      h += '</g>';
+    }
+
+    h += '<text x="560" y="605" text-anchor="middle" fill="#e2e8f0" font-size="19">' + esc(stage.caption) + '</text>';
+    [["Highest quality", C.best, 140], ["Different strength", C.useful, 395], ["Selected candidate", C.selected, 665], ["Earlier candidate", C.archived, 920]].forEach(function (l) {
+      h += '<circle cx="' + (l[2] - 16) + '" cy="646" r="6" fill="' + l[1] + '"/><text x="' + l[2] + '" y="652" fill="#94a3b8" font-size="15">' + l[0] + '</text>';
+    });
+    h += '</g>';
+
+    svg.setAttribute('aria-label', 'Step ' + (step + 1) + ': ' + stage.title + '. ' + stage.caption);
+    svg.innerHTML = h;
+    // only a stage change fades in, like the source's per-step re-render; clicks redraw in place
+    if (!stepChanged) svg.querySelector('.stage').style.animation = 'none';
+  }
+
+  function act(target) {
+    var btn = target.closest('[data-reveal]');
+    if (btn) {
+      var id = btn.getAttribute('data-reveal');
+      state = { step: state.step, focusedId: id, revealedIds: state.revealedIds.concat([id]) };
+      render(); return true;
+    }
+    var node = target.closest('.node');
+    if (node) { state.focusedId = node.getAttribute('data-id'); render(); return true; }
+    return false;
+  }
+  svg.addEventListener('click', function (e) { act(e.target); });
+  svg.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (act(e.target)) { e.preventDefault(); e.stopPropagation(); }
+  });
+
+  var mo = new MutationObserver(render);
+  sentinels.forEach(function (s) { mo.observe(s, { attributes: true, attributeFilter: ['class'] }); });
+  window.addEventListener('beforeprint', function () { printing = true; render(); });
+  window.addEventListener('afterprint', function () { printing = false; render(); });
+  render();
+})();
+</script>
+{%- endcall %}
+{%- endmacro -%}
