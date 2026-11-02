@@ -19,6 +19,67 @@
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import content_slide, slide_heading -%}
 {%- from "modules/identity/morph-kit.j2" import sentinels, crumbs, styles, arrowhead, ah -%}
 
+{#- gepa_loop(): the whole GEPA search loop on one slide, ported from the
+    GEPA lab deck's "GEPA" Mermaid flowchart (§3, Algorithm 1). Static, no
+    stages. -#}
+{%- macro gepa_loop() -%}
+{%- call content_slide("GEPA") %}
+<style>
+  .gl svg { width: 100%; max-height: 64vh; }
+  .gl .box { fill: var(--slide-surface); stroke: var(--slide-rule); }
+  .gl .pri { fill: color-mix(in srgb, var(--accent-primary) 12%, transparent); stroke: var(--accent-primary); stroke-width: 2; }
+  .gl text { font-size: 20px; text-anchor: middle; fill: var(--slide-ink); }
+  .gl .pri-t { fill: var(--accent-primary); } .gl .t2 { fill: var(--slide-ink-2); font-size: 17px; }
+  .gl .ar { fill: none; stroke: var(--slide-ink-3); stroke-width: 2; }
+  .gl .gl-src { font-size: 13px; color: var(--slide-ink-3); margin: 10px 0 0; }
+  .gl .gl-src a { color: var(--accent-primary); text-decoration: none; }
+</style>
+<div class="gl">
+  {{ slide_heading("", "GEPA") }}
+  <svg viewBox="0 0 1220 520" role="img"
+       aria-label="GEPA loop: start with a prompt, pick a candidate from the Pareto set, run a training minibatch for scores, traces and feedback, have an LLM read the feedback and propose an edit; if it improves on the same minibatch, validate and add it to the pool, otherwise go back to selection. When the budget is exhausted, return the candidate with the best validation mean.">
+    {{ arrowhead("gl") }}
+    <rect class="box" x="0" y="120" width="180" height="100" rx="14"/>
+    <text x="90" y="164">Start with</text><text x="90" y="190">a prompt</text>
+    <path class="ar" d="M 180 170 H 226" marker-end="{{ ah('gl') }}"/>
+
+    <rect class="box" x="230" y="120" width="210" height="100" rx="14"/>
+    <text x="335" y="164">Pick a candidate</text><text x="335" y="190">from the Pareto set</text>
+    <path class="ar" d="M 440 170 H 486" marker-end="{{ ah('gl') }}"/>
+
+    <rect class="box" x="490" y="120" width="210" height="100" rx="14"/>
+    <text x="595" y="152">Training minibatch:</text><text x="595" y="178">scores, traces,</text><text x="595" y="204">feedback</text>
+    <path class="ar" d="M 700 170 H 746" marker-end="{{ ah('gl') }}"/>
+
+    <rect class="pri" x="750" y="120" width="210" height="100" rx="14"/>
+    <text class="pri-t" x="855" y="164">LLM reads feedback</text><text class="pri-t" x="855" y="190">and proposes an edit</text>
+    <path class="ar" d="M 960 170 H 1006" marker-end="{{ ah('gl') }}"/>
+
+    <path class="box" d="M 1110 95 L 1210 170 L 1110 245 L 1010 170 Z"/>
+    <text x="1110" y="164" font-size="18">Improves on the</text><text x="1110" y="188" font-size="18">same minibatch?</text>
+
+    {# Yes → validate, then back to selection #}
+    <path class="ar" d="M 1110 245 V 316" marker-end="{{ ah('gl') }}"/>
+    <text class="t2" x="1140" y="290">Yes</text>
+    <rect class="pri" x="1020" y="320" width="180" height="80" rx="14"/>
+    <text class="pri-t" x="1110" y="355">Validate and</text><text class="pri-t" x="1110" y="381">add to the pool</text>
+    <path class="ar" d="M 1020 360 H 385 V 224" marker-end="{{ ah('gl') }}"/>
+
+    {# No → straight back to selection #}
+    <path class="ar" d="M 1110 95 V 50 H 335 V 116" marker-end="{{ ah('gl') }}"/>
+    <text class="t2" x="1135" y="78">No</text>
+
+    {# Budget exhausted → return #}
+    <path class="ar" d="M 285 220 V 416" marker-end="{{ ah('gl') }}"/>
+    <text class="t2" x="200" y="320">Budget exhausted</text>
+    <rect class="box" x="180" y="420" width="210" height="90" rx="14"/>
+    <text x="285" y="458">Return the best</text><text x="285" y="484">validation mean</text>
+  </svg>
+  <p class="gl-src"><a href="https://arxiv.org/abs/2507.19457" target="_blank" rel="noopener noreferrer">GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning</a> &middot; &sect;3, Algorithm 1</p>
+</div>
+{%- endcall %}
+{%- endmacro -%}
+
 {%- macro reflective_mutation() -%}
 {%- call content_slide("Reflective prompt mutation") %}
 {{ styles("rpm", 4) }}

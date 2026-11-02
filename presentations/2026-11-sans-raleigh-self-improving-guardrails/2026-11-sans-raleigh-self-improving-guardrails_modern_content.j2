@@ -73,7 +73,7 @@
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
 {%- from "modules/context/gepa-mutation.j2" import
-    reflective_mutation as gepa_reflective_mutation with context %}
+    gepa_loop with context %}
 
 {# ── Governance close (the CSA Birmingham "make / update the rules" arc) ── #}
 {%- from "modules/governance/policy-statement.j2" import
@@ -123,7 +123,7 @@
 {{ common_mistake_shame_review() }}
 {{ eccentric_prompts() }}
 {{ help_reviewer() }}
-{{ gepa_reflective_mutation() }}
+{{ gepa_loop() }}
 
 
 <!-- ================================================================
