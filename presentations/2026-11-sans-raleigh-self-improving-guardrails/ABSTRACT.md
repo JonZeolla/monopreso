@@ -1,6 +1,6 @@
 # Self Improving Guardrails for Coding Agents
 
-**Wednesday, October 28, 2026** · 6:30–7:30 PM · in person
+**SANS Raleigh 2026** · Cary, NC · Tuesday, November 3, 2026 · 5:30–6:30 PM · in person
 
 Generative AI is quickly becoming a default part of the software development
 lifecycle. Faster delivery can also increase security risk, operational

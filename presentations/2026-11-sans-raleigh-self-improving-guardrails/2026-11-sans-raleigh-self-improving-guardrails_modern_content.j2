@@ -1,6 +1,7 @@
 {# ================================================================
    Self Improving Guardrails for Coding Agents
-   Wednesday, October 28, 2026 · 6:30–7:30 PM · in person · 60 minutes
+   SANS Raleigh 2026 · Cary, NC · Tuesday, November 3, 2026 · 5:30–6:30 PM · in person · 60 minutes
+   Same talk as 2026-10-sans-miami-self-improving-guardrails, re-run for SANS Raleigh.
 
    Modern-engine orchestration layer. This file chooses the brand and
    the slide order; it contains no HTML. Every rendered slide comes
@@ -71,8 +72,8 @@
     star_trek as eccentric_prompts with context %}
 {%- from "modules/context/skill-optimization.j2" import
     context_and_skills with context %}
-{%- from "modules/context/gepa-mutation.j2" import
-    reflective_mutation as gepa_reflective_mutation with context %}
+{%- from "modules/context/gepa-pareto.j2" import
+    selection_walkthrough as gepa_pareto_walkthrough with context %}
 
 {# ── Governance close (the CSA Birmingham "make / update the rules" arc) ── #}
 {%- from "modules/governance/policy-statement.j2" import
@@ -122,7 +123,11 @@
 {{ common_mistake_shame_review() }}
 {{ eccentric_prompts() }}
 {{ help_reviewer() }}
-{{ gepa_reflective_mutation() }}
+{{ image_slide("modules/shared/img/gepa-figure-3.png",
+               "Figure 3 from the GEPA paper: a flowchart of the optimisation loop. Pareto-based filtering picks candidates from the pool, reflective prompt mutation or system aware merge proposes a new one, and a minibatch eval decides whether to discard it or add it to the pool.",
+               label="GEPA overview",
+               caption='Figure 3 from <a href="https://arxiv.org/abs/2507.19457" target="_blank" rel="noopener noreferrer">GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning</a> (Agrawal et al., ICLR 2026)') }}
+{{ gepa_pareto_walkthrough() }}
 
 
 <!-- ================================================================

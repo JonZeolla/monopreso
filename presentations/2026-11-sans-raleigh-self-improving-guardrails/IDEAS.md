@@ -1,8 +1,8 @@
 # Self Improving Guardrails for Coding Agents
 
-- **Event:** TODO (venue not yet recorded)
-- **Date:** Wednesday, October 28, 2026, 6:30–7:30 PM
-- **Location:** TODO
+- **Event:** SANS Raleigh 2026 (Nov 2–7, 2026)
+- **Date:** Tuesday, November 3, 2026, 5:30–6:30 PM
+- **Location:** Embassy Suites by Hilton Raleigh-Durham Research Triangle, Cary, NC
 - **Duration:** 60 minutes
 - **Format:** in-person
 - **Audience:** security practitioners and engineers adopting coding agents
