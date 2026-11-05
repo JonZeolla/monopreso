@@ -8,7 +8,7 @@ Your AI agents now write more code than your team can review. So you give them r
 
 Most guardrail advice stops at writing the rules. This talk covers the whole loop: how to set rules for AI, enforce them, and keep improving them. We'll start with context files and hooks, then layer on policy as code and AI review to catch what slips through. Then we'll let your guardrails evolve. Give agents a way to push back on a rule, and you'll quickly find scenarios in your company you never knew existed.
 
-Walk away with implementation details for each layer and a clear next step for your team, whether you want a human in the loop or full automation.
+Fast and high quality don't have to be a tradeoff. Walk away with a practical way to get both for your coding agents.
 
 --
 
