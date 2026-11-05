@@ -472,7 +472,9 @@
                     var top = Infinity, bottom = -Infinity, left = Infinity, right = -Infinity;
                     var LEAFY = { IMG: 1, SVG: 1, PRE: 1, CANVAS: 1, VIDEO: 1, HR: 1, INPUT: 1, BUTTON: 1 };
                     s.querySelectorAll('*').forEach(function (el) {
-                        if (!LEAFY[el.tagName] && el.children.length) return;
+                        // A clipped marquee's contents run far off-screen; measure its box instead.
+                        if (el.closest('[data-autofit-box] *')) return;
+                        if (!LEAFY[el.tagName] && !el.hasAttribute('data-autofit-box') && el.children.length) return;
                         var cs2 = getComputedStyle(el);
                         if (cs2.display === 'none' || cs2.position === 'fixed') return;
                         var r = el.getBoundingClientRect();
