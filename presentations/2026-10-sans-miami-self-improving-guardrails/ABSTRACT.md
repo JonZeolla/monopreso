@@ -11,7 +11,7 @@ maintaining strong security, governance, and assurance. We will walk through
 four maturity levels for agentic coding controls covering topics like built-in
 steering mechanisms in modern agentic IDEs, project context files, RAG-powered
 context-injection, and how to implement deterministic, policy-as-code
-guardrails in that enforce security, quality, and compliance requirements with
+guardrails that enforce security, quality, and compliance requirements with
 measurable outcomes and audit-ready evidence. Then we will show how you can
 make guardrails that meet your company requirements, without annoying your
 developers. The secret is to allow them to evolve. Give agents a way to provide
