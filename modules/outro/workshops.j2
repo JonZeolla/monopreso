@@ -2,6 +2,8 @@
     The lab-library checklist from zenable.io/workshops ("Two Full Days"), as a
     closing slide: what Jon teaches, for anyone who wants more than 30 minutes.
     Items are the site's list verbatim; keep them in sync with the site.
+    `year_end_offer` is a one-slide advertisement: a dated offer, a QR code, and a
+    scrolling wall of the employers of engineers Jon has taught.
     Primitive-native: import WITH CONTEXT.
       {%- from "modules/outro/workshops.j2" import lab_checklist with context %}
 -#}
@@ -9,6 +11,107 @@
 {%- from "modules/branding/" ~ branding ~ "/primitives.j2" import
     content_slide, slide_heading
 -%}
+
+{%- set _labs = [
+    "Agentic protocols like A2A, ACP, and MCP",
+    "Sandboxing with eBPF, seccomp, and Tetragon",
+    "Automated risk assessments and AI output validation",
+    "Agent identity and authorization",
+    "Coding orchestrators and multi-agent systems",
+    "Decision models and programmatic AI outputs",
+    "Building an LLM from scratch and model fine-tuning",
+    "Vectors, embeddings, and approximate search",
+    "Prompt improvement algorithms",
+    "Formal verification with Lean",
+] -%}
+
+{#- Mirrors src/data/logos.ts in JonZeolla.github.io; files are under
+    modules/shared/img/logos/{dark,light}/. Each entry is [slug, name, tall]. Most are
+    employers of SANS students, so the slide must say "taught", never imply they
+    bought a workshop. -#}
+{%- set _logo_rows = [
+    [["amazon", "Amazon", 0], ["google", "Google", 0], ["microsoft", "Microsoft", 0],
+     ["apple", "Apple", 1], ["accenture", "Accenture", 0], ["deloitte", "Deloitte", 0],
+     ["ey", "EY", 1], ["exxonmobil", "ExxonMobil", 0], ["walmart", "Walmart", 0],
+     ["unitedairlines", "United Airlines", 1], ["shopify", "Shopify", 0], ["clickup", "ClickUp", 0]],
+    [["capitalone", "Capital One", 0], ["visa", "Visa", 0], ["bankofamerica", "Bank of America", 0],
+     ["morganstanley", "Morgan Stanley", 0], ["nasa", "NASA", 1], ["siemens", "Siemens", 0],
+     ["tmobile", "T-Mobile", 0], ["cisco", "Cisco", 1], ["dell", "Dell", 0],
+     ["bloomberg", "Bloomberg", 0], ["pepsico", "PepsiCo", 0]],
+] -%}
+
+{%- macro year_end_offer() -%}
+{%- call content_slide("Workshops offer") %}
+<style>
+  .wko-head { text-align: center; }
+  .wko-head :is(h1, h2, h3) { font-size: 3.25rem; line-height: 1.1; margin: 0; }
+  .wko-hl { background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
+  .wko-offer { margin: 1rem 0 0; text-align: center; font-size: 1.75rem; line-height: 1.2; font-weight: 700; color: var(--accent-primary); }
+  .wko-top { display:grid; grid-template-columns: auto auto; justify-content: center; gap: 5rem; align-items:center; margin-top: 2.5rem; }
+  .wko-bonus { margin: 0; padding: 0; list-style: none; display:flex; flex-direction:column; gap: 1rem;
+               font-size: 1.45rem; line-height: 1.25; color: var(--slide-ink); }
+  .wko-bonus li { display:flex; gap: .8rem; align-items: baseline; }
+  .wko-bonus li::before { content: "\2713"; font-weight: 800; color: var(--accent-primary); flex: none; }
+  .wko-qr { display:flex; flex-direction:column; align-items:center; gap: .5rem; }
+  .wko-qr img { width: 11rem; height: 11rem; box-sizing: border-box; padding: .5rem; border-radius: .6rem; background: white; }
+  .wko-qr a { font-family: ui-monospace, monospace; font-size: .95rem; color: var(--accent-primary); text-decoration: none; }
+  .wko-proof { margin-top: 2.5rem; }
+  .wko-proof > p { margin: 0 0 1rem; text-align: center; font-size: 1rem; font-weight: 600; color: var(--slide-ink-2); }
+  .wko-marquee { display:grid; gap: 1.1rem; overflow:hidden; padding-block: .25rem;
+                 mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+                 -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent); }
+  .wko-track { display:flex; width:max-content; animation: wko-slide 60s linear infinite; }
+  .wko-track.wko-rev { animation-direction: reverse; }
+  .wko-track span { display:inline-flex; align-items:center; padding-right: 4rem; }
+  .wko-track img { height: 1.4rem; width:auto; max-width: 8rem; object-fit: contain; }
+  .wko-track img.wko-tall { height: 1.8rem; }
+  .wko-track img.wko-light { display:none; }
+  body.light-mode .wko-track img.wko-light { display:block; }
+  body.light-mode .wko-track img.wko-dark { display:none; }
+  @keyframes wko-slide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .wko-track { animation:none; width:auto; flex-wrap:wrap; gap: 1rem 0; }
+    .wko-copy { display:none !important; }
+    .wko-marquee { mask-image:none; -webkit-mask-image:none; }
+  }
+  @media print {
+    .wko-track { animation:none; width:auto; flex-wrap:wrap; gap: 1rem 0; }
+    .wko-copy { display:none !important; }
+    .wko-marquee { mask-image:none; -webkit-mask-image:none; }
+  }
+</style>
+<div class="wko-head">{{ slide_heading("", 'Guardrails for your Software Factory<br>in <em class="wko-hl">two days</em>'|safe) }}</div>
+<p class="wko-offer">Sign by December 31, 2026</p>
+<div class="wko-top">
+  <ul class="wko-bonus">
+    <li>Codebase assessment before you start</li>
+    <li>90 days of Zenable Professional per attendee</li>
+    <li>6 months of lab access</li>
+  </ul>
+  <div class="wko-qr">
+    <img src="modules/shared/img/zenable_workshop_qr.png" alt="QR code linking to zenable.io/workshop">
+    <a href="https://www.zenable.io/workshop" target="_blank" rel="noopener">zenable.io/workshop</a>
+  </div>
+</div>
+<div class="wko-proof">
+  <p>Taught 1,200+ engineers at</p>
+  <div class="wko-marquee" data-autofit-box aria-label="Employers of engineers Jon has taught">
+    {%- for row in _logo_rows %}
+    <div class="wko-track{{ ' wko-rev' if loop.index == 2 }}">
+      {%- for copy in [0, 1] %}
+      {%- for slug, name, tall in row %}
+      <span{{ ' class="wko-copy" aria-hidden="true"'|safe if copy }}>
+        <img class="wko-dark{{ ' wko-tall' if tall }}" src="modules/shared/img/logos/dark/{{ slug }}.svg" alt="{{ '' if copy else name }}">
+        <img class="wko-light{{ ' wko-tall' if tall }}" src="modules/shared/img/logos/light/{{ slug }}.svg" alt="{{ '' if copy else name }}">
+      </span>
+      {%- endfor %}
+      {%- endfor %}
+    </div>
+    {%- endfor %}
+  </div>
+</div>
+{%- endcall %}
+{%- endmacro -%}
 
 {%- macro lab_checklist() -%}
 {%- call content_slide("Workshops") %}
@@ -23,18 +126,7 @@
 </style>
 {{ slide_heading("", "Workshops") }}
 <ul class="wk-list">
-  {%- for lab in [
-    "Agentic protocols like A2A, ACP, and MCP",
-    "Sandboxing with eBPF, seccomp, and Tetragon",
-    "Automated risk assessments and AI output validation",
-    "Agent identity and authorization",
-    "Coding orchestrators and multi-agent systems",
-    "Decision models and programmatic AI outputs",
-    "Building an LLM from scratch and model fine-tuning",
-    "Vectors, embeddings, and approximate search",
-    "Prompt improvement algorithms",
-    "Formal verification with Lean",
-  ] %}
+  {%- for lab in _labs %}
   <li>{{ lab }}</li>
   {%- endfor %}
 </ul>
