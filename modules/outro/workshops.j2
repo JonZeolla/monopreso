@@ -2,7 +2,7 @@
     The lab-library checklist from zenable.io/workshops ("Two Full Days"), as a
     closing slide: what Jon teaches, for anyone who wants more than 30 minutes.
     Items are the site's list verbatim; keep them in sync with the site.
-    `year_end_offer` is a one-slide advertisement: a dated offer, a QR code, and a
+    `year_end_offer` is a one-slide advertisement: an offer, a QR code, and a
     scrolling wall of the employers of engineers Jon has taught.
     Primitive-native: import WITH CONTEXT.
       {%- from "modules/outro/workshops.j2" import lab_checklist with context %}
@@ -46,7 +46,6 @@
   .wko-head { text-align: center; }
   .wko-head :is(h1, h2, h3) { font-size: 3.25rem; line-height: 1.1; margin: 0; }
   .wko-hl { background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); -webkit-background-clip: text; background-clip: text; color: transparent; padding-right: .08em; }
-  .wko-offer { margin: 1rem 0 0; text-align: center; font-size: 1.75rem; line-height: 1.2; font-weight: 700; color: var(--accent-primary); }
   .wko-top { display:grid; grid-template-columns: auto auto; justify-content: center; gap: 5rem; align-items:center; margin-top: 2.5rem; }
   .wko-bonus { margin: 0; padding: 0; list-style: none; display:flex; flex-direction:column; gap: 1rem;
                font-size: 1.45rem; line-height: 1.25; color: var(--slide-ink); }
@@ -81,12 +80,11 @@
   }
 </style>
 <div class="wko-head">{{ slide_heading("", 'Guardrails for your Software Factory<br>in <em class="wko-hl">two days</em>'|safe) }}</div>
-<p class="wko-offer">Sign by December 31, 2026</p>
 <div class="wko-top">
   <ul class="wko-bonus">
-    <li>Codebase assessment before you start</li>
-    <li>90 days of Zenable Professional per attendee</li>
-    <li>6 months of lab access</li>
+    <li>Two days of hands-on labs, taught live to your team</li>
+    <li>Built around an assessment of your own codebase</li>
+    <li>Sandboxing with eBPF, agent identity, formal verification, and more</li>
   </ul>
   <div class="wko-qr">
     <img src="modules/shared/img/zenable_workshop_qr.png" alt="QR code linking to zenable.io/workshop">
